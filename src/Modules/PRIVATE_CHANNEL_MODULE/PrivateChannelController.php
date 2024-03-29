@@ -47,6 +47,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
+	SettingMode,
 	SyncEvent,
 	Text,
 	Util,
@@ -217,7 +218,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	public string $lockMinrank = 'superadmin';
 
 	/** If set, the private channel is currently locked for a reason */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $lockReason = '';
 
 	/** @var array<string,Member> */

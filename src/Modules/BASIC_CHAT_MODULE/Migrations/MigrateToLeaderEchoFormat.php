@@ -21,7 +21,7 @@ class MigrateToLeaderEchoFormat implements SchemaMigration {
 					'name' => 'leader_echo_format',
 					'module' => $setting->module,
 					'type' => 'text',
-					'mode' => $setting->mode,
+					'mode' => $setting->mode->value,
 					'value' => ($setting->value === "<font color='#FFFF00'>")
 						? '<yellow>{message}<end>'
 						: "{$setting->value}{message}</font>",

@@ -14,6 +14,7 @@ use Nadybot\Core\{
 	ParamClass\PWord,
 	SettingHandler,
 	SettingManager,
+	SettingMode,
 	TemplateSettingHandler,
 	Text,
 };
@@ -70,7 +71,7 @@ class SettingsController extends ModuleInstance {
 			}
 			$blob .= '<tab>' . ($row->description??'No description given');
 
-			if ($row->mode === 'edit') {
+			if ($row->mode === SettingMode::Edit) {
 				$editLink = $this->text->makeChatcmd('Modify', "/tell <myname> settings change {$row->name}");
 				$blob .= " ({$editLink})";
 			}

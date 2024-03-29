@@ -4,6 +4,7 @@ namespace Nadybot\Core\Attributes;
 
 use Attribute;
 use Exception;
+use Nadybot\Core\SettingMode;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class DefineSetting {
@@ -13,7 +14,7 @@ class DefineSetting {
 	 * @param string                             $type         'color', 'number', 'text', 'options', or 'time'
 	 * @param null|string                        $name         The name of the setting
 	 * @param null|int|float|string|bool|mixed[] $defaultValue
-	 * @param string                             $mode         'edit' or 'noedit'
+	 * @param SettingMode                        $mode         'edit' or 'noedit'
 	 * @param array<string|int,int|string>       $options      An optional list of values that the setting can be, semi-colon delimited.
 	 *                                                         Alternatively, use an associative array [label => value], where label is optional.
 	 * @param string                             $accessLevel  The permission level needed to change this setting (default: mod) (optional)
@@ -23,7 +24,7 @@ class DefineSetting {
 		public string $type,
 		public ?string $name=null,
 		public null|int|float|string|bool|array $defaultValue=null,
-		public string $mode='edit',
+		public SettingMode $mode=SettingMode::Edit,
 		public array $options=[],
 		public string $accessLevel='mod',
 		public ?string $help=null,

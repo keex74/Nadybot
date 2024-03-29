@@ -17,7 +17,7 @@ abstract class SettingHandler {
 	}
 
 	public function isEditable(): bool {
-		return $this->row->mode === 'edit';
+		return $this->row->mode === SettingMode::Edit;
 	}
 
 	public function getData(): Setting {

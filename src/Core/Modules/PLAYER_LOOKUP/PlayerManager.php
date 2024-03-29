@@ -12,7 +12,7 @@ use Amp\Http\Client\{
 	TimeoutException,
 };
 use Amp\Sync\LocalKeyedMutex;
-use Amp\TimeoutCancellation;
+use Amp\{TimeoutCancellation};
 use AO\Utils;
 use DateTimeZone;
 use Illuminate\Support\Collection;
@@ -242,7 +242,7 @@ class PlayerManager extends ModuleInstance {
 						'duration' => $end - $start,
 					]);
 					break;
-				} catch (\Amp\TimeoutException) {
+				} catch (\Amp\TimeoutException | \Amp\CancelledException) {
 					$baseUrl = self::PORK_URL;
 				} catch (TimeoutException $e) {
 					/** @psalm-suppress RedundantCast */

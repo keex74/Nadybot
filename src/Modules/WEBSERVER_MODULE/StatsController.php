@@ -12,6 +12,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Registry,
 	SettingManager,
+	SettingMode,
 	Util,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\Collector\{
@@ -36,7 +37,7 @@ class StatsController extends ModuleInstance {
 	public bool $prometheusEnabled = true;
 
 	/** Auth token for Prometheus endpoint */
-	#[NCA\Setting\Text(accessLevel: 'admin', mode: 'noedit')]
+	#[NCA\Setting\Text(accessLevel: 'admin', mode: SettingMode::NoEdit)]
 	public string $prometheusAuthToken = '';
 	#[NCA\Inject]
 	private SettingManager $settingManager;

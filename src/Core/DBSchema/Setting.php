@@ -2,12 +2,12 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\DBRow;
+use Nadybot\Core\{DBRow, SettingMode};
 
 class Setting extends DBRow {
 	public function __construct(
 		public string $name,
-		public string $mode,
+		public SettingMode $mode,
 		public ?string $module=null,
 		public ?string $type=null,
 		public ?string $description=null,

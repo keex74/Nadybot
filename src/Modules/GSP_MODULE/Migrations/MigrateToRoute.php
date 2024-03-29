@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	SchemaMigration,
 	SettingManager,
+	SettingMode,
 };
 use Nadybot\Modules\GSP_MODULE\GSPController;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,7 @@ class MigrateToRoute implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$channel = $this->getSetting($db, 'gsp_channels');
 		if (!isset($channel)) {
-			$channel = new Setting(name: 'gsp_channels', mode: 'edit', value: '3');
+			$channel = new Setting(name: 'gsp_channels', mode: SettingMode::Edit, value: '3');
 		}
 		$map = [
 			1 => Source::PRIV . '(' . $db->getMyname() .')',

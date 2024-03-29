@@ -5,6 +5,7 @@ namespace Nadybot\Core\Attributes\Setting;
 use Attribute;
 use Exception;
 use Nadybot\Core\Attributes\DefineSetting;
+use Nadybot\Core\SettingMode;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class TimeOrOff extends DefineSetting {
@@ -18,7 +19,7 @@ class TimeOrOff extends DefineSetting {
 		public string $type='time_or_off',
 		public ?string $name=null,
 		public null|int|float|string|bool|array $defaultValue=null,
-		public string $mode='edit',
+		public SettingMode $mode=SettingMode::Edit,
 		public array $options=[],
 		public string $accessLevel='mod',
 		public ?string $help=null,

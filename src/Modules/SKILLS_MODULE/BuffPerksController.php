@@ -20,6 +20,7 @@ use Nadybot\Core\{
 	Profession,
 	Safe,
 	SettingManager,
+	SettingMode,
 	Text,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
@@ -51,7 +52,7 @@ class BuffPerksController extends ModuleInstance {
 	public const SHADOWLANDS = 'sl';
 
 	/** DB version of perks */
-	#[NCA\Setting\Timestamp(mode: 'noedit')]
+	#[NCA\Setting\Timestamp(mode: SettingMode::NoEdit)]
 	public int $perksDBVersion = 0;
 
 	/** @var Collection<Perk> */

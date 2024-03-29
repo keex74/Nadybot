@@ -35,6 +35,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
+	SettingMode,
 	SubcommandManager,
 	Text,
 	Util,
@@ -130,7 +131,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 	public bool $tellColors = true;
 
 	/** Database version */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $version = '0';
 
 	/** When using the proxy, allow sending tells via the workers */

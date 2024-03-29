@@ -679,7 +679,7 @@ class DB {
 			module: $module,
 			name: $settingName,
 			description: "DB version of {$fileBase}",
-			mode: 'noedit',
+			mode: SettingMode::NoEdit,
 			type: (is_int($version) || preg_match('/^\d+$/', $version)) ? 'timestamp' : 'text',
 			value: '0'
 		);

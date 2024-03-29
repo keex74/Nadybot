@@ -13,6 +13,7 @@ use Nadybot\Core\{
 	ParamClass\PWord,
 	Safe,
 	SettingManager,
+	SettingMode,
 	Text,
 };
 use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
@@ -45,7 +46,7 @@ class ChatRallyController extends ModuleInstance {
 	public const CMD_RALLY_SET = 'rally set/clear';
 
 	/** Rally waypoint for topic */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $rally = '';
 
 	#[NCA\Inject]

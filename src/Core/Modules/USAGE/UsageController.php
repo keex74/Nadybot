@@ -19,6 +19,7 @@ use Nadybot\Core\{
 	ParamClass\PWord,
 	SQLException,
 	SettingManager,
+	SettingMode,
 	Text,
 	Util,
 };
@@ -48,7 +49,7 @@ class UsageController extends ModuleInstance {
 	public bool $recordUsageStats = true;
 
 	/** Botid */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $botid = '';
 
 	#[NCA\Inject]

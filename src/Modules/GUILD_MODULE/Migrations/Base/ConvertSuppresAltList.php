@@ -24,7 +24,7 @@ class ConvertSuppresAltList implements SchemaMigration {
 				'name' => 'org_logon_message',
 				'module' => $oldValue->module,
 				'type' => 'text',
-				'mode' => $oldValue->mode,
+				'mode' => $oldValue->mode->value,
 				'value' => ($oldValue->value === '1')
 					? '{whois} logged on{?main:. {alt-of}}{?logon-msg: - {logon-msg}}'
 					: '{whois} logged on{?main:. {alt-list}}{?logon-msg: - {logon-msg}}',

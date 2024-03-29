@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\CONFIG;
 
 use Nadybot\Core\DBSchema\Setting;
+use Nadybot\Core\SettingMode;
 
 class ModuleSetting {
 	public const TYPE_BOOL = 'bool';
@@ -44,7 +45,7 @@ class ModuleSetting {
 	public ?string $help = null;
 
 	public function __construct(Setting $setting) {
-		$this->editable = $setting->mode === 'edit';
+		$this->editable = $setting->mode === SettingMode::Edit;
 		$this->description = $setting->description??'No description given';
 		$this->name = $setting->name;
 		if (strlen($setting->options??'')) {

@@ -68,7 +68,7 @@ class SettingManager {
 	 * @param string                       $module      The module name
 	 * @param string                       $name        The name of the setting
 	 * @param string                       $description A description for the setting (will appear in the config)
-	 * @param string                       $mode        'edit' or 'noedit'
+	 * @param SettingMode                  $mode        'edit' or 'noedit'
 	 * @param string                       $type        'color', 'number', 'text', 'options', or 'time'
 	 * @param array<string|int,int|string> $options     An optional list of values that the setting can be, semi-colon delimited.
 	 *                                                  Alternatively, use an associative array [label => value], where label is optional.
@@ -81,7 +81,7 @@ class SettingManager {
 		string $module,
 		string $name,
 		string $description,
-		string $mode,
+		SettingMode $mode,
 		int|float|string|bool $value,
 		string $type,
 		array $options=[],

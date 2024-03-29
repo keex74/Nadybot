@@ -11,6 +11,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Nadybot,
 	SettingManager,
+	SettingMode,
 	Text,
 	Util,
 };
@@ -35,15 +36,15 @@ class ChatTopicController extends ModuleInstance {
 	public const CMD_TOPIC_SET = 'topic set/clear';
 
 	/** Topic for Private Channel */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $topic = '';
 
 	/** Character who set the topic */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $topicSetby = '';
 
 	/** Time the topic was set */
-	#[NCA\Setting\Timestamp(mode: 'noedit')]
+	#[NCA\Setting\Timestamp(mode: SettingMode::NoEdit)]
 	public int $topicTime = 0;
 
 	/** Color of the topic */

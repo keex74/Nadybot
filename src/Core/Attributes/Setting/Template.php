@@ -9,6 +9,7 @@ use Nadybot\Core\{
 	Modules\ALTS\NickController,
 	Registry,
 	SettingManager,
+	SettingMode,
 	Text
 };
 use Nadybot\Modules\ONLINE_MODULE\OnlineController;
@@ -26,7 +27,7 @@ class Template extends DefineSetting {
 		public string $type='template',
 		public ?string $name=null,
 		public null|int|float|string|bool|array $defaultValue=null,
-		public string $mode='edit',
+		public SettingMode $mode=SettingMode::Edit,
 		public array $options=[],
 		public string $accessLevel='mod',
 		public ?string $help=null,

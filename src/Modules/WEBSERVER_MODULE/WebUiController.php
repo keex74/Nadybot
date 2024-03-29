@@ -23,6 +23,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
+	SettingMode,
 	UserException,
 };
 use Psr\Log\LoggerInterface;
@@ -42,7 +43,7 @@ use ZipArchive;
 ]
 class WebUiController extends ModuleInstance implements MessageEmitter {
 	/** The currently installed NadyUI version */
-	#[NCA\Setting\Timestamp(mode: 'noedit')]
+	#[NCA\Setting\Timestamp(mode: SettingMode::NoEdit)]
 	public int $nadyuiVersion = 0;
 
 	#[NCA\Logger]
@@ -84,7 +85,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 			module: $this->moduleName,
 			name: 'nadyui_channel',
 			description: 'Which NadyUI webfrontend version to subscribe to',
-			mode: 'edit',
+			mode: SettingMode::Edit,
 			type: 'options',
 			value: 'stable',
 			options: $uiBranches,

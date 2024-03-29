@@ -111,7 +111,7 @@ class GuildManager extends ModuleInstance {
 				]);
 				$cache->set($cacheKey, $body, $maxCacheAge);
 				$fromCache = false;
-			} catch (\Amp\TimeoutException) {
+			} catch (\Amp\TimeoutException | \Amp\CancelledException) {
 				$baseUrl = $this->playerManager::PORK_URL;
 			} catch (TimeoutException $e) {
 				/** @psalm-suppress RedundantCast */

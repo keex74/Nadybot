@@ -35,6 +35,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
+	SettingMode,
 	Text,
 	Util,
 };
@@ -135,11 +136,11 @@ class GuildController extends ModuleInstance {
 	public array $lastLogoffMsgs = [];
 
 	/** The last detected org name */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $lastOrgName = Nadybot::UNKNOWN_ORG;
 
 	/** Number of skipped roster updates, because they were likely bad */
-	#[NCA\Setting\Number(mode: 'noedit')]
+	#[NCA\Setting\Number(mode: SettingMode::NoEdit)]
 	public int $numOrgUpdatesSkipped = 0;
 
 	#[NCA\Logger]

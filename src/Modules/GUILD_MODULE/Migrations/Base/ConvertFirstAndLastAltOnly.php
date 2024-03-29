@@ -24,7 +24,7 @@ class ConvertFirstAndLastAltOnly implements SchemaMigration {
 				'name' => 'suppress_logon_logoff',
 				'module' => $oldValue->module,
 				'type' => 'time_or_off',
-				'mode' => $oldValue->mode,
+				'mode' => $oldValue->mode->value,
 				'value' => ($oldValue->value === '1') ? '900' : '0',
 				'options' => '',
 				'intoptions' => '',

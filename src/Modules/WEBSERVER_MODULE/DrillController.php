@@ -10,7 +10,7 @@ use Amp\Http\Client\{HttpClientBuilder, HttpException};
 use Amp\Socket\ConnectContext;
 use Amp\Websocket\Client\{Rfc6455Connector, WebsocketConnectException, WebsocketConnection, WebsocketHandshake};
 use Amp\Websocket\WebsocketClosedException;
-use Amp\{DeferredFuture, TimeoutCancellation, TimeoutException};
+use Amp\{CancelledException, DeferredFuture, TimeoutCancellation, TimeoutException};
 
 use Nadybot\Core\Event\{ConnectEvent, RecvMsgEvent};
 use Nadybot\Core\{Attributes as NCA, Config\BotConfig, EventManager, ModuleInstance, Registry, Safe, StopExecutionException, UserException};
@@ -209,7 +209,7 @@ class DrillController extends ModuleInstance {
 			$this->logger->info('Drill-code received: {code}', [
 				'code' => $code,
 			]);
-		} catch (TimeoutException $e) {
+		} catch (TimeoutException | CancelledException $e) {
 			$this->logger->warning('No Drill auth token from {sender} received for 30s', [
 				'sender' => $packet->sender,
 			]);

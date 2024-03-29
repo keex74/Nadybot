@@ -18,6 +18,7 @@ use Nadybot\Core\{
 	ParamClass\PWord,
 	SQLException,
 	SettingManager,
+	SettingMode,
 	Text,
 	Util,
 };
@@ -53,11 +54,11 @@ class CommentController extends ModuleInstance {
 	public bool $shareComments = false;
 
 	/** Database table for comments */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $tableNameComments = 'comments_<myname>';
 
 	/** Database table for comment categories */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $tableNameCommentCategories = 'comment_categories_<myname>';
 
 	#[NCA\Logger]

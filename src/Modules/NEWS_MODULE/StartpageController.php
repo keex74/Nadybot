@@ -25,6 +25,7 @@ use Nadybot\Core\{
 	ParamClass\PRemove,
 	Registry,
 	SettingManager,
+	SettingMode,
 	Text,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\{ApiResponse, WebChatConverter, WebserverController};
@@ -49,7 +50,7 @@ use Throwable;
 ]
 class StartpageController extends ModuleInstance {
 	/** The tiles to show on the startpage */
-	#[NCA\Setting\Text(mode: 'noedit')]
+	#[NCA\Setting\Text(mode: SettingMode::NoEdit)]
 	public string $startpageLayout = '';
 
 	/** The message when sending the startpage to people */

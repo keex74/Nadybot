@@ -16,7 +16,7 @@ class SyncGaubuffEvent extends SyncEvent {
 	public function __construct(
 		public int $expires,
 		#[
-			StrFuncIn('ucfirst', [Faction::class, 'from']),
+			StrFuncIn('ucfirst'),
 			StrFuncOut([Util::class, 'enumToValue'], 'strtolower')
 		] public Faction $faction,
 		public string $sender,

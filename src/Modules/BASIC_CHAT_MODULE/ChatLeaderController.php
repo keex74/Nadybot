@@ -13,6 +13,7 @@ use Nadybot\Core\{
 	Nadybot,
 	ParamClass\PCharacter,
 	SettingManager,
+	SettingMode,
 	Text,
 };
 
@@ -41,7 +42,7 @@ class ChatLeaderController extends ModuleInstance implements AccessLevelProvider
 	public const CMD_LEADER_SET = 'leader set leader';
 
 	/** Repeat the text of the leader */
-	#[NCA\Setting\Boolean(mode: 'noedit')]
+	#[NCA\Setting\Boolean(mode: SettingMode::NoEdit)]
 	public bool $leaderecho = true;
 
 	/** Message format for leader echo */

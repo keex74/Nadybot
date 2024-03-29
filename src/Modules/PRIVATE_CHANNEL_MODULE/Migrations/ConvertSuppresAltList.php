@@ -24,7 +24,7 @@ class ConvertSuppresAltList implements SchemaMigration {
 				'name' => 'priv_join_message',
 				'module' => $oldValue->module,
 				'type' => 'text',
-				'mode' => $oldValue->mode,
+				'mode' => $oldValue->mode->value,
 				'value' => ($oldValue->value === '1')
 					? '{whois} has joined {channel-name}. {alt-of}'
 					: '{whois} has joined {channel-name}. {alt-list}',
