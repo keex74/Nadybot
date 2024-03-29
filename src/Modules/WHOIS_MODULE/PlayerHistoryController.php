@@ -6,6 +6,7 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	Config\BotConfig,
+	Faction,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerHistory,
 	Modules\PLAYER_LOOKUP\PlayerHistoryManager,
@@ -64,19 +65,15 @@ class PlayerHistoryController extends ModuleInstance {
 				$blob .= "{$date} <highlight>|<end>   <red>DELETED<end>\n";
 				continue;
 			}
-			if ($entry->defender_rank == '') {
-				$ailevel = 0;
-			} else {
-				$ailevel = (int)$entry->defender_rank;
-			}
+			$ailevel = $entry->defender_rank;
 			$ailevel = $this->text->alignNumber($ailevel, 2, 'green');
 
-			if ($entry->faction == 'Omni') {
-				$faction = '<omni>Omni<end>    ';
-			} elseif ($entry->faction == 'Clan') {
-				$faction = '<clan>Clan<end>     ';
+			if ($entry->faction === Faction::Omni) {
+				$faction = $entry->faction->inColor() . '    ';
+			} elseif ($entry->faction === Faction::Clan) {
+				$faction = $entry->faction->inColor() . '     ';
 			} else {
-				$faction = '<neutral>Neutral<end>  ';
+				$faction = $entry->faction->inColor() . '  ';
 			}
 
 			if (!isset($entry->guild_name) || $entry->guild_name == '') {
@@ -87,7 +84,7 @@ class PlayerHistoryController extends ModuleInstance {
 					$guild .= " (<highlight>{$entry->guild_rank_name}<end>)";
 				}
 			}
-			$level = $this->text->alignNumber((int)$entry->level, 3);
+			$level = $this->text->alignNumber($entry->level, 3);
 
 			$blob .= "{$date} <highlight>|<end>  {$level}  <highlight>|<end> {$ailevel} <highlight>|<end> {$faction} <highlight>|<end> {$entry->breed} <highlight>|<end> {$guild}\n";
 		}

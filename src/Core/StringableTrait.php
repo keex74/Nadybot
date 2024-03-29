@@ -4,9 +4,11 @@ namespace Nadybot\Core;
 
 use function Safe\json_encode;
 
+use EventSauce\ObjectHydrator\DoNotSerialize;
 use Safe\Exceptions\JsonException;
 
 trait StringableTrait {
+	#[DoNotSerialize]
 	public function __toString(): string {
 		$values = [];
 		$refClass = new \ReflectionClass($this);

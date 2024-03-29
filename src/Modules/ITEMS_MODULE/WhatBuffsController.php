@@ -14,6 +14,7 @@ use Nadybot\Core\{
 	DB,
 	ModuleInstance,
 	ParamClass\PWord,
+	Profession,
 	QueryBuilder,
 	Text,
 	Util,
@@ -727,7 +728,7 @@ class WhatBuffsController extends ModuleInstance {
 				$perk->profs = implode(
 					"<end>, {$color}",
 					array_map(
-						[$this->util, 'getProfessionAbbreviation'],
+						static fn (string $long): string => Profession::byName($long)->short(),
 						explode(',', $perk->profs)
 					)
 				);

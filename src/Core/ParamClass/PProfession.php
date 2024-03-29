@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\ParamClass;
 
-use Nadybot\Core\{Registry, Util};
+use Nadybot\Core\{Profession};
 
 class PProfession extends Base {
 	protected static string $regExp = 'adv(|y|enturer)'.
@@ -19,23 +19,17 @@ class PProfession extends Base {
 		'|sol(d|dier)?'.
 		'|tra(d|der)?'.
 		'|sha(de)?';
-	protected string $value;
+	private Profession $enum;
 
 	public function __construct(string $value) {
-		/** @var ?Util */
-		$util = Registry::getInstance(Util::class);
-		if (isset($util)) {
-			$this->value = $util->getProfessionName($value);
-		} else {
-			$this->value = $value;
-		}
+		$this->enum = Profession::byName($value);
 	}
 
-	public function __invoke(): string {
-		return $this->value;
+	public function __invoke(): Profession {
+		return $this->enum;
 	}
 
 	public function __toString(): string {
-		return $this->value;
+		return $this->enum->value;
 	}
 }

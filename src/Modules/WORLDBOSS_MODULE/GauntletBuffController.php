@@ -12,6 +12,7 @@ use Nadybot\Core\{
 	CmdContext,
 	Config\BotConfig,
 	EventManager,
+	Faction,
 	LogonEvent,
 	MessageEmitter,
 	MessageHub,
@@ -33,6 +34,7 @@ use Psr\Log\LoggerInterface;
 use Safe\DateTime;
 use Safe\Exceptions\JsonException;
 use Throwable;
+use ValueError;
 
 /**
  * @author Equi
@@ -159,8 +161,8 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	#[NCA\Setup]
 	public function setup(): void {
 		$this->messageHub->registerMessageEmitter($this);
-		$this->statsController->registerProvider(new GauntletBuffStats($this, 'clan'), 'states');
-		$this->statsController->registerProvider(new GauntletBuffStats($this, 'omni'), 'states');
+		$this->statsController->registerProvider(new GauntletBuffStats($this, Faction::Clan), 'states');
+		$this->statsController->registerProvider(new GauntletBuffStats($this, Faction::Omni), 'states');
 	}
 
 	#[NCA\Event(
@@ -216,7 +218,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		}
 	}
 
-	public function setGaubuff(string $side, int $time, string $creator, int $createtime): void {
+	public function setGaubuff(Faction $side, int $time, string $creator, int $createtime): void {
 		$alerts = [];
 		$alertTimes = [];
 		$gaubuffTimes = $this->gaubuffTimes;
@@ -225,8 +227,8 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		}
 		$alertTimes []= 0; // timer runs out
 		$tokens = [
-			'side' => ucfirst($side),
-			'c-side' => "<{$side}>" . ucfirst($side) . '<end>',
+			'side' => $side->value,
+			'c-side' => $side->inColor(),
 		];
 		foreach ($alertTimes as $alertTime) {
 			if (($time - $alertTime) > time()) {
@@ -249,9 +251,9 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		$data['creator'] = $creator;
 		$data['repeat'] = 0;
 
-		$this->timerController->remove("Gaubuff_{$side}");
+		$this->timerController->remove("Gaubuff_{$side->lower()}");
 		$this->timerController->add(
-			"Gaubuff_{$side}",
+			"Gaubuff_{$side->lower()}",
 			$this->config->main->character,
 			'',
 			$alerts,
@@ -306,16 +308,16 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		$sides = $this->getSidesToShowBuff($buffSide);
 		$msgs = [];
 		foreach ($sides as $side) {
-			$timer = $this->timerController->get("Gaubuff_{$side}");
+			$timer = $this->timerController->get("Gaubuff_{$side->lower()}");
 			if ($timer !== null && isset($timer->endtime)) {
 				$gaubuff = $timer->endtime - time();
-				$msgs []= "<{$side}>" . ucfirst($side) . ' Gauntlet buff<end> runs out '.
+				$msgs []= $side->inColor($side->value . ' Gauntlet buff') .' runs out '.
 					'in <highlight>'.$this->util->unixtimeToReadable($gaubuff).'<end>.';
 			}
 		}
 		if (empty($msgs)) {
 			if (count($sides) === 1) {
-				$context->reply("No <{$sides[0]}>{$sides[0]} Gauntlet buff<end> available.");
+				$context->reply('No ' . $sides[0]->inColor($sides[0]->value . ' Gauntlet buff') . ' available.');
 			} else {
 				$context->reply('No Gauntlet buff available for either side.');
 			}
@@ -340,6 +342,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			$context->reply($msg);
 			return;
 		}
+		$faction = Faction::from(ucfirst($faction));
 		$buffEnds = $duration->toSecs();
 		if ($buffEnds < 1) {
 			$msg = '<highlight>' . $duration() . '<end> is not a valid budatime string.';
@@ -349,8 +352,8 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		$buffEnds += time();
 		$this->setGaubuff($faction, $buffEnds, $context->char->name, time());
 		$tokens = [
-			'side' => ucfirst(strtolower($faction)),
-			'c-side' => '<' . strtolower($faction) . '>' . ucfirst(strtolower($faction)) . '<end>',
+			'side' => $faction->value,
+			'c-side' => $faction->inColor(),
 			'expiry' => $this->tmTime($buffEnds),
 			'duration' => $this->util->unixtimeToReadable($buffEnds - time()),
 		];
@@ -360,7 +363,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		$context->reply($msg);
 		$event = new SyncGaubuffEvent(
 			expires: $buffEnds,
-			faction: strtolower($faction),
+			faction: $faction,
 			sender: $context->char->name,
 			forceSync: $context->forceSync,
 		);
@@ -376,7 +379,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 		$this->setGaubuff($event->faction, $event->expires, $event->sender, time());
-		$msg = "Gauntletbuff timer for <{$event->faction}>{$event->faction}<end> has ".
+		$msg = 'Gauntletbuff timer for ' . $event->faction->inColor() . ' has '.
 			'been set and expires at <highlight>' . $this->tmTime($event->expires).
 			'<end>.';
 		$rMsg = new RoutableMessage($msg);
@@ -408,10 +411,10 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		$sides = $this->getSidesToShowBuff(($defaultSide === 'none') ? null : $defaultSide);
 		$msgs = [];
 		foreach ($sides as $side) {
-			$timer = $this->timerController->get("Gaubuff_{$side}");
+			$timer = $this->timerController->get("Gaubuff_{$side->lower()}");
 			if ($timer !== null && isset($timer->endtime)) {
 				$gaubuff = $timer->endtime - time();
-				$msgs []= "<tab><{$side}>" . ucfirst($side) . ' Gauntlet buff<end> runs out '.
+				$msgs []= '<tab>' . $side->inColor($side->value . ' Gauntlet buff') . ' runs out '.
 					'in <highlight>'.$this->util->unixtimeToReadable($gaubuff)."<end>.\n";
 			}
 		}
@@ -421,21 +424,15 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		return implode('', $msgs);
 	}
 
-	public function getIsActive(string $faction): bool {
-		$timer = $this->timerController->get("Gaubuff_{$faction}");
+	public function getIsActive(Faction $faction): bool {
+		$timer = $this->timerController->get("Gaubuff_{$faction->lower()}");
 		return $timer !== null && isset($timer->endtime);
 	}
 
 	/** Check if the given Gauntlet buff is valid and set or update a timer for it */
-	protected function handleApiGauntletBuff(ApiGauntletBuff $buff): void {
+	private function handleApiGauntletBuff(ApiGauntletBuff $buff): void {
 		$this->logger->info('Received gauntlet information {gauntlet}', ['gauntlet' => $buff]);
 		if ($buff->dimension !== $this->config->main->dimension) {
-			return;
-		}
-		if (!in_array(strtolower($buff->faction), ['omni', 'clan'])) {
-			$this->logger->warning("Received timer information for unknown faction '{faction}'.", [
-				'faction' => $buff->faction,
-			]);
 			return;
 		}
 		if ($buff->expires < time()) {
@@ -444,7 +441,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			]);
 			return;
 		}
-		$timer = $this->timerController->get("Gaubuff_{$buff->faction}");
+		$timer = $this->timerController->get("Gaubuff_{$buff->faction->lower()}");
 		if (isset($timer) && abs($buff->expires-($timer->endtime??0)) < 10) {
 			$this->logger->info(
 				'Already existing {faction} buff recent enough. Difference: {delta}s',
@@ -457,22 +454,22 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		}
 		$this->logger->info('Updating {faction} buff from API', ['faction' => $buff->faction]);
 		$this->setGaubuff(
-			strtolower($buff->faction),
+			$buff->faction,
 			$buff->expires,
 			$this->config->main->character,
 			time()
 		);
 	}
 
-	protected function showGauntletBuff(string $sender): void {
+	private function showGauntletBuff(string $sender): void {
 		$sides = $this->getSidesToShowBuff();
 		$msgs = [];
 		foreach ($sides as $side) {
-			$timer = $this->timerController->get("Gaubuff_{$side}");
+			$timer = $this->timerController->get("Gaubuff_{$side->lower()}");
 			if ($timer === null || !isset($timer->endtime)) {
 				continue;
 			}
-			$msgs []= "<{$side}>" . ucfirst($side) . ' Gauntlet buff<end> '.
+			$msgs []= $side->inColor($side->value . ' Gauntlet buff') . ' '.
 					'runs out in <highlight>'.
 					$this->util->unixtimeToReadable($timer->endtime - time()).
 					'<end>.';
@@ -486,15 +483,15 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	/**
 	 * Get a list of array for which to show the gauntlet buff(s)
 	 *
-	 * @return string[]
+	 * @return Faction[]
 	 */
-	protected function getSidesToShowBuff(?string $side=null): array {
+	private function getSidesToShowBuff(?string $side=null): array {
 		$defaultSide = $this->gaubuffDefaultSide;
 		$side ??= $defaultSide;
 		if ($side === static::SIDE_NONE) {
-			return ['clan', 'omni'];
+			return [Faction::Clan, Faction::Omni];
 		}
-		return [$side];
+		return [Faction::from(ucfirst(strtolower($side)))];
 	}
 
 	/** Parse the Gauntlet buff timer API result and handle each running buff */
@@ -517,6 +514,8 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		} catch (JsonException) {
 			$this->logger->error('Gauntlet buff API sent invalid json.');
 			return;
+		} catch (ValueError) {
+			$this->logger->error('Gauntlet buff API sent invalid data.');
 		}
 		foreach ($buffs as $buff) {
 			$this->handleApiGauntletBuff($buff);

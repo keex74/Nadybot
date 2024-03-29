@@ -21,6 +21,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Nadybot\Modules\RAID_MODULE\RaidController;
+use Throwable;
 
 #[
 	NCA\Instance,
@@ -101,8 +102,9 @@ class ChatAssistController extends ModuleInstance {
 	public function validateNeverAutoCallers(string $setting, string $old, string $new): void {
 		$profs = explode(':', $new);
 		foreach ($profs as $prof) {
-			$fullProf = $this->util->getProfessionName($prof);
-			if ($fullProf === '') {
+			try {
+				Profession::byName($prof);
+			} catch (Throwable) {
 				throw new Exception("<highlight>{$prof}<end> is not a recognized profession");
 			}
 		}

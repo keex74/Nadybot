@@ -1086,26 +1086,6 @@ class OnlineController extends ModuleInstance {
 		return $op->values()->toArray();
 	}
 
-	public function getProfessionId(string $profession): ?int {
-		$profToID = [
-			'Adventurer' => 6,
-			'Agent' => 5,
-			'Bureaucrat' => 8,
-			'Doctor' => 10,
-			'Enforcer' => 9,
-			'Engineer' => 3,
-			'Fixer' => 4,
-			'Keeper' => 14,
-			'Martial Artist' => 2,
-			'Meta-Physicist' => 12,
-			'Nano-Technician' => 11,
-			'Soldier' => 1,
-			'Shade' => 15,
-			'Trader' => 7,
-		];
-		return $profToID[$profession] ?? null;
-	}
-
 	/** Get a list of all people online in all linked channels */
 	#[
 		NCA\Api('/online'),

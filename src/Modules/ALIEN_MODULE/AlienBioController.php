@@ -277,7 +277,7 @@ class AlienBioController extends ModuleInstance {
 		$blob = $item . "\n\n";
 		$blob .= "<highlight>Upgrades Ofab armor for:<end>\n";
 		foreach ($data as $row) {
-			$blob .= $this->text->makeChatcmd($row->profession, "/tell <myname> ofabarmor {$row->profession}") . "\n";
+			$blob .= $this->text->makeChatcmd($row->profession->value, "/tell <myname> ofabarmor {$row->profession->short()}") . "\n";
 		}
 
 		return ((array)$this->text->makeBlob("{$name} (QL {$ql})", $blob))[0];

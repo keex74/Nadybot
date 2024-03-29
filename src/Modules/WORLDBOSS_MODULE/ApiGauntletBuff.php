@@ -2,14 +2,20 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
-use Nadybot\Core\StringableTrait;
+use Nadybot\Core\{
+	Attributes as NCA,
+	Faction,
+	StringableTrait
+};
 use Stringable;
 
 class ApiGauntletBuff implements Stringable {
 	use StringableTrait;
 
 	public function __construct(
-		public string $faction,
+		#[
+			NCA\StrFuncIn('strtolower', 'ucfirst', [Faction::class, 'from'])
+		] public Faction $faction,
 		public int $expires,
 		public int $dimension,
 	) {

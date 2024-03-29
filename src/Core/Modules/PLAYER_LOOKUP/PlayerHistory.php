@@ -2,11 +2,11 @@
 
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
-use Nadybot\Core\JSONDataModel;
-
-class PlayerHistory extends JSONDataModel {
-	public string $name;
-
-	/** @var \Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerHistoryData[] */
-	public array $data = [];
+class PlayerHistory {
+	/** @param \Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerHistoryData[] $data */
+	public function __construct(
+		public string $name,
+		public array $data=[],
+	) {
+	}
 }

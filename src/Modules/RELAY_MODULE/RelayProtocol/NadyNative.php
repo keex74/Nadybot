@@ -3,6 +3,8 @@
 namespace Nadybot\Modules\RELAY_MODULE\RelayProtocol;
 
 use function Safe\{json_decode, json_encode};
+
+use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToSerializeObject};
 use JsonMapper;
 use Nadybot\Core\Modules\ALTS\AltsController;
 use Nadybot\Core\{
@@ -89,9 +91,12 @@ class NadyNative implements RelayProtocolInterface {
 		} elseif (is_object($event->data) && !($event->data instanceof SyncEvent) && is_string($event->data->message??null)) {
 			$event->data->message = str_replace('<myname>', $this->config->main->character, $event->data->message??'');
 		}
+		$mapper = new ObjectMapperUsingReflection();
 		try {
-			$data = json_encode($event, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
-		} catch (JsonException $e) {
+			$serialized = $mapper->serializeObject($event);
+			$data = json_encode($serialized, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
+		} catch (JsonException | UnableToSerializeObject $e) {
+			echo($e->getTraceAsString());
 			$this->logger->error('Cannot send event via Nadynative protocol: {error}', [
 				'error' => $e->getMessage(),
 				'exception' => $e,

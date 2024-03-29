@@ -20,7 +20,7 @@ class PlayerInfo {
 	 * @param int               $level       What level (1-220) is the character or null if unknown
 	 * @param string            $breed       Any of Nano, Solitus, Atrox or Opifex. Also empty string if unknown
 	 * @param string            $gender      Male, Female, Neuter or an empty string if unknown
-	 * @param string            $faction     Omni, Clan, Neutral or an empty string if unknown
+	 * @param Faction           $faction     Omni, Clan, Neutral or an empty string if unknown
 	 * @param string            $profession  The long profession name (e.g. "Enforcer", not "enf" or "enfo") or an empty string if unknown
 	 * @param string            $profTitle   The title-level title for the profession of this player For example "The man", "Don" or empty if unknown.
 	 * @param string            $aiRank      The name of the $aiLevel as a rank or empty string if unknown
@@ -43,7 +43,7 @@ class PlayerInfo {
 		#[MapFrom('0.LEVELX', '.')] public int $level,
 		#[MapFrom('0.BREED', '.')] public string $breed,
 		#[MapFrom('0.SEX', '.')] public string $gender,
-		#[MapFrom('0.SIDE', '.')] public string $faction,
+		#[MapFrom('0.SIDE', '.')] public Faction $faction,
 		#[MapFrom('0.PROF', '.')] public string $profession,
 		#[MapFrom('0.PROFNAME', '.')] public string $profTitle,
 		#[MapFrom('0.RANK_name', '.')] public string $aiRank,
@@ -67,7 +67,7 @@ class PlayerInfo {
 			breed: $this->breed ?? '',
 			charid: $this->uid,
 			dimension: $this->dimension,
-			faction: Faction::from($this->faction),
+			faction: $this->faction,
 			firstname: $this->firstName,
 			gender: $this->gender ?? '',
 			guild: $this->orgName ?? '',

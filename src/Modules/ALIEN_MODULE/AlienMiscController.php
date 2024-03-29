@@ -9,10 +9,11 @@ use Nadybot\Core\{
 	DB,
 	ModuleInstance,
 	ParamClass\PWord,
+	Profession,
 	Text,
-	Util,
 };
 use Nadybot\Modules\ITEMS_MODULE\ItemsController;
+use Throwable;
 
 /**
  * @author Blackruby (RK2)
@@ -54,9 +55,6 @@ class AlienMiscController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private ItemsController $itemsController;
 
 	#[NCA\Setup]
@@ -94,8 +92,9 @@ class AlienMiscController extends ModuleInstance {
 	/** Shows the LE procs for a specific profession */
 	#[NCA\HandlesCommand('leprocs')]
 	public function leprocsInfoCommand(CmdContext $context, string $prof): void {
-		$profession = $this->util->getProfessionName($prof);
-		if (empty($profession)) {
+		try {
+			$profession = Profession::byName($prof);
+		} catch (Throwable) {
 			$msg = "<highlight>{$prof}<end> is not a valid profession.";
 			$context->reply($msg);
 			return;
@@ -103,12 +102,12 @@ class AlienMiscController extends ModuleInstance {
 
 		/** @var Collection<LEProc> */
 		$data = $this->db->table('leprocs')
-			->whereIlike('profession', $profession)
+			->whereIlike('profession', $profession->value)
 			->orderBy('proc_type')
 			->orderByDesc('research_lvl')
 			->asObj(LEProc::class);
 		if ($data->count() === 0) {
-			$msg = "No procs found for profession <highlight>{$profession}<end>.";
+			$msg = "No procs found for profession <highlight>{$profession->value}<end>.";
 			$context->reply($msg);
 			return;
 		}
@@ -129,7 +128,7 @@ class AlienMiscController extends ModuleInstance {
 			"\n<i>Offensive procs have a 5% chance of firing every time you attack</i>".
 			"\n<i>Defensive procs have a 10% chance of firing every time something attacks you.</i>";
 
-		$msg = $this->text->makeBlob("{$profession} LE Procs", $blob);
+		$msg = $this->text->makeBlob("{$profession->value} LE Procs", $blob);
 		$context->reply($msg);
 	}
 
@@ -152,9 +151,9 @@ class AlienMiscController extends ModuleInstance {
 			->asObj(OfabArmorType::class)
 			->reduce(
 				function (string $blob, OfabArmorType $row) use ($qls): string {
-					$blob .= "<pagebreak>{$row->profession} - Type {$row->type}\n";
+					$blob .= "<pagebreak>{$row->profession->value} - Type {$row->type}\n";
 					foreach ($qls as $ql) {
-						$ql_link = $this->text->makeChatcmd((string)$ql, "/tell <myname> ofabarmor {$row->profession} {$ql}");
+						$ql_link = $this->text->makeChatcmd((string)$ql, "/tell <myname> ofabarmor {$row->profession->short()} {$ql}");
 						$blob .= "[{$ql_link}] ";
 					}
 					return $blob . "\n\n";
@@ -177,22 +176,22 @@ class AlienMiscController extends ModuleInstance {
 	public function ofabarmorInfoCommand(CmdContext $context, ?int $ql, string $prof): void {
 		$ql ??= 300;
 
-		$profession = $this->util->getProfessionName($prof);
-
-		if ($profession === '') {
-			$msg = 'Please choose one of these professions: adv, agent, crat, doc, enf, eng, fix, keep, ma, mp, nt, sol, shade, or trader';
+		try {
+			$profession = Profession::byName($prof);
+		} catch (Throwable) {
+			$msg = 'Please choose one of these professions: ' . Text::enumerateOr(...Profession::shortNames());
 			$context->reply($msg);
 			return;
 		}
 
 		$type = $this->db->table('ofabarmortype')
-			->where('profession', $profession)
+			->where('profession', $profession->value)
 			->pluckInts('type')
 			->first();
 
 		/** @var Collection<OfabArmor> */
 		$armors = $this->db->table('ofabarmor')
-			->where('profession', $profession)
+			->where('profession', $profession->value)
 			->orderBy('upgrade')
 			->orderBy('name')
 			->asObj(OfabArmor::class);
@@ -204,7 +203,7 @@ class AlienMiscController extends ModuleInstance {
 			->keyBy('slot');
 
 		if ($armors->count() === 0 || $costBySlot->count() === 0) {
-			$msg = "Could not find any OFAB armor for {$profession} in QL {$ql}.";
+			$msg = "Could not find any OFAB armor for {$profession->value} in QL {$ql}.";
 			$context->reply($msg);
 			return;
 		}
@@ -223,7 +222,7 @@ class AlienMiscController extends ModuleInstance {
 			if ($currQL === $ql) {
 				$blob .= "<yellow>[<end>{$currQL}<yellow>]<end> ";
 			} else {
-				$qlLink = $this->text->makeChatcmd((string)$currQL, "/tell <myname> ofabarmor {$profession} {$currQL}");
+				$qlLink = $this->text->makeChatcmd((string)$currQL, "/tell <myname> ofabarmor {$profession->short()} {$currQL}");
 				$blob .= "[{$qlLink}] ";
 			}
 		}
@@ -259,7 +258,7 @@ class AlienMiscController extends ModuleInstance {
 		}
 		$blob .= "\nCost for full set: <highlight>{$fullSetVP}<end> VP";
 
-		$msg = $this->text->makeBlob("{$profession} Ofab Armor (QL {$ql})", $blob);
+		$msg = $this->text->makeBlob("{$profession->value} Ofab Armor (QL {$ql})", $blob);
 		$context->reply($msg);
 	}
 

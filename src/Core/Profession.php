@@ -45,12 +45,28 @@ enum Profession: string {
 		};
 	}
 
+	/** @return string[]  */
+	public static function shortNames(): array {
+		return [
+			'Adv', 'Agent', 'Crat', 'Doc', 'Enf', 'Eng', 'Fix', 'Keep',
+			'MA', 'MP', 'NT', 'Sol', 'Shade', 'Trader',
+		];
+	}
+
 	public function inColor(): string {
 		return '<highlight>' . $this->value . '<end>';
 	}
 
 	public function toIcon(): string {
 		return '<img src=tdb://id:GFX_GUI_ICON_PROFESSION_'.$this->toNumber().'>';
+	}
+
+	public static function tryByName(string $search): ?self {
+		try {
+			return self::byName($search);
+		} catch (\Throwable) {
+			return null;
+		}
 	}
 
 	public static function byName(string $search): self {

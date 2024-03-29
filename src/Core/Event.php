@@ -4,7 +4,7 @@ namespace Nadybot\Core;
 
 use Stringable;
 
-abstract class Event implements Stringable {
+abstract class Event implements Stringable, DoNotSerializePublicFunctions {
 	use StringableTrait;
 
 	/** @var string */

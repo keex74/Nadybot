@@ -11,9 +11,9 @@ use Nadybot\Core\{
 	Modules\PLAYER_LOOKUP\GuildManager,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	ParamClass\PCharacter,
+	Profession,
 	Text,
 };
-use Nadybot\Modules\ONLINE_MODULE\OnlineController;
 
 /**
  * @author Tyrence (RK2)
@@ -38,9 +38,6 @@ class WhoisOrgController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private GuildManager $guildManager;
-
-	#[NCA\Inject]
-	private OnlineController $onlineController;
 
 	/** Show information about an organization */
 	#[NCA\HandlesCommand('whoisorg')]
@@ -130,7 +127,7 @@ class WhoisOrgController extends ModuleInstance {
 		ksort($countProfs);
 		$link .= "<header2>Members ({$numMembers})<end>\n";
 		foreach ($countProfs as $prof => $profMembers) {
-			$profIcon = '<img src=tdb://id:GFX_GUI_ICON_PROFESSION_'.($this->onlineController->getProfessionId($prof)??0).'>';
+			$profession = Profession::from($prof);
 
 			$link .= '<tab>'.
 				$this->text->alignNumber($profMembers, 3, 'highlight').
@@ -139,7 +136,7 @@ class WhoisOrgController extends ModuleInstance {
 					(int)round(($profMembers*100)/$numMembers, 1),
 					(count($countProfs) > 1) ? 2 : 3
 				).
-				"%)  {$profIcon} {$prof}\n";
+				"%)  {$profession->toIcon()} {$prof}\n";
 		}
 		$msg = $this->text->makeBlob("Org Info for {$org->orgname}", $link);
 

@@ -4,6 +4,7 @@ namespace Nadybot\Core;
 
 use function Safe\{date, getcwd};
 use Amp\File\{FilesystemException};
+use BackedEnum;
 use Exception;
 use InvalidArgumentException;
 use Nadybot\Core\Attributes as NCA;
@@ -242,63 +243,6 @@ class Util {
 				break;
 			default:
 				$prof = '';
-		}
-
-		return $prof;
-	}
-
-	/**
-	 * Get the short form for a fully qualified profession name
-	 *
-	 * Adventurer becomes Adv, etc.
-	 */
-	public function getProfessionAbbreviation(string $profession): string {
-		switch ($profession) {
-			case 'Adventurer':
-				$prof = 'Adv';
-				break;
-			case 'Agent':
-				$prof = 'Agent';
-				break;
-			case 'Bureaucrat':
-				$prof = 'Crat';
-				break;
-			case 'Doctor':
-				$prof = 'Doc';
-				break;
-			case 'Enforcer':
-				$prof = 'Enf';
-				break;
-			case 'Engineer':
-				$prof = 'Eng';
-				break;
-			case 'Fixer':
-				$prof = 'Fixer';
-				break;
-			case 'Keeper':
-				$prof = 'Keeper';
-				break;
-			case 'Martial Artist':
-				$prof = 'MA';
-				break;
-			case 'Meta-Physicist':
-				$prof = 'MP';
-				break;
-			case 'Nano-Technician':
-				$prof = 'NT';
-				break;
-			case 'Soldier':
-				$prof = 'Sol';
-				break;
-			case 'Trader':
-				$prof = 'Trader';
-				break;
-			case 'Shade':
-				$prof = 'Shade';
-				break;
-			default:
-				$prof = 'Unknown';
-				break;
 		}
 
 		return $prof;
@@ -710,5 +654,9 @@ class Util {
 		}
 		$password = base64_encode(random_bytes($length+4));
 		return substr(rtrim($password, '='), 0, $length);
+	}
+
+	public static function enumToValue(BackedEnum $enum): int|string {
+		return $enum->value;
 	}
 }

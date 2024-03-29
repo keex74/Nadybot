@@ -38,6 +38,7 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PDuration,
 	ParamClass\PRemove,
+	Profession,
 	Registry,
 	Routing\Character,
 	Routing\Events\Online,
@@ -64,6 +65,7 @@ use Psr\Log\LoggerInterface;
 
 use Revolt\EventLoop;
 use stdClass;
+use Throwable;
 
 /**
  * @author Tyrence (RK2)
@@ -734,24 +736,18 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		$chars = new Collection($chars);
 		$online = $chars->countBy('profession')->toArray();
 		$numOnline = $chars->count();
-		$profs = [
-			'Adventurer', 'Agent', 'Bureaucrat', 'Doctor', 'Enforcer', 'Engineer',
-			'Fixer', 'Keeper', 'Martial Artist', 'Meta-Physicist', 'Nano-Technician',
-			'Soldier', 'Shade', 'Trader',
-		];
 		if (!$this->countEmptyProfs && !$numOnline) {
 			$context->reply('<highlight>0<end> in total.');
 			return;
 		}
 		$msg = "<highlight>{$numOnline}<end> in total: ";
 		$parts = [];
-		foreach ($profs as $prof) {
-			$count = $online[$prof] ?? 0;
+		foreach (Profession::cases() as $prof) {
+			$count = $online[$prof->value] ?? 0;
 			if ($count === 0 && !$this->countEmptyProfs) {
 				continue;
 			}
-			$short = $this->util->getProfessionAbbreviation($prof);
-			$parts []= "<highlight>{$count}<end> {$short}";
+			$parts []= "<highlight>{$count}<end> {$prof->short()}";
 		}
 		$msg .= implode(', ', $parts);
 
@@ -816,16 +812,17 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		#[NCA\Str('raid')] ?string $raidOnly,
 		string $profession
 	): void {
-		$prof = $this->util->getProfessionName($profession);
-		if ($prof === '') {
-			$msg = 'Please choose one of these professions: adv, agent, crat, doc, enf, eng, fix, keep, ma, mp, nt, sol, shade, trader or all';
+		try {
+			$prof = Profession::byName($profession);
+		} catch (Throwable) {
+			$msg = 'Please choose one of these professions: ' . Text::enumerateOr(...[...Profession::shortNames(), 'all']);
 			$context->reply($msg);
 			return;
 		}
 
 		/** @var Collection<OnlinePlayer> */
 		$data = (new Collection($this->onlineController->getPlayers('priv', $this->config->main->character)))
-			->where('profession', $prof);
+			->where('profession', $prof->value);
 		if (isset($raidOnly)) {
 			[$errMsg, $data] = $this->filterRaid($data->toArray());
 			if (isset($errMsg)) {
@@ -836,11 +833,11 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 		$numOnline = $data->count();
 		if ($numOnline === 0) {
-			$msg = "<highlight>{$numOnline}<end> {$prof}s.";
+			$msg = "<highlight>{$numOnline}<end> {$prof->value}s.";
 			$context->reply($msg);
 			return;
 		}
-		$msg = "<highlight>{$numOnline}<end> {$prof}:";
+		$msg = "<highlight>{$numOnline}<end> {$prof->value}:";
 
 		foreach ($data as $row) {
 			if ($row->afk !== '') {

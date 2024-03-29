@@ -2,12 +2,13 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
+use Nadybot\Core\Faction;
 use Nadybot\Modules\WEBSERVER_MODULE\Interfaces\GaugeProvider;
 
 class GauntletBuffStats implements GaugeProvider {
 	public function __construct(
 		private GauntletBuffController $gauBuff,
-		private string $faction
+		private Faction $faction
 	) {
 	}
 
@@ -16,6 +17,6 @@ class GauntletBuffStats implements GaugeProvider {
 	}
 
 	public function getTags(): array {
-		return ['type' => "gaubuff-{$this->faction}"];
+		return ['type' => "gaubuff-{$this->faction->lower()}"];
 	}
 }

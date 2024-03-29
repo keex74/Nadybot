@@ -7,9 +7,9 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
+	Profession,
 	QueryBuilder,
 	Text,
-	Util,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
 	Skill,
@@ -39,9 +39,6 @@ class PremadeImplantController extends ModuleInstance {
 	#[NCA\Inject]
 	private WhatBuffsController $whatBuffsController;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	#[NCA\Setup]
 	public function setup(): void {
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/premade_implant.csv');
@@ -56,9 +53,9 @@ class PremadeImplantController extends ModuleInstance {
 		$searchTerms = strtolower($search);
 		$results = null;
 
-		$profession = $this->util->getProfessionName($searchTerms);
-		if ($profession !== '') {
-			$searchTerms = $profession;
+		$profession = Profession::tryByName($searchTerms);
+		if (isset($profession)) {
+			$searchTerms = $profession->value;
 			$results = $this->searchByProfession($profession);
 		} elseif (PImplantSlot::matches($searchTerms)) {
 			$results = $this->searchBySlot((new PImplantSlot($searchTerms))());
@@ -77,8 +74,8 @@ class PremadeImplantController extends ModuleInstance {
 	}
 
 	/** @return PremadeSearchResult[] */
-	public function searchByProfession(string $profession): array {
-		$query = $this->getBaseQuery()->where('p2.Name', $profession);
+	public function searchByProfession(Profession $profession): array {
+		$query = $this->getBaseQuery()->where('p2.Name', $profession->value);
 		return $query->asObj(PremadeSearchResult::class)->toArray();
 	}
 

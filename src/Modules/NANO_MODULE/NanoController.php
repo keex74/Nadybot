@@ -16,10 +16,10 @@ use Nadybot\Core\{
 	CommandAlias,
 	DB,
 	ModuleInstance,
+	Profession,
 	SettingManager,
 	Text,
 	UserException,
-	Util,
 };
 
 /**
@@ -95,9 +95,6 @@ class NanoController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Setup]
 	public function setup(): void {
@@ -246,11 +243,11 @@ class NanoController extends ModuleInstance {
 		$arg = html_entity_decode($arg);
 		$nanoArgs = explode(' > ', $arg);
 		$profArg = array_shift($nanoArgs);
-		$profession = $this->util->getProfessionName($profArg);
+		$profession = Profession::tryByName($profArg)?->value;
 		if (in_array($profArg, ['general', 'General'])) {
 			$profession = 'General';
 		}
-		if ($profession === '') {
+		if (!isset($profession)) {
 			$this->nanolinesShow($arg, null, $froobOnly, $context);
 		} elseif (count($nanoArgs)) {
 			$this->nanolinesShow(implode(' > ', $nanoArgs), $profession, $froobOnly, $context);
@@ -356,7 +353,7 @@ class NanoController extends ModuleInstance {
 
 		$this->showBestNanosCommand(
 			$context,
-			$whois->profession->value,
+			$whois->profession,
 			$whois->level,
 			$context->getCommand() === 'bestnanosfroob',
 			!isset($long)
@@ -418,7 +415,7 @@ class NanoController extends ModuleInstance {
 	}
 
 	/** @return Collection<Nano> */
-	private function getBestNanos(string $profession, int $level, bool $froobOnly): Collection {
+	private function getBestNanos(Profession $profession, int $level, bool $froobOnly): Collection {
 		if ($level < 1 || $level > 220) {
 			throw new UserException('Level has to be between 1 and 220.');
 		}
@@ -428,7 +425,7 @@ class NanoController extends ModuleInstance {
 			->orderBy('strain')
 			->orderBy('sub_strain')
 			->orderBy('sort_order')
-			->whereIlike('professions', "%{$profession}%")
+			->whereIlike('professions', "%{$profession->value}%")
 			->where(static function (Builder $query) use ($level): void {
 				$query->where('min_level', '<=', $level)
 					->orWhereNull('min_level');
@@ -479,7 +476,7 @@ class NanoController extends ModuleInstance {
 
 	private function showBestNanosCommand(
 		CmdContext $context,
-		string $profession,
+		Profession $profession,
 		int $level,
 		bool $froobOnly,
 		bool $compact,
@@ -502,10 +499,10 @@ class NanoController extends ModuleInstance {
 			}
 			$blob = $this->text->makeChatcmd(
 				'Show verbose list',
-				"/tell <myname> {$cmdName} long {$profession} {$level}",
+				"/tell <myname> {$cmdName} long {$profession->short()} {$level}",
 			) . "\n\n{$blob}";
 		}
-		$msg = $this->text->makeBlob("Best available nanos for a level {$level} {$froobPrefix}{$profession} ({$count})", $blob);
+		$msg = $this->text->makeBlob("Best available nanos for a level {$level} {$froobPrefix}{$profession->value} ({$count})", $blob);
 
 		$context->reply($msg);
 	}
@@ -663,7 +660,7 @@ class NanoController extends ModuleInstance {
 
 		$shortProf = $profession;
 		if ($profession !== 'General') {
-			$shortProf = $this->util->getProfessionAbbreviation($profession);
+			$shortProf = Profession::from($profession)->short();
 		}
 		$blob = '';
 		$lastSchool = null;

@@ -370,6 +370,22 @@ class Text {
 	}
 
 	/**
+	 * Convert a list of string into a 1, 2, 3, 4 or 5 enumeration
+	 *
+	 * @param string $words The words to enumerate
+	 *
+	 * @return string The enumerated string
+	 */
+	public static function enumerateOr(string ...$words): string {
+		$last = array_pop($words);
+		if (count($words) === 0) {
+			return $last;
+		}
+		$commas = implode(', ', $words);
+		return implode(' or ', [$commas, $last]);
+	}
+
+	/**
 	 * Run an sprintf format on an array of strings
 	 *
 	 * @param string $format  The sprintf-style format
