@@ -3,22 +3,25 @@
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
 use Nadybot\Core\DBSchema\Player;
+use Nadybot\Core\{Faction, Government};
+use Safe\DateTimeImmutable;
 
 class Guild {
-	public int $guild_id;
-	public string $orgname;
-	public string $orgside;
-
-	/** Anarchy, Republic, etc. */
-	public string $governing_form = 'Anarchy';
-
-	/** @var array<string,Player> */
-	public array $members = [];
-
-	/** When was the guild information last updated on PORK */
-	public ?int $last_update;
+	/**
+	 * @param array<string,Player> $members
+	 * @param ?DateTimeImmutable   $last_update When was the guild information last updated on PORK
+	 */
+	public function __construct(
+		public int $guild_id,
+		public string $orgname,
+		public Faction $orgside,
+		public Government $governing_form=Government::Anarchism,
+		public array $members=[],
+		public ?DateTimeImmutable $last_update=null,
+	) {
+	}
 
 	public function getColorName(): string {
-		return '<' . strtolower($this->orgside) . ">{$this->orgname}<end>";
+		return $this->orgside->inColor($this->orgname);
 	}
 }

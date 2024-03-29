@@ -801,15 +801,11 @@ class MessageHub {
 	}
 
 	private function dimensionToSuffix(int $dimension): string {
-		switch ($dimension) {
-			case 4:
-				return 'Test';
-			case 5:
-				return 'RK5';
-			case 6:
-				return 'RK19';
-			default:
-				return "RK{$dimension}";
-		}
+		return match ($dimension) {
+			4 => 'Test',
+			5 => 'RK5',
+			6 => 'RK19',
+			default => "RK{$dimension}",
+		};
 	}
 }

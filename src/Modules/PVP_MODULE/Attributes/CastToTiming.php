@@ -4,19 +4,16 @@ namespace Nadybot\Modules\PVP_MODULE\Attributes;
 
 use Attribute;
 use EventSauce\ObjectHydrator\{ObjectMapper, PropertyCaster};
-use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
+use Nadybot\Modules\PVP_MODULE\Timing;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
 
 class CastToTiming implements PropertyCaster {
 	public function cast(mixed $value, ObjectMapper $hydrator): mixed {
-		switch ($value) {
-			case 'StaticEurope':
-				return SiteUpdate::TIMING_EU;
-			case 'StaticUS':
-				return SiteUpdate::TIMING_US;
-			default:
-				return SiteUpdate::TIMING_DYNAMIC;
-		}
+		return match ($value) {
+			'StaticEurope' => Timing::EU->value,
+			'StaticUS' => Timing::US->value,
+			default => Timing::Dynamic->value,
+		};
 	}
 }

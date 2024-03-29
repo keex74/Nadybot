@@ -19,7 +19,6 @@ use Nadybot\Core\{
 	ParamClass\PWord,
 	Text,
 };
-use Nadybot\Modules\ORGLIST_MODULE\OrglistController;
 
 /**
  * @author Nadyita (RK5)
@@ -62,9 +61,6 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 
 	#[NCA\Inject]
 	private GuildManager $guildManager;
-
-	#[NCA\Inject]
-	private OrglistController $orglistController;
 
 	#[NCA\Inject]
 	private Text $text;
@@ -133,7 +129,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			},
 			[]
 		);
-		$ranks = $this->orglistController->getOrgRanks($guild->governing_form);
+		$ranks = $guild->governing_form->getOrgRanks();
 		if (!count($maps)) {
 			$context->reply('There are currently no org rank to bot rank mappings defined.');
 			return;
@@ -183,11 +179,11 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			$sendto->reply("This org's governing form cannot be determined.");
 			return;
 		}
-		$ranks = $this->orglistController->getOrgRanks($guild->governing_form);
+		$ranks = $guild->governing_form->getOrgRanks();
 		$accessLevels = $this->accessManager->getAccessLevels();
 		try {
 			$accessLevel = $this->accessManager->getAccessLevel($accessLevel);
-		} catch (Exception $e) {
+		} catch (Exception) {
 			// Catch system error about invalid access level
 		}
 		if (!isset($accessLevels[$accessLevel])) {
@@ -204,7 +200,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			return;
 		}
 		if (!isset($ranks[$rank])) {
-			$sendto->reply("{$guild->governing_form} doesn't have a rank #{$rank}.");
+			$sendto->reply("{$guild->governing_form->value} doesn't have a rank #{$rank}.");
 			return;
 		}
 		$currentEAL = $this->getEffectiveAccessLevel($rank);
@@ -262,9 +258,9 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			$context->reply("This org's governing form cannot be determined.");
 			return;
 		}
-		$ranks = $this->orglistController->getOrgRanks($guild->governing_form);
+		$ranks = $guild->governing_form->getOrgRanks();
 		if (!isset($ranks[$rank])) {
-			$context->reply("{$guild->governing_form} doesn't have a rank #{$rank}.");
+			$context->reply("{$guild->governing_form->value} doesn't have a rank #{$rank}.");
 			return;
 		}
 
@@ -310,15 +306,15 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			$sendto->reply("This org's governing form cannot be determined.");
 			return;
 		}
-		$ranks = $this->orglistController->getOrgRanks($guild->governing_form);
-		$blob = "<header2>Org ranks of {$guild->governing_form}<end>\n";
+		$ranks = $guild->governing_form->getOrgRanks();
+		$blob = "<header2>Org ranks of {$guild->governing_form->value}<end>\n";
 		foreach ($ranks as $id => $name) {
 			$blob .= "<tab>{$id}: <highlight>{$name}<end>\n";
 		}
 		$msg = $this->text->makeBlob(
-			"Ranks of {$guild->governing_form} (" . count($ranks) . ')',
+			"Ranks of {$guild->governing_form->value} (" . count($ranks) . ')',
 			$blob,
-			$guild->governing_form
+			$guild->governing_form->value,
 		);
 		$sendto->reply($msg);
 	}

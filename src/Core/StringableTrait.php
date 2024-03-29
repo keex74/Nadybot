@@ -24,6 +24,8 @@ trait StringableTrait {
 				$value = $value->name;
 			} elseif ($value instanceof \Closure) {
 				$value = '<Closure>';
+			} elseif ($value instanceof \DateTimeInterface) {
+				$value = $value->format("Y-m-d\TH:i:s");
 			} else {
 				$prefix = is_object($value) ? '<' . class_basename($value) . '>' : '';
 				try {

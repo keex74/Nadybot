@@ -66,22 +66,14 @@ class LegacyLogger {
 	 * @phpstan-return 100|200|250|300|400|500|550|600
 	 */
 	public static function getLoggerLevel(string $category): int {
-		switch (strtolower($category)) {
-			case 'trace':
-				return Logger::DEBUG;
-			case 'debug':
-				return Logger::INFO;
-			case 'warn':
-				return Logger::WARNING;
-			case 'error':
-				return Logger::ERROR;
-			case 'fatal':
-				return Logger::EMERGENCY;
-
-			case 'info':
-			default:
-				return Logger::NOTICE;
-		}
+		return match (strtolower($category)) {
+			'trace' => Logger::DEBUG,
+			'debug' => Logger::INFO,
+			'warn'  => Logger::WARNING,
+			'error' => Logger::ERROR,
+			'fatal' => Logger::EMERGENCY,
+			default => Logger::NOTICE,
+		};
 	}
 
 	/** @return array<string,mixed> */

@@ -470,6 +470,7 @@ class DB {
 		$refClass = new ReflectionClass($row);
 		$props = $refClass->getProperties(ReflectionProperty::IS_PUBLIC);
 		$updates = [];
+		$propNames = [];
 		foreach ($props as $prop) {
 			if (count($prop->getAttributes(NCA\DB\Ignore::class))) {
 				continue;
@@ -477,20 +478,25 @@ class DB {
 			if (!$prop->isInitialized($row)) {
 				continue;
 			}
-			$updates[$prop->name] = $prop->getValue($row);
+			$colName = $prop->name;
+			if (count($colNameProp = $prop->getAttributes(NCA\DB\ColName::class))) {
+				$colName = $colNameProp[0]->newInstance()->col;
+			}
+			$propNames[$colName] = $prop->name;
+			$updates[$colName] = $prop->getValue($row);
 			if (count($attrs = $prop->getAttributes(NCA\DB\MapWrite::class))) {
 				/** @var NCA\DB\MapWrite */
 				$mapper = $attrs[0]->newInstance();
-				$updates[$prop->name] = $mapper->map($updates[$prop->name]);
-			} elseif ($updates[$prop->name] instanceof DateTime) {
-				$updates[$prop->name] = $updates[$prop->name]->getTimestamp();
-			} elseif ($updates[$prop->name] instanceof BackedEnum) {
-				$updates[$prop->name] = $updates[$prop->name]->value;
+				$updates[$colName] = $mapper->map($updates[$colName]);
+			} elseif ($updates[$colName] instanceof DateTime) {
+				$updates[$colName] = $updates[$colName]->getTimestamp();
+			} elseif ($updates[$colName] instanceof BackedEnum) {
+				$updates[$colName] = $updates[$colName]->value;
 			}
 		}
 		$query = $this->table($table);
 		foreach ((array)$key as $k) {
-			$query->where($k, $row->{$k});
+			$query->where($k, $row->{$propNames[$k]});
 		}
 		return $query->update($updates);
 	}

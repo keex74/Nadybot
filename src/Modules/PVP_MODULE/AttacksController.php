@@ -12,6 +12,7 @@ use Nadybot\Core\{Attributes as NCA, CmdContext, Config\BotConfig, DB, Faction, 
 
 use Nadybot\Modules\LEVEL_MODULE\LevelController;
 use Nadybot\Modules\PVP_MODULE\Event\TowerAttackInfoEvent;
+use Nadybot\Modules\PVP_MODULE\FeedMessage\{SiteUpdate, TowerAttack, TowerOutcome};
 use Psr\Log\LoggerInterface;
 
 use Throwable;
@@ -58,62 +59,9 @@ class AttacksController extends ModuleInstance {
 			'{?att-org:{c-att-org}}{!att-org:{c-att-name}} attacked {c-def-org} CT <highlight>{site-ct-ql}<end>',
 		],
 		exampleValues: [
-			// ...TowerAttack::EXAMPLE_TOKENS,
-			'att-org-name' => 'Team Rainbow',
-			'c-att-org-name' => '<clan>Team Rainbow<end>',
-			'att-org' => 'Team Rainbow',
-			'c-att-org' => '<clan>Team Rainbow<end>',
-			'att-org-faction' => 'Clan',
-			'c-att-org-faction' => '<clan>Clan<end>',
-			'att-name' => 'Nady',
-			'c-att-name' => '<highlight>Nady<end>',
-			'att-level' => 220,
-			'c-att-level' => '<highlight>220<end>',
-			'att-ai-level' => 30,
-			'c-att-ai-level' => '<green>30<end>',
-			'att-prof' => 'Bureaucrat',
-			'c-att-prof' => '<highlight>Bureaucrat<end>',
-			'att-profession' => 'Bureaucrat',
-			'c-att-profession' => '<highlight>Bureaucrat<end>',
-			'att-org-rank' => 'Advisor',
-			'c-att-org-rank' => '<highlight>Advisor<end>',
-			'att-gender' => 'Female',
-			'c-att-gender' => '<highlight>Female<end>',
-			'att-breed' => 'Nano',
-			'c-att-breed' => '<highlight>Nano<end>',
-			'att-faction' => 'Clan',
-			'c-att-faction' => '<clan>Clan<end>',
-			'def-org' => 'Troet',
-			'c-def-org' => '<neutral>Troet<end>',
-			'def-faction' => 'Neutral',
-			'c-def-faction' => '<neutral>Neutral<end>',
-			'att-coord-x' => 700,
-			'att-coord-y' => 800,
-			// ...SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...TowerAttack::EXAMPLE_TOKENS,
+			...SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 		],
 	)]
 	public string $towerAttackFormat = self::ATT_FMT_NORMAL;
@@ -124,41 +72,9 @@ class AttacksController extends ModuleInstance {
 			self::VICTORY_FMT_NORMAL,
 		],
 		exampleValues: [
-			// ...TowerOutcome::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'timestamp' => '11-Mar-2023 20:12 UTC',
-			'winning-faction' => 'Neutral',
-			'c-winning-faction' => '<neutral>Neutral<end>',
-			'winning-org' => 'Troet',
-			'c-winning-org' => '<neutral>Troet<end>',
-			'losing-faction' => 'Clan',
-			'c-losing-faction' => '<clan>Clan<end>',
-			'losing-org' => 'Team Rainbow',
-			'c-losing-org' => '<clan>Team Rainbow<end>',
-			// ...SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...TowerOutcome::EXAMPLE_TOKENS,
+			...SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 		],
 		help: 'tower_victory_format.txt',
 	)]
@@ -171,41 +87,9 @@ class AttacksController extends ModuleInstance {
 			'{c-losing-org} abandoned their field at <highlight>{pf-short} {site-id}<end>',
 		],
 		exampleValues: [
-			// ...TowerOutcome::EXAMPLE_ABANDON_TOKENS,
-			'pf-id' => 551,
-			'timestamp' => '11-Mar-2023 20:12 UTC',
-			'winning-faction' => 'Neutral',
-			'c-winning-faction' => '<neutral>Neutral<end>',
-			'winning-org' => 'Troet',
-			'c-winning-org' => '<neutral>Troet<end>',
-			'losing-faction' => 'Clan',
-			'c-losing-faction' => '<clan>Clan<end>',
-			'losing-org' => 'Team Rainbow',
-			'c-losing-org' => '<clan>Team Rainbow<end>',
-			// ...SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...TowerOutcome::EXAMPLE_ABANDON_TOKENS,
+			...SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 		],
 		help: 'site_abandoned_format.txt',
 	)]
@@ -262,31 +146,8 @@ class AttacksController extends ModuleInstance {
 				'<clan>Clan<end>, Advisor of <clan>Team Rainbow<end>)',
 			'att-short-prof' => 'Crat',
 			'c-att-short-prof' => '<highlight>Crat<end>',
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
-			'pf-id' => 660,
-			// ...SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
+			...Playfield::EXAMPLE_TOKENS,
+			...SiteUpdate::EXAMPLE_TOKENS,
 		],
 		help: 'own_tower_hit_format.txt',
 	)]
@@ -327,31 +188,8 @@ class AttacksController extends ModuleInstance {
 				'<clan>Clan<end>, Advisor of <clan>Team Rainbow<end>)',
 			'att-short-prof' => 'Crat',
 			'c-att-short-prof' => '<highlight>Crat<end>',
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
-			'pf-id' => 660,
-			// ...SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
+			...Playfield::EXAMPLE_TOKENS,
+			...SiteUpdate::EXAMPLE_TOKENS,
 		],
 		help: 'own_shield_disabled_format.txt',
 	)]
@@ -1174,7 +1012,6 @@ class AttacksController extends ModuleInstance {
 					$blocks []= Util::date($attack->timestamp) . ': '.
 						$this->renderDBAttacker($attack);
 				}
-				$defColor = $first->def_faction->getColor();
 				return "<header2>{$pf->short()} {$first->site_id}<end>".
 					(
 						isset($first->ql)
@@ -1185,7 +1022,7 @@ class AttacksController extends ModuleInstance {
 						'details',
 						"/tell <myname> <symbol>nw lc {$pf->short()} {$first->site_id}"
 					) . "]\n".
-					"<tab>Defender: {$defColor}{$first->def_org}<end>\n".
+					'<tab>Defender: ' . $first->def_faction->inColor($first->def_org) . "\n".
 					(
 						isset($outcome, $outcome->attacker_faction, $outcome->attacker_org)
 							? '<tab>Won by ' . $outcome->attacker_faction->inColor($outcome->attacker_org).
@@ -1301,13 +1138,12 @@ class AttacksController extends ModuleInstance {
 
 	/** Render a single, ungrouped !nw attacks line */
 	private function renderDBAttack(DBTowerAttack $attack): string {
-		$defColor = $attack->def_faction->getColor();
 		$blob = 'Time: ' . Util::date($attack->timestamp).
 			' (<highlight>'.
 			Util::unixtimeToReadable(time() - $attack->timestamp).
 			"<end> ago)\n";
 		$blob .= 'Attacker: ' . $this->renderDBAttacker($attack) . "\n";
-		$blob .= "Defender: {$defColor}{$attack->def_org}<end>";
+		$blob .= 'Defender: ' . $attack->def_faction->inColor($attack->def_org);
 		$site = $this->nwCtrl->state[$attack->playfield->value][$attack->site_id] ?? null;
 		$pf = $attack->playfield;
 		if (isset($site)) {

@@ -2,18 +2,15 @@
 
 namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 
-use function Safe\date;
-
+use DateTimeImmutable;
 use EventSauce\ObjectHydrator\MapFrom;
+use EventSauce\ObjectHydrator\PropertyCasters\CastToDateTimeImmutable;
 use Nadybot\Core\{Faction, Playfield, StringableTrait, Util};
 use Nadybot\Modules\PVP_MODULE\Attributes\CastToTiming;
+use Nadybot\Modules\PVP_MODULE\Timing;
 
 class SiteUpdate {
 	use StringableTrait;
-
-	public const TIMING_DYNAMIC = 0;
-	public const TIMING_US = 1;
-	public const TIMING_EU = 2;
 
 	/** @var array<string,string|int|null> */
 	public const EXAMPLE_TOKENS = [
@@ -46,7 +43,7 @@ class SiteUpdate {
 		public int $min_ql,
 		public int $max_ql,
 		public string $name,
-		#[CastToTiming] public int $timing,
+		#[CastToTiming] public Timing $timing,
 		public Coordinates $center,
 		public int $num_conductors=0,
 		public ?Coordinates $ct_pos=null,
@@ -55,7 +52,7 @@ class SiteUpdate {
 		public ?Faction $org_faction=null,
 		public ?int $org_id=null,
 		public ?string $org_name=null,
-		public ?int $plant_time=null,
+		#[CastToDateTimeImmutable] public ?DateTimeImmutable $plant_time=null,
 		public ?int $ql=null,
 	) {
 	}
@@ -79,7 +76,7 @@ class SiteUpdate {
 			'site-org-id' => $this->org_id,
 			'site-org-name' => $this->org_name,
 			'site-plant-time' => isset($this->plant_time)
-				? date(Util::DATETIME, $this->plant_time)
+				? $this->plant_time->format(Util::DATETIME)
 				: null,
 			'site-ct-ql' => $this->ql,
 		];

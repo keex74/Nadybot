@@ -74,15 +74,6 @@ class OrglistController extends ModuleInstance {
 	private FindOrgController $findOrgController;
 
 	/**
-	 * Get a hierarchical array of all the ranks in the goven governing form
-	 *
-	 * @return string[]
-	 */
-	public function getOrgRanks(string $governingForm): array {
-		return $this->orgrankmap[ucfirst(strtolower($governingForm))] ?? [];
-	}
-
-	/**
 	 * Show who is online in an org / a player's org. Add 'all' to see offline
 	 * characters as well
 	 *
@@ -131,7 +122,7 @@ class OrglistController extends ModuleInstance {
 		}
 		$context->reply(
 			'Checking online-status of <highlight>' . count($org->members) . '<end> '.
-			'members of <' . strtolower($org->orgside) . ">{$org->orgname}<end>."
+			'members of ' . $org->getColorName() . '.'
 		);
 		$startTime = microtime(true);
 		$onlineStates = $this->getOnlineStates($org);
@@ -207,31 +198,6 @@ class OrglistController extends ModuleInstance {
 		return array_combine($todo, $onlineList);
 	}
 
-	/**
-	 * @param array<string,Player> $members
-	 *
-	 * @return string[]
-	 */
-	public function getOrgGoverningForm(array $members): array {
-		$forms = $this->orgrankmap;
-		foreach ($members as $member) {
-			foreach ($forms as $name => $ranks) {
-				if (!isset($member->guild_rank_id) || $ranks[$member->guild_rank_id] !== $member->guild_rank) {
-					unset($forms[$name]);
-				}
-			}
-			if (count($forms) === 1) {
-				break;
-			}
-		}
-
-		// it's possible we haven't narrowed it down to 1 at this point
-		// If we haven't found the org yet, it can only be
-		// Republic or Department with only a president.
-		// choose the first one
-		return array_shift($forms);
-	}
-
 	/** Get the number of currently unused buddylist slots */
 	public function getFreeBuddylistSlots(): int {
 		return $this->chatBot->getBuddyListSize() - count($this->buddylistManager->buddyList);
@@ -245,11 +211,7 @@ class OrglistController extends ModuleInstance {
 	 * @return string[]
 	 */
 	private function renderOrglist(Guild $org, array $onlineStates, float $startTime, bool $renderOffline): array {
-		if (isset($org->governing_form, $this->orgrankmap[$org->governing_form])) {
-			$orgRankNames = $this->orgrankmap[$org->governing_form];
-		} else {
-			$orgRankNames = $this->getOrgGoverningForm($org->members);
-		}
+		$orgRankNames = $org->governing_form->getOrgRanks();
 
 		$totalOnline = count(array_filter($onlineStates, static fn (bool $online) => $online));
 		$totalCount = count($org->members);

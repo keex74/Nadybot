@@ -3,6 +3,8 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use function Safe\json_encode;
+
+use DateTimeInterface;
 use Nadybot\Core\{Registry, Util};
 use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\{SiteUpdate, TowerAttack};
@@ -138,6 +140,12 @@ class GasInfo {
 
 	/** Get some debug information about the current gas info. Internal */
 	public function dump(): string {
+		$niceDateTime = static function (?DateTimeInterface $time): string {
+			if (!isset($time)) {
+				return '-';
+			}
+			return $time->format('d-M-Y H:i:s (U)');
+		};
 		$niceTime = static function (?int $time): string {
 			if (!isset($time)) {
 				return '-';
@@ -166,7 +174,7 @@ class GasInfo {
 		assert(isset($closingOffset));
 		$blob .= "<header2>{$pf->short_name} {$this->site->site_id}<end>\n".
 			'Time:        ' . $niceTime($this->time) . "\n".
-			'Planted:     ' . $niceTime($this->site->plant_time) . "\n".
+			'Planted:     ' . $niceDateTime($this->site->plant_time) . "\n".
 			'Timings:     75%: ' . $niceOffset($closingOffset) ."\n".
 			'             25%: ' . $niceOffset($closingOffset + 18*3_600) ."\n".
 			'              5%: ' . $niceOffset($closingOffset + 23*3_600) ."\n".
@@ -235,10 +243,10 @@ class GasInfo {
 		if (!isset($this->site->plant_time)) {
 			return null;
 		}
-		$plantOffset = $this->site->plant_time % 86_400;
-		if ($this->site->timing === $this->site::TIMING_EU) {
+		$plantOffset = $this->site->plant_time->getTimestamp() % 86_400;
+		if ($this->site->timing === Timing::EU) {
 			return (20 * 3_600 + $plantOffset % 3_600) % 86_400;
-		} elseif ($this->site->timing === $this->site::TIMING_US) {
+		} elseif ($this->site->timing === Timing::US) {
 			return (4 * 3_600 + $plantOffset % 3_600) % 86_400;
 		}
 		return $plantOffset;
@@ -267,7 +275,7 @@ class GasInfo {
 		}
 		// Sites go cold again only at their offset and they stay hot for
 		// at least 1 hour and at most 2 hours
-		$siteOffset = $this->site->plant_time % 3_600;
+		$siteOffset = $this->site->plant_time->getTimestamp() % 3_600;
 		$attackBase = $this->lastAttack->timestamp - $this->lastAttack->timestamp % 3_600;
 		$predictedEnd = $attackBase + $siteOffset + 2 * 3_600;
 		if ($predictedEnd > $this->lastAttack->timestamp + 2 * 3_600) {

@@ -13,7 +13,6 @@ use Amp\TimeoutCancellation;
 
 use Closure;
 use DateInterval;
-use DateTime;
 use DateTimeZone;
 use Exception;
 use Nadybot\Core\{
@@ -24,11 +23,13 @@ use Nadybot\Core\{
 	EventManager,
 	Faction,
 	Filesystem,
+	Government,
 	ModuleInstance,
 	Nadybot,
 	Profession,
 };
 use Psr\Log\LoggerInterface;
+use Safe\DateTimeImmutable;
 use Safe\Exceptions\JsonException;
 
 /**
@@ -140,19 +141,20 @@ class GuildManager extends ModuleInstance {
 		}
 
 		// parsing of the member data
-		$guild = new Guild();
-		$guild->guild_id = $guildID;
-		$guild->governing_form = $orgInfo->GOVERNINGNAME;
-		$guild->orgname = $orgInfo->NAME;
-		$guild->orgside = $orgInfo->SIDE_NAME;
-		$luDateTime = DateTime::createFromFormat('Y/m/d H:i:s', $lastUpdated, new DateTimeZone('UTC'));
+		$guild = new Guild(
+			guild_id: $guildID,
+			governing_form: Government::from($orgInfo->GOVERNINGNAME),
+			orgname: $orgInfo->NAME,
+			orgside: Faction::tryFrom($orgInfo->SIDE_NAME) ?? Faction::Unknown,
+			last_update: DateTimeImmutable::createFromFormat('!Y/m/d H:i:s', $lastUpdated, new DateTimeZone('UTC')),
+		);
+		$luDateTime = $guild->last_update;
 		// Try to reduce the cache time to the last updated time + 24h
 		if ($luDateTime) {
 			$newCacheDuration = max(60, 86_400 - (time() - $luDateTime->getTimestamp()));
 			$cache->set($cacheKey, $body, $newCacheDuration);
 		}
 		if ($luDateTime && $this->isMyGuild($guild->guild_id)) {
-			$guild->last_update = $luDateTime->getTimestamp();
 			// Try to time the next rosterupdate to occur 1 day and 10m after the last export
 			$key = $this->eventManager->getKeyForCronEvent(24*3_600, 'guildcontroller.downloadOrgRosterEvent');
 			if (isset($key)) {
@@ -189,7 +191,7 @@ class GuildManager extends ModuleInstance {
 				level: $member->LEVELX,
 				breed: $member->BREED,
 				gender: $member->SEX,
-				faction: Faction::from($guild->orgside),
+				faction: $guild->orgside,
 				profession: Profession::tryFrom($member->PROF),
 				prof_title: $member->PROF_TITLE,
 				ai_rank: $member->DEFENDER_RANK_TITLE,

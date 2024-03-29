@@ -5,6 +5,7 @@ namespace Nadybot\Modules\GSP_MODULE;
 use function Safe\json_decode;
 use Amp\Http\Client\{HttpClientBuilder, Request, Response};
 use DateTimeZone;
+use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -21,7 +22,6 @@ use Nadybot\Core\{
 	Text,
 };
 use Safe\DateTime;
-use Safe\Exceptions\JsonException;
 use Throwable;
 
 /**
@@ -108,10 +108,10 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		if ($response->getStatus() !== 200 || $body === '') {
 			return;
 		}
-		$show = new Show();
+		$mapper = new ObjectMapperUsingReflection();
 		try {
-			$show->fromJSON(json_decode($body));
-		} catch (JsonException) {
+			$show = $mapper->hydrateObject(Show::class, json_decode($body, true));
+		} catch (\Throwable) {
 			return;
 		}
 		if (!$this->isAllShowInformationPresent($show)) {
@@ -229,10 +229,10 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		if ($body === '' || $response->getStatus() !== 200) {
 			return 'GSP seems to have problems with their service. Please try again later.';
 		}
-		$show = new Show();
+		$mapper = new ObjectMapperUsingReflection();
 		try {
-			$show->fromJSON(json_decode($body));
-		} catch (JsonException $e) {
+			$show = $mapper->hydrateObject(Show::class, json_decode($body, true));
+		} catch (\Throwable) {
 			return 'GSP seems to have problems with their service. Please try again later.';
 		}
 		if (empty($show->history)) {
@@ -300,8 +300,12 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		if ($response->getStatus() !== 200) {
 			throw new Exception('Recdeiced a ' . $response->getStatus() . '.');
 		}
-		$show = new Show();
-		$show->fromJSON(json_decode($body));
+		$mapper = new ObjectMapperUsingReflection();
+		try {
+			$show = $mapper->hydrateObject(Show::class, json_decode($body, true));
+		} catch (\Throwable) {
+			return 'GSP seems to have problems with their service. Please try again later.';
+		}
 		$blob = "<header2>GSP<end>\n<tab>";
 		if (empty($show->history)) {
 			return $blob . 'GSP is currently not playing any music.';

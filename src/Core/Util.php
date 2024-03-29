@@ -12,6 +12,7 @@ use Nadybot\Core\Config\BotConfig;
 use RangeException;
 
 use ReflectionClass;
+use UnhandledMatchError;
 
 #[NCA\Instance]
 class Util {
@@ -94,49 +95,20 @@ class Util {
 		$pattern = '/([0-9]+)([a-z]+)/';
 		$matches = Safe::pregMatchOrderedAll($pattern, $budatime);
 
-		foreach ($matches as $match) {
-			switch ($match[2]) {
-				case 'y':
-				case 'yr':
-				case 'year':
-				case 'years':
-					$unixtime += (int)$match[1] * 31_536_000;
-					break;
-				case 'mo':
-				case 'month':
-				case 'months':
-					$unixtime += (int)$match[1] * 2_592_000;
-					break;
-				case 'weeks':
-				case 'week':
-				case 'w':
-					$unixtime += (int)$match[1] * 604_800;
-					break;
-				case 'days':
-				case 'day':
-				case 'd':
-					$unixtime += (int)$match[1] * 86_400;
-					break;
-				case 'hours':
-				case 'hour':
-				case 'hrs':
-				case 'hr':
-				case 'h':
-					$unixtime += (int)$match[1] * 3_600;
-					break;
-				case 'mins':
-				case 'min':
-				case 'm':
-					$unixtime += (int)$match[1] * 60;
-					break;
-				case 'secs':
-				case 'sec':
-				case 's':
-					$unixtime += (int)$match[1];
-					break;
-				default:
-					return 0;
+		try {
+			foreach ($matches as $match) {
+				$unixtime += (int)$match[1] * match ($match[2]) {
+					'y','yr','year','years' => 31_536_000,
+					'mo','month','months' => 2_592_000,
+					'weeks','week','w' => 604_800,
+					'days','day','d' => 86_400,
+					'hours','hour','hrs','hr','h' => 3_600,
+					'mins','min','m' => 60,
+					'secs','sec','s' => 1,
+				};
 			}
+		} catch (UnhandledMatchError) {
+			return 0;
 		}
 
 		return $unixtime;

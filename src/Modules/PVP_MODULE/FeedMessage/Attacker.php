@@ -9,13 +9,7 @@ class Attacker {
 
 	/** @var array<string,string|int|null> */
 	public const EXAMPLE_TOKENS = [
-		// ...AttackerOrg::EXAMPLE_TOKENS,
-		'att-org-name' => 'Team Rainbow',
-		'c-att-org-name' => '<clan>Team Rainbow<end>',
-		'att-org' => 'Team Rainbow',
-		'c-att-org' => '<clan>Team Rainbow<end>',
-		'att-org-faction' => 'Clan',
-		'c-att-org-faction' => '<clan>Clan<end>',
+		...AttackerOrg::EXAMPLE_TOKENS,
 
 		'att-name' => 'Nady',
 		'c-att-name' => '<highlight>Nady<end>',

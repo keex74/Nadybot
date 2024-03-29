@@ -162,31 +162,8 @@ class NotumWarsController extends ModuleInstance {
 	/** Format of gas-change-messages */
 	#[NCA\Setting\Template(
 		exampleValues: [
-			// ...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 
 			'gas-old' => '5%',
 			'c-gas-old' => '<green>5%<end>',
@@ -214,31 +191,8 @@ class NotumWarsController extends ModuleInstance {
 	/** Format of site-cold messages */
 	#[NCA\Setting\Template(
 		exampleValues: [
-			// ...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 
 			'gas-old' => '5%',
 			'c-gas-old' => '<green>5%<end>',
@@ -265,31 +219,8 @@ class NotumWarsController extends ModuleInstance {
 	/** Format of site-hot messages */
 	#[NCA\Setting\Template(
 		exampleValues: [
-			// ...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 
 			'gas-old' => '75%',
 			'c-gas-old' => '<red>75%<end>',
@@ -320,31 +251,8 @@ class NotumWarsController extends ModuleInstance {
 	/** Format of site-planted messages */
 	#[NCA\Setting\Template(
 		exampleValues: [
-			// ...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 
 			'details' => "<a href='itemref://301560/301560/30'>details</a>",
 			'site-short' => Playfield::EXAMPLE_TOKENS['pf-short'] . ' ' .FeedMessage\SiteUpdate::EXAMPLE_TOKENS['site-id'],
@@ -369,31 +277,8 @@ class NotumWarsController extends ModuleInstance {
 	/** Format of site-destroyed messages */
 	#[NCA\Setting\Template(
 		exampleValues: [
-			// ...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 
 			'details' => "<a href='itemref://301560/301560/30'>details</a>",
 			'site-short' => Playfield::EXAMPLE_TOKENS['pf-short'] . ' ' .FeedMessage\SiteUpdate::EXAMPLE_TOKENS['site-id'],
@@ -418,31 +303,8 @@ class NotumWarsController extends ModuleInstance {
 	/** Format of tower-destroyed/tower-planted messages */
 	#[NCA\Setting\Template(
 		exampleValues: [
-			// ...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
-			'site-pf-id' => 660,
-			'site-id' => 6,
-			'site-nr' => 6,
-			'site-number' => 6,
-			'site-enabled' => 1,
-			'site-min-ql' => 20,
-			'site-max-ql' => 30,
-			'site-name' => 'Charred Groove',
-			'site-num-conductors' => 0,
-			'site-num-turrets' => 5,
-			'site-num-cts' => 1,
-			'site-gas' => '75%',
-			'c-site-gas' => '<red>75%<end>',
-			'site-faction' => 'Neutral',
-			'c-site-faction' => '<neutral>Neutral<clan>',
-			'site-org-id' => 1,
-			'site-org-name' => 'Troet',
-			'c-site-org-name' => '<neutral>Troet<end>',
-			'site-plant-time' => '13-Jan-2023 17:07 UTC',
-			'site-ct-ql' => 25,
-			// ...Playfield::EXAMPLE_TOKENS,
-			'pf-id' => 551,
-			'pf-long' => 'Wailing Wastes',
-			'pf-short' => 'WW',
+			...FeedMessage\SiteUpdate::EXAMPLE_TOKENS,
+			...Playfield::EXAMPLE_TOKENS,
 
 			'details' => "<a href='itemref://301560/301560/30'>details</a>",
 			'site-short' => Playfield::EXAMPLE_TOKENS['pf-short'] . ' ' .FeedMessage\SiteUpdate::EXAMPLE_TOKENS['site-id'],
@@ -895,7 +757,7 @@ class NotumWarsController extends ModuleInstance {
 		$blob .= "<tab>Level range: <highlight>{$site->min_ql}<end>-<highlight>{$site->max_ql}<end>\n";
 		if (isset($site->plant_time, $site->ql, $site->org_faction, $site->org_name, $site->org_id)) {
 			$blob .= '<tab>Planted: <highlight>'.
-				Util::date($site->plant_time) . "<end>\n";
+				$site->plant_time->format(Util::DATETIME) . "<end>\n";
 		}
 		if (isset($site->ql, $site->org_faction, $site->org_name, $site->org_id)) {
 			// If the site is planted, show gas information
@@ -1930,7 +1792,7 @@ class NotumWarsController extends ModuleInstance {
 		/** @var ?FeedMessage\TowerAttack */
 		$lastAttack = null;
 		foreach ($this->attacks as $attack) {
-			if ($attack->timestamp < $site->plant_time) {
+			if ($attack->timestamp < $site->plant_time?->getTimestamp()) {
 				continue;
 			}
 			if (!isset($attack->attacker->org)) {

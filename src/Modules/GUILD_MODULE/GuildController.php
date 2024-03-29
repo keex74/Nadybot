@@ -545,8 +545,8 @@ class GuildController extends ModuleInstance {
 
 		$blob = '<header2>' . ($org->orgname ?? $this->config->general->orgName) . "<end>\n";
 		if (isset($org)) {
-			$blob .= '<tab><highlight>Faction<end>: <' . strtolower($org->orgside) . ">{$org->orgside}<end>\n".
-			"<tab><highlight>Government<end>: {$org->governing_form}\n";
+			$blob .= '<tab><highlight>Faction<end>: ' . $org->orgside->inColor() . "\n".
+			"<tab><highlight>Government<end>: {$org->governing_form->value}\n";
 		}
 		$blob .= '<tab><highlight>Members<end>: ' . $members->count() . "\n".
 			'<tab><highlight>Min level<end>: ' . $members->min('level') . "\n".

@@ -325,22 +325,13 @@ class GreetController extends ModuleInstance {
 		if (!isset($player)) {
 			return false;
 		}
-		switch ($token) {
-			case 'prof':
-			case 'profession':
-				return $player->profession?->is($value) ?? false;
-			case 'faction':
-			case 'side':
-				return strtolower($player->faction->value) === strtolower($value);
-			case 'gender':
-			case 'sex':
-				return strtolower($player->gender) === strtolower($value);
-			case 'race':
-			case 'breed':
-				return strtolower($player->breed) === strtolower($value);
-			default:
-				return true;
-		}
+		return match ($token) {
+			'prof','profession' => $player->profession?->is($value) ?? false,
+			'faction','side' => strtolower($player->faction->value) === strtolower($value),
+			'gender','sex' => strtolower($player->gender) === strtolower($value),
+			'race','breed' => strtolower($player->breed) === strtolower($value),
+			default => true,
+		};
 	}
 
 	/**

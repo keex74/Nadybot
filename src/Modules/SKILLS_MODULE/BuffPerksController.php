@@ -532,9 +532,8 @@ class BuffPerksController extends ModuleInstance {
 	}
 
 	private function initPerksDatabase(): void {
-		$this->logger->notice('In initPerksDatabase()');
 		$startTs = microtime(true);
-		$path = __DIR__ . '/perks.csv';
+		$path = __DIR__ . \DIRECTORY_SEPARATOR . 'perks.csv';
 
 		$mtime = $this->fs->getModificationTime($path);
 		$dbVersion = $this->perksDBVersion;

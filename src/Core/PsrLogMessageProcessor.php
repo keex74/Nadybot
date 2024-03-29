@@ -14,7 +14,7 @@ use Monolog\Utils;
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
 class PsrLogMessageProcessor implements ProcessorInterface {
-	public const SIMPLE_DATE = "Y-m-d\TH:i:s.uP";
+	public const SIMPLE_DATE = "Y-m-d\TH:i:s";
 
 	/** @var string|null */
 	private $dateFormat;
