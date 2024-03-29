@@ -6,6 +6,7 @@ use function Safe\{json_decode, preg_match};
 use Amp\Cache\LocalCache;
 use Amp\Http\Client\Interceptor\AddRequestHeader;
 use Amp\Http\Client\{HttpClientBuilder, Request};
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -214,12 +215,12 @@ class WeatherController extends ModuleInstance {
 	public function renderWeather(Nominatim $nominatim, Weather $weather): string {
 		$units = $weather->properties->meta->units;
 		$currentWeather = $weather->properties->timeseries[0]->data->instant->details;
-		$currentIcon = $weather->properties->timeseries[0]->data->next_1_hours->summary->symbol_code;
-		$forecastIcon = $weather->properties->timeseries[0]->data->next_6_hours->summary->symbol_code;
+		$currentIcon = $weather->properties->timeseries[0]->data->next_1_hours?->summary->symbol_code ?? 'unknown';
+		$forecastIcon = $weather->properties->timeseries[0]->data->next_6_hours?->summary->symbol_code ?? 'unknown';
 		$currentSummary = $this->iconToForecastSummary($currentIcon);
 		$forecastSummary = $this->iconToForecastSummary($forecastIcon);
-		$precipitation = $weather->properties->timeseries[0]->data->next_1_hours->details->precipitation_amount;
-		$precipitationForecast = $weather->properties->timeseries[0]->data->next_6_hours->details->precipitation_amount;
+		$precipitation = $weather->properties->timeseries[0]->data->next_1_hours?->details?->precipitation_amount ?? 0.00;
+		$precipitationForecast = $weather->properties->timeseries[0]->data->next_6_hours?->details?->precipitation_amount ?? 0.00;
 		$mapCommand = $this->text->makeChatcmd('OpenStreetMap', '/start '.$this->getOSMLink($nominatim));
 		$lastUpdated = $weather->properties->timeseries[0]->time;
 		$lastUpdated = str_replace('T', ' ', $lastUpdated);
@@ -237,9 +238,9 @@ class WeatherController extends ModuleInstance {
 		$blob = "Last Updated: <highlight>{$lastUpdated}<end><br>" .
 			'<br>' .
 			"Location: <highlight>{$nominatim->display_name}<end><br>";
-		if ($nominatim->extratags->population) {
+		if (isset($nominatim->extratags['population'])) {
 			$blob .= 'Population: <highlight>'.
-				number_format((float)$nominatim->extratags->population).
+				number_format((float)$nominatim->extratags['population']).
 				'<end><br>';
 		}
 		$blob .= "Lat/Lon: <highlight>{$nominatim->lat}° {$nominatim->lon}°<end> {$mapCommand}<br>" .
@@ -275,12 +276,12 @@ class WeatherController extends ModuleInstance {
 			$locationName = "{$placeParts[1]} {$locationName}";
 		}
 		$header = "The current weather for <highlight>{$locationName}<end>";
-		if (count($placeParts) > 2 && $nominatim->address->country_code === 'us') {
+		if (count($placeParts) > 2 && $nominatim->address->country_code === 'us' && isset($nominatim->address->state)) {
 			$header .= ', ' . $nominatim->address->state;
-		} elseif (count($placeParts) > 1) {
+		} elseif (count($placeParts) > 1 && isset($nominatim->address->country)) {
 			$header .= ', ' . $nominatim->address->country;
 		}
-		$currentIcon = $weather->properties->timeseries[0]->data->next_1_hours->summary->symbol_code;
+		$currentIcon = $weather->properties->timeseries[0]->data->next_1_hours?->summary->symbol_code ?? 'unknown';
 		$currentSummary = $this->iconToForecastSummary($currentIcon);
 		$currentTemp = $weather->properties->timeseries[0]->data->instant->details->air_temperature;
 		$tempUnit = $this->nameToDegree($weather->properties->meta->units->air_temperature);
@@ -309,7 +310,7 @@ class WeatherController extends ModuleInstance {
 
 	private function decodeNominatim(string $body): Nominatim {
 		try {
-			$data = json_decode($body);
+			$data = json_decode($body, true);
 		} catch (JsonException $e) {
 			throw new UserException(
 				'Invalid JSON received from Location provider: '.
@@ -325,28 +326,33 @@ class WeatherController extends ModuleInstance {
 		if (!count($data)) {
 			throw new UserException('Location not found');
 		}
-		$nominatim = new Nominatim();
-		$nominatim->fromJSON($data[0]);
+		$mapper = new ObjectMapperUsingReflection();
+		$nominatim = $mapper->hydrateObject(Nominatim::class, $data[0]);
 		return $nominatim;
 	}
 
 	private function decodeWeather(string $body): Weather {
 		try {
-			$data = json_decode($body);
+			$data = json_decode($body, true);
 		} catch (JsonException $e) {
 			throw new UserException(
 				'Invalid JSON received from Weather provider: '.
 				"<highlight>{$body}<end>."
 			);
 		}
-		if (!is_object($data)) {
+		if (!is_array($data)) {
 			throw new UserException(
 				'Invalid answer received from Weather provider: '.
 				'<highlight>' . print_r($data, true) . '<end>.'
 			);
 		}
-		$weather = new Weather();
-		$weather->fromJSON($data);
+		$mapper = new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			)
+		);
+		$weather = $mapper->hydrateObject(Weather::class, $data);
+		echo((string)$weather . "\n");
 		return $weather;
 	}
 }

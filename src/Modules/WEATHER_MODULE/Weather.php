@@ -2,10 +2,15 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\StringableTrait;
 
-class Weather extends JSONDataModel {
-	public string $type;
-	public Geometry $geometry;
-	public Properties $properties;
+class Weather {
+	use StringableTrait;
+
+	public function __construct(
+		public string $type,
+		public Geometry $geometry,
+		public Properties $properties,
+	) {
+	}
 }

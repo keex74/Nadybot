@@ -2,9 +2,14 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\StringableTrait;
 
-class Meta extends JSONDataModel {
-	public string $updated_at;
-	public Units $units;
+class Meta {
+	use StringableTrait;
+
+	public function __construct(
+		public string $updated_at,
+		public Units $units,
+	) {
+	}
 }

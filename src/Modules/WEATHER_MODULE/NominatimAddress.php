@@ -2,14 +2,19 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\StringableTrait;
 
-class NominatimAddress extends JSONDataModel {
-	public string $suburb;
-	public string $town;
-	public string $county;
-	public string $state;
-	public string $postcode;
-	public string $country;
-	public string $country_code;
+class NominatimAddress {
+	use StringableTrait;
+
+	public function __construct(
+		public ?string $country=null,
+		public ?string $country_code=null,
+		public ?string $state=null,
+		public ?string $county=null,
+		public ?string $suburb=null,
+		public ?string $town=null,
+		public ?string $postcode=null,
+	) {
+	}
 }

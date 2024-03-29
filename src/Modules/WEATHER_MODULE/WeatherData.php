@@ -2,11 +2,16 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
-use stdClass;
+use Nadybot\Core\StringableTrait;
 
-class WeatherData extends JSONDataModel {
-	public Instant $instant;
-	public stdClass $next_1_hours;
-	public stdClass $next_6_hours;
+class WeatherData {
+	use StringableTrait;
+
+	public function __construct(
+		public Instant $instant,
+		public ?Forecast $next_1_hours=null,
+		public ?Forecast $next_6_hours=null,
+		public ?Forecast $next_12_hours=null,
+	) {
+	}
 }

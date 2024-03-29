@@ -2,8 +2,13 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\StringableTrait;
 
-class Instant extends JSONDataModel {
-	public InstantDetails $details;
+class Instant {
+	use StringableTrait;
+
+	public function __construct(
+		public InstantDetails $details,
+	) {
+	}
 }

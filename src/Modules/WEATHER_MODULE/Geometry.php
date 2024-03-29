@@ -2,15 +2,19 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\StringableTrait;
 
-class Geometry extends JSONDataModel {
-	public string $type;
+class Geometry {
+	use StringableTrait;
 
 	/**
-	 * @var array<float|int>
+	 * @param array<float|int> $coordinates
 	 *
-	 * @psalm-var array{0: float, 1: float, 2: int}
+	 * @psalm-param array{0: float, 1: float, 2: int} $coordinates
 	 */
-	public array $coordinates;
+	public function __construct(
+		public string $type,
+		public array $coordinates,
+	) {
+	}
 }

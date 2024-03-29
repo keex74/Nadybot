@@ -2,11 +2,15 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\StringableTrait;
 
-class Properties extends JSONDataModel {
-	public Meta $meta;
+class Properties {
+	use StringableTrait;
 
-	/** @var \Nadybot\Modules\WEATHER_MODULE\Timeseries[] */
-	public array $timeseries;
+	/** @param Timeseries[] $timeseries */
+	public function __construct(
+		public Meta $meta,
+		public array $timeseries=[],
+	) {
+	}
 }

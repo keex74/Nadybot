@@ -4,12 +4,12 @@ namespace Nadybot\Modules\WEATHER_MODULE;
 
 use Nadybot\Core\StringableTrait;
 
-class Timeseries {
+class Forecast {
 	use StringableTrait;
 
 	public function __construct(
-		public string $time,
-		public WeatherData $data,
+		public ForecastSummary $summary,
+		public ?ForecastDetails $details=null,
 	) {
 	}
 }
