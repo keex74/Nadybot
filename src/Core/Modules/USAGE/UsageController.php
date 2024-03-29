@@ -93,7 +93,7 @@ class UsageController extends ModuleInstance {
 			}
 		}
 
-		$timeString = $this->util->unixtimeToReadable($time);
+		$timeString = Util::unixtimeToReadable($time);
 		$time = time() - $time;
 
 		$query = $this->db->table(self::DB_TABLE)
@@ -137,7 +137,7 @@ class UsageController extends ModuleInstance {
 			}
 		}
 
-		$timeString = $this->util->unixtimeToReadable($time);
+		$timeString = Util::unixtimeToReadable($time);
 		$time = time() - $time;
 
 		$cmd = strtolower($cmd());
@@ -189,7 +189,7 @@ class UsageController extends ModuleInstance {
 			}
 		}
 
-		$timeString = $this->util->unixtimeToReadable($time);
+		$timeString = Util::unixtimeToReadable($time);
 		$time = time() - $time;
 		$limit = 25;
 
@@ -275,7 +275,7 @@ class UsageController extends ModuleInstance {
 	public function getUsageInfo(int $lastSubmittedStats, int $now, bool $debug=false): UsageStats {
 		$botid = $this->botid;
 		if ($botid === '') {
-			$botid = $this->util->genRandomString(20);
+			$botid = Util::genRandomString(20);
 			$this->settingManager->save('botid', $botid);
 		}
 

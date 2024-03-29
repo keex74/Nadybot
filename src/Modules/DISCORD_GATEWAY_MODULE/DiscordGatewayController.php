@@ -209,9 +209,6 @@ class DiscordGatewayController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
@@ -1529,11 +1526,11 @@ class DiscordGatewayController extends ModuleInstance {
 			"\n";
 		}
 		$blob .= "\n<tab>When: <highlight>".
-		$this->util->date($event->scheduled_start_time->getTimestamp()).
+		Util::date($event->scheduled_start_time->getTimestamp()).
 		'<end>';
 		if (isset($event->scheduled_end_time)) {
 			$blob .= ' - <highlight>'.
-			$this->util->date($event->scheduled_end_time->getTimestamp()).
+			Util::date($event->scheduled_end_time->getTimestamp()).
 			'<end>';
 		}
 		if (isset($event->entity_metadata->location)) {
@@ -2017,7 +2014,7 @@ class DiscordGatewayController extends ModuleInstance {
 						'The bot used up all its allowed connections to the Discord API. '.
 						'Will try in {delay}',
 						[
-							'delay' => $this->util->unixtimeToReadable($resetDelay),
+							'delay' => Util::unixtimeToReadable($resetDelay),
 						]
 					);
 					delay($resetDelay);
@@ -2244,7 +2241,7 @@ class DiscordGatewayController extends ModuleInstance {
 				}
 				if (isset($invite->expires_at)) {
 					$blob .= ' - expires '.
-						$this->util->date($invite->expires_at->getTimestamp());
+						Util::date($invite->expires_at->getTimestamp());
 				}
 				if (isset($invite->inviter) && !$this->isMe($invite->inviter->id)) {
 					$blob .= ' - created by '.

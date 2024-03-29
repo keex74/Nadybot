@@ -388,9 +388,6 @@ class AttacksController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	#[NCA\Event(
 		name: OrgMsgChannelMsgEvent::EVENT_MASK,
 		description: "Notify if org's tower site defense shield is disabled via pvp(tower-shield-own)"
@@ -812,7 +809,7 @@ class AttacksController extends ModuleInstance {
 			$this->sites($abandonments->where('losing_faction', 'Omni')->count()) . '.';
 
 		$msg = $this->text->makeBlob(
-			'Tower stats for the last ' . $this->util->unixtimeToReadable(time() - $from),
+			'Tower stats for the last ' . Util::unixtimeToReadable(time() - $from),
 			$blob
 		);
 		$context->reply($msg);
@@ -1011,8 +1008,8 @@ class AttacksController extends ModuleInstance {
 	}
 
 	private function renderDBOutcome(DBOutcome $outcome, FeedMessage\SiteUpdate $site, Playfield $pf): string {
-		$blob = 'Time: ' . $this->util->date($outcome->timestamp) . ' ('.
-			'<highlight>' . $this->util->unixtimeToReadable(time() - $outcome->timestamp).
+		$blob = 'Time: ' . Util::date($outcome->timestamp) . ' ('.
+			'<highlight>' . Util::unixtimeToReadable(time() - $outcome->timestamp).
 			"<end> ago)\n";
 		if (isset($outcome->attacker_org, $outcome->attacker_faction)) {
 			$blob .= 'Winner: ' . $outcome->attacker_faction->inColor($outcome->attacker_org) . "\n";
@@ -1174,7 +1171,7 @@ class AttacksController extends ModuleInstance {
 
 				/** @var DBTowerAttack[] $attacks */
 				foreach ($attacks as $attack) {
-					$blocks []= $this->util->date($attack->timestamp) . ': '.
+					$blocks []= Util::date($attack->timestamp) . ': '.
 						$this->renderDBAttacker($attack);
 				}
 				$defColor = $first->def_faction->getColor();
@@ -1192,7 +1189,7 @@ class AttacksController extends ModuleInstance {
 					(
 						isset($outcome, $outcome->attacker_faction, $outcome->attacker_org)
 							? '<tab>Won by ' . $outcome->attacker_faction->inColor($outcome->attacker_org).
-								' at ' . $this->util->date($outcome->timestamp) . "\n\n"
+								' at ' . Util::date($outcome->timestamp) . "\n\n"
 							: "\n"
 					) . '<tab>'.
 					implode("\n<tab>", $blocks);
@@ -1305,9 +1302,9 @@ class AttacksController extends ModuleInstance {
 	/** Render a single, ungrouped !nw attacks line */
 	private function renderDBAttack(DBTowerAttack $attack): string {
 		$defColor = $attack->def_faction->getColor();
-		$blob = 'Time: ' . $this->util->date($attack->timestamp).
+		$blob = 'Time: ' . Util::date($attack->timestamp).
 			' (<highlight>'.
-			$this->util->unixtimeToReadable(time() - $attack->timestamp).
+			Util::unixtimeToReadable(time() - $attack->timestamp).
 			"<end> ago)\n";
 		$blob .= 'Attacker: ' . $this->renderDBAttacker($attack) . "\n";
 		$blob .= "Defender: {$defColor}{$attack->def_org}<end>";

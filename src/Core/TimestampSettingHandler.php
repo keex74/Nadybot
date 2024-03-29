@@ -7,9 +7,6 @@ use Nadybot\Core\Attributes as NCA;
 
 #[NCA\SettingHandler('timestamp')]
 class TimestampSettingHandler extends SettingHandler {
-	#[NCA\Inject]
-	private Util $util;
-
 	/** @inheritDoc */
 	public function getDescription(): string {
 		$msg = "For this setting you can set any positive integer.\n";
@@ -36,6 +33,6 @@ class TimestampSettingHandler extends SettingHandler {
 		if ($unixTime === 0) {
 			return '<grey>&lt;empty&gt;<end>';
 		}
-		return '<highlight>' . $this->util->date($unixTime) . '<end>';
+		return '<highlight>' . Util::date($unixTime) . '<end>';
 	}
 }

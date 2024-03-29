@@ -10,12 +10,9 @@ use Nadybot\Core\Attributes as NCA;
  */
 #[NCA\SettingHandler('time')]
 class TimeSettingHandler extends SettingHandler {
-	#[NCA\Inject]
-	private Util $util;
-
 	/** @inheritDoc */
 	public function displayValue(string $sender): string {
-		return '<highlight>' . $this->util->unixtimeToReadable((int)$this->row->value) . '<end>';
+		return '<highlight>' . Util::unixtimeToReadable((int)$this->row->value) . '<end>';
 	}
 
 	/** @inheritDoc */
@@ -32,10 +29,10 @@ class TimeSettingHandler extends SettingHandler {
 	 * @throws \Exception when the time is invalid
 	 */
 	public function save(string $newValue): string {
-		if ($this->util->isInteger($newValue)) {
+		if (ctype_digit($newValue)) {
 			return $newValue;
 		}
-		$time = $this->util->parseTime($newValue);
+		$time = Util::parseTime($newValue);
 		if ($time > 0) {
 			return (string)$time;
 		}

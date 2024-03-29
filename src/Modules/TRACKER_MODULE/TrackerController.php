@@ -29,6 +29,7 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PNonNumber,
 	ParamClass\PRemove,
+	Profession,
 	Routing\RoutableMessage,
 	Routing\Source,
 	Safe,
@@ -171,9 +172,6 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private DB $db;
@@ -407,7 +405,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$replacements['breed'] = $player->breed;
 			if (isset($player->level)) {
 				$replacements['level'] = "<highlight>{$player->level}<end>/<green>{$player->ai_level}<end>";
-				$replacements['tl'] = $this->util->levelToTL($player->level ?? 1);
+				$replacements['tl'] = Util::levelToTL($player->level ?? 1);
 			}
 		}
 		$replacements['Gender'] = ucfirst($replacements['gender']);
@@ -501,7 +499,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 				->first();
 			$lastAction = '';
 			if ($lastState !== null) {
-				$lastAction = ' ' . $this->util->date($lastState->dt);
+				$lastAction = ' ' . Util::date($lastState->dt);
 			}
 
 			if (isset($lastState) && $lastState->event === 'logon') {
@@ -908,7 +906,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$groups = [];
 		if ($groupBy === static::GROUP_TL) {
 			foreach ($players as $player) {
-				$tl = $this->util->levelToTL($player->level??1);
+				$tl = Util::levelToTL($player->level??1);
 				$groups[$tl] ??= (object)[
 					'title' => 'TL'.$tl,
 					'members' => [],
@@ -1195,7 +1193,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			"<tab>Uid: <highlight>{$uid}<end>\n";
 		if (isset($user)) {
 			$blob .= "<tab>Added: By <highlight>{$user->added_by}<end> on ".
-				'<highlight>' . $this->util->date($user->added_dt) . "<end>\n";
+				'<highlight>' . Util::date($user->added_dt) . "<end>\n";
 		}
 		$blob .= '<tab>Visible: '.
 			($hidden ? '<off>no<end>' : '<on>yes<end>').
@@ -1212,7 +1210,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			} else {
 				$status = '<grey>unknown<end>';
 			}
-			$blob .= "<tab> {$status} - " . $this->util->date($event->dt) ."\n";
+			$blob .= "<tab> {$status} - " . Util::date($event->dt) ."\n";
 		}
 
 		$msg = $this->text->makeBlob("Track History for {$char}", $blob);
@@ -1241,7 +1239,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		}
 		$this->logger->notice("UID {uid} hasn't logged in for {duration} - untracking", [
 			'uid' => $uid,
-			'duration' => $this->util->unixtimeToReadable($age),
+			'duration' => Util::unixtimeToReadable($age),
 		]);
 		$deleted = $this->db->table(self::DB_TABLE)
 			->where('uid', $uid)
@@ -1361,33 +1359,29 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		if (isset($filters['profession'])) {
 			$professions = [];
 			foreach ($filters['profession'] as $prof) {
-				$professions []= $this->util->getProfessionName($prof);
+				$professions []= Profession::byName($prof)->value;
 			}
 			$data = $data->whereIn('profession', $professions);
 		}
 		if (isset($filters['faction'])) {
 			$factions = [];
 			foreach ($filters['faction'] as $faction) {
-				$faction = ucfirst(strtolower($faction));
-				if ($faction === 'Neut') {
-					$faction = 'Neutral';
-				}
-				$factions []= $faction;
+				$factions []= Faction::byName($faction)->value;
 			}
 			$data = $data->whereIn('faction', $factions);
 		}
 		if (isset($filters['titleLevelRange'])) {
 			$filters['levelRange'] ??= [];
 			foreach ($filters['titleLevelRange'] as $range) {
-				$from = $this->util->tlToLevelRange((int)substr($range, 2, 1));
-				$to = $this->util->tlToLevelRange((int)substr($range, 4, 1));
+				$from = Util::tlToLevelRange((int)substr($range, 2, 1));
+				$to = Util::tlToLevelRange((int)substr($range, 4, 1));
 				$filters['levelRange'] []= "{$from[0]}-{$to[1]}";
 			}
 		}
 		if (isset($filters['titleLevel'])) {
 			$filters['levelRange'] ??= [];
 			foreach ($filters['titleLevel'] as $tl) {
-				[$from, $to] = $this->util->tlToLevelRange((int)substr($tl, 2));
+				[$from, $to] = Util::tlToLevelRange((int)substr($tl, 2));
 				$filters['levelRange'] []= "{$from}-{$to}";
 			}
 		}

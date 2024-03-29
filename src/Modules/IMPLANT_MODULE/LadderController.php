@@ -62,7 +62,7 @@ class LadderController extends ModuleInstance {
 
 		// allow treatment, ability, or any of the 6 abilities
 		if ($type !== 'treatment' && $type !== 'ability') {
-			$type = $this->util->getAbility($type, true);
+			$type = Util::getAbility($type, true);
 			if ($type === null) {
 				return;
 			}

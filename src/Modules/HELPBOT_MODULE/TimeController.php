@@ -25,9 +25,6 @@ use Safe\DateTime;
 ]
 class TimeController extends ModuleInstance {
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	/** Show the current time in a list of time zones */
@@ -95,7 +92,7 @@ class TimeController extends ModuleInstance {
 		$link .= "<header2>Unix time<end>\n";
 		$link .= '<tab><tab>' . time() . "\n";
 
-		$msg = '<highlight>'.$this->util->date(time()).'<end>';
+		$msg = '<highlight>'.Util::date(time()).'<end>';
 		$context->reply($this->text->blobWrap(
 			"{$msg} ",
 			$this->text->makeBlob('All Timezones', $link)

@@ -44,9 +44,6 @@ class SiteTrackerController extends ModuleInstance {
 	private DB $db;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Inject]
@@ -368,7 +365,7 @@ class SiteTrackerController extends ModuleInstance {
 		);
 		$block = "<header2>{$expression}<end>\n".
 			"<tab>ID: <highlight>{$tracker->id}<end> [{$deleteLink}]\n".
-			'<tab>Created: <highlight>' . $this->util->date($tracker->created_on) . '<end> '.
+			'<tab>Created: <highlight>' . Util::date($tracker->created_on) . '<end> '.
 			"by <highlight>{$tracker->created_by}<end>\n".
 			'<tab>Events: <highlight>' . implode('<end>, <highlight>', $tracker->events) . "<end>\n".
 			'<tab>Matches: <highlight>' . $this->countMatches($tracker) . '<end> sites ['.

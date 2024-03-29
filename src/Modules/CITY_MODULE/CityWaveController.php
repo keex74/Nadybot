@@ -63,9 +63,6 @@ class CityWaveController extends ModuleInstance implements MessageEmitter {
 	private EventManager $eventManager;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Setup]
@@ -96,7 +93,7 @@ class CityWaveController extends ModuleInstance implements MessageEmitter {
 			throw new Exception('Error saving setting: must have 9 spawn times. For more info type !help city_wave_times.');
 		}
 		foreach ($alertTimes as $alertTime) {
-			$time = $this->util->parseTime($alertTime);
+			$time = Util::parseTime($alertTime);
 			if ($time === 0) {
 				// invalid time
 				throw new Exception("Error saving setting: invalid alert time('{$alertTime}'). For more info type !help city_wave_times.");
@@ -189,7 +186,7 @@ class CityWaveController extends ModuleInstance implements MessageEmitter {
 		$alerts = [];
 		$alertTimes = explode(' ', $this->cityWaveTimes);
 		foreach ($alertTimes as $alertTime) {
-			$time = $this->util->parseTime($alertTime);
+			$time = Util::parseTime($alertTime);
 			$lastTime += $time;
 
 			$alert = new WaveAlert();

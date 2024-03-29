@@ -228,9 +228,6 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private MessageHub $messageHub;
 
 	#[NCA\Inject]
@@ -426,14 +423,14 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 		$blob .= "<tab>Database: <highlight>{$info->basic->db_type}<end>\n\n";
 
 		$blob .= "<header2>Memory<end>\n";
-		$blob .= '<tab>Available Memory for PHP: <highlight>' . $this->util->bytesConvert($info->memory->available) . "<end>\n";
-		$blob .= '<tab>Current Memory Usage: <highlight>' . $this->util->bytesConvert($info->memory->current_usage) . "<end>\n";
-		$blob .= '<tab>Current Memory Usage (Real): <highlight>' . $this->util->bytesConvert($info->memory->current_usage_real) . "<end>\n";
-		$blob .= '<tab>Peak Memory Usage: <highlight>' . $this->util->bytesConvert($info->memory->peak_usage) . "<end>\n";
-		$blob .= '<tab>Peak Memory Usage (Real): <highlight>' . $this->util->bytesConvert($info->memory->peak_usage_real) . "<end>\n\n";
+		$blob .= '<tab>Available Memory for PHP: <highlight>' . Util::bytesConvert($info->memory->available) . "<end>\n";
+		$blob .= '<tab>Current Memory Usage: <highlight>' . Util::bytesConvert($info->memory->current_usage) . "<end>\n";
+		$blob .= '<tab>Current Memory Usage (Real): <highlight>' . Util::bytesConvert($info->memory->current_usage_real) . "<end>\n";
+		$blob .= '<tab>Peak Memory Usage: <highlight>' . Util::bytesConvert($info->memory->peak_usage) . "<end>\n";
+		$blob .= '<tab>Peak Memory Usage (Real): <highlight>' . Util::bytesConvert($info->memory->peak_usage_real) . "<end>\n\n";
 
 		$blob .= "<header2>Misc<end>\n";
-		$date_string = $this->util->unixtimeToReadable($info->misc->uptime);
+		$date_string = Util::unixtimeToReadable($info->misc->uptime);
 		$blob .= '<tab>Using Chat Proxy: <highlight>' . ($info->misc->using_chat_proxy ? 'enabled' : 'disabled') . "<end>\n";
 		$blob .= "<tab>Bot Uptime: <highlight>{$date_string}<end>\n\n";
 

@@ -10,15 +10,12 @@ use Nadybot\Core\Attributes as NCA;
  */
 #[NCA\SettingHandler('time_or_off')]
 class TimeOrOffSettingHandler extends SettingHandler {
-	#[NCA\Inject]
-	private Util $util;
-
 	/** @inheritDoc */
 	public function displayValue(string $sender): string {
 		if ($this->row->value === '0' || $this->row->value === '0s') {
 			return '<highlight>off<end>';
 		}
-		return '<highlight>' . $this->util->unixtimeToReadable((int)$this->row->value) . '<end>';
+		return '<highlight>' . Util::unixtimeToReadable((int)$this->row->value) . '<end>';
 	}
 
 	/** @inheritDoc */
@@ -40,10 +37,10 @@ class TimeOrOffSettingHandler extends SettingHandler {
 		if ($newValue === '0' || strtolower($newValue) === 'off') {
 			return '0';
 		}
-		if ($this->util->isInteger($newValue)) {
+		if (ctype_digit($newValue)) {
 			return $newValue;
 		}
-		$time = $this->util->parseTime($newValue);
+		$time = Util::parseTime($newValue);
 		if ($time > 0) {
 			return (string)$time;
 		}

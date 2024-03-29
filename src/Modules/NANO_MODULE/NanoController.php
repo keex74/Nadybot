@@ -162,7 +162,7 @@ class NanoController extends ModuleInstance {
 				? $this->text->makeItem($row->crystal_id, $row->crystal_id, $row->ql, 'Crystal')
 				: 'Crystal';
 			$info = 'QL' . $this->text->alignNumber($row->ql, 3) . $gmiLink . $idLink . " [{$crystalLink}] {$nanoLink} ({$row->location})";
-			$info .= ' - <highlight>' . implode('<end>, <highlight>', explode(':', $row->professions)) . '<end>';
+			$info .= ' - ' . implode(', ', Text::arraySprintf('<highlight>%s<end>', ...$row->professions));
 			$blob .= "<tab>{$info}\n";
 		}
 		$blob .= $this->getFooter();
@@ -319,6 +319,7 @@ class NanoController extends ModuleInstance {
 		/** @var Collection<Nano> $nanos */
 		$blob = '';
 		foreach ($nanos as $nano) {
+			/** @var Nano $nano */
 			$nanoLink = $this->makeNanoLink($nano);
 			$gmiLink = ($this->nanoAddGMI && isset($nano->crystal_id))
 				? ' [' . $this->text->makeChatcmd('GMI', "/tell <myname> gmi {$nano->crystal_id}") . ']'
@@ -327,8 +328,8 @@ class NanoController extends ModuleInstance {
 				? $this->text->makeItem($nano->crystal_id, $nano->crystal_id, $nano->ql, 'Crystal')
 				: 'Crystal';
 			$blob .= 'QL' . $this->text->alignNumber($nano->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink}";
-			if ($nano->professions) {
-				$blob .= ' - <highlight>' . implode('<end>, <highlight>', explode(':', $nano->professions)) . '<end>';
+			if (count($nano->professions)) {
+				$blob .= ' - ' . implode(', ', Text::arraySprintf('<highlight>%s<end>', ...$nano->professions));
 			}
 			$blob .= "\n";
 		}

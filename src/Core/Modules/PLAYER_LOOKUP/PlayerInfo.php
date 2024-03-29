@@ -21,7 +21,7 @@ class PlayerInfo {
 	 * @param string            $breed       Any of Nano, Solitus, Atrox or Opifex. Also empty string if unknown
 	 * @param string            $gender      Male, Female, Neuter or an empty string if unknown
 	 * @param Faction           $faction     Omni, Clan, Neutral or an empty string if unknown
-	 * @param string            $profession  The long profession name (e.g. "Enforcer", not "enf" or "enfo") or an empty string if unknown
+	 * @param Profession        $profession  The long profession name (e.g. "Enforcer", not "enf" or "enfo") or an empty string if unknown
 	 * @param string            $profTitle   The title-level title for the profession of this player For example "The man", "Don" or empty if unknown.
 	 * @param string            $aiRank      The name of the $aiLevel as a rank or empty string if unknown
 	 * @param int               $aiLevel     AI level of this player or null if unknown
@@ -44,7 +44,7 @@ class PlayerInfo {
 		#[MapFrom('0.BREED', '.')] public string $breed,
 		#[MapFrom('0.SEX', '.')] public string $gender,
 		#[MapFrom('0.SIDE', '.')] public Faction $faction,
-		#[MapFrom('0.PROF', '.')] public string $profession,
+		#[MapFrom('0.PROF', '.')] public Profession $profession,
 		#[MapFrom('0.PROFNAME', '.')] public string $profTitle,
 		#[MapFrom('0.RANK_name', '.')] public string $aiRank,
 		#[MapFrom('0.ALIENLEVEL', '.')] public int $aiLevel,
@@ -80,7 +80,7 @@ class PlayerInfo {
 			level: $this->level,
 			name: $this->name,
 			prof_title: $this->profTitle ?? '',
-			profession: Profession::tryFrom($this->profession),
+			profession: $this->profession,
 			pvp_rating: $this->pvpRating,
 			pvp_title: $this->pvpTitle,
 			source: 'AO',

@@ -60,9 +60,6 @@ class WishlistController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
@@ -262,7 +259,7 @@ class WishlistController extends ModuleInstance {
 				foreach ($wish->fulfilments as $fulfilment) {
 					$delLink = $this->text->makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
 					$lines []= "<tab><tab><grey>{$fulfilment->amount} given by {$fulfilment->fulfilled_by} on ".
-						$this->util->date($fulfilment->fulfilled_on).
+						Util::date($fulfilment->fulfilled_on).
 						" [{$delLink}]<end>";
 				}
 			}
@@ -827,7 +824,7 @@ class WishlistController extends ModuleInstance {
 				}
 				$line = "{$line}<highlight>" . $this->fixItemLinks($wish->item) . '<end>';
 				if (isset($wish->expires_on)) {
-					$line .= ' (<i>expires in ' . $this->util->unixtimeToReadable($wish->expires_on - time(), false) . '</i>)';
+					$line .= ' (<i>expires in ' . Util::unixtimeToReadable($wish->expires_on - time(), false) . '</i>)';
 				}
 				$do1Link = $this->text->makeChatcmd('give 1', "/tell <myname> wish fulfil 1x {$wish->id}");
 				$doAllLink = null;
@@ -849,7 +846,7 @@ class WishlistController extends ModuleInstance {
 						$delLink = $this->text->makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
 					}
 					$line = "<tab><tab><grey>{$fulfilment->amount} given by {$fulfilment->fulfilled_by} on ".
-						$this->util->date($fulfilment->fulfilled_on);
+						Util::date($fulfilment->fulfilled_on);
 					if (isset($delLink)) {
 						$line .= " [{$delLink}]<end>";
 					}

@@ -179,9 +179,6 @@ class GuildController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AltsController $altsController;
 
 	#[NCA\Inject]
@@ -285,7 +282,7 @@ class GuildController extends ModuleInstance {
 			} elseif ($row->logged_off == 0) {
 				$blob .= "<highlight>{$row->name}<end> has never logged on.\n";
 			} else {
-				$blob .= "<highlight>{$row->name}<end> last seen at " . $this->util->date($row->logged_off) . ".\n";
+				$blob .= "<highlight>{$row->name}<end> last seen at " . Util::date($row->logged_off) . ".\n";
 			}
 		}
 
@@ -320,7 +317,7 @@ class GuildController extends ModuleInstance {
 			return;
 		}
 
-		$timeString = $this->util->unixtimeToReadable($time, false);
+		$timeString = Util::unixtimeToReadable($time, false);
 		$time = time() - $time;
 
 		/** @var Collection<RecentOrgMember> */
@@ -361,7 +358,7 @@ class GuildController extends ModuleInstance {
 
 			$character = "<pagebreak><highlight>{$member->main}<end> [{$alts}]\n".
 				"<tab>Last seen as {$lastToon} on ".
-				$this->util->date($logged) . "\n\n";
+				Util::date($logged) . "\n\n";
 			if ($highlight === true) {
 				$blob .= "<highlight>{$character}<end>";
 				$highlight = false;
@@ -541,8 +538,8 @@ class GuildController extends ModuleInstance {
 				round($players->avg('level'), 0) . '<end> / '.
 				$players->max('level');
 		};
-		$tlFunc = function (Player $p): string {
-			return 'TL ' . $this->util->levelToTL($p->level ?? 1);
+		$tlFunc = static function (Player $p): string {
+			return 'TL ' . Util::levelToTL($p->level ?? 1);
 		};
 
 		$blob = '<header2>' . ($org->orgname ?? $this->config->general->orgName) . "<end>\n";

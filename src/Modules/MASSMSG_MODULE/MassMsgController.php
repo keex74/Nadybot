@@ -80,9 +80,6 @@ class MassMsgController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AccessManager $accessManager;
 
 	#[NCA\Inject]
@@ -136,7 +133,7 @@ class MassMsgController extends ModuleInstance {
 			$now = time();
 			if ($notAllowedBefore > $now) {
 				return 'You have to wait <highlight>'.
-					$this->util->unixtimeToReadable($notAllowedBefore - $now).
+					Util::unixtimeToReadable($notAllowedBefore - $now).
 					'<end> before sending another mass-message or -invite.';
 			}
 		}

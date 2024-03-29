@@ -134,9 +134,6 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private EventManager $eventManager;
 
 	#[NCA\Inject]
@@ -693,7 +690,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 
 	public function getInfoPopup(Message $message): string {
 		$blob = '<header2>Information about this message<end>';
-		$blob .= "\n<tab>Sent: <highlight>" . $this->util->date($message->sent) . '<end>';
+		$blob .= "\n<tab>Sent: <highlight>" . Util::date($message->sent) . '<end>';
 
 		$blockTempLink = $this->text->makeChatcmd(
 			'block 15min',
@@ -1027,7 +1024,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		$line = $this->getFilterDescr($entry);
 		if (isset($entry->expires) && $entry->expires > time()) {
 			$remaining = $entry->expires - time();
-			$line .= ' - expires in ' . $this->util->unixtimeToReadable($remaining, false);
+			$line .= ' - expires in ' . Util::unixtimeToReadable($remaining, false);
 		}
 		$deleteLink = $this->text->makeChatcmd(
 			'del',

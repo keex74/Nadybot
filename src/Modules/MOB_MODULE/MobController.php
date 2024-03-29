@@ -77,9 +77,6 @@ class MobController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	#[NCA\Event('connect', 'Load all mobs from the API')]
 	public function initMobsFromApi(): void {
 		$client = $this->builder->build();
@@ -230,7 +227,7 @@ class MobController extends ModuleInstance {
 			))[0] . '.';
 		if (isset($mob->respawn_timer)) {
 			$msg .= ' Respawn will be in '.
-				$this->util->unixtimeToReadable($mob->respawn_timer) . '.';
+				Util::unixtimeToReadable($mob->respawn_timer) . '.';
 		}
 		$rMsg = new RoutableMessage($msg);
 		$rMsg->prependPath(new Source('mobs', "{$mob->type}-{$mob->key}-death"));
@@ -420,7 +417,7 @@ class MobController extends ModuleInstance {
 				$hp = (int)round($mob->hp_percent??100, 0);
 				$color = ($hp > 75) ? 'highlight' : (($hp <= 25) ? 'red' : 'yellow');
 				return "{$status} (last seen ".
-					$this->util->unixtimeToReadable(time() - $mob->last_seen).
+					Util::unixtimeToReadable(time() - $mob->last_seen).
 					' ago with ' . $this->text->alignNumber($hp, 3, $color) . '% HP)';
 			case $mob::STATUS_DOWN:
 				$status = '<off>DEAD<end>';
@@ -431,12 +428,12 @@ class MobController extends ModuleInstance {
 					$spawn = $mob->last_killed + $mob->respawn_timer;
 					$respawn = $spawn - time();
 					$respawnTime = ($respawn > 0)
-						? 'in ' . $this->util->unixtimeToReadable($respawn)
+						? 'in ' . Util::unixtimeToReadable($respawn)
 						: 'any moment now';
 					return "{$status} (respawns {$respawnTime})";
 				}
 				return "{$status} (killed ".
-					$this->util->unixtimeToReadable(time() - $mob->last_killed).
+					Util::unixtimeToReadable(time() - $mob->last_killed).
 					'ago)';
 			case $mob::STATUS_UP:
 			case $mob::STATUS_ATTACKED:

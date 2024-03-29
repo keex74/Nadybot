@@ -68,8 +68,6 @@ class GcrProtocol implements RelayProtocolInterface {
 	protected string $prefix = '';
 	protected bool $syncOnline = true;
 	protected bool $spamOnline = true;
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private Text $text;
@@ -120,7 +118,7 @@ class GcrProtocol implements RelayProtocolInterface {
 		}
 		$senderLink = '';
 		$character = $event->getCharacter();
-		if (isset($character) && $this->util->isValidSender($character->name)) {
+		if (isset($character) && Util::isValidSender($character->name)) {
 			$senderLink = "##relay_name##{$character->name}:##end##";
 		}
 		return [
@@ -133,7 +131,7 @@ class GcrProtocol implements RelayProtocolInterface {
 	/** @return string[] */
 	public function renderUserState(RoutableEvent $event): array {
 		$character = $event->getData()->char ?? null;
-		if (!isset($character) || !$this->util->isValidSender($character->name??-1)) {
+		if (!isset($character) || !Util::isValidSender($character->name??-1)) {
 			return [];
 		}
 		async(function () use ($character, $event): void {

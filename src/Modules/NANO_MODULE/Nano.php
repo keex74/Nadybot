@@ -2,9 +2,11 @@
 
 namespace Nadybot\Modules\NANO_MODULE;
 
-use Nadybot\Core\DBRow;
+use Nadybot\Core\Attributes\DB\MapRead;
+use Nadybot\Core\{DBRow};
 
 class Nano extends DBRow {
+	/** @param string[] $professions */
 	public function __construct(
 		public int $nano_id,
 		public int $ql,
@@ -13,7 +15,7 @@ class Nano extends DBRow {
 		public string $strain,
 		public int $strain_id,
 		public string $sub_strain,
-		public string $professions,
+		#[MapRead([self::class, 'parseProfessions'])] public array $professions,
 		public string $location,
 		public int $nano_cost,
 		public bool $froob_friendly,
@@ -30,5 +32,10 @@ class Nano extends DBRow {
 		public ?int $ts=null,
 		public ?int $mc=null,
 	) {
+	}
+
+	/** @return string[] */
+	public static function parseProfessions(string $professions): array {
+		return explode(':', $professions);
 	}
 }

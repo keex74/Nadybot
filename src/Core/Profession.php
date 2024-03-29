@@ -54,7 +54,7 @@ enum Profession: string {
 	}
 
 	public function inColor(): string {
-		return '<highlight>' . $this->value . '<end>';
+		return "<highlight>{$this->value}<end>";
 	}
 
 	public function toIcon(): string {
@@ -70,128 +70,28 @@ enum Profession: string {
 	}
 
 	public static function byName(string $search): self {
-		$search = strtolower($search);
-		switch ($search) {
-			case 'adv':
-			case 'advy':
-			case 'adventurer':
-				return self::Adventurer;
-			case 'age':
-			case 'agent':
-				return self::Agent;
-			case 'crat':
-			case 'bureaucrat':
-				return self::Bureaucrat;
-			case 'doc':
-			case 'doctor':
-				return self::Doctor;
-			case 'enf':
-			case 'enfo':
-			case 'enforcer':
-				return self::Enforcer;
-			case 'eng':
-			case 'engi':
-			case 'engy':
-			case 'engineer':
-				return self::Engineer;
-			case 'fix':
-			case 'fixer':
-				return self::Fixer;
-			case 'keep':
-			case 'keeper':
-				return self::Keeper;
-			case 'ma':
-			case 'martial':
-			case 'martialartist':
-			case 'martial artist':
-				return self::MartialArtist;
-			case 'mp':
-			case 'meta':
-			case 'metaphysicist':
-			case 'meta-physicist':
-				return self::MetaPhysicist;
-			case 'nt':
-			case 'nano':
-			case 'nanotechnician':
-			case 'nano-technician':
-				return self::NanoTechnician;
-			case 'sol':
-			case 'sold':
-			case 'soldier':
-				return self::Soldier;
-			case 'tra':
-			case 'trad':
-			case 'trader':
-				return self::Trader;
-			case 'sha':
-			case 'shade':
-				return self::Shade;
-			default:
-				throw new InvalidArgumentException("Invalid profession '{$search}'");
-		}
+		return match (strtolower($search)) {
+			'adv'|'advy'|'adventurer' => self::Adventurer,
+			'age'|'agent' => self::Agent,
+			'crat'|'bureaucrat' => self::Bureaucrat,
+			'doc'|'doctor' => self::Doctor,
+			'enf'|'enfo'|'enforcer' => self::Enforcer,
+			'eng'|'engi'|'engy'|'engineer' => self::Engineer,
+			'fix'|'fixer' => self::Fixer,
+			'keep'|'keeper' => self::Keeper,
+			'ma'|'martial'|'martialartist'|'martial artist' => self::MartialArtist,
+			'mp'|'meta'|'metaphysicist'|'meta-physicist' => self::MetaPhysicist,
+			'nt'|'nano'|'nanotechnician'|'nano-technician' => self::NanoTechnician,
+			'sol'|'sold'|'soldier' => self::Soldier,
+			'tra'|'trad'|'trader' => self::Trader,
+			'sha'|'shade' => self::Shade,
+			default => throw new InvalidArgumentException("Invalid profession '{$search}'"),
+		};
 	}
 
 	/** Check if the given string matches the profession (abbreviated or not) */
 	public function is(string $search): bool {
-		$search = strtolower($search);
-		switch ($search) {
-			case 'adv':
-			case 'advy':
-			case 'adventurer':
-				return $this === self::Adventurer;
-			case 'age':
-			case 'agent':
-				return $this === self::Agent;
-			case 'crat':
-			case 'bureaucrat':
-				return $this === self::Bureaucrat;
-			case 'doc':
-			case 'doctor':
-				return $this === self::Doctor;
-			case 'enf':
-			case 'enfo':
-			case 'enforcer':
-				return $this === self::Enforcer;
-			case 'eng':
-			case 'engi':
-			case 'engy':
-			case 'engineer':
-				return $this === self::Engineer;
-			case 'fix':
-			case 'fixer':
-				return $this === self::Fixer;
-			case 'keep':
-			case 'keeper':
-				return $this === self::Keeper;
-			case 'ma':
-			case 'martial':
-			case 'martialartist':
-			case 'martial artist':
-				return $this === self::MartialArtist;
-			case 'mp':
-			case 'meta':
-			case 'metaphysicist':
-			case 'meta-physicist':
-				return $this === self::MetaPhysicist;
-			case 'nt':
-			case 'nano':
-			case 'nanotechnician':
-			case 'nano-technician':
-				return $this === self::NanoTechnician;
-			case 'sol':
-			case 'sold':
-			case 'soldier':
-				return $this === self::Soldier;
-			case 'tra':
-			case 'trad':
-			case 'trader':
-				return $this === self::Trader;
-			case 'sha':
-			case 'shade':
-				return $this === self::Shade;
-			default:
-				return false;
-		}
+		return self::tryByName($search) === $this;
 	}
 
 	case Adventurer = 'Adventurer';

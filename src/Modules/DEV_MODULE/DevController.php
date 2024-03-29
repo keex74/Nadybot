@@ -82,9 +82,6 @@ class DevController extends ModuleInstance {
 	private DB $db;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Setup]
@@ -237,7 +234,7 @@ class DevController extends ModuleInstance {
 	/** Print a stacktrace */
 	#[NCA\HandlesCommand('stacktrace')]
 	public function stacktraceCommand(CmdContext $context): void {
-		$stacktrace = trim($this->util->getStackTrace());
+		$stacktrace = trim(Util::getStackTrace());
 		$lines = explode("\n", $stacktrace);
 		$count = count($lines);
 		$blob = '<header2>Current call stack<end>';

@@ -32,9 +32,6 @@ class ReputationController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Inject]
@@ -91,7 +88,7 @@ class ReputationController extends ModuleInstance {
 				$color = str_starts_with($comment->comment, '+1') ? 'green' : 'red';
 				$blob .= "\n<tab><{$color}>{$comment->comment}<end> ".
 					"(<highlight>{$comment->created_by}<end>, ".
-					$this->util->date($comment->created_at) . ')';
+					Util::date($comment->created_at) . ')';
 			}
 			if (count($charData->comments) > 3 && count($comments) > 0) {
 				$details_link = $this->text->makeChatcmd('see all', "/tell <myname> reputation {$comments[0]->character} all");
@@ -173,7 +170,7 @@ class ReputationController extends ModuleInstance {
 				$blob .= '<red>';
 			}
 
-			$time = $this->util->unixtimeToReadable(time() - $comment->created_at, false);
+			$time = Util::unixtimeToReadable(time() - $comment->created_at, false);
 			$blob .= "<tab>{$comment->comment}<end> (<highlight>{$comment->created_by}<end>, {$time} ago)\n";
 		}
 

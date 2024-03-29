@@ -138,7 +138,7 @@ class NewsController extends ModuleInstance {
 			}
 			$blob .= ($item->confirmed ? '<grey>' : '<highlight>').
 				"{$item->news}<end>\n";
-			$blob .= "By {$item->name} " . $this->util->date($item->time) . ' ';
+			$blob .= "By {$item->name} " . Util::date($item->time) . ' ';
 			$blob .= '[' . $this->text->makeChatcmd('remove', "/tell <myname> news rem {$item->id}") . '] ';
 			if ($item->sticky) {
 				$blob .= '[' . $this->text->makeChatcmd('unpin', "/tell <myname> news unpin {$item->id}") . '] ';
@@ -165,14 +165,14 @@ class NewsController extends ModuleInstance {
 		$layout = $this->newsAnnouncementLayout;
 		if ($layout === 1) {
 			$msg = $this->text->makeBlob(
-				'News [Last updated at ' . $this->util->date($item->time) . ']',
+				'News [Last updated at ' . Util::date($item->time) . ']',
 				$blob
 			);
 		} elseif ($layout === 2) {
 			$msg = $this->text->blobWrap(
 				"<yellow>NEWS:<end> <highlight>{$latestNews->news}<end>\n".
 					"By {$latestNews->name} (".
-					$this->util->date($latestNews->time) . ') ',
+					Util::date($latestNews->time) . ') ',
 				$this->text->makeBlob('more', $blob, 'News')
 			);
 		}
@@ -282,7 +282,7 @@ class NewsController extends ModuleInstance {
 			'news' => $news,
 			'sticky' => 0,
 			'deleted' => 0,
-			'uuid' => $this->util->createUUID(),
+			'uuid' => Util::createUUID(),
 		];
 		$this->db->table('news')
 			->insert($entry);
@@ -455,7 +455,7 @@ class NewsController extends ModuleInstance {
 		$decoded->name = $user;
 		$decoded->sticky ??= false;
 		$decoded->deleted ??= false;
-		$decoded->uuid = $this->util->createUUID();
+		$decoded->uuid = Util::createUUID();
 		if (!isset($decoded->news)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -542,7 +542,7 @@ class NewsController extends ModuleInstance {
 		foreach ($unreadNews as $news) {
 			$firstLine = explode("\n", $news->news)[0];
 			$firstWords = array_slice(preg_split("/\s+/", $firstLine), 0, 5);
-			$blobLines []= '<tab><highlight>' . $this->util->date($news->time).
+			$blobLines []= '<tab><highlight>' . Util::date($news->time).
 				'<end>: ' . implode(' ', $firstWords) . '...';
 		}
 		$blob .= implode("\n", $blobLines);

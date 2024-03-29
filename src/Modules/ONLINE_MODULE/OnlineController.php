@@ -24,6 +24,7 @@ use Nadybot\Core\{
 	Modules\ALTS\NickController,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
+	Profession,
 	QueryBuilder,
 	Registry,
 	Safe,
@@ -241,9 +242,6 @@ class OnlineController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private PlayerManager $playerManager;
 
 	#[NCA\Setup]
@@ -383,8 +381,8 @@ class OnlineController extends ModuleInstance {
 	/** Show a list of players that have the specified profession as an alt */
 	#[NCA\HandlesCommand('online')]
 	public function onlineProfCommand(CmdContext $context, string $profName): void {
-		$profession = $this->util->getProfessionName($profName);
-		if (empty($profession)) {
+		$profession = Profession::tryByName($profName);
+		if (!isset($profession)) {
 			$msg = "<highlight>{$profName}<end> is not a recognized profession.";
 			$context->reply($msg);
 			return;
@@ -403,7 +401,7 @@ class OnlineController extends ModuleInstance {
 		foreach ($mains as $main) {
 			$alts = $this->altsController->getAltsOf($main);
 			$chars = $this->playerManager->searchByNames($this->db->getDim(), ...$alts)
-				->where('profession', $profession);
+				->where('profession', $profession->value);
 			if ($chars->isEmpty()) {
 				continue;
 			}
@@ -425,7 +423,7 @@ class OnlineController extends ModuleInstance {
 		$blob = '';
 
 		if ($count === 0) {
-			$msg = "{$profession} Search Results (0)";
+			$msg = "{$profession->value} Search Results (0)";
 			$context->reply($msg);
 			return;
 		}
@@ -454,7 +452,7 @@ class OnlineController extends ModuleInstance {
 			$blob .= "\n";
 		}
 		$blob .= "\nWritten by Naturarum (RK2)";
-		$msg = $this->text->makeBlob("{$profession} Search Results ({$mainCount})", $blob);
+		$msg = $this->text->makeBlob("{$profession->value} Search Results ({$mainCount})", $blob);
 
 		$context->reply($msg);
 	}
@@ -643,7 +641,7 @@ class OnlineController extends ModuleInstance {
 	/** Set someone back from afk if needed */
 	public function afkCheck(int|string $sender, string $message, string $type): void {
 		// to stop raising and lowering the cloak messages from triggering afk check
-		if (!is_string($sender) || !$this->util->isValidSender($sender)) {
+		if (!is_string($sender) || !Util::isValidSender($sender)) {
 			return;
 		}
 
@@ -661,7 +659,7 @@ class OnlineController extends ModuleInstance {
 			return;
 		}
 		$time = explode('|', $afk)[0];
-		$timeString = $this->util->unixtimeToReadable(time() - (int)$time);
+		$timeString = Util::unixtimeToReadable(time() - (int)$time);
 		// $sender is back
 		$this->buildOnlineQuery($sender, $type)
 			->update(['afk' => '']);
@@ -963,11 +961,11 @@ class OnlineController extends ModuleInstance {
 		}
 		$props = explode('|', $afk, 2);
 		if (!isset($props[1]) || !strlen($props[1])) {
-			$timeString = $this->util->unixtimeToReadable(time() - (int)$props[0], false);
+			$timeString = Util::unixtimeToReadable(time() - (int)$props[0], false);
 			return " {$fancyColon} <highlight>AFK for {$timeString}<end>";
 		}
 
-		$timeString = $this->util->unixtimeToReadable(time() - (int)$props[0], false);
+		$timeString = Util::unixtimeToReadable(time() - (int)$props[0], false);
 		return " {$fancyColon} <highlight>AFK for {$timeString}: {$props[1]}<end>";
 	}
 

@@ -45,9 +45,6 @@ class ArbiterController extends ModuleInstance {
 	public const DB_TABLE = 'icc_arbiter';
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Inject]
@@ -110,7 +107,7 @@ class ArbiterController extends ModuleInstance {
 
 	/** Get a nice representation of a duration, rounded to minutes */
 	public function niceTimeWithoutSecs(int $time): string {
-		return $this->util->unixtimeToReadable($time - ($time % 60));
+		return Util::unixtimeToReadable($time - ($time % 60));
 	}
 
 	/**
@@ -242,7 +239,7 @@ class ArbiterController extends ModuleInstance {
 			$blob .= "Currently: <highlight>-<end>\n\n";
 		}
 		foreach ($upcomingEvents as $event) {
-			$blob .= $this->util->date($event->start) . ": <highlight>{$event->longName}<end>\n";
+			$blob .= Util::date($event->start) . ": <highlight>{$event->longName}<end>\n";
 		}
 		$blob .= "\n\n<i>All arbiter weeks last for 8 days (Sunday 00:00 to Sunday 23:59)</i>";
 		if ($upcomingEvents[0]->isActiveOn($time)) {

@@ -58,9 +58,6 @@ class RaidBlockController extends ModuleInstance {
 	private AltsController $altsController;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Setup]
@@ -156,7 +153,7 @@ class RaidBlockController extends ModuleInstance {
 		$msg = "<highlight>{$character}<end> is now blocked from <highlight>".
 			$this->blockToString($blockFrom) . '<end> ';
 		if (is_int($duration) && $duration > 0) {
-			$msg .= 'for <highlight>' . $this->util->unixtimeToReadable($duration) . '<end>.';
+			$msg .= 'for <highlight>' . Util::unixtimeToReadable($duration) . '<end>.';
 		} else {
 			$msg .= 'until someone removes the block.';
 		}
@@ -177,7 +174,7 @@ class RaidBlockController extends ModuleInstance {
 		foreach ($blocks as $name => $block) {
 			$msg .= "\n<tab><highlight>" . $this->blockToString($name) . '<end>: ';
 			if (isset($block->expiration) && $block->expiration > 0) {
-				$msg .= 'until ' . $this->util->date($block->expiration);
+				$msg .= 'until ' . Util::date($block->expiration);
 			} else {
 				$msg .= 'until block is lifted';
 			}
@@ -201,7 +198,7 @@ class RaidBlockController extends ModuleInstance {
 		foreach ($blocks as $name => $block) {
 			$blob .= "\n<tab><highlight>" . $this->blockToString($name) . '<end>: ';
 			if (isset($block->expiration) && $block->expiration > 0) {
-				$blob .= 'until ' . $this->util->date($block->expiration);
+				$blob .= 'until ' . Util::date($block->expiration);
 			} else {
 				$blob .= 'until block is lifted';
 			}

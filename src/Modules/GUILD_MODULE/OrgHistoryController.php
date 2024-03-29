@@ -39,9 +39,6 @@ class OrgHistoryController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	/** Show the last org actions (invite, kick, leave) */
 	#[NCA\HandlesCommand('orghistory')]
 	public function orgHistoryCommand(CmdContext $context, ?int $page): void {
@@ -109,7 +106,7 @@ class OrgHistoryController extends ModuleInstance {
 	public function formatOrgAction(OrgHistory $row): string {
 		$time = 'Unknown time';
 		if (isset($row->time)) {
-			$time = $this->util->date($row->time);
+			$time = Util::date($row->time);
 		}
 		if ($row->action === 'left') {
 			return "<highlight>{$row->actor}<end> {$row->action}. [{$row->organization}] {$time}\n";

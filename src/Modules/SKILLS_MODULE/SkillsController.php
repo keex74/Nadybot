@@ -92,9 +92,6 @@ class SkillsController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private ItemsController $itemsController;
 
 	#[NCA\Setup]
@@ -236,9 +233,9 @@ class SkillsController extends ModuleInstance {
 			$i = 4;
 		}
 
-		$minDamage  = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $minList[$i], $minList[($i+1)], $brawlSkill);
-		$maxDamage  = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $maxList[$i], $maxList[($i+1)], $brawlSkill);
-		$critBonus = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $critList[$i], $critList[($i+1)], $brawlSkill);
+		$minDamage  = Util::interpolate($skillList[$i], $skillList[($i+1)], $minList[$i], $minList[($i+1)], $brawlSkill);
+		$maxDamage  = Util::interpolate($skillList[$i], $skillList[($i+1)], $maxList[$i], $maxList[($i+1)], $brawlSkill);
+		$critBonus = Util::interpolate($skillList[$i], $skillList[($i+1)], $critList[$i], $critList[($i+1)], $brawlSkill);
 		$stunChance = '<highlight>20<end>%';
 		if ($brawlSkill < 1_000) {
 			$stunChance = '<highlight>10<end>%, (will become 20% above 1000 brawl skill)';
@@ -314,26 +311,26 @@ class SkillsController extends ModuleInstance {
 
 		$blob = "Dimach Skill: <highlight>{$dimachSkill}<end>\n\n";
 
-		$maDamage = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $maDamageList[$i], $maDamageList[($i+1)], $dimachSkill);
-		$maDimachRecharge = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $maRechargeList[$i], $maRechargeList[($i+1)], $dimachSkill);
+		$maDamage = Util::interpolate($skillList[$i], $skillList[($i+1)], $maDamageList[$i], $maDamageList[($i+1)], $dimachSkill);
+		$maDimachRecharge = Util::interpolate($skillList[$i], $skillList[($i+1)], $maRechargeList[$i], $maRechargeList[($i+1)], $dimachSkill);
 		$blob .= "<header2>Martial Artist<end>\n";
 		$blob .= "<tab>Damage: <highlight>{$maDamage}<end> (<highlight>1<end>)\n";
-		$blob .= '<tab>Recharge <highlight>'.$this->util->unixtimeToReadable($maDimachRecharge)."<end>\n\n";
+		$blob .= '<tab>Recharge <highlight>'.Util::unixtimeToReadable($maDimachRecharge)."<end>\n\n";
 
-		$keeperHeal	= $this->util->interpolate($skillList[$i], $skillList[($i+1)], $keeperHealList[$i], $keeperHealList[($i+1)], $dimachSkill);
+		$keeperHeal	= Util::interpolate($skillList[$i], $skillList[($i+1)], $keeperHealList[$i], $keeperHealList[($i+1)], $dimachSkill);
 		$blob .= "<header2>Keeper<end>\n";
 		$blob .= '<tab>Self heal: <highlight>'.$keeperHeal."<end> HP\n";
 		$blob .= "<tab>Recharge: <highlight>5 mins<end> (constant)\n\n";
 
-		$shadeDamage	= $this->util->interpolate($skillList[$i], $skillList[($i+1)], $shadeDamageList[$i], $shadeDamageList[($i+1)], $dimachSkill);
-		$shadeHPDrainPercent  = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $shadeHPDrainList[$i], $shadeHPDrainList[($i+1)], $dimachSkill);
-		$shadeDimacheRecharge = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $shadeRechargeList[$i], $shadeRechargeList[($i+1)], $dimachSkill);
+		$shadeDamage	= Util::interpolate($skillList[$i], $skillList[($i+1)], $shadeDamageList[$i], $shadeDamageList[($i+1)], $dimachSkill);
+		$shadeHPDrainPercent  = Util::interpolate($skillList[$i], $skillList[($i+1)], $shadeHPDrainList[$i], $shadeHPDrainList[($i+1)], $dimachSkill);
+		$shadeDimacheRecharge = Util::interpolate($skillList[$i], $skillList[($i+1)], $shadeRechargeList[$i], $shadeRechargeList[($i+1)], $dimachSkill);
 		$blob .= "<header2>Shade<end>\n";
 		$blob .= '<tab>Damage: <highlight>'.$shadeDamage."<end> (<highlight>1<end>)\n";
 		$blob .= '<tab>HP drain: <highlight>'.$shadeHPDrainPercent."<end>%\n";
-		$blob .= '<tab>Recharge: <highlight>'.$this->util->unixtimeToReadable($shadeDimacheRecharge)."<end>\n\n";
+		$blob .= '<tab>Recharge: <highlight>'.Util::unixtimeToReadable($shadeDimacheRecharge)."<end>\n\n";
 
-		$damageOthers = $this->util->interpolate($skillList[$i], $skillList[($i+1)], $generalDamageList[$i], $generalDamageList[($i+1)], $dimachSkill);
+		$damageOthers = Util::interpolate($skillList[$i], $skillList[($i+1)], $generalDamageList[$i], $generalDamageList[($i+1)], $dimachSkill);
 		$blob .= "<header2>All other professions<end>\n";
 		$blob .= "<tab>Damage: <highlight>{$damageOthers}<end> (<highlight>1<end>)\n";
 		$blob .= "<tab>Recharge: <highlight>30 mins<end> (constant)\n\n";
@@ -489,9 +486,9 @@ class SkillsController extends ModuleInstance {
 		$blob = "MA Skill: <highlight>{$maSkill}<end>\n\n";
 		$maSkill = min(3_000, $maSkill);
 
-		$min = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $maMinList[$i], $maMinList[($i + 1)], $maSkill);
-		$max = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $maMaxList[$i], $maMaxList[($i + 1)], $maSkill);
-		$crit = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $maCritList[$i], $maCritList[($i + 1)], $maSkill);
+		$min = Util::interpolate($skillList[$i], $skillList[($i + 1)], $maMinList[$i], $maMinList[($i + 1)], $maSkill);
+		$max = Util::interpolate($skillList[$i], $skillList[($i + 1)], $maMaxList[$i], $maMaxList[($i + 1)], $maSkill);
+		$crit = Util::interpolate($skillList[$i], $skillList[($i + 1)], $maCritList[$i], $maCritList[($i + 1)], $maSkill);
 		$maBaseSpeed = (($maSkill - $skillList[$i]) * ($maFistSpeed[($i + 1)] - $maFistSpeed[$i])) / ($skillList[($i + 1)] - $skillList[$i]) + $maFistSpeed[$i]; // @phpstan-ignore-line
 		$maFistSpeed = round($maBaseSpeed, 2);
 		$dmg = "<highlight>{$min}<end>-<highlight>{$max}<end> (<highlight>{$crit}<end>)";
@@ -499,17 +496,17 @@ class SkillsController extends ModuleInstance {
 		$blob .= "<tab>Fist speed:   <highlight>{$maFistSpeed}<end>s/<highlight>{$maFistSpeed}<end>s\n";
 		$blob .= "<tab>Fist damage: {$dmg}\n\n";
 
-		$min = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $shadeMinList[$i], $shadeMinList[($i + 1)], $maSkill);
-		$max = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $shadeMaxList[$i], $shadeMaxList[($i + 1)], $maSkill);
-		$crit = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $shadeCritList[$i], $shadeCritList[($i + 1)], $maSkill);
+		$min = Util::interpolate($skillList[$i], $skillList[($i + 1)], $shadeMinList[$i], $shadeMinList[($i + 1)], $maSkill);
+		$max = Util::interpolate($skillList[$i], $skillList[($i + 1)], $shadeMaxList[$i], $shadeMaxList[($i + 1)], $maSkill);
+		$crit = Util::interpolate($skillList[$i], $skillList[($i + 1)], $shadeCritList[$i], $shadeCritList[($i + 1)], $maSkill);
 		$dmg = '<highlight>'.$min.'<end>-<highlight>'.$max.'<end> (<highlight>'.$crit.'<end>)';
 		$blob .= '<header2>Shade<end> ('.  $this->text->makeItem($shadeAOID[$i], $shadeAOID[$i+1], $aoidQL, 'item') . ")\n";
 		$blob .= "<tab>Fist speed:   <highlight>{$speed}<end>s/<highlight>{$speed}<end>s\n";
 		$blob .= "<tab>Fist damage: {$dmg}\n\n";
 
-		$min = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $otherMinList[$i], $otherMinList[($i + 1)], $maSkill);
-		$max = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $otherMaxList[$i], $otherMaxList[($i + 1)], $maSkill);
-		$crit = $this->util->interpolate($skillList[$i], $skillList[($i + 1)], $otherCritList[$i], $otherCritList[($i + 1)], $maSkill);
+		$min = Util::interpolate($skillList[$i], $skillList[($i + 1)], $otherMinList[$i], $otherMinList[($i + 1)], $maSkill);
+		$max = Util::interpolate($skillList[$i], $skillList[($i + 1)], $otherMaxList[$i], $otherMaxList[($i + 1)], $maSkill);
+		$crit = Util::interpolate($skillList[$i], $skillList[($i + 1)], $otherCritList[$i], $otherCritList[($i + 1)], $maSkill);
 		$dmg = '<highlight>'.$min.'<end>-<highlight>'.$max.'<end> (<highlight>'.$crit.'<end>)';
 		$blob .= '<header2>All other professions<end> ('.  $this->text->makeItem($otherAOID[$i], $otherAOID[$i+1], $aoidQL, 'item') . ")\n";
 		$blob .= "<tab>Fist speed:   <highlight>{$speed}<end>s/<highlight>{$speed}<end>s\n";
@@ -619,8 +616,8 @@ class SkillsController extends ModuleInstance {
 		}
 
 		$name = $row->name;
-		$attackTime = $this->util->interpolate($row->lowql, $row->highql, $lowAttributes->attack_time, $highAttributes->attack_time, $ql);
-		$rechargeTime = $this->util->interpolate($row->lowql, $row->highql, $lowAttributes->recharge_time, $highAttributes->recharge_time, $ql);
+		$attackTime = Util::interpolate($row->lowql, $row->highql, $lowAttributes->attack_time, $highAttributes->attack_time, $ql);
+		$rechargeTime = Util::interpolate($row->lowql, $row->highql, $lowAttributes->recharge_time, $highAttributes->recharge_time, $ql);
 		$rechargeTime /= 100;
 		$attackTime /= 100;
 		$itemLink = $this->text->makeItem($row->lowid, $row->highid, $ql, $row->name);
@@ -639,14 +636,14 @@ class SkillsController extends ModuleInstance {
 
 		$found = false;
 		if ($highAttributes->full_auto !== null && $lowAttributes->full_auto !== null) {
-			$full_auto_recharge = $this->util->interpolate($row->lowql, $row->highql, $lowAttributes->full_auto, $highAttributes->full_auto, $ql);
+			$full_auto_recharge = Util::interpolate($row->lowql, $row->highql, $lowAttributes->full_auto, $highAttributes->full_auto, $ql);
 			[$weaponCap, $skillCap] = $this->capFullAuto($attackTime, $rechargeTime, $full_auto_recharge);
 			$blob .= "<header2>Full Auto<end>\n";
 			$blob .= '<tab>You need <highlight>'.$skillCap.'<end> Full Auto skill to cap your recharge at <highlight>'.$weaponCap."<end>s.\n\n";
 			$found = true;
 		}
 		if ($highAttributes->burst !== null && $lowAttributes->burst !== null) {
-			$burst_recharge = $this->util->interpolate($row->lowql, $row->highql, $lowAttributes->burst, $highAttributes->burst, $ql);
+			$burst_recharge = Util::interpolate($row->lowql, $row->highql, $lowAttributes->burst, $highAttributes->burst, $ql);
 			[$weaponCap, $skillCap] = $this->capBurst($attackTime, $rechargeTime, $burst_recharge);
 			$blob .= "<header2>Burst<end>\n";
 			$blob .= '<tab>You need <highlight>'.$skillCap.'<end> Burst skill to cap your recharge at <highlight>'.$weaponCap."<end>s.\n\n";

@@ -122,9 +122,6 @@ class RaffleController extends ModuleInstance {
 	#[NCA\Inject]
 	private BotConfig $config;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	public function getRaffleAdminPage(string $sender): string {
 		$blob = "<header2>Join / Leave<end>\n".
 			'<tab>' . $this->text->makeChatcmd('Join the raffle', '/tell <myname> raffle join') . "\n".
@@ -177,7 +174,7 @@ class RaffleController extends ModuleInstance {
 			$duration = $this->defaultraffletime;
 		}
 		$maybeDuration = explode(' ', $raffleString)[0];
-		if (($raffleTime = $this->util->parseTime($maybeDuration)) > 0) {
+		if (($raffleTime = Util::parseTime($maybeDuration)) > 0) {
 			$duration = $raffleTime;
 			$raffleString = Safe::pregReplace('/^.+? /', '', $raffleString);
 		}
@@ -233,7 +230,7 @@ class RaffleController extends ModuleInstance {
 			$duration = $this->defaultraffletime;
 		}
 		$maybeDuration = explode(' ', $raffleString)[0];
-		if (($raffleTime = $this->util->parseTime($maybeDuration)) > 0) {
+		if (($raffleTime = Util::parseTime($maybeDuration)) > 0) {
 			$duration = $raffleTime;
 			$raffleString = Safe::pregReplace('/^.+? /', '', $raffleString);
 		}
@@ -288,7 +285,7 @@ class RaffleController extends ModuleInstance {
 			$this->fancyFrame($this->raffle->toString('<tab>'));
 		$blob = $this->getJoinLeaveBlob();
 		if (isset($this->raffle->end) && $this->raffle->end > 0) {
-			$endTime = $this->util->unixtimeToReadable($this->raffle->end - $this->raffle->start);
+			$endTime = Util::unixtimeToReadable($this->raffle->end - $this->raffle->start);
 			$msg = $this->text->blobWrap(
 				"{$msg}The raffle will end in <highlight>{$endTime}<end> :: [",
 				$this->text->makeBlob('Join', $blob, 'Raffle actions'),
@@ -313,7 +310,7 @@ class RaffleController extends ModuleInstance {
 			$this->fancyFrame($raffle->toString('<tab>'));
 		$blob = $this->getJoinLeaveBlob();
 		if (isset($this->raffle->end) && $this->raffle->end > 0) {
-			$endTime = $this->util->unixtimeToReadable($this->raffle->end - time());
+			$endTime = Util::unixtimeToReadable($this->raffle->end - time());
 			$msg = $this->text->blobWrap(
 				"{$msg}The raffle will end in <highlight>{$endTime}<end> :: [",
 				$this->text->makeBlob('Join', $blob, 'Raffle actions'),
@@ -403,7 +400,7 @@ class RaffleController extends ModuleInstance {
 
 		$this->raffle->sendto->reply(
 			"<highlight>{$context->char->name}<end> has started a raffle timer for ".
-			'<highlight>' . $this->util->unixtimeToReadable($time) . '<end>.'
+			'<highlight>' . Util::unixtimeToReadable($time) . '<end>.'
 		);
 		$this->announceRaffle();
 	}
@@ -779,7 +776,7 @@ class RaffleController extends ModuleInstance {
 		}
 		$msg .= $this->fancyFrame($this->raffle->toString('<tab>'));
 		if (isset($this->raffle->end)) {
-			$endTime = $this->util->unixtimeToReadable($this->raffle->end - time());
+			$endTime = Util::unixtimeToReadable($this->raffle->end - time());
 			$msg .= "The raffle will end in <highlight>{$endTime}<end>. ";
 		}
 		$msg .= $participantsString . ' :: [';

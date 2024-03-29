@@ -102,7 +102,7 @@ class MessageHub {
 			if (!class_exists($fullClass)) {
 				continue;
 			}
-			$spec = $this->util->getClassSpecFromClass($fullClass, NCA\EventModifier::class);
+			$spec = Util::getClassSpecFromClass($fullClass, NCA\EventModifier::class);
 			if (isset($spec)) {
 				$this->registerEventModifier($spec);
 			}

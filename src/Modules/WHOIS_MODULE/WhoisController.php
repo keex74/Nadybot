@@ -75,9 +75,6 @@ class WhoisController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AltsController $altsController;
 
 	#[NCA\Inject]
@@ -157,7 +154,7 @@ class WhoisController extends ModuleInstance {
 			($packet instanceof Package\In\CharacterName)
 			|| ($packet instanceof Package\In\CharacterLookupResult)
 		);
-		if (!$this->util->isValidSender($packet->charId)) {
+		if (!Util::isValidSender($packet->charId)) {
 			return;
 		}
 		$charData = new CharData();
@@ -195,7 +192,7 @@ class WhoisController extends ModuleInstance {
 		}
 		foreach ($players as $player) {
 			$link = $this->text->makeChatcmd($player->name, "/tell <myname> lookup {$player->name}");
-			$blob .= "<tab>{$link} " . $this->util->date($player->dt) . "\n";
+			$blob .= "<tab>{$link} " . Util::date($player->dt) . "\n";
 		}
 		$msg = $this->text->makeBlob("Name History for {$charID} ({$count})", $blob);
 
@@ -224,7 +221,7 @@ class WhoisController extends ModuleInstance {
 		}
 		foreach ($players as $player) {
 			$link = $this->text->makeChatcmd((string)$player->charid, "/tell <myname> lookup {$player->charid}");
-			$blob .= "<tab>{$link} " . $this->util->date($player->dt) . "\n";
+			$blob .= "<tab>{$link} " . Util::date($player->dt) . "\n";
 		}
 		$msg = $this->text->makeBlob("Character Ids for {$name} ({$count})", $blob);
 
@@ -243,7 +240,7 @@ class WhoisController extends ModuleInstance {
 		$blob = "<header2>Name History<end>\n";
 		if (count($data) > 0) {
 			foreach ($data as $row) {
-				$blob .= "<tab><highlight>{$row->name}<end> " . $this->util->date($row->dt) . "\n";
+				$blob .= "<tab><highlight>{$row->name}<end> " . Util::date($row->dt) . "\n";
 			}
 		} else {
 			$blob .= "<tab>No name history available\n";
@@ -451,7 +448,7 @@ class WhoisController extends ModuleInstance {
 						($lastAction->action === AccessManager::ADD_RANK)
 						? 'Added to bot'
 						: 'Removed from bot'
-					) . ': <highlight>' . $this->util->date($lastAction->time->getTimestamp()).
+					) . ': <highlight>' . Util::date($lastAction->time->getTimestamp()).
 					"<end> by <highlight>{$lastAction->actor}<end>";
 			}
 		}

@@ -51,9 +51,6 @@ class RandomController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private CommandAlias $commandAlias;
 
 	#[NCA\Setup]
@@ -232,7 +229,7 @@ class RandomController extends ModuleInstance {
 			$result = isset($row->result) ? explode('|', $row->result) : ['&lt;none&gt;'];
 			$time = 'an unknown time';
 			if (isset($row->time)) {
-				$time = $this->util->unixtimeToReadable(time() - $row->time);
+				$time = Util::unixtimeToReadable(time() - $row->time);
 			}
 			$msg = $this->joinOptions($result, 'highlight').
 				" rolled by <highlight>{$row->name}<end> {$time} ago.\n".

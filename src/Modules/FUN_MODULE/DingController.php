@@ -23,9 +23,6 @@ use Nadybot\Core\{
 	)
 ]
 class DingController extends ModuleInstance {
-	#[NCA\Inject]
-	private Util $util;
-
 	/** Show a random ding gratz message */
 	#[NCA\HandlesCommand('ding')]
 	public function ding1Command(CmdContext $context): void {
@@ -36,7 +33,7 @@ class DingController extends ModuleInstance {
 			'Gratz! But what are we looking at? I need a level next time.',
 		];
 
-		$context->reply($this->util->randomArrayValue($dingText));
+		$context->reply(Util::randomArrayValue($dingText));
 	}
 
 	/** Show a cheesy ding reply */
@@ -132,6 +129,6 @@ class DingController extends ModuleInstance {
 			];
 		}
 
-		$context->reply($this->util->randomArrayValue($dingText));
+		$context->reply(Util::randomArrayValue($dingText));
 	}
 }

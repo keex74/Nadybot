@@ -57,9 +57,6 @@ class ChatTopicController extends ModuleInstance {
 	private SettingManager $settingManager;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Inject]
@@ -160,7 +157,7 @@ class ChatTopicController extends ModuleInstance {
 
 	/** Builds current topic information message and returns it. */
 	public function buildTopicMessage(): string {
-		$topicAge = $this->util->unixtimeToReadable(time() - $this->topicTime, false);
+		$topicAge = Util::unixtimeToReadable(time() - $this->topicTime, false);
 		$topic = $this->topic;
 		$topicCreator = $this->topicSetby;
 		$msg = "Topic: {$this->topicColor}{$topic}<end> (set by ".

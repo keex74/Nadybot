@@ -28,7 +28,7 @@ class Util {
 	private Filesystem $fs;
 
 	/** Convert bytes to kB, MB, etc. so it's never more than 1024 */
-	public function bytesConvert(int $bytes): string {
+	public static function bytesConvert(int $bytes): string {
 		$ext = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 		$unitCount = 0;
 		for ($max = count($ext) - 1; $bytes >= 1_024 && $unitCount < $max; $unitCount++) {
@@ -87,7 +87,7 @@ class Util {
 	 *
 	 * @return int The duration in seconds
 	 */
-	public function parseTime(string $budatime): int {
+	public static function parseTime(string $budatime): int {
 		$unixtime = 0;
 
 		$matches = [];
@@ -149,7 +149,7 @@ class Util {
 	 *             -1 if the second is greater than the first and
 	 *             0 if they are equal.
 	 */
-	public function compareVersionNumbers(string $ver1, string $ver2): int {
+	public static function compareVersionNumbers(string $ver1, string $ver2): int {
 		$ver1Array = explode('.', $ver1);
 		$ver2Array = explode('.', $ver2);
 
@@ -167,85 +167,6 @@ class Util {
 			return -1;
 		}
 		return 0;
-	}
-
-	/** Returns the full profession name given the search string passed in */
-	public function getProfessionName(string $search): string {
-		$search = strtolower($search);
-		switch ($search) {
-			case 'adv':
-			case 'advy':
-			case 'adventurer':
-				$prof = 'Adventurer';
-				break;
-			case 'age':
-			case 'agent':
-				$prof = 'Agent';
-				break;
-			case 'crat':
-			case 'bureaucrat':
-				$prof = 'Bureaucrat';
-				break;
-			case 'doc':
-			case 'doctor':
-				$prof = 'Doctor';
-				break;
-			case 'enf':
-			case 'enfo':
-			case 'enforcer':
-				$prof = 'Enforcer';
-				break;
-			case 'eng':
-			case 'engi':
-			case 'engy':
-			case 'engineer':
-				$prof = 'Engineer';
-				break;
-			case 'fix':
-			case 'fixer':
-				$prof = 'Fixer';
-				break;
-			case 'keep':
-			case 'keeper':
-				$prof = 'Keeper';
-				break;
-			case 'ma':
-			case 'martial':
-			case 'martialartist':
-			case 'martial artist':
-				$prof = 'Martial Artist';
-				break;
-			case 'mp':
-			case 'meta':
-			case 'metaphysicist':
-			case 'meta-physicist':
-				$prof = 'Meta-Physicist';
-				break;
-			case 'nt':
-			case 'nano':
-			case 'nanotechnician':
-			case 'nano-technician':
-				$prof = 'Nano-Technician';
-				break;
-			case 'sol':
-			case 'sold':
-			case 'soldier':
-				$prof = 'Soldier';
-				break;
-			case 'tra':
-			case 'trad':
-			case 'trader':
-				$prof = 'Trader';
-				break;
-			case 'sha':
-			case 'shade':
-				$prof = 'Shade';
-				break;
-			default:
-				$prof = '';
-		}
-
-		return $prof;
 	}
 
 	/** Completes a filename or directory by searching for it in modules and core paths */
@@ -282,7 +203,7 @@ class Util {
 	 *
 	 * @return string|null The short or long form
 	 */
-	public function getAbility(string $ability, bool $getFullName=false): ?string {
+	public static function getAbility(string $ability, bool $getFullName=false): ?string {
 		$abilities = [
 			'agi' => 'Agility',
 			'int' => 'Intelligence',
@@ -308,7 +229,7 @@ class Util {
 	 *
 	 * @param array<mixed> $array
 	 */
-	public function randomArrayValue(array $array): mixed {
+	public static function randomArrayValue(array $array): mixed {
 		return $array[array_rand($array)];
 	}
 
@@ -317,7 +238,7 @@ class Util {
 	 *
 	 * Invalid values: -1 on 32bit and 4294967295  on 64bit
 	 */
-	public function isValidSender(int|string $sender): bool {
+	public static function isValidSender(int|string $sender): bool {
 		$isValid = !in_array(
 			$sender,
 			[(string)0xFF_FF_FF_FF, 0xFF_FF_FF_FF, '-1', -1],
@@ -331,7 +252,7 @@ class Util {
 	 *
 	 * @see http://www.lost-in-code.com/programming/php-code/php-random-string-with-numbers-and-letters/
 	 */
-	public function genRandomString(int $length=10, string $characters='0123456789abcdefghijklmnopqrstuvwxyz'): string {
+	public static function genRandomString(int $length=10, string $characters='0123456789abcdefghijklmnopqrstuvwxyz'): string {
 		$string = '';
 		for ($p = 0; $p < $length; $p++) {
 			$string .= $characters[mt_rand(0, strlen($characters)-1)];
@@ -340,7 +261,7 @@ class Util {
 	}
 
 	/** Get a stacktrace of the calling stack as a string */
-	public function getStackTrace(): string {
+	public static function getStackTrace(): string {
 		$trace = debug_backtrace();
 		$arr1 = [];
 		$arr2 = [];
@@ -375,113 +296,11 @@ class Util {
 	}
 
 	/**
-	 * Checks if $string ends with string $test
-	 *
-	 * @see http://stackoverflow.com/questions/834303/php-startswith-and-endswith-functions
-	 */
-	public function endsWith(string $string, string $test): bool {
-		$strlen = strlen($string);
-		$testlen = strlen($test);
-		if ($testlen > $strlen) {
-			return false;
-		}
-		return substr_compare($string, $test, -$testlen) === 0;
-	}
-
-	/**
-	 * Checks if $haystack starts with $needle
-	 *
-	 * @see http://stackoverflow.com/questions/834303/php-startswith-and-endswith-functions
-	 */
-	public function startsWith(string $haystack, string $needle): bool {
-		return !strncmp($haystack, $needle, strlen($needle));
-	}
-
-	/** Remove all colors from $msg */
-	public function stripColors(string $msg): string {
-		$msg = Safe::pregReplace('~<font color=#.{6}>~', '', $msg);
-		$msg = Safe::pregReplace('~</font>~', '', $msg);
-		return $msg;
-	}
-
-	/**
-	 * Generate an SQL query from a column and a list of criteria
-	 *
-	 * @param string[] $params An array of strings that $column must contain (or not contain if they start with "-")
-	 * @param string   $column The table column to test against
-	 *
-	 * @return array<string,string[]> ["$column LIKE ? AND $column NOT LIKE ? AND $column LIKE ?", ['%a%', '%b%', '%c%']]
-	 *
-	 * @psalm-return array{0: string, 1: list<string>}
-	 */
-	public function generateQueryFromParams(array $params, string $column): array {
-		$queryParams = [];
-		$statements = [];
-		foreach ($params as $key => $value) {
-			if ($value[0] == '-' && strlen($value) > 1) {
-				$value = substr($value, 1);
-				$op = 'NOT LIKE';
-			} else {
-				$op = 'LIKE';
-			}
-			$statements []= "{$column} {$op} ?";
-			$queryParams []= '%' . $value . '%';
-		}
-		return [implode(' AND ', $statements), $queryParams];
-	}
-
-	/**
-	 * A stable sort, which keeps the order of equal elements in the input and output
-	 *
-	 * @see http://php.net/manual/en/function.usort.php
-	 *
-	 * @param mixed[]  $array        A reference to the array to sorte
-	 * @param callable $cmp_function The function (name) to compare elements with.
-	 *                               Must accept 2 parameters and return
-	 *                               1 (1st before), -1 (2nd before) ot 0 (equal)
-	 */
-	public function mergesort(array &$array, callable $cmp_function): void {
-		// Arrays of size < 2 require no action.
-		if (count($array) < 2) {
-			return;
-		}
-		// Split the array in half
-		$halfway = count($array) / 2;
-		$array1 = array_slice($array, 0, (int)floor($halfway));
-		$array2 = array_slice($array, (int)floor($halfway));
-		// Recurse to sort the two halves
-		$this->mergesort($array1, $cmp_function);
-		$this->mergesort($array2, $cmp_function);
-		// If all of $array1 is <= all of $array2, just append them.
-		if ($cmp_function(end($array1), $array2[0]) < 1) {
-			$array = array_merge($array1, $array2);
-			return;
-		}
-		// Merge the two sorted arrays into a single sorted array
-		$array = [];
-		$ptr1 = $ptr2 = 0;
-		while ($ptr1 < count($array1) && $ptr2 < count($array2)) {
-			if ($cmp_function($array1[$ptr1], $array2[$ptr2]) < 1) {
-				$array[] = $array1[$ptr1++];
-			} else {
-				$array[] = $array2[$ptr2++];
-			}
-		}
-		// Merge the remainder
-		while ($ptr1 < count($array1)) {
-			$array[] = $array1[$ptr1++];
-		}
-		while ($ptr2 < count($array2)) {
-			$array[] = $array2[$ptr2++];
-		}
-	}
-
-	/**
 	 * Try to interpolate bonus/requirement of an item at an arbitrary QL
 	 *
 	 * @return int The interpolated bonus/requirement at QL $ql
 	 */
-	public function interpolate(int $minQL, int $maxQL, int $minVal, int $maxVal, int $ql): int {
+	public static function interpolate(int $minQL, int $maxQL, int $minVal, int $maxVal, int $ql): int {
 		if ($minQL == $maxQL) {
 			return $maxVal;
 		}
@@ -524,11 +343,6 @@ class Util {
 		));
 	}
 
-	/** Test if $input only consists of digits */
-	public function isInteger(mixed $input): bool {
-		return ctype_digit((string)$input);
-	}
-
 	/** Calculate the title level from the player's level */
 	public static function levelToTL(int $level): int {
 		if ($level < 15) {
@@ -559,7 +373,7 @@ class Util {
 	 *
 	 * @phpstan-return array{int,int}
 	 */
-	public function tlToLevelRange(int $tl): array {
+	public static function tlToLevelRange(int $tl): array {
 		if ($tl === 1) {
 			return [1, 14];
 		}
@@ -582,7 +396,7 @@ class Util {
 	}
 
 	/** @phpstan-param class-string $class */
-	public function getClassSpecFromClass(string $class, string $attrName): ?ClassSpec {
+	public static function getClassSpecFromClass(string $class, string $attrName): ?ClassSpec {
 		if (!is_subclass_of($attrName, NCA\ClassSpec::class)) {
 			throw new InvalidArgumentException("{$attrName} is not a class spec");
 		}
@@ -648,7 +462,7 @@ class Util {
 	}
 
 	/** Create a cryptographically secure password */
-	public function getPassword(int $length=16): string {
+	public static function getPassword(int $length=16): string {
 		if ($length < 1) {
 			throw new InvalidArgumentException('Parameter $length to getPassword() must be > 0');
 		}

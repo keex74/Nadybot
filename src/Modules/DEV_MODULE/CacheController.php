@@ -36,9 +36,6 @@ class CacheController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Filesystem $fs;
 
 	#[NCA\Inject]
@@ -70,7 +67,7 @@ class CacheController extends ModuleInstance {
 			if (!isset($fileInfo)) {
 				continue;
 			}
-			$blob .= "<highlight>{$file}<end>  " . $this->util->bytesConvert($fileInfo['size']) . ' - Last modified ' . $this->util->date($fileInfo['mtime']);
+			$blob .= "<highlight>{$file}<end>  " . Util::bytesConvert($fileInfo['size']) . ' - Last modified ' . Util::date($fileInfo['mtime']);
 			$blob .= '  [' . $this->text->makeChatcmd('View', "/tell <myname> cache view {$group} {$file}") . ']';
 			$blob .= '  [' . $this->text->makeChatcmd('Delete', "/tell <myname> cache rem {$group} {$file}") . "]\n";
 		}

@@ -68,9 +68,6 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	private DB $db;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AccessManager $accessManager;
 
 	#[NCA\Inject]
@@ -216,7 +213,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 
 			$timeleft = $topic->getTimeLeft();
 			if ($timeleft > 0) {
-				$running .= $line . ' (' . $this->util->unixtimeToReadable($timeleft) . " left)\n";
+				$running .= $line . ' (' . Util::unixtimeToReadable($timeleft) . " left)\n";
 			} else {
 				$over .= $line . "\n";
 			}
@@ -495,9 +492,9 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		$blob = "<header2>{$topic->author}'s Poll<end>\n".
 			"<tab><highlight>{$topic->question}<end>\n\n";
 		if ($timeleft > 0) {
-			$blob .= $this->util->unixtimeToReadable($timeleft)." till this poll closes.\n\n";
+			$blob .= Util::unixtimeToReadable($timeleft)." till this poll closes.\n\n";
 		} else {
-			$blob .= '<off>This poll has ended ' . $this->util->unixtimeToReadable($timeleft * -1, true) . " ago.<end>\n\n";
+			$blob .= '<off>This poll has ended ' . Util::unixtimeToReadable($timeleft * -1, true) . " ago.<end>\n\n";
 		}
 
 		$blob .= "<header2>Answers<end>\n";

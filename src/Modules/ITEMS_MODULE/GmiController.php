@@ -39,9 +39,6 @@ class GmiController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private HttpClientBuilder $builder;
 
 	#[NCA\Inject]
@@ -225,7 +222,7 @@ class GmiController extends ModuleInstance {
 				$this->text->alignNumber($order->ql, 3),
 				$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 				$order->seller,
-				$this->util->unixtimeToReadable($order->expiration),
+				Util::unixtimeToReadable($order->expiration),
 			);
 		}
 		return sprintf(
@@ -233,7 +230,7 @@ class GmiController extends ModuleInstance {
 			$this->text->alignNumber($order->count, strlen((string)$highestAmount)),
 			$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 			$order->seller,
-			$this->util->unixtimeToReadable($order->expiration),
+			Util::unixtimeToReadable($order->expiration),
 		);
 	}
 
@@ -254,7 +251,7 @@ class GmiController extends ModuleInstance {
 				$ql,
 				$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 				$order->buyer,
-				$this->util->unixtimeToReadable($order->expiration),
+				Util::unixtimeToReadable($order->expiration),
 			);
 		}
 		return sprintf(
@@ -262,7 +259,7 @@ class GmiController extends ModuleInstance {
 			$this->text->alignNumber($order->count, strlen((string)$highestAmount)),
 			$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 			$order->buyer,
-			$this->util->unixtimeToReadable($order->expiration),
+			Util::unixtimeToReadable($order->expiration),
 		);
 	}
 }

@@ -78,9 +78,6 @@ class ChatAssistController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private ChatLeaderController $chatLeaderController;
 
 	#[NCA\Inject]
@@ -510,7 +507,7 @@ class ChatAssistController extends ModuleInstance {
 			$undo--;
 			$blob .= "<tab>[{$undoLink}]\n".
 				'<tab>'.
-				$this->util->date($backup->time->getTimestamp()).
+				Util::date($backup->time->getTimestamp()).
 				"<tab><highlight><symbol>{$backup->command}<end> ({$backup->changer})\n";
 		}
 		$msg = $this->text->makeBlob("Caller history ({$count})", $blob);

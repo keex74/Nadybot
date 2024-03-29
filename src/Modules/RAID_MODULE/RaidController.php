@@ -247,14 +247,14 @@ class RaidController extends ModuleInstance {
 		$blob = "<header2>Current raid<end>\n".
 			"<tab>Description: <highlight>{$this->raid->description}<end>\n".
 			'<tab>Duration: running for <highlight>'.
-			$this->util->unixtimeToReadable(time() - $this->raid->started) . "<end>.\n".
+			Util::unixtimeToReadable(time() - $this->raid->started) . "<end>.\n".
 			"<tab>Raiders: <highlight>{$numRaiders}<end>".
 			(($this->raid->max_members > 0) ? "/<highlight>{$this->raid->max_members}<end>" : '').
 			"\n".
 			"<tab>Status: {$status}\n";
 		if ($this->raid->seconds_per_point > 0) {
 			$blob .= '<tab>Points: <highlight>1 raid point every '.
-				$this->util->unixtimeToReadable($this->raid->seconds_per_point);
+				Util::unixtimeToReadable($this->raid->seconds_per_point);
 			if ($this->raid->ticker_paused) {
 				$blob .= ' (<red>paused<end>)';
 			} else {
@@ -288,12 +288,12 @@ class RaidController extends ModuleInstance {
 		}
 		$blob = "<header2>Raid Control Interface<end>\n".
 			'<tab>Raid Status: Running for <highlight>'.
-			$this->util->unixtimeToReadable(time() - $this->raid->started) . '<end>'.
+			Util::unixtimeToReadable(time() - $this->raid->started) . '<end>'.
 			' [' . $this->text->makeChatcmd('stop', '/tell <myname> raid stop') . "]\n".
 			'<tab>Points Status: ';
 		if ($this->raid->seconds_per_point > 0) {
 			$blob .= '<highlight>1 point every '.
-				$this->util->unixtimeToReadable($this->raid->seconds_per_point).
+				Util::unixtimeToReadable($this->raid->seconds_per_point).
 				"<end>\n";
 		} else {
 			$sppDefault = $this->raidPointsInterval;
@@ -350,7 +350,7 @@ class RaidController extends ModuleInstance {
 				).
 				"]\n";
 		} else {
-			$interval = $this->util->unixtimeToReadable($this->raid->announce_interval);
+			$interval = Util::unixtimeToReadable($this->raid->announce_interval);
 			$blob .= "every {$interval}<end> [".
 				$this->text->makeChatcmd(
 					'disable',
@@ -532,7 +532,7 @@ class RaidController extends ModuleInstance {
 			$this->raid->ticker_paused = false;
 			$context->reply('Raid ticker resumed.');
 		} else {
-			$spp = $this->util->parseTime($interval);
+			$spp = Util::parseTime($interval);
 			if ($spp === 0) {
 				$context->reply("Invalid interval: {$interval}.");
 				return;
@@ -563,7 +563,7 @@ class RaidController extends ModuleInstance {
 			$this->raid->announce_interval = 0;
 			$context->reply('Raid announcement turned off.');
 		} else {
-			$newInterval = $this->util->parseTime($interval);
+			$newInterval = Util::parseTime($interval);
 			if ($newInterval === 0) {
 				$context->reply("<highlight>{$interval}<end> is not a valid interval.");
 				return;
@@ -872,11 +872,11 @@ class RaidController extends ModuleInstance {
 			$blob .= " ({$main})";
 		}
 		$blob .= "<end>\n";
-		$blob .= '<tab>' . $this->util->date($raid->started) . '<tab>'.
+		$blob .= '<tab>' . Util::date($raid->started) . '<tab>'.
 			"Raid started by {$raid->started_by}\n";
 		foreach ($allLogs as $log) {
 			if ($log instanceof RaidPointsLog) {
-				$blob .= '<tab>' . $this->util->date($log->time) . '<tab>'.
+				$blob .= '<tab>' . Util::date($log->time) . '<tab>'.
 					$this->text->alignNumber(abs($log->delta), 5, $log->delta > 0 ? 'green' : 'red').
 					' - '.
 					($log->individual ? '<highlight>' : '').
@@ -884,12 +884,12 @@ class RaidController extends ModuleInstance {
 					($log->individual ? '<end>' : '').
 					" (by {$log->changed_by})\n";
 			} elseif ($log instanceof RaidStatus) {
-				$blob .= '<tab>' . $this->util->date($log->time) . '<tab>'.
+				$blob .= '<tab>' . Util::date($log->time) . '<tab>'.
 					($log->status ? 'Raid joined' : 'Raid left') . "\n";
 			}
 		}
 		if (isset($raid->stopped)) {
-			$blob .= '<tab>' . $this->util->date($raid->stopped) . '<tab>'.
+			$blob .= '<tab>' . Util::date($raid->stopped) . '<tab>'.
 				"Raid stopped by {$raid->stopped_by}\n";
 		}
 		$msg = $this->text->makeBlob("Raid {$raid->raid_id} details for {$char}", $blob);
@@ -1287,11 +1287,11 @@ class RaidController extends ModuleInstance {
 	protected function getRaidSummary(Raid $raid): string {
 		$blob  = "<header2>Raid Nr. {$raid->raid_id}<end>\n";
 		$blob .= '<tab>Started:  '.
-			'<highlight>' . $this->util->date($raid->started) . '<end> '.
+			'<highlight>' . Util::date($raid->started) . '<end> '.
 			"by <highlight>{$raid->started_by}<end>\n";
 		if (isset($raid->stopped)) {
 			$blob .= '<tab>Stopped: '.
-				'<highlight>' . $this->util->date($raid->stopped) . '<end> '.
+				'<highlight>' . Util::date($raid->stopped) . '<end> '.
 				"by <highlight>{$raid->stopped_by}<end>\n";
 		}
 		$blob .= "<tab>Description: <highlight>{$raid->description}<end>\n";
@@ -1303,7 +1303,7 @@ class RaidController extends ModuleInstance {
 			$blob .= "<highlight>Given per kill<end>\n";
 		} else {
 			$blob .= '<highlight>1 point every '.
-				$this->util->unixtimeToReadable($raid->seconds_per_point).
+				Util::unixtimeToReadable($raid->seconds_per_point).
 				'<end>';
 			if ($raid->ticker_paused) {
 				$blob .= ' (<red>paused<end>)';

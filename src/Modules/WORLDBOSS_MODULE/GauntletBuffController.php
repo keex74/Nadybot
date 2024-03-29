@@ -144,9 +144,6 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	private EventManager $eventManager;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private TimerController $timerController;
 
 	#[NCA\Inject]
@@ -207,7 +204,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	public function validateGaubuffTimes(string $setting, string $old, string $new): void {
 		$lastTime = null;
 		foreach (explode(' ', $new) as $utime) {
-			$secs = $this->util->parseTime($utime);
+			$secs = Util::parseTime($utime);
 			if ($secs === 0) {
 				throw new Exception("<highlight>{$new}<end> is not a list of budatimes.");
 			}
@@ -223,7 +220,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		$alertTimes = [];
 		$gaubuffTimes = $this->gaubuffTimes;
 		foreach (explode(' ', $gaubuffTimes) as $utime) {
-			$alertTimes [] = $this->util->parseTime($utime);
+			$alertTimes [] = Util::parseTime($utime);
 		}
 		$alertTimes []= 0; // timer runs out
 		$tokens = [
@@ -238,7 +235,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 					$alert->message = $this->text->renderPlaceholders($this->gauntletExpiredNotification, $tokens);
 				} else {
 					$tokens['expiry'] = $this->tmTime($time);
-					$tokens['duration'] = $this->util->unixtimeToReadable($alertTime);
+					$tokens['duration'] = Util::unixtimeToReadable($alertTime);
 					$tokens['c-expiry'] = '<highlight>' . $tokens['expiry'] . '<end>';
 					$tokens['c-duration'] = '<highlight>' . $tokens['duration'] . '<end>';
 					$alert->message = $this->text->renderPlaceholders($this->gauntletExpiryWarning, $tokens);
@@ -312,7 +309,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			if ($timer !== null && isset($timer->endtime)) {
 				$gaubuff = $timer->endtime - time();
 				$msgs []= $side->inColor($side->value . ' Gauntlet buff') .' runs out '.
-					'in <highlight>'.$this->util->unixtimeToReadable($gaubuff).'<end>.';
+					'in <highlight>'.Util::unixtimeToReadable($gaubuff).'<end>.';
 			}
 		}
 		if (empty($msgs)) {
@@ -355,7 +352,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			'side' => $faction->value,
 			'c-side' => $faction->inColor(),
 			'expiry' => $this->tmTime($buffEnds),
-			'duration' => $this->util->unixtimeToReadable($buffEnds - time()),
+			'duration' => Util::unixtimeToReadable($buffEnds - time()),
 		];
 		$tokens['c-expiry'] = '<highlight>' . $tokens['expiry'] . '<end>';
 		$tokens['c-duration'] = '<highlight>' . $tokens['duration'] . '<end>';
@@ -415,7 +412,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			if ($timer !== null && isset($timer->endtime)) {
 				$gaubuff = $timer->endtime - time();
 				$msgs []= '<tab>' . $side->inColor($side->value . ' Gauntlet buff') . ' runs out '.
-					'in <highlight>'.$this->util->unixtimeToReadable($gaubuff)."<end>.\n";
+					'in <highlight>'.Util::unixtimeToReadable($gaubuff)."<end>.\n";
 			}
 		}
 		if (empty($msgs)) {
@@ -471,7 +468,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			}
 			$msgs []= $side->inColor($side->value . ' Gauntlet buff') . ' '.
 					'runs out in <highlight>'.
-					$this->util->unixtimeToReadable($timer->endtime - time()).
+					Util::unixtimeToReadable($timer->endtime - time()).
 					'<end>.';
 		}
 		if (empty($msgs)) {

@@ -684,7 +684,7 @@ class DB {
 			value: '0'
 		);
 
-		if ($this->table($table)->exists() && $this->util->compareVersionNumbers((string)$version, (string)$currentVersion) <= 0) {
+		if ($this->table($table)->exists() && Util::compareVersionNumbers((string)$version, (string)$currentVersion) <= 0) {
 			$msg = "'{$table}' database already up to date! version: '{$currentVersion}'";
 			$this->logger->info($msg);
 			return false;

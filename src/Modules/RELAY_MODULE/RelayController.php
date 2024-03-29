@@ -189,7 +189,7 @@ class RelayController extends ModuleInstance {
 				$className = basename($file, '.php');
 				$fullClass = __NAMESPACE__ . "\\{$dir}\\{$className}";
 				if (class_exists($fullClass)) {
-					$spec = $this->util->getClassSpecFromClass($fullClass, $data[0]);
+					$spec = Util::getClassSpecFromClass($fullClass, $data[0]);
 					if (isset($spec)) {
 						$data[1]($spec);
 					}

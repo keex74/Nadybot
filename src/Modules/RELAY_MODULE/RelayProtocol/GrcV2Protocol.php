@@ -49,8 +49,6 @@ class GrcV2Protocol implements RelayProtocolInterface {
 
 	protected string $command = 'grc';
 	protected string $prefix = '';
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private Text $text;
@@ -96,7 +94,7 @@ class GrcV2Protocol implements RelayProtocolInterface {
 		}
 		$senderLink = '';
 		$character = $event->getCharacter();
-		if (isset($character) && $this->util->isValidSender($character->name)) {
+		if (isset($character) && Util::isValidSender($character->name)) {
 			$senderLink = $this->text->makeUserlink($character->name) . ': ';
 		} else {
 			$msgColor = '<relay_bot_color>';

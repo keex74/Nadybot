@@ -36,7 +36,6 @@ use Nadybot\Core\{
 	SettingManager,
 	SubcommandManager,
 	Text,
-	Util,
 };
 use Nadybot\Modules\RELAY_MODULE\RelayController;
 use Psr\Log\LoggerInterface;
@@ -67,9 +66,6 @@ class ProfileController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private CommandManager $commandManager;
@@ -219,7 +215,7 @@ class ProfileController extends ModuleInstance {
 
 		$contents .= "\n# Settings\n";
 		foreach ($this->settingManager->settings as $name => $value) {
-			if ($name !== 'botid' && $name !== 'version' && !$this->util->endsWith($name, '_db_version')) {
+			if ($name !== 'botid' && $name !== 'version' && !str_ends_with($name, '_db_version')) {
 				$contents .= "!settings save {$name} {$value->value}\n";
 			}
 		}

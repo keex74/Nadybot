@@ -128,9 +128,6 @@ class LimitsController extends ModuleInstance {
 	private PlayerHistoryManager $playerHistoryManager;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Inject]
@@ -418,7 +415,7 @@ class LimitsController extends ModuleInstance {
 		// TODO check for rename
 
 		if ($entry->last_changed->getTimestamp() > $minAge) {
-			$timeString = $this->util->unixtimeToReadable($this->tellMinPlayerAge);
+			$timeString = Util::unixtimeToReadable($this->tellMinPlayerAge);
 			throw new UserException(
 				"Error! You must be at least <highlight>{$timeString}<end> old."
 			);

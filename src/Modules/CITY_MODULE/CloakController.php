@@ -72,9 +72,6 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AltsController $altsController;
 
 	#[NCA\Inject]
@@ -119,7 +116,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 		/** @var OrgCity $row */
 		$row = $data->shift();
 		$timeSinceChange = time() - $row->time;
-		$timeString = $this->util->unixtimeToReadable(3_600 - $timeSinceChange, false);
+		$timeString = Util::unixtimeToReadable(3_600 - $timeSinceChange, false);
 
 		if ($timeSinceChange >= 3_600 && $row->action === 'off') {
 			$msg = 'The cloaking device is <off>disabled<end>. It is possible to enable it.';
@@ -133,12 +130,12 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 			$msg = 'The cloaking device is in an unknown state.';
 		}
 
-		$list = 'Time: <highlight>' . $this->util->date($row->time) . "<end>\n";
+		$list = 'Time: <highlight>' . Util::date($row->time) . "<end>\n";
 		$list .= 'Action: <highlight>Cloaking device turned ' . $row->action . "<end>\n";
 		$list .= 'Character: <highlight>' . $row->player . "<end>\n\n";
 
 		foreach ($data as $row) {
-			$list .= 'Time: <highlight>' . $this->util->date($row->time) . "<end>\n";
+			$list .= 'Time: <highlight>' . Util::date($row->time) . "<end>\n";
 			$list .= 'Action: <highlight>Cloaking device turned ' . $row->action . "<end>\n";
 			$list .= 'Character: <highlight>' . $row->player . "<end>\n\n";
 		}
@@ -232,7 +229,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 			$canSendReminder = !isset($this->lastReminderSent)
 				|| (time() - $this->lastReminderSent) > $interval;
 			if ($timeSinceChange >= 60*60 && $canSendReminder) {
-				$timeString = $this->util->unixtimeToReadable(time() - $row->time, false);
+				$timeString = Util::unixtimeToReadable(time() - $row->time, false);
 				$this->sendCloakMessage("The cloaking device was disabled by <highlight>{$row->player}<end> {$timeString} ago. It is possible to enable it.");
 				$this->lastReminderSent = time();
 			}
@@ -254,7 +251,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 		}
 
 		$timeSinceChange = time() - $row->time;
-		$timeString = $this->util->unixtimeToReadable(3_600 - $timeSinceChange, false);
+		$timeString = Util::unixtimeToReadable(3_600 - $timeSinceChange, false);
 
 		$msg = null;
 		// 10 minutes before, send tell to player
@@ -335,7 +332,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 			return null;
 		}
 		$timeSinceChange = time() - $row->time;
-		$timeString = $this->util->unixtimeToReadable(3_600 - $timeSinceChange, false);
+		$timeString = Util::unixtimeToReadable(3_600 - $timeSinceChange, false);
 
 		if ($timeSinceChange >= 60*60 && $row->action === 'off') {
 			return [1, 'The cloaking device is <off>disabled<end>. '.

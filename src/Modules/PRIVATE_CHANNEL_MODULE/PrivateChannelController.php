@@ -257,9 +257,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Filesystem $fs;
 
 	#[NCA\Inject]
@@ -422,7 +419,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return;
 		}
 
-		$timeString = $this->util->unixtimeToReadable($time, false);
+		$timeString = Util::unixtimeToReadable($time, false);
 		$time = time() - $time;
 
 		/**
@@ -473,7 +470,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				'last seen: ';
 			if (isset($inactiveMember->last_online)) {
 				$line .= '<highlight>'.
-					$this->util->date($inactiveMember->last_online->dt).
+					Util::date($inactiveMember->last_online->dt).
 					"<end> on {$inactiveMember->last_online->name}";
 			} else {
 				$line .= '<highlight>never<end>';
@@ -1337,7 +1334,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			if ($this->buddylistManager->isOnline($info->name)) {
 				return "<highlight>{$info->name}<end> is currently <on>online<end>";
 			}
-			return "<highlight>{$info->name}<end> last seen at " . $this->util->date($info->dt);
+			return "<highlight>{$info->name}<end> last seen at " . Util::date($info->dt);
 		})->sort(static function (string $line1, string $line2): int {
 			$oneHas = str_contains($line1, '<on>');
 			$twoHas = str_contains($line2, '<on>');

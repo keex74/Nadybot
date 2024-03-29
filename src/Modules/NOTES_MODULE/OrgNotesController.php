@@ -52,9 +52,6 @@ class OrgNotesController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AccessManager $accessManager;
 
 	#[NCA\Inject]
@@ -84,7 +81,7 @@ class OrgNotesController extends ModuleInstance {
 	public function createOrgNote(string $creator, string $text, bool $forceSync=false): OrgNote {
 		$note = new OrgNote(
 			added_by: $creator,
-			uuid: $this->util->createUUID(),
+			uuid: Util::createUUID(),
 			note: $text,
 		);
 		$note->id = $this->db->insert(self::DB_TABLE, $note);
@@ -146,7 +143,7 @@ class OrgNotesController extends ModuleInstance {
 				) . ']';
 			}
 			$chunks []= "<tab>{$note->added_by} on ".
-				$this->util->date($note->added_on).
+				Util::date($note->added_on).
 				"\n<tab>- <highlight>{$note->note}<end>{$removeLink}";
 		}
 		$blob = "<header2>Notes in your org/alliance<end>\n\n".

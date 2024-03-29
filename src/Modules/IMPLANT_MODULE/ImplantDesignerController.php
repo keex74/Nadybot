@@ -803,7 +803,7 @@ class ImplantDesignerController extends ModuleInstance {
 			$maxQl = 300;
 		}
 
-		$modAmount = $this->util->interpolate($minQl, $maxQl, $minVal, $maxVal, $ql);
+		$modAmount = Util::interpolate($minQl, $maxQl, $minVal, $maxVal, $ql);
 		if ($grade == 'bright') {
 			$modAmount = round($modAmount * 0.6, 0);
 		} elseif ($grade == 'faded') {
@@ -854,8 +854,8 @@ class ImplantDesignerController extends ModuleInstance {
 			$maxQl = 300;
 		}
 
-		$implantInfo->Ability = $this->util->interpolate($minQl, $maxQl, $minAbility, $maxAbility, $ql);
-		$implantInfo->Treatment = $this->util->interpolate($minQl, $maxQl, $minTreatment, $maxTreatment, $ql);
+		$implantInfo->Ability = Util::interpolate($minQl, $maxQl, $minAbility, $maxAbility, $ql);
+		$implantInfo->Treatment = Util::interpolate($minQl, $maxQl, $minTreatment, $maxTreatment, $ql);
 
 		return $implantInfo;
 	}

@@ -147,7 +147,7 @@ class MessageHubController extends ModuleInstance {
 				->update(['disabled_until' => null]);
 			return;
 		}
-		$durationSecs = $this->util->parseTime($duration);
+		$durationSecs = Util::parseTime($duration);
 		if ($durationSecs === 0) {
 			$context->reply("<highlight>{$duration}<end> is not a valid duration.");
 			return;
@@ -177,7 +177,7 @@ class MessageHubController extends ModuleInstance {
 		$durations = [60, 300, 600, 1_800, 3_600, 6*3_600, 24*3_600];
 		$blob = '<header2>Choose mute duration<end>';
 		foreach ($durations as $durationInSecs) {
-			$timeString = $this->util->unixtimeToReadable($durationInSecs);
+			$timeString = Util::unixtimeToReadable($durationInSecs);
 			$command = $this->text->makeChatcmd(
 				"{$timeString}",
 				"/tell <myname> route mute {$id} {$durationInSecs}s"
@@ -562,7 +562,7 @@ class MessageHubController extends ModuleInstance {
 					implode(' ', $route->renderModifiers(true)).
 					(
 						$isDisabled
-						? ' (<red>muted for ' . $this->util->unixtimeToReadable($disabledUntil - time()) . '<end>)'
+						? ' (<red>muted for ' . Util::unixtimeToReadable($disabledUntil - time()) . '<end>)'
 						: ''
 					);
 			}
@@ -1111,7 +1111,7 @@ class MessageHubController extends ModuleInstance {
 			implode(' ', $route->renderModifiers(true));
 		$disabledUntil = $route->getDisabled();
 		if (isset($disabledUntil) && $disabledUntil > time()) {
-			$routeString .= '(<red>muted for ' . $this->util->unixtimeToReadable($disabledUntil - time()) .'<end>)';
+			$routeString .= '(<red>muted for ' . Util::unixtimeToReadable($disabledUntil - time()) .'<end>)';
 		}
 		return $routeString;
 	}

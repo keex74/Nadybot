@@ -429,7 +429,7 @@ class ImportController extends ModuleInstance {
 				$newsId = $this->db->table('news')
 				->insertGetId([
 					'time' => $item->addedTime ?? time(),
-					'uuid' => $item->uuid ?? $this->util->createUUID(),
+					'uuid' => $item->uuid ?? Util::createUUID(),
 					'name' => ($this->characterToName($item->author ?? null)) ?? $this->config->main->character,
 					'news' => $item->news,
 					'sticky' => $item->pinned ?? false,
@@ -512,7 +512,7 @@ class ImportController extends ModuleInstance {
 					'added_by' => ($this->characterToName($note->author ?? null)) ?? $owner,
 					'note' => $note->text,
 					'added_on' => $note->creationTime ?? null,
-					'uuid' => $note->uuid ?? $this->util->createUUID(),
+					'uuid' => $note->uuid ?? Util::createUUID(),
 				]);
 			}
 		} catch (Throwable $e) {

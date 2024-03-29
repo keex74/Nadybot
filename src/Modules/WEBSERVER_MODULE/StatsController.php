@@ -44,9 +44,6 @@ class StatsController extends ModuleInstance {
 	#[NCA\Inject]
 	private BotConfig $config;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	/** @var array<string,Dataset> */
 	private array $dataSets = [];
 
@@ -133,7 +130,7 @@ class StatsController extends ModuleInstance {
 	}
 
 	private function assignRandomAuthToken(): void {
-		$this->settingManager->save('prometheus_auth_token', $this->util->getPassword(16));
+		$this->settingManager->save('prometheus_auth_token', Util::getPassword(16));
 	}
 
 	private function assignEmptyAuthToken(): void {

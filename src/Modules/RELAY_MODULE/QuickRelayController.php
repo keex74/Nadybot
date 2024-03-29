@@ -27,9 +27,6 @@ class QuickRelayController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	/** List all supported quick relay types */
 	#[NCA\HandlesCommand('quickrelay')]
 	public function quickrelayListCommand(CmdContext $context): void {
@@ -87,7 +84,7 @@ class QuickRelayController extends ModuleInstance {
 	/** Show a quick setup for a Tyrbot-relay */
 	#[NCA\HandlesCommand('quickrelay')]
 	public function quickrelayTyrCommand(CmdContext $context, #[NCA\Str('tyr')] string $type): void {
-		$password = $this->util->getPassword(16);
+		$password = Util::getPassword(16);
 		$blob = "First, you have to run a local installation of <a href='chatcmd:///start https://github.com/Budabot/Tyrbot/wiki/Websocket-Relay'>".
 			"Tyrence's Websocket relay</a>.\n".
 			"This example assumes that we can connect to it at ws://127.0.0.1:8000.\n\n".
@@ -106,8 +103,8 @@ class QuickRelayController extends ModuleInstance {
 	/** Show a quick setup for a Nadybot-relay */
 	#[NCA\HandlesCommand('quickrelay')]
 	public function quickrelayNadyCommand(CmdContext $context, #[NCA\Str('nady')] string $type): void {
-		$password = $this->util->getPassword(16);
-		$room = $this->util->createUUID();
+		$password = Util::getPassword(16);
+		$room = Util::createUUID();
 		$blob = "To setup a relay called \"nady\" between multiple Nadybots, run this on all bots:\n".
 			'<tab><highlight><symbol>relay add nady websocket(server="wss://ws.nadybot.org") '.
 				"highway(room=\"{$room}\") ".

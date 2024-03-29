@@ -174,9 +174,6 @@ class AuctionController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Inject]
@@ -283,7 +280,7 @@ class AuctionController extends ModuleInstance {
 		if (time() - $lastAuction->end > $maxAge) {
 			$context->reply(
 				"<highlight>{$lastAuction->item}<end> was auctioned longer than ".
-				$this->util->unixtimeToReadable($maxAge) . ' '.
+				Util::unixtimeToReadable($maxAge) . ' '.
 				'ago and can no longer be reimbursed.'
 			);
 			return;

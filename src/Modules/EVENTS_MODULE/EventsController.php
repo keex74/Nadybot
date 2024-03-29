@@ -59,9 +59,6 @@ class EventsController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AltsController $altsController;
 
 	/** Show the five closest past and upcoming events */
@@ -285,7 +282,7 @@ class EventsController extends ModuleInstance {
 				if (!isset($row->event_date)) {
 					$upcoming = "<tab>Event Date: <highlight>&lt;Not yet set&gt;<end>\n";
 				} else {
-					$upcoming = '<tab>Event Date: <highlight>' . $this->util->date($row->event_date) . "<end>\n";
+					$upcoming = '<tab>Event Date: <highlight>' . Util::date($row->event_date) . "<end>\n";
 				}
 				$upcoming .= "<tab>Event Name: <highlight>{$row->event_name}<end>     [Event ID {$row->id}]\n";
 				$upcoming .= "<tab>Author: <highlight>{$row->submitter_name}<end>\n";
@@ -293,15 +290,15 @@ class EventsController extends ModuleInstance {
 					' [' . $this->text->makeChatcmd('join', "/tell <myname> events join {$row->id}") . '] [' .
 					$this->text->makeChatcmd('leave', "/tell <myname> events leave {$row->id}") . "]\n";
 				$upcoming .= '<tab>Description: <highlight>' . ($row->event_desc ?? '&lt;empty&gt;') . "<end>\n";
-				$upcoming .= '<tab>Date Submitted: <highlight>' . $this->util->date($row->time_submitted) . "<end>\n\n";
+				$upcoming .= '<tab>Date Submitted: <highlight>' . Util::date($row->time_submitted) . "<end>\n\n";
 				$upcomingEvents = $upcoming.$upcomingEvents;
 			} else {
-				$past =  '<tab>Event Date: <highlight>' . $this->util->date($row->event_date) . "<end>\n";
+				$past =  '<tab>Event Date: <highlight>' . Util::date($row->event_date) . "<end>\n";
 				$past .= "<tab>Event Name: <highlight>{$row->event_name}<end>     [Event ID {$row->id}]\n";
 				$past .= "<tab>Author: <highlight>{$row->submitter_name}<end>\n";
 				$past .= '<tab>Attendance: <highlight>' . $this->text->makeChatcmd("{$attendance} signed up", "/tell <myname> events list {$row->id}") . "<end>\n";
 				$past .= '<tab>Description: <highlight>' . ($row->event_desc??'&lt;empty&gt;') . "<end>\n";
-				$past .= '<tab>Date Submitted: <highlight>' . $this->util->date($row->time_submitted) . "<end>\n\n";
+				$past .= '<tab>Date Submitted: <highlight>' . Util::date($row->time_submitted) . "<end>\n\n";
 				$pastEvents .= $past;
 			}
 		}
@@ -316,7 +313,7 @@ class EventsController extends ModuleInstance {
 			$link = "<i>More to come. Check back soon!</i>\n\n";
 		}
 
-		return (array)$this->text->makeBlob('Events [Last updated ' . $this->util->date($updated).']', $link);
+		return (array)$this->text->makeBlob('Events [Last updated ' . Util::date($updated).']', $link);
 	}
 
 	#[NCA\Event(
@@ -384,9 +381,9 @@ class EventsController extends ModuleInstance {
 		}
 		$eventsLink = $this->text->makeChatcmd('see more', '/tell <myname> events');
 		$blob = "<header2>Events [{$eventsLink}]<end>\n";
-		$blob .= $data->map(function (EventModel $event): string {
+		$blob .= $data->map(static function (EventModel $event): string {
 			return '<tab>' . ((isset($event->event_date) && $event->event_date > 0)
-				? $this->util->date($event->event_date)
+				? Util::date($event->event_date)
 				: 'soon').
 				": <highlight>{$event->event_name}<end>";
 		})->join("\n");

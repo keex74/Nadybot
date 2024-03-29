@@ -74,9 +74,6 @@ class WhatBuffsController extends ModuleInstance {
 	private DB $db;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private CommandManager $commandManager;
 
 	#[NCA\Inject]
@@ -609,7 +606,7 @@ class WhatBuffsController extends ModuleInstance {
 					|| strncmp($item->name, 'Universal Advantage - ', 22) === 0
 				)
 			) {
-				$item->amount = $this->util->interpolate($item->lowql, $item->highql, $item->low_amount??$item->amount, $item->amount, 250);
+				$item->amount = Util::interpolate($item->lowql, $item->highql, $item->low_amount??$item->amount, $item->amount, 250);
 				$item->highql = 250;
 			}
 			$maxBuff = max($maxBuff, abs($item->amount));

@@ -584,7 +584,7 @@ class TestController extends ModuleInstance {
 			'/tests-' . date('YmdHis', $starttime) . '.json';
 		$context->reply("Starting test {$file}...");
 		$this->runTests($lines, $testContext, $logFile);
-		$time = $this->util->unixtimeToReadable(time() - $starttime);
+		$time = Util::unixtimeToReadable(time() - $starttime);
 		$context->reply("Finished test {$file}. Time: {$time}");
 	}
 

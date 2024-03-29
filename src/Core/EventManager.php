@@ -49,9 +49,6 @@ class EventManager {
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Inject]
@@ -277,7 +274,7 @@ class EventManager {
 		$delay = max(0, $nextEvent - time());
 		$this->logger->notice('Moved the next {event} event to {time}', [
 			'event' => $entry->filename,
-			'time' => $this->util->date($nextEvent),
+			'time' => Util::date($nextEvent),
 		]);
 		$entry->moveHandle = EventLoop::delay(
 			$delay,
@@ -500,7 +497,7 @@ class EventManager {
 		if (!count($arr = Safe::pregMatch(self::TIMER_EVENT_REGEX, $type))) {
 			return 0;
 		}
-		$time = $this->util->parseTime($arr[1]);
+		$time = Util::parseTime($arr[1]);
 		if ($time > 0) {
 			return $time;
 		}

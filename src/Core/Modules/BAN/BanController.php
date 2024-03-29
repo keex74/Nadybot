@@ -101,9 +101,6 @@ class BanController extends ModuleInstance {
 	private GuildManager $guildManager;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
@@ -167,7 +164,7 @@ class BanController extends ModuleInstance {
 			return;
 		}
 
-		$timeString = $this->util->unixtimeToReadable($length);
+		$timeString = Util::unixtimeToReadable($length);
 		$context->reply("You have banned <highlight>{$who}<end> from this bot for {$timeString}.");
 		if (!$this->notifyBannedPlayer) {
 			return;
@@ -199,7 +196,7 @@ class BanController extends ModuleInstance {
 			return;
 		}
 
-		$timeString = $this->util->unixtimeToReadable($length);
+		$timeString = Util::unixtimeToReadable($length);
 		$context->reply("You have banned <highlight>{$who}<end> from this bot for {$timeString}.");
 		if (!$this->notifyBannedPlayer) {
 			return;
@@ -297,11 +294,11 @@ class BanController extends ModuleInstance {
 		foreach ($banlist as $ban) {
 			$blob = "<header2>{$ban->name}<end>\n";
 			if (isset($ban->time)) {
-				$blob .= '<tab>Date: <highlight>' . $this->util->date($ban->time) . "<end>\n";
+				$blob .= '<tab>Date: <highlight>' . Util::date($ban->time) . "<end>\n";
 			}
 			$blob .= "<tab>By: <highlight>{$ban->admin}<end>\n";
 			if (isset($ban->banend) && $ban->banend !== 0) {
-				$blob .= '<tab>Ban ends: <highlight>' . $this->util->unixtimeToReadable($ban->banend - time(), false) . "<end>\n";
+				$blob .= '<tab>Ban ends: <highlight>' . Util::unixtimeToReadable($ban->banend - time(), false) . "<end>\n";
 			} else {
 				$blob .= "<tab>Ban ends: <highlight>Never<end>\n";
 			}
@@ -582,9 +579,9 @@ class BanController extends ModuleInstance {
 		$unbanLink = $this->text->makeChatcmd('remove', "/tell <myname> orgban rem {$ban->org_id}");
 		$blob = '<header2>' . ($ban->org_name ?? $ban->org_id) . "<end>\n".
 			"<tab>Banned by: <highlight>{$ban->banned_by}<end> [{$unbanLink}]\n".
-			'<tab>Ban starts: <highlight>' . $this->util->date($ban->start) . "<end>\n";
+			'<tab>Ban starts: <highlight>' . Util::date($ban->start) . "<end>\n";
 		if (isset($ban->end)) {
-			$blob .= '<tab>Ban ends: <highlight>' . $this->util->date($ban->end) . "<end>\n";
+			$blob .= '<tab>Ban ends: <highlight>' . Util::date($ban->end) . "<end>\n";
 		}
 		$blob .= "<tab>Reason: <highlight>{$ban->reason}<end>";
 		return $blob;
@@ -661,7 +658,7 @@ class BanController extends ModuleInstance {
 		}
 		$endDate = null;
 		if (isset($duration)) {
-			$durationInSecs = $this->util->parseTime($duration);
+			$durationInSecs = Util::parseTime($duration);
 			if ($durationInSecs === 0) {
 				return "<highlight>{$duration}<end> is not a valid duration.";
 			}

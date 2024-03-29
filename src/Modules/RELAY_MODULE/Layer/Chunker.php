@@ -55,9 +55,6 @@ class Chunker implements RelayLayerInterface {
 
 	private LoggerInterface $logger;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	public function __construct(int $chunkSize, int $timeout=60) {
 		if ($chunkSize < 1) {
 			throw new InvalidArgumentException('length cannot be less than 1');
@@ -192,7 +189,7 @@ class Chunker implements RelayLayerInterface {
 		/** @var string[] */
 		$chunks = str_split($packet, $this->chunkSize);
 		$result = [];
-		$uuid = $this->util->createUUID();
+		$uuid = Util::createUUID();
 		$part = 1;
 		$created = time();
 		foreach ($chunks as $chunk) {

@@ -120,9 +120,6 @@ class LootController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private ChatLeaderController $chatLeaderController;
 
 	/**
@@ -198,7 +195,7 @@ class LootController extends ModuleInstance {
 				$items->count() . ' ' . $this->text->pluralize('item', $items->count()),
 				"/tell <myname> loot history {$firstItem->roll}"
 			);
-			return '<tab>' . $this->util->date($firstItem->dt) . ' - '.
+			return '<tab>' . Util::date($firstItem->dt) . ' - '.
 				"{$showLink}, rolled by {$firstItem->rolled_by}";
 		});
 		$msg = 'Last loot rolls (' . $lines->count() . ')';
@@ -251,7 +248,7 @@ class LootController extends ModuleInstance {
 			return $line;
 		});
 		$rolledBy = $items->firstOrFail()->rolled_by;
-		$rolledTime = $this->util->date($items->firstOrFail()->dt);
+		$rolledTime = Util::date($items->firstOrFail()->dt);
 		$blob = "Loot #{$roll} was rolled <highlight>{$rolledTime}<end> by <highlight>{$rolledBy}<end>.\n\n";
 		$blob .= $lines->join("\n\n");
 		$context->reply($this->text->makeBlob(
@@ -287,7 +284,7 @@ class LootController extends ModuleInstance {
 		}
 		$lines = $items->map(function (LootHistory $item): string {
 			$rollLink = $this->text->makeChatcmd(
-				$this->util->date($item->dt),
+				Util::date($item->dt),
 				"/tell <myname> loot history {$item->roll}"
 			);
 			$line = "<tab>{$rollLink} - ";
@@ -346,7 +343,7 @@ class LootController extends ModuleInstance {
 
 		$lines = $compressedList->map(function (LootHistory $item): string {
 			$rollLink = $this->text->makeChatcmd(
-				$this->util->date($item->dt),
+				Util::date($item->dt),
 				"/tell <myname> loot history {$item->roll}"
 			);
 			$line = "<tab>{$rollLink} -";

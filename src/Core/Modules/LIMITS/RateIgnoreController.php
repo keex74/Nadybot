@@ -35,9 +35,6 @@ class RateIgnoreController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	/** See a list of characters on the rate ignore list */
 	#[NCA\HandlesCommand('rateignore')]
 	#[NCA\Help\Prologue(
@@ -54,7 +51,7 @@ class RateIgnoreController extends ModuleInstance {
 		$blob = '';
 		foreach ($list as $entry) {
 			$remove = $this->text->makeChatcmd('Remove', "/tell <myname> rateignore remove {$entry->name}");
-			$date = $this->util->date($entry->added_dt);
+			$date = Util::date($entry->added_dt);
 			$blob .= "<highlight>{$entry->name}<end> [added by {$entry->added_by}] {$date} {$remove}\n";
 		}
 		$msg = $this->text->makeBlob('Rate limit ignore list', $blob);

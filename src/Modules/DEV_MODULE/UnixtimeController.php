@@ -21,13 +21,10 @@ use Nadybot\Core\{
 	)
 ]
 class UnixtimeController extends ModuleInstance {
-	#[NCA\Inject]
-	private Util $util;
-
 	/** Show the date and time for a unix time stamp */
 	#[NCA\HandlesCommand('unixtime')]
 	public function reloadinstanceAllCommand(CmdContext $context, int $time): void {
-		$msg = "{$time} is <highlight>" . $this->util->date($time) . '<end>.';
+		$msg = "{$time} is <highlight>" . Util::date($time) . '<end>.';
 		$context->reply($msg);
 	}
 }

@@ -83,9 +83,6 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private DiscordController $discordController;
 
 	#[NCA\Inject]
@@ -132,7 +129,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$alertTimes = array_reverse(explode(' ', $newValue));
 		$oldTime = 0;
 		foreach ($alertTimes as $alertTime) {
-			$time = $this->util->parseTime($alertTime);
+			$time = Util::parseTime($alertTime);
 			if ($time === 0) {
 				// invalid time
 				throw new Exception("Error saving setting: invalid alert time('{$alertTime}'). For more info type !help timer_alert_times.");
@@ -303,8 +300,8 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$origin = ($sendto instanceof MessageEmitter) ? $sendto->getChannelName() : null;
 		$this->add($name, $context->char->name, $alertChannel, $alerts, 'timercontroller.repeatingTimerCallback', (string)$runTime, $origin);
 
-		$initialTimerSet = $this->util->unixtimeToReadable($initialRunTime);
-		$timerSet = $this->util->unixtimeToReadable($runTime);
+		$initialTimerSet = Util::unixtimeToReadable($initialRunTime);
+		$timerSet = Util::unixtimeToReadable($runTime);
 		$msg = "Repeating timer <highlight>{$name}<end> will go off in {$initialTimerSet} and repeat every {$timerSet}.";
 
 		$context->reply($msg);
@@ -336,7 +333,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		}
 		$timeLeft = 'an unknown amount of time';
 		if (isset($timer->endtime)) {
-			$timeLeft = $this->util->unixtimeToReadable($timer->endtime - time());
+			$timeLeft = Util::unixtimeToReadable($timer->endtime - time());
 		}
 		$name = $timer->name;
 
@@ -416,7 +413,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		foreach ($timers as $timer) {
 			$timeLeft = '&lt;unknown&gt;';
 			if (isset($timer->endtime)) {
-				$timeLeft = $this->util->unixtimeToReadable($timer->endtime - time());
+				$timeLeft = Util::unixtimeToReadable($timer->endtime - time());
 			}
 			$name = $timer->name;
 			$owner = $timer->owner;
@@ -425,7 +422,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 
 			$repeatingInfo = '';
 			if ($timer->callback === 'timercontroller.repeatingTimerCallback') {
-				$repeatingTimeString = $this->util->unixtimeToReadable((int)$timer->data);
+				$repeatingTimeString = Util::unixtimeToReadable((int)$timer->data);
 				$repeatingInfo = " (Repeats every {$repeatingTimeString})";
 			}
 
@@ -451,8 +448,8 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$alerts = [];
 
 		foreach ($alertTimes as $alertTime) {
-			$time = $this->util->parseTime($alertTime);
-			$timeString = $this->util->unixtimeToReadable($time);
+			$time = Util::parseTime($alertTime);
+			$timeString = Util::unixtimeToReadable($time);
 			if ($endTime - $time > time()) {
 				$alert = new Alert();
 				$alert->message = "Reminder: Timer <highlight>{$name}<end> has <highlight>{$timeString}<end> left. [set by <highlight>{$sender}<end>]";
@@ -513,7 +510,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 
 		$this->add($name, $sender, $channel, $alerts, 'timercontroller.timerCallback', null, $origin);
 
-		$timerset = $this->util->unixtimeToReadable($runTime);
+		$timerset = Util::unixtimeToReadable($runTime);
 		return "Timer <highlight>{$name}<end> has been set for <highlight>{$timerset}<end>.";
 	}
 

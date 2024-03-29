@@ -346,9 +346,6 @@ class WorldBossController extends ModuleInstance {
 	private BotConfig $config;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private DB $db;
 
 	#[NCA\Inject]
@@ -418,22 +415,22 @@ class WorldBossController extends ModuleInstance {
 			$blocks[] = "<header2>{$timer->mob_name}<end>".
 				(
 					isset($timer->timer)
-					? "\n<tab>Spawn timer: <highlight>". $this->util->unixtimeToReadable($timer->timer) . '<end>'
+					? "\n<tab>Spawn timer: <highlight>". Util::unixtimeToReadable($timer->timer) . '<end>'
 					: ''
 				).
-				"\n<tab>Last Spawn: <highlight>". $this->util->date($timer->spawn) . '<end>'.
+				"\n<tab>Last Spawn: <highlight>". Util::date($timer->spawn) . '<end>'.
 				(
 					(!isset($timer->next_spawn) || ($timer->spawn === $timer->next_spawn))
 					? ''
-					: "\n<tab>Next Spawn: <highlight>". $this->util->date($timer->next_spawn) . '<end>'
+					: "\n<tab>Next Spawn: <highlight>". Util::date($timer->next_spawn) . '<end>'
 				).
-				"\n<tab>Last Vulnerable: <highlight>". $this->util->date($timer->killable) . '<end>'.
+				"\n<tab>Last Vulnerable: <highlight>". Util::date($timer->killable) . '<end>'.
 				(
 					(!isset($timer->next_killable) || ($timer->killable === $timer->next_killable))
 					? ''
-					: "\n<tab>Next Vulnerable: <highlight>". $this->util->date($timer->next_killable) . '<end>'
+					: "\n<tab>Next Vulnerable: <highlight>". Util::date($timer->next_killable) . '<end>'
 				).
-				"\n<tab>Time Submitted: <highlight>". $this->util->date($timer->time_submitted) . '<end>'.
+				"\n<tab>Time Submitted: <highlight>". Util::date($timer->time_submitted) . '<end>'.
 				"\n<tab>Submitter: <highlight>". $timer->submitter_name . '<end>'.
 				"\n<tab>Precise: " . (($this->lastSpawnPrecise[$timer->mob_name]??false) ? '<green>yes<end>' : '<red>no<end>');
 		}
@@ -546,7 +543,7 @@ class WorldBossController extends ModuleInstance {
 				$secsDead = time() - ($timer->next_spawn - 61_200);
 				if ($secsDead < 6*60 + 30) {
 					$portalOpen = 6*60 + 30 - $secsDead;
-					$portalOpenTime = $this->util->unixtimeToReadable($portalOpen);
+					$portalOpenTime = Util::unixtimeToReadable($portalOpen);
 					$msg = "The Gauntlet portal will be open for <highlight>{$portalOpenTime}<end>.";
 					if (!$short && count($spawntimes)) {
 						$msg .= " {$spawntimes[0]}";
@@ -554,7 +551,7 @@ class WorldBossController extends ModuleInstance {
 					return $msg;
 				}
 			}
-			$timeUntilSpawn = $this->util->unixtimeToReadable($timer->next_spawn-time());
+			$timeUntilSpawn = Util::unixtimeToReadable($timer->next_spawn-time());
 			if ($showSpawn === static::SPAWN_SHOULD) {
 				$spawnTimeMessage = " should spawn in <highlight>{$timeUntilSpawn}<end>";
 			} else {
@@ -576,10 +573,10 @@ class WorldBossController extends ModuleInstance {
 			if (isset($usualSpawnInterval)) {
 				$spawnChance = self::BOSS_DATA[$timer->mob_name][self::CHANCE] ?? null;
 				if (isset($spawnChance)) {
-					$spawnTimeMessage .= '. Spawns every ' . $this->util->unixtimeToReadable($usualSpawnInterval).
+					$spawnTimeMessage .= '. Spawns every ' . Util::unixtimeToReadable($usualSpawnInterval).
 						" ({$spawnChance}% chance)";
 				} else {
-					$spawnTimeMessage .= '. Can spawn every ' . $this->util->unixtimeToReadable($usualSpawnInterval);
+					$spawnTimeMessage .= '. Can spawn every ' . Util::unixtimeToReadable($usualSpawnInterval);
 				}
 			}
 		} else {
@@ -593,7 +590,7 @@ class WorldBossController extends ModuleInstance {
 		if (isset($timer->next_killable)) {
 			$killTimeMessage = '';
 			if ($timer->next_killable > time()) {
-				$timeUntilKill = $this->util->unixtimeToReadable($timer->next_killable-time());
+				$timeUntilKill = Util::unixtimeToReadable($timer->next_killable-time());
 				$killTimeMessage = " and will be vulnerable in <highlight>{$timeUntilKill}<end>";
 			}
 			if ($short) {
@@ -1154,13 +1151,13 @@ class WorldBossController extends ModuleInstance {
 		];
 		$invulnDuration = static::BOSS_DATA[$timer->mob_name][static::IMMORTAL];
 		if (isset($invulnDuration)) {
-			$tokens['immortal'] = $this->util->unixtimeToReadable($invulnDuration);
+			$tokens['immortal'] = Util::unixtimeToReadable($invulnDuration);
 			$tokens['c-immortal'] = '<highlight>' . $tokens['immortal'] . '<end>';
 		}
 		if ($this->isPrespawn($timer, $lastCheck, $manual)) {
 			assert(isset($timer->next_spawn));
 			$this->logger->notice('{boss} pre-spawn check success', ['boss' => $timer->mob_name]);
-			$tokens['next-spawn'] = $this->util->unixtimeToReadable($timer->next_spawn-time());
+			$tokens['next-spawn'] = Util::unixtimeToReadable($timer->next_spawn-time());
 			$tokens['c-next-spawn'] = '<highlight>' . $tokens['next-spawn'] . '<end>';
 			$msg = $this->text->renderPlaceholders($this->willSpawnText, $tokens);
 			$this->announceBigBossEvent($timer->mob_name, $msg, 1);
@@ -1183,7 +1180,7 @@ class WorldBossController extends ModuleInstance {
 				$msg = $this->text->renderPlaceholders($this->shouldSpawnText, $tokens);
 			} else {
 				if (isset($timer->next_killable) && $timer->next_killable > time()) {
-					$tokens['immortal'] = $this->util->unixtimeToReadable($timer->next_killable-time());
+					$tokens['immortal'] = Util::unixtimeToReadable($timer->next_killable-time());
 					$tokens['c-immortal'] = '<highlight>' . $tokens['immortal'] . '<end>';
 				}
 				$msg = $this->text->renderPlaceholders($this->hasSpawnedText, $tokens);

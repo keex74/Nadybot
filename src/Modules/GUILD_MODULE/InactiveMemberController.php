@@ -34,9 +34,6 @@ class InactiveMemberController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private AltsController $altsController;
 
 	/** Show org members who have not logged on for a specified amount of time */
@@ -49,7 +46,7 @@ class InactiveMemberController extends ModuleInstance {
 			return;
 		}
 
-		$timeString = $this->util->unixtimeToReadable($time, false);
+		$timeString = Util::unixtimeToReadable($time, false);
 		$time = time() - $time;
 
 		$members = $this->db->table(GuildController::DB_TABLE)
@@ -89,7 +86,7 @@ class InactiveMemberController extends ModuleInstance {
 
 			$player = "<pagebreak><tab>[{$altsLink}] {$alt->main}";
 			if ($alt->logged_off) {
-				$lastseen = $this->util->date($alt->logged_off);
+				$lastseen = Util::date($alt->logged_off);
 				$player .= ": Last seen on [{$alt->name}] on {$lastseen}\n";
 			} else {
 				$player .= ": Never seen\n";

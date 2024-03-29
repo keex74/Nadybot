@@ -78,7 +78,7 @@ class TrickleController extends ModuleInstance {
 
 		foreach ($pairs as $pair) {
 			[$ability, $amount] = preg_split("/\s+/", $pair);
-			$shortAbility = $this->util->getAbility($ability);
+			$shortAbility = Util::getAbility($ability);
 			if ($shortAbility === null) {
 				$msg = "Unknown ability <highlight>{$ability}<end>.";
 				$context->reply($msg);
@@ -108,7 +108,7 @@ class TrickleController extends ModuleInstance {
 
 		foreach ($pairs as $pair) {
 			[$amount, $ability] = preg_split("/\s+/", $pair);
-			$shortAbility = $this->util->getAbility($ability);
+			$shortAbility = Util::getAbility($ability);
 			if ($shortAbility === null) {
 				$msg = "Unknown ability <highlight>{$ability}<end>.";
 				$context->reply($msg);
@@ -154,7 +154,7 @@ class TrickleController extends ModuleInstance {
 		foreach ($arr as $ability) {
 			$fieldName = 'amount' . ucfirst($ability);
 			if ($row->{$fieldName} > 0) {
-				$abilityName = $this->util->getAbility($ability, true);
+				$abilityName = Util::getAbility($ability, true);
 				$value = round(4 / ($row->{$fieldName}), 2);
 				$reqs []= "{$value} {$abilityName}";
 			}
@@ -206,9 +206,9 @@ class TrickleController extends ModuleInstance {
 		$msgParts = [];
 		foreach (get_object_vars($abilities) as $short => $bonus) {
 			if ($bonus > 0) {
-				$msgParts []= ($this->util->getAbility($short, true) ?? 'Unknown ability').
+				$msgParts []= (Util::getAbility($short, true) ?? 'Unknown ability').
 					": {$bonus}";
-				$headerParts []= ($this->util->getAbility($short, true) ?? 'Unknown ability').
+				$headerParts []= (Util::getAbility($short, true) ?? 'Unknown ability').
 					": <highlight>{$bonus}<end>";
 			}
 		}

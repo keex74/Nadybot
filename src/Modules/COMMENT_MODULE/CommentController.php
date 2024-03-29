@@ -79,9 +79,6 @@ class CommentController extends ModuleInstance {
 	private DB $db;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Inject]
@@ -228,7 +225,7 @@ class CommentController extends ModuleInstance {
 		$blob = '';
 		foreach ($categories as $category) {
 			$blob .= "<pagebreak><header2>{$category->name}<end>\n".
-				'<tab>Created: <highlight>' . $this->util->date($category->created_at) . "<end>\n".
+				'<tab>Created: <highlight>' . Util::date($category->created_at) . "<end>\n".
 				"<tab>Creator: <highlight>{$category->created_by}<end>\n".
 				'<tab>Read Access: <highlight>'.
 				$this->accessManager->getDisplayName($category->min_al_read).
@@ -394,7 +391,7 @@ class CommentController extends ModuleInstance {
 		$cooldown = $this->saveComment($comment);
 		if ($cooldown > 0) {
 			$context->reply(
-				'You have to wait <highlight>' . $this->util->unixtimeToReadable($cooldown) . '<end> '.
+				'You have to wait <highlight>' . Util::unixtimeToReadable($cooldown) . '<end> '.
 				"before posting another comment about <highlight>{$character}<end>."
 			);
 			return;
@@ -580,7 +577,7 @@ class CommentController extends ModuleInstance {
 	public function formatComment(Comment $comment, bool $addCategory=false): string {
 		$line = "{$comment->comment} (<highlight>{$comment->created_by}<end>, ".
 			($addCategory ? "<highlight>{$comment->category}<end>, " : '').
-			$this->util->date($comment->created_at) . ') ['.
+			Util::date($comment->created_at) . ') ['.
 			$this->text->makeChatcmd('delete', "/tell <myname> comment del {$comment->id}").
 			']';
 		return $line;

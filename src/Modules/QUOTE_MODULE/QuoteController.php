@@ -41,9 +41,6 @@ class QuoteController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
@@ -236,7 +233,7 @@ class QuoteController extends ModuleInstance {
 
 		$msg = "ID: <highlight>{$row->id}<end> of {$count}\n";
 		$msg .= "Poster: <highlight>{$poster}<end>\n";
-		$msg .= 'Date: <highlight>' . $this->util->date($row->dt) . "<end>\n";
+		$msg .= 'Date: <highlight>' . Util::date($row->dt) . "<end>\n";
 		$msg .= "Quote: <highlight>{$quoteMsg}<end>\n";
 		$msg .= 'Action:';
 		if (!empty($this->config->general->orgName)) {

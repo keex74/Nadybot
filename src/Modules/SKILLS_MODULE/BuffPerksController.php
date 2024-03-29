@@ -21,7 +21,6 @@ use Nadybot\Core\{
 	Safe,
 	SettingManager,
 	Text,
-	Util,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
 	ExtBuff,
@@ -63,9 +62,6 @@ class BuffPerksController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private DB $db;
@@ -670,13 +666,13 @@ class BuffPerksController extends ModuleInstance {
 
 			$professions = explode(',', $profs);
 			foreach ($professions as $prof) {
-				$profession = $this->util->getProfessionName(trim($prof));
-				if (empty($profession)) {
+				$profession = Profession::tryByName(trim($prof));
+				if (!isset($profession)) {
 					$this->logger->info("Error parsing profession: '{prof}'", [
 						'prof' => $prof,
 					]);
 				} else {
-					$level->professions []= $profession;
+					$level->professions []= $profession->value;
 				}
 			}
 

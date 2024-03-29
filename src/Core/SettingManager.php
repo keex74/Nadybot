@@ -32,9 +32,6 @@ class SettingManager {
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private HelpManager $helpManager;
 
 	#[NCA\Inject]
@@ -115,7 +112,7 @@ class SettingManager {
 
 		if ($type === 'time') {
 			$oldvalue = $value;
-			$value = $this->util->parseTime((string)$value);
+			$value = Util::parseTime((string)$value);
 			if ($value < 1) {
 				$this->logger->error("Error in registering Setting {module}:setting({setting}). Invalid time: '{time}'.", [
 					'module' => $module,

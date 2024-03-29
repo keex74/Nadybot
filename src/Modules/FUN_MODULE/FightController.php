@@ -27,9 +27,6 @@ class FightController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
-
 	/**
 	 * Let 2 people fight against each other
 	 *
@@ -59,7 +56,7 @@ class FightController extends ModuleInstance {
 				"{$player1} can't fight {$player2}, it may break the voids of space and time!",
 				"As much as I'd love to see {$player1} punching himself/herself in the face, it just isn't theoretical...", ];
 
-			$context->reply($this->util->randomArrayValue($twin));
+			$context->reply(Util::randomArrayValue($twin));
 			return;
 		}
 
@@ -129,7 +126,7 @@ class FightController extends ModuleInstance {
 			$fighter->maxDamage = 6_000;
 			$fighter->hp = 20_000;
 		} else {
-			$fighter->weapon = $this->util->randomArrayValue(array_keys($weaponNames));
+			$fighter->weapon = Util::randomArrayValue(array_keys($weaponNames));
 			$fighter->damageType = $weaponNames[$fighter->weapon];
 			$fighter->minDamage = 1_000;
 			$fighter->maxDamage = 4_000;

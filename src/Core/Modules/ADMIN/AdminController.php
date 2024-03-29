@@ -74,9 +74,6 @@ class AdminController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private DB $db;
 
 	#[NCA\Inject]
@@ -335,7 +332,7 @@ class AdminController extends ModuleInstance {
 			return ' (<off>Offline<end>)';
 		}
 		return ' (<off>Offline<end>, last seen '.
-			$this->util->date($lastSeen->dt, false).
+			Util::date($lastSeen->dt, false).
 			" on {$lastSeen->name})";
 	}
 
