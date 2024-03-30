@@ -234,7 +234,6 @@ class WebsocketController extends ModuleInstance implements WebsocketClientHandl
 			// Unknown command received is just silently ignored in case another handler deals with it
 			return;
 		}
-		var_dump($newEvent);
 		$this->eventManager->fireEvent($newEvent, $client);
 	}
 }
