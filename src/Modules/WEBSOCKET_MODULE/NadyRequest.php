@@ -2,16 +2,16 @@
 
 namespace Nadybot\Modules\WEBSOCKET_MODULE;
 
-use Nadybot\Core\JSONDataModel;
-
-class NadyRequest extends JSONDataModel {
+class NadyRequest {
 	public const READ = 1;
 	public const WRITE = 2;
 	public const CREATE = 3;
 
-	public string $resource = '/';
-	public int $mode = self::READ;
-
-	/** @var null|mixed[] */
-	public ?array $data=null;
+	/** @param ?mixed[] $data */
+	public function __construct(
+		public string $resource='/',
+		public int $mode=self::READ,
+		public ?array $data=null,
+	) {
+	}
 }

@@ -2,9 +2,10 @@
 
 namespace Nadybot\Modules\WEBSOCKET_MODULE;
 
-use Nadybot\Core\JSONDataModel;
-
-class NadySubscribe extends JSONDataModel {
-	/** @var string[] */
-	public array $events = [];
+class NadySubscribe {
+	/** @param string[] $events */
+	public function __construct(
+		public array $events=[],
+	) {
+	}
 }

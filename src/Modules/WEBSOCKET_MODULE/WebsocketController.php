@@ -223,22 +223,18 @@ class WebsocketController extends ModuleInstance implements WebsocketClientHandl
 			return;
 		}
 		if ($command->command === $command::SUBSCRIBE) {
-			$newEvent = new WebsocketSubscribeEvent(data: new NadySubscribe());
+			$newEvent = new WebsocketSubscribeEvent(
+				data: $mapper->hydrateObject(NadySubscribe::class, $command->data),
+			);
 		} elseif ($command->command === $command::REQUEST) {
-			$newEvent = new WebsocketRequestEvent(data: new NadyRequest());
+			$newEvent = new WebsocketRequestEvent(
+				data: $mapper->hydrateObject(NadyRequest::class, $command->data),
+			);
 		} else {
 			// Unknown command received is just silently ignored in case another handler deals with it
 			return;
 		}
-		try {
-			if (!is_object($command->data)) {
-				throw new Exception('Invalid data received');
-			}
-			$newEvent->data->fromJSON($command->data);
-		} catch (Throwable) {
-			$client->close(4_002);
-			return;
-		}
+		var_dump($newEvent);
 		$this->eventManager->fireEvent($newEvent, $client);
 	}
 }
