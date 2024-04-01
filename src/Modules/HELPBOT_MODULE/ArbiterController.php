@@ -14,9 +14,8 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
-use Safe\DateTime;
-
 use Safe\Exceptions\DatetimeException;
+use Safe\{DateTimeImmutable};
 
 /**
  * @author Nadyita (RK5)
@@ -137,7 +136,7 @@ class ArbiterController extends ModuleInstance {
 		if ($pos === false) {
 			return;
 		}
-		$day = (new DateTime('now', new DateTimeZone('UTC')))->format('N');
+		$day = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('N');
 		$startsSunday = isset($ends) && strtolower($ends) === 'next';
 		if ($startsSunday) {
 			$start = strtotime('sunday');
@@ -151,8 +150,8 @@ class ArbiterController extends ModuleInstance {
 		try {
 			$this->db->table(static::DB_TABLE)->truncate();
 			for ($i = 0; $i < 3; $i++) {
-				$arbStart = (new DateTime())->setTimestamp($start);
-				$arbEnd = (new DateTime())->setTimestamp($end);
+				$arbStart = (new DateTimeImmutable())->setTimestamp($start);
+				$arbEnd = (new DateTimeImmutable())->setTimestamp($end);
 				$days = 14 * $i;
 				$arbStart->add(new DateInterval("P{$days}D"));
 				$arbEnd->add(new DateInterval("P{$days}D"));
@@ -222,7 +221,7 @@ class ArbiterController extends ModuleInstance {
 				'<highlight>' . $this->niceTimeWithoutSecs($currentEvent->end - $time) . '<end>';
 			$blob .= "Currently: {$currently}\n\n";
 			if (isset($timeGiven)) {
-				$msg = 'On ' . ((new DateTime("@{$time}"))->format('d-M-Y')).
+				$msg = 'On ' . ((new DateTimeImmutable("@{$time}"))->format('d-M-Y')).
 					", it's <highlight>{$currentEvent->longName}<end>.";
 			} else {
 				$msg = "It's currently {$currently}.";
@@ -232,7 +231,7 @@ class ArbiterController extends ModuleInstance {
 			$upcomingEvents[] = $currentEvent;
 		} else {
 			if (isset($timeGiven)) {
-				$msg = 'On ' . ((new DateTime("@{$time}"))->format('d-M-Y')) . ', the arbiter is not here.';
+				$msg = 'On ' . ((new DateTimeImmutable("@{$time}"))->format('d-M-Y')) . ', the arbiter is not here.';
 			} else {
 				$msg = 'The arbiter is currently not here.';
 			}

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 class Caller {
 	/** Name of the caller */
@@ -12,10 +12,10 @@ class Caller {
 	public string $addedBy;
 
 	/** What was the caller added */
-	public DateTime $addedWhen;
+	public DateTimeImmutable $addedWhen;
 
 	public function __construct(?string $name=null, ?string $addedBy=null) {
-		$this->addedWhen = new DateTime();
+		$this->addedWhen = new DateTimeImmutable();
 		if (isset($name)) {
 			$this->name = $name;
 		}

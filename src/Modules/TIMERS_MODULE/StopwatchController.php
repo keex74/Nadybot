@@ -7,7 +7,7 @@ use Nadybot\Core\{
 	CmdContext,
 	ModuleInstance,
 };
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 /**
  * A stopwatch controller with start, stop and lap
@@ -50,7 +50,7 @@ class StopwatchController extends ModuleInstance {
 			return;
 		}
 		$stopwatch = $this->stopwatches[$context->char->name];
-		$stopwatch->end = new DateTime();
+		$stopwatch->end = new DateTimeImmutable();
 		unset($this->stopwatches[$context->char->name]);
 		$msg = $stopwatch->toString();
 		$context->reply("Your stopwatch times:\n{$msg}");

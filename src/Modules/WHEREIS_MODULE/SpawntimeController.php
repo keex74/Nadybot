@@ -14,7 +14,7 @@ use Nadybot\Core\{
 	Safe,
 	Text,
 };
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 /**
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
@@ -109,8 +109,8 @@ class SpawntimeController extends ModuleInstance {
 	protected function getMobLine(Spawntime $row, bool $displayDirectly): string {
 		$line = "{$row->mob}: ";
 		if ($row->spawntime !== null) {
-			$time = new DateTime('now', new DateTimeZone('UTC'));
-			$time->setTimestamp($row->spawntime);
+			$time = (new DateTimeImmutable('now', new DateTimeZone('UTC')))
+				->setTimestamp($row->spawntime);
 			$line .= '<orange>' . $time->format('H\hi\ms\s') . '<end>';
 		} else {
 			$line .= '<orange>&lt;unknown&gt;<end>';

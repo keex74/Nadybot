@@ -461,6 +461,8 @@ class ApiSpecGenerator {
 				}
 			} elseif ($refType->getName() === 'DateTime') {
 				$types []= 'integer';
+			} elseif ($refType->getName() === 'DateTimeImmutable') {
+				$types []= 'integer';
 			} else {
 				$name = explode('\\', $refType->getName());
 				$types []= '#/components/schemas/' . end($name);

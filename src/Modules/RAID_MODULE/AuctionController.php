@@ -25,7 +25,7 @@ use Nadybot\Core\{
 use Nadybot\Modules\RAFFLE_MODULE\RaffleItem;
 use Revolt\EventLoop;
 
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 /**
  * This class contains all functions necessary to deal with points in a raid
@@ -488,7 +488,7 @@ class AuctionController extends ModuleInstance {
 		$avgCostLastTen = (int)$this->db->fromSub($queryLastTen, 'last_auctions')
 			->avg('cost');
 		$text = "<header2>Most expensive result<end>\n".
-			'<tab>On ' . DateTime::createFromFormat('U', (string)$mostExpensiveItem->end)->format('Y-m-d').
+			'<tab>On ' . DateTimeImmutable::createFromFormat('U', (string)$mostExpensiveItem->end)->format('Y-m-d').
 			", <highlight>{$mostExpensiveItem->winner}<end> paid ".
 			'<highlight>' . number_format($mostExpensiveItem->cost??0) . '<end> raid points '.
 			'for ' . Safe::pregReplace('|"(itemref://\d+/\d+/\d+)"|', '$1', $mostExpensiveItem->item) . "\n\n".
@@ -513,7 +513,7 @@ class AuctionController extends ModuleInstance {
 	public function renderAuctionItem(DBAuction $item): string {
 		return sprintf(
 			'%s     %s     %s',
-			DateTime::createFromFormat('U', (string)$item->end)->format('Y-m-d H:i:s'),
+			DateTimeImmutable::createFromFormat('U', (string)$item->end)->format('Y-m-d H:i:s'),
 			($item->cost > 0) ? $this->text->alignNumber($item->cost, 5, null, true) : '      -',
 			'<highlight>' . ($item->winner ?? 'nobody') . '<end> won '.
 			Safe::pregReplace('|"(itemref://\d+/\d+/\d+)"|', '$1', $item->item)

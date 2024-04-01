@@ -2,7 +2,8 @@
 
 namespace Nadybot\Modules\TIMERS_MODULE;
 
-use Safe\DateTime;
+use DateTimeInterface;
+use Safe\DateTimeImmutable;
 
 /**
  * An object representing a lap of a stopwatch with Time and optional name
@@ -10,17 +11,17 @@ use Safe\DateTime;
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
  */
 class StopwatchLap {
-	public DateTime $time;
+	public DateTimeInterface $time;
 
 	public ?string $name;
 
 	public function __construct(?string $name=null) {
-		$this->time = new DateTime();
+		$this->time = new DateTimeImmutable();
 		$this->name = strlen($name??'') ? $name : null;
 	}
 
 	/** Get a textual representation of the lap relative to timestamp $last */
-	public function toString(DateTime $last): string {
+	public function toString(DateTimeInterface $last): string {
 		$descr = 'Lap:    +' . $this->time->diff($last)->format('%I:%S');
 		if (isset($this->name)) {
 			$descr .= " ({$this->name})";

@@ -21,7 +21,7 @@ use Nadybot\Core\{
 	Safe,
 	Text,
 };
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 use Throwable;
 
 /**
@@ -216,8 +216,8 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 			$song->title ?? '<unknown song>'
 		);
 		if (isset($song->duration) && $song->duration > 0) {
-			$startTime = DateTime::createFromFormat('Y-m-d*H:i:sT', $song->date)->setTimezone(new DateTimeZone('UTC'));
-			$time = DateTime::createFromFormat('Y-m-d*H:i:sT', $show->date)->setTimezone(new DateTimeZone('UTC'));
+			$startTime = DateTimeImmutable::createFromFormat('Y-m-d*H:i:sT', $song->date)->setTimezone(new DateTimeZone('UTC'));
+			$time = DateTimeImmutable::createFromFormat('Y-m-d*H:i:sT', $show->date)->setTimezone(new DateTimeZone('UTC'));
 			$diff = $time->diff($startTime, true);
 			$msg .= ' ['.$diff->format('%i:%S').'/'.$this->msToTime($song->duration).']';
 		}
@@ -342,7 +342,11 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 	protected function getPlaylistInfos(array $history): array {
 		$songs = [];
 		foreach ($history as $song) {
-			$time = DateTime::createFromFormat('Y-m-d*H:i:sT', $song->date)->setTimezone(new DateTimeZone('UTC'));
+			$time = DateTimeImmutable::createFromFormat(
+				'Y-m-d*H:i:sT',
+				$song->date,
+				new DateTimeZone('UTC')
+			);
 			$info = sprintf(
 				'%s   <highlight>%s<end> - %s',
 				$time->format('H:i:s'),

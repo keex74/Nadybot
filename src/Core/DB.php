@@ -8,7 +8,7 @@ use function Safe\{class_implements, preg_match, preg_split};
 
 use Amp\File\FilesystemException;
 use BackedEnum;
-use DateTime;
+use DateTimeInterface;
 use Exception;
 use Illuminate\Database\{
 	Capsule\Manager as Capsule,
@@ -444,7 +444,7 @@ class DB {
 				/** @var NCA\DB\MapWrite */
 				$mapper = $attrs[0]->newInstance();
 				$data[$colName] = $mapper->map($data[$colName]);
-			} elseif ($data[$colName] instanceof DateTime) {
+			} elseif ($data[$colName] instanceof DateTimeInterface) {
 				$data[$colName] = $data[$colName]->getTimestamp();
 			} elseif ($data[$colName] instanceof BackedEnum) {
 				$data[$colName] = $data[$colName]->value;
@@ -488,7 +488,7 @@ class DB {
 				/** @var NCA\DB\MapWrite */
 				$mapper = $attrs[0]->newInstance();
 				$updates[$colName] = $mapper->map($updates[$colName]);
-			} elseif ($updates[$colName] instanceof DateTime) {
+			} elseif ($updates[$colName] instanceof DateTimeInterface) {
 				$updates[$colName] = $updates[$colName]->getTimestamp();
 			} elseif ($updates[$colName] instanceof BackedEnum) {
 				$updates[$colName] = $updates[$colName]->value;

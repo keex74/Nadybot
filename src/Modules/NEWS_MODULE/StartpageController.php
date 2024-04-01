@@ -32,7 +32,7 @@ use Nadybot\Modules\WEBSERVER_MODULE\{ApiResponse, WebChatConverter, WebserverCo
 use ReflectionClass;
 use ReflectionMethod;
 
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 use Throwable;
 
 #[
@@ -154,8 +154,8 @@ class StartpageController extends ModuleInstance {
 	]
 	public function timeTile(string $sender): ?string {
 		$seeMoreLink = $this->text->makeChatcmd('see more', '/tell <myname> time');
-		$time = new DateTime('now', new DateTimeZone('UTC'));
-		$aoTime = (clone $time)->add(new DateInterval('P27474Y'));
+		$time = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+		$aoTime = $time->add(new DateInterval('P27474Y'));
 		$blob = "<header2>Time [{$seeMoreLink}]<end>\n".
 			'<tab>Current time: <highlight>' . $time->format('l, d-M-Y H:i:s T') . '<end> '.
 			'(RK year ' . $aoTime->format('Y') .')';
@@ -219,8 +219,8 @@ class StartpageController extends ModuleInstance {
 			'{name}' => $sender,
 			'{myname}' => '<myname>',
 			'{orgname}' => '<myguild>',
-			'{date}' => (new DateTime())->format('l, d-M-Y'),
-			'{time}' => (new DateTime())->format('H:i:s'),
+			'{date}' => (new DateTimeImmutable())->format('l, d-M-Y'),
+			'{time}' => (new DateTimeImmutable())->format('H:i:s'),
 		];
 		return str_replace(array_keys($repl), array_values($repl), $msg);
 	}

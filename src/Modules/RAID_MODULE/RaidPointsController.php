@@ -24,7 +24,7 @@ use Nadybot\Core\{
 	Text,
 };
 use Psr\Log\LoggerInterface;
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 use Throwable;
 
 /**
@@ -505,7 +505,7 @@ class RaidPointsController extends ModuleInstance {
 		$header =  "<header2><u>When                       |   Delta   |  Why                              </u><end>\n";
 		$rows = [];
 		foreach ($pointLogs as $log) {
-			$time = DateTime::createFromFormat('U', (string)$log->time)->format('Y-m-d H:i:s');
+			$time = DateTimeImmutable::createFromFormat('U', (string)$log->time)->format('Y-m-d H:i:s');
 			if ($log->individual) {
 				$log->reason = "<highlight>{$log->reason}<end>";
 				$time = "<highlight>{$time}<end>";

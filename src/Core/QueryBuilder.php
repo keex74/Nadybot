@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
-use Safe\DateTime;
+use Safe\{DateTime, DateTimeImmutable};
 use Throwable;
 
 class QueryBuilder extends Builder {
@@ -255,6 +255,10 @@ class QueryBuilder extends Builder {
 						$row[$colName] = (float)$values[$col];
 					} elseif ($type === \DateTime::class || $type === DateTime::class) {
 						$row[$colName] = (new DateTime())->setTimestamp((int)$values[$col]);
+					} elseif ($type === \DateTimeImmutable::class || $type === DateTimeImmutable::class) {
+						$row[$colName] = (new DateTimeImmutable())->setTimestamp((int)$values[$col]);
+					} elseif ($type === \DateTimeInterface::class) {
+						$row[$colName] = (new DateTimeImmutable())->setTimestamp((int)$values[$col]);
 					} elseif (is_a($type, \BackedEnum::class, true)) {
 						$row[$colName] = $type::from($values[$col]);
 					} else {

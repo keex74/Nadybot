@@ -42,7 +42,7 @@ use Nadybot\Modules\{
 	WEBSERVER_MODULE\StatsController,
 };
 use Psr\Log\LoggerInterface;
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 /**
  * This class contains all functions necessary to start, stop and resume a raid
@@ -748,7 +748,7 @@ class RaidController extends ModuleInstance {
 		}
 		$blob = '';
 		foreach ($raids as $raid) {
-			$time = (new DateTime())->setTimestamp($raid->started)->format('Y-m-d H:i:s');
+			$time = (new DateTimeImmutable())->setTimestamp($raid->started)->format('Y-m-d H:i:s');
 			$avgPoints = round($raid->points / $raid->raiders, 1);
 			$detailsCmd = $this->text->makeChatcmd(
 				'details',

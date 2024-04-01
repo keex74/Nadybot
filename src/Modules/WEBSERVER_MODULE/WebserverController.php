@@ -28,8 +28,8 @@ use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionFunction;
-use Safe\DateTime;
 use Safe\Exceptions\{OpensslException, PcreException, UrlException};
+use Safe\{DateTimeImmutable};
 use stdClass;
 use Throwable;
 
@@ -672,7 +672,9 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 		);
 		try {
 			$lastmodified = $this->fs->getModificationTime($realFile);
-			$modifiedDate = (new DateTime())->setTimestamp($lastmodified)->format(DateTime::RFC7231);
+			$modifiedDate = (new DateTimeImmutable())
+				->setTimestamp($lastmodified)
+				->format(DateTimeImmutable::RFC7231);
 			$response->setHeader('Last-Modified', $modifiedDate);
 		} catch (Exception) {
 		}

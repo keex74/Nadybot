@@ -30,8 +30,8 @@ use Nadybot\Core\{
 	SQLException,
 };
 use Psr\Log\LoggerInterface;
-use Safe\DateTime;
 use Safe\Exceptions\JsonException;
+use Safe\{DateTimeImmutable};
 
 /**
  * @author Tyrence (RK2)
@@ -349,7 +349,7 @@ class PlayerManager extends ModuleInstance {
 			return null;
 		}
 
-		$luDateTime = DateTime::createFromFormat('Y/m/d H:i:s', $lastUpdated, new DateTimeZone('UTC'));
+		$luDateTime = DateTimeImmutable::createFromFormat('Y/m/d H:i:s', $lastUpdated, new DateTimeZone('UTC'));
 		$obj = new Player(
 			firstname: trim($char->FIRSTNAME),
 			name: $char->NAME,

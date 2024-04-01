@@ -29,7 +29,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Psr\Log\LoggerInterface;
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 use Safe\Exceptions\JsonException;
 use Throwable;
 
@@ -563,8 +563,8 @@ class WorldBossController extends ModuleInstance {
 			if ($days > 0) {
 				$spawnTimeMessage .= "{$days}d ";
 			}
-			$intTime = new DateTime('now', new DateTimeZone('UTC'));
-			$intTime->setTimestamp((time() - $timer->spawn) % (24 * 3_600));
+			$intTime = (new DateTimeImmutable('now', new DateTimeZone('UTC')))
+				->setTimestamp((time() - $timer->spawn) % (24 * 3_600));
 			$spawnTimeMessage .= Safe::pregReplace('/^0h /', '', str_replace(' 0', ' ', $intTime->format('G\\h i\\m'))) . ' ago<end>';
 			$usualSpawnInterval = self::BOSS_DATA[$timer->mob_name][self::INTERVAL2] ?? null;
 			if (isset($usualSpawnInterval)) {
@@ -1011,9 +1011,9 @@ class WorldBossController extends ModuleInstance {
 	}
 
 	protected function niceTime(int $timestamp): string {
-		$time = new DateTime();
-		$time->setTimestamp($timestamp);
-		return $time->format('D, H:i T (d-M-Y)');
+		return (new DateTimeImmutable())
+			->setTimestamp($timestamp)
+			->format('D, H:i T (d-M-Y)');
 	}
 
 	protected function getNextSpawnsMessage(WorldBossTimer $timer, int $howMany=10): string {

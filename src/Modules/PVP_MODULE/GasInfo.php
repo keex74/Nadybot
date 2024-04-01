@@ -5,10 +5,10 @@ namespace Nadybot\Modules\PVP_MODULE;
 use function Safe\json_encode;
 
 use DateTimeInterface;
-use Nadybot\Core\{Util};
+use Nadybot\Core\Util;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\{SiteUpdate, TowerAttack};
 
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 class GasInfo {
 	private int $time;
@@ -149,14 +149,18 @@ class GasInfo {
 			if (!isset($time)) {
 				return '-';
 			}
-			return (new DateTime('now', new \DateTimeZone('UTC')))->setTimestamp($time)->format('d-M-Y H:i:s').
+			return (new DateTimeImmutable('now', new \DateTimeZone('UTC')))
+				->setTimestamp($time)
+				->format('d-M-Y H:i:s').
 				" ({$time})";
 		};
 		$niceOffset = static function (?int $time): string {
 			if (!isset($time)) {
 				return '-';
 			}
-			return (new DateTime('now', new \DateTimeZone('UTC')))->setTimestamp($time)->format('H:i:s');
+			return (new DateTimeImmutable('now', new \DateTimeZone('UTC')))
+				->setTimestamp($time)
+				->format('H:i:s');
 		};
 		$blob = '';
 

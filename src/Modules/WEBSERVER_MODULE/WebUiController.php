@@ -27,7 +27,7 @@ use Nadybot\Core\{
 	UserException,
 };
 use Psr\Log\LoggerInterface;
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 use Throwable;
 
 use ZipArchive;
@@ -274,11 +274,11 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 		$lastModifiedHeader = $response->getHeader('last-modified');
 		$lastModified = false;
 		if (isset($lastModifiedHeader)) {
-			$lastModified = DateTime::createFromFormat(DateTime::RFC7231, $lastModifiedHeader);
+			$lastModified = DateTimeImmutable::createFromFormat(DateTimeImmutable::RFC7231, $lastModifiedHeader);
 		}
 		if ($lastModified === false) {
 			$this->logger->warning('Cannot parse last modification date, assuming now');
-			$lastModified = new DateTime();
+			$lastModified = new DateTimeImmutable();
 		}
 		$dlVersion = $lastModified->getTimestamp();
 		if ($dlVersion === $currentVersion) {

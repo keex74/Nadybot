@@ -20,7 +20,7 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 /**
  * This class contains all functions necessary for mass messaging
@@ -74,7 +74,7 @@ class MassMsgController extends ModuleInstance {
 	public int $massmsgCooldown = 1;
 
 	/** date and time when the last mass message was sent */
-	public ?DateTime $lastMessage;
+	public ?DateTimeImmutable $lastMessage;
 
 	#[NCA\Inject]
 	private Text $text;
@@ -137,7 +137,7 @@ class MassMsgController extends ModuleInstance {
 					'<end> before sending another mass-message or -invite.';
 			}
 		}
-		$this->lastMessage = new DateTime();
+		$this->lastMessage = new DateTimeImmutable();
 		return $message;
 	}
 

@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 class CallerBackup {
-	public DateTime $time;
+	public DateTimeImmutable $time;
 
 	/**
 	 * Names of all callers
@@ -20,7 +20,7 @@ class CallerBackup {
 
 	/** @param array<string,CallerList> $callers */
 	public function __construct(string $changer, string $command, array $callers) {
-		$this->time = new DateTime();
+		$this->time = new DateTimeImmutable();
 		$this->changer = $changer;
 		$this->command = $command;
 		$this->callers = $callers;

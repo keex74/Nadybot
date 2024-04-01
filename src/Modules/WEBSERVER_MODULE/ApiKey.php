@@ -2,11 +2,12 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
+use DateTimeInterface;
 use Nadybot\Core\DBRow;
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 class ApiKey extends DBRow {
-	public DateTime $created;
+	public DateTimeInterface $created;
 
 	public function __construct(
 		public string $character,
@@ -14,8 +15,8 @@ class ApiKey extends DBRow {
 		public string $pubkey,
 		public ?int $id=null,
 		public int $last_sequence_nr=0,
-		?DateTime $created=null,
+		?DateTimeInterface $created=null,
 	) {
-		$this->created = $created ?? new DateTime();
+		$this->created = $created ?? new DateTimeImmutable();
 	}
 }

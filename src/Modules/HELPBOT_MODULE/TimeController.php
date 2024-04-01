@@ -10,7 +10,7 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
-use Safe\DateTime;
+use Safe\{DateTimeImmutable};
 
 /**
  * @author Tyrence (RK2)
@@ -128,7 +128,7 @@ class TimeController extends ModuleInstance {
 	}
 
 	public function getTimezone(string $tz): ?Timezone {
-		$date = new DateTime();
+		$date = new DateTimeImmutable();
 		$time = time() - $date->getOffset();
 		$time_format = 'F j, Y, H:i';
 

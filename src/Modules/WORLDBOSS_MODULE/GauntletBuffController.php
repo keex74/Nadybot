@@ -32,7 +32,7 @@ use Nadybot\Modules\TIMERS_MODULE\{
 };
 use Nadybot\Modules\WEBSERVER_MODULE\StatsController;
 use Psr\Log\LoggerInterface;
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 use Safe\Exceptions\JsonException;
 use Throwable;
 use ValueError;
@@ -522,8 +522,8 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	}
 
 	private function tmTime(int $time): string {
-		$gtime = new DateTime();
-		$gtime->setTimestamp($time);
-		return $gtime->format('D, H:i T (d-M-Y)');
+		return (new DateTimeImmutable())
+			->setTimestamp($time)
+			->format('D, H:i T (d-M-Y)');
 	}
 }

@@ -14,7 +14,7 @@ use Nadybot\Core\{
 };
 use Nadybot\Modules\ITEMS_MODULE\{ItemsController, Skill};
 
-use Safe\DateTime;
+use Safe\DateTimeImmutable;
 
 /**
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
@@ -173,9 +173,8 @@ class WhatLocksController extends ModuleInstance {
 	 * @phpstan-return array{int, string}
 	 */
 	public function prettyDuration(int $duration, int $cutAway=0): array {
-		$short = (new DateTime())
+		$short = (new DateTimeImmutable(timezone: new DateTimeZone('UTC')))
 			->setTimestamp($duration)
-			->setTimezone(new DateTimeZone('UTC'))
 			->format('j\\d, H\\h i\\m s\\s');
 		// Decrease days by 1, because the first day of the year is 1, but for
 		// duration reasons, it must be 0

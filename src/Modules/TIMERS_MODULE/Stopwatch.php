@@ -2,7 +2,8 @@
 
 namespace Nadybot\Modules\TIMERS_MODULE;
 
-use Safe\DateTime;
+use DateTimeInterface;
+use Safe\{DateTimeImmutable};
 
 /**
  * An object representing a running stopwatch
@@ -10,15 +11,15 @@ use Safe\DateTime;
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
  */
 class Stopwatch {
-	public DateTime $start;
+	public DateTimeInterface $start;
 
 	/** @var StopwatchLap[] */
 	public array $laps = [];
 
-	public ?DateTime $end = null;
+	public ?DateTimeInterface $end = null;
 
 	public function __construct() {
-		$this->start = new DateTime();
+		$this->start = new DateTimeImmutable();
 	}
 
 	/** Get a textual representation of the timer */
@@ -32,7 +33,7 @@ class Stopwatch {
 		if (isset($this->end)) {
 			$descr .= 'End:    +' . $this->end->diff($last)->format('%I:%S');
 		} else {
-			$descr .= 'Now:   +' . (new DateTime())->diff($last)->format('%I:%S');
+			$descr .= 'Now:   +' . (new DateTimeImmutable())->diff($last)->format('%I:%S');
 		}
 		return $descr;
 	}

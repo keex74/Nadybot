@@ -22,7 +22,7 @@ use Nadybot\Core\{
 use Nadybot\Modules\WEBSERVER_MODULE\{
 	ApiResponse,
 };
-use Safe\DateTime as SafeDateTime;
+use Safe\DateTimeImmutable;
 use Safe\Exceptions\DatetimeException;
 
 #[
@@ -204,7 +204,7 @@ class AuditController extends ModuleInstance {
 			} catch (DatetimeException) {
 				return '<highlight>before<end> must be a date and/or time.';
 			}
-			$params['before'] = (new SafeDateTime())->setTimestamp($before)->format("Y-m-d\TH:i:s e");
+			$params['before'] = (new DateTimeImmutable())->setTimestamp($before)->format("Y-m-d\TH:i:s e");
 			$query->where('time', '<=', $before);
 		}
 
@@ -215,7 +215,7 @@ class AuditController extends ModuleInstance {
 			} catch (DatetimeException) {
 				return '<highlight>after<end> must be a date and/or time.';
 			}
-			$params['after'] = (new SafeDateTime())->setTimestamp($after)->format("Y-m-d\TH:i:s e");
+			$params['after'] = (new DateTimeImmutable())->setTimestamp($after)->format("Y-m-d\TH:i:s e");
 			$query->where('time', '>=', $after);
 		}
 
