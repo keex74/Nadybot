@@ -2,64 +2,56 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use DateTime;
-use Nadybot\Core\JSONDataModel;
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\{Activity, GuildMember};
+use DateTimeImmutable;
+use Stringable;
 
-class DiscordMessageIn extends JSONDataModel {
-	public string $id;
-	public string $channel_id;
-	public ?string $guild_id = null;
-
-	/** user object	the author of this message (not guaranteed to be a valid user, see below) */
-	public ?DiscordUser $author;
+class DiscordMessageIn implements Stringable {
+	use ReducedStringableTrait;
 
 	/**
-	 * partial guild member object
-	 * member properties for this message's author
+	 * @param ?DiscordUser      $author            user object the author of this message
+	 *                                             (not guaranteed to be a valid user, see below)
+	 * @param string            $content           The actual content of the message
+	 * @param DateTimeImmutable $timestamp         when this message was sent
+	 * @param ?GuildMember      $member            partial guild member object member properties
+	 *                                             for this message's author
+	 * @param DiscordUser[]     $mentions
+	 * @param array<mixed>      $mention_roles
+	 * @param ?array<mixed>     $mention_channels
+	 * @param ?array<mixed>     $attachments
+	 * @param DiscordEmbed[]    $embeds
+	 * @param ?array<mixed>     $reactions
+	 * @param ?Activity         $activity          sent with Rich Presence-related chat embeds
+	 * @param ?object           $application       sent with Rich Presence-related chat embeds
+	 * @param ?object           $message_reference reference data sent with crossposted messages
+	 * @param ?int              $flags             message flags ORd together, describes extra
+	 *                                             features of the message
 	 */
-	public ?GuildMember $member = null;
-
-	/** The actual content of the message */
-	public string $content;
-
-	/** when this message was sent */
-	public DateTime $timestamp;
-	public ?DateTime $edited_timestamp = null;
-	public bool $tts = false;
-	public bool $mention_everyone = false;
-
-	/** @var \Nadybot\Core\Modules\DISCORD\DiscordUser[] */
-	public array $mentions = [];
-
-	/** @var array<mixed> */
-	public array $mention_roles = [];
-
-	/** @var null|array<mixed> */
-	public ?array $mention_channels = null;
-
-	/** @var null|array<mixed> */
-	public ?array $attachments = [];
-
-	/** @var \Nadybot\Core\Modules\DISCORD\DiscordEmbed[] */
-	public array $embeds = [];
-
-	/** @var null|array<mixed> */
-	public ?array $reactions = null;
-	public mixed $nonce = null;
-	public bool $pinned = false;
-	public ?string $webhook_id = null;
-	public int $type;
-
-	/** sent with Rich Presence-related chat embeds */
-	public ?Activity $activity = null;
-
-	/** sent with Rich Presence-related chat embeds */
-	public ?object $application = null;
-
-	/** reference data sent with crossposted messages */
-	public ?object $message_reference = null;
-
-	/** message flags ORd together, describes extra features of the message */
-	public ?int $flags = null;
+	public function __construct(
+		public string $id,
+		public string $channel_id,
+		public ?DiscordUser $author,
+		public string $content,
+		public DateTimeImmutable $timestamp,
+		public int $type,
+		public ?string $guild_id=null,
+		public ?GuildMember $member=null,
+		public ?DateTimeImmutable $edited_timestamp=null,
+		public bool $tts=false,
+		public bool $mention_everyone=false,
+		public array $mentions=[],
+		public array $mention_roles=[],
+		public ?array $mention_channels=null,
+		public ?array $attachments=[],
+		public array $embeds=[],
+		public ?array $reactions=null,
+		public mixed $nonce=null,
+		public bool $pinned=false,
+		public ?string $webhook_id=null,
+		public ?Activity $activity=null,
+		public ?object $application=null,
+		public ?object $message_reference=null,
+		public ?int $flags=null,
+	) {
+	}
 }

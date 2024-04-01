@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\ParamClass;
 
-use Nadybot\Core\{Registry, Util};
+use Nadybot\Core\{Util};
 
 class PDuration extends Base {
 	protected static string $strictRegExp = "(?:(?:,?\s*\d+(?:yr?|years?|m|months?|w|weeks?|d|days?|h|hrs?|hours?|m|mins?|s|secs?))+)";
@@ -25,11 +25,7 @@ class PDuration extends Base {
 		if (is_numeric($this->value)) {
 			return (int)$this->value;
 		}
-		$util = Registry::getInstance(Util::class);
-		if (isset($util) && $util instanceof Util) {
-			return $util->parseTime($this->value);
-		}
-		return 0;
+		return Util::parseTime($this->value);
 	}
 
 	public static function getStrictRegexp(): string {

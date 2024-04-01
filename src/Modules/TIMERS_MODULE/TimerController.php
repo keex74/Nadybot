@@ -162,7 +162,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 				array_shift($timer->alerts);
 
 				[$name, $method] = explode('.', $timer->callback);
-				$instance = Registry::getInstance($name);
+				$instance = Registry::tryGetInstance($name);
 				if ($instance === null) {
 					$this->logger->error("Error calling callback method '{callback}' for timer '{timer}': Could not find instance '{instance}'.", [
 						'callback' => $timer->callback,

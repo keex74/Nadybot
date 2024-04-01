@@ -6,7 +6,7 @@ class Song {
 	public function __construct(
 		public string $date,
 		public string $artwork,
-		public int $duration,
+		public ?int $duration=null,
 		public string $artist='Unknown Artist',
 		public string $title='Unknown Song',
 	) {

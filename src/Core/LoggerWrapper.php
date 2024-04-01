@@ -272,9 +272,6 @@ class LoggerWrapper implements LoggerInterface {
 			return;
 		}
 		$msgHub = Registry::getInstance(MessageHub::class);
-		if (!isset($msgHub) || !($msgHub instanceof MessageHub)) {
-			return;
-		}
 		if (!$msgHub->routingLoaded) {
 			self::$routingQueue []= [$logLevel, $message, $context];
 			return;

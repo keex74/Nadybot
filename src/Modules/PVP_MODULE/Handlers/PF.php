@@ -29,11 +29,7 @@ class PF extends Base {
 			throw new UserException("'<highlight>{$this->value}<end>' is not a playfield format");
 		}
 
-		/** @var ?PlayfieldController */
 		$pfCtrl = Registry::getInstance(PlayfieldController::class);
-		if (!isset($pfCtrl)) {
-			return;
-		}
 		$this->pf = $pfCtrl->getPlayfieldByName($this->value);
 		if (!isset($this->pf)) {
 			throw new UserException("'<highlight>{$this->value}<end>' is not a known playfield.");

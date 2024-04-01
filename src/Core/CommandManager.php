@@ -500,7 +500,7 @@ class CommandManager implements MessageEmitter {
 		}
 		[$name, $method] = explode('.', $handler);
 		[$method, $line] = explode(':', $method);
-		$instance = Registry::getInstance($name);
+		$instance = Registry::tryGetInstance($name);
 		if ($instance === null) {
 			$this->logger->error("Could not find instance for name '{instance}'", [
 				'instance' => $name,
@@ -730,7 +730,7 @@ class CommandManager implements MessageEmitter {
 		foreach ($commandHandler->files as $handler) {
 			[$name, $method] = explode('.', $handler);
 			[$method, $line] = explode(':', $method);
-			$instance = Registry::getInstance($name);
+			$instance = Registry::tryGetInstance($name);
 			if ($instance === null) {
 				$this->logger->error("Could not find instance for name '{instance}'", [
 					'instance' => $name,
@@ -1498,7 +1498,7 @@ class CommandManager implements MessageEmitter {
 	protected function getRefMethodForHandler(string $handler): ?ReflectionMethod {
 		[$name, $method] = explode('.', $handler);
 		[$method, $line] = explode(':', $method);
-		$instance = Registry::getInstance($name);
+		$instance = Registry::tryGetInstance($name);
 		if ($instance === null) {
 			$this->logger->error("Could not find instance for name '{instance}'", [
 				'instance' => $name,

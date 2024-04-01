@@ -32,11 +32,7 @@ class Site extends Base {
 		}
 		$site = new PTowerSite($this->value);
 
-		/** @var ?PlayfieldController */
 		$pfCtrl = Registry::getInstance(PlayfieldController::class);
-		if (!isset($pfCtrl)) {
-			return;
-		}
 		$this->pf = $pfCtrl->getPlayfieldByName($site->pf);
 		if (!isset($this->pf)) {
 			throw new UserException("'<highlight>{$this->value}<end>' is not a known playfield.");

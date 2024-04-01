@@ -283,9 +283,7 @@ class BotRunner {
 		Registry::injectDependencies($this->classLoader);
 		$this->classLoader->loadInstances();
 		$msgHub = Registry::getInstance(MessageHub::class);
-		if (isset($msgHub) && $msgHub instanceof MessageHub) {
-			LegacyLogger::registerMessageEmitters($msgHub);
-		}
+		LegacyLogger::registerMessageEmitters($msgHub);
 
 		$signalHandler = function (): void {
 			$this->logger->notice('Shutdown requested.');
@@ -317,7 +315,6 @@ class BotRunner {
 		$chatBot = Registry::getInstance(Nadybot::class);
 
 		// startup core systems, load modules and call setup methods
-		/** @var DB */
 		$db = Registry::getInstance(DB::class);
 		if ($db->table(CommandManager::DB_TABLE)->exists()) {
 			$this->logger->notice('Initializing modules...');
@@ -488,7 +485,6 @@ class BotRunner {
 	 * is filled with the last known values from the database
 	 */
 	private function prefillSettingProperties(): void {
-		/** @var SettingManager */
 		$settingManager = Registry::getInstance(SettingManager::class);
 		foreach (Registry::getAllInstances() as $name => $instance) {
 			$refObj = new ReflectionObject($instance);
@@ -584,19 +580,13 @@ class BotRunner {
 
 	/** Connect to the database */
 	private function connectToDatabase(): void {
-		/** @var ?DB */
 		$db = Registry::getInstance(DB::class);
-		if (!isset($db)) {
-			throw new Exception('Cannot find DB instance.');
-		}
 		$config = $this->getConfigFile();
 		$db->connect($config->database);
 	}
 
 	/** Run migration scripts to keep the SQL schema up-to-date */
 	private function runUpgradeScripts(): void {
-		/** @var DB */
-		$db = Registry::getInstance(DB::class);
-		$db->createDatabaseSchema();
+		Registry::getInstance(DB::class)->createDatabaseSchema();
 	}
 }

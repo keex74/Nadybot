@@ -5,8 +5,7 @@ namespace Nadybot\Modules\PVP_MODULE;
 use function Safe\json_encode;
 
 use DateTimeInterface;
-use Nadybot\Core\{Registry, Util};
-use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
+use Nadybot\Core\{Util};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\{SiteUpdate, TowerAttack};
 
 use Safe\DateTime;
@@ -161,18 +160,9 @@ class GasInfo {
 		};
 		$blob = '';
 
-		/** @var ?PlayfieldController */
-		$pfCtrl = Registry::getInstance(PlayfieldController::class);
-		assert(isset($pfCtrl));
-
-		/** @var ?Util */
-		$util = Registry::getInstance(Util::class);
-		assert(isset($util));
-		$pf = $pfCtrl->getPlayfieldById($this->site->playfield->value);
-		assert(isset($pf));
 		$closingOffset = $this->closingOffset();
 		assert(isset($closingOffset));
-		$blob .= "<header2>{$pf->short_name} {$this->site->site_id}<end>\n".
+		$blob .= "<header2>{$this->site->playfield->short()} {$this->site->site_id}<end>\n".
 			'Time:        ' . $niceTime($this->time) . "\n".
 			'Planted:     ' . $niceDateTime($this->site->plant_time) . "\n".
 			'Timings:     75%: ' . $niceOffset($closingOffset) ."\n".
@@ -190,10 +180,10 @@ class GasInfo {
 		$blob .= 'In penalty:  ' . json_encode($this->inPenalty()) . "\n";
 		if ($this->site->gas === 75) {
 			$blob .=  'Going hot:   ' . $niceTime($this->goesHot()) . ' - '.
-				$util->unixtimeToReadable(($this->goesHot() ?? 0) - $this->time, true) . "\n";
+				Util::unixtimeToReadable(($this->goesHot() ?? 0) - $this->time, true) . "\n";
 		} elseif (isset($this->site->gas)) {
 			$blob .= 'Going cold:  ' . $niceTime($this->goesCold()) . ' - '.
-				$util->unixtimeToReadable(($this->goesCold() ?? 0) - $this->time, true) . "\n";
+				Util::unixtimeToReadable(($this->goesCold() ?? 0) - $this->time, true) . "\n";
 		}
 		$blob .= 'Penalty end: ' . $niceTime($this->getPenaltyEnd()) . "\n";
 		return "\n" . trim($blob);

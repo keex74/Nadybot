@@ -58,9 +58,6 @@ class ColorSettingHandler extends SettingHandler {
 			'#FF8C00' => 'Dark Orange',
 		];
 		$colors = Registry::getInstance(ColorsController::class);
-		if (!isset($colors) || !($colors instanceof ColorsController)) {
-			return $examples;
-		}
 		$themeColors = [
 			$colors->defaultHeaderColor => 'Theme Header Color',
 			$colors->defaultHeader2Color => 'Theme Sub-header Color',

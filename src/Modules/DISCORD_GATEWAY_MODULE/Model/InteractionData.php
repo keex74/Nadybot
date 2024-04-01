@@ -2,9 +2,12 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\Modules\DISCORD\{ReducedStringableTrait, SelectOptionValue};
+use Stringable;
 
-class InteractionData extends JSONDataModel {
+class InteractionData implements Stringable {
+	use ReducedStringableTrait;
+
 	/** Slash commands; a text-based command that shows up when a user types / */
 	public const TYPE_CHAT_INPUT = 1;
 
@@ -14,50 +17,36 @@ class InteractionData extends JSONDataModel {
 	/** A UI-based command that shows up when you right click or tap on a message */
 	public const TYPE_MESSAGE = 3;
 
-	/** the ID of the invoked command */
-	public string $id;
-
-	/** the name of the invoked command */
-	public string $name;
-
-	/** the type of the invoked command */
-	public int $type;
-
-	/** converted users + roles + channels + attachments */
-	public ?object $resolved = null;
-
 	/**
-	 * the params + values from the user
-	 *
-	 * @var \Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\InteractionDataOption[]
+	 * @param string                   $id             the ID of the invoked command
+	 * @param string                   $name           the name of the invoked command
+	 * @param int                      $type           the type of the invoked command
+	 * @param ?object                  $resolved       converted users + roles + channels
+	 *                                                 + attachments
+	 * @param ?InteractionDataOption[] $options        the params + values from the user
+	 * @param ?string                  $guild_id       the id of the guild the command
+	 *                                                 is registered to
+	 * @param ?string                  $custom_id      the custom_id of the component
+	 * @param ?int                     $component_type the type of the component
+	 * @param ?SelectOptionValue[]     $values         the values the user selected
+	 * @param ?string                  $target_id      id the of user or message targeted
+	 *                                                 by a user or message command
+	 * @param ?object[]                $components     the values submitted by the user
 	 */
-	public ?array $options = null;
-
-	/** the id of the guild the command is registered to */
-	public ?string $guild_id = null;
-
-	/** the custom_id of the component */
-	public ?string $custom_id = null;
-
-	/** the type of the component */
-	public ?int $component_type = null;
-
-	/**
-	 * the values the user selected
-	 *
-	 * @var SelectOptionValue[]
-	 */
-	public ?array $values = null;
-
-	/** id the of user or message targeted by a user or message command */
-	public ?string $target_id = null;
-
-	/**
-	 * the values submitted by the user
-	 *
-	 * @var object[]
-	 */
-	public ?array $components = null;
+	public function __construct(
+		public string $id,
+		public string $name,
+		public int $type,
+		public ?object $resolved=null,
+		public ?array $options=null,
+		public ?string $guild_id=null,
+		public ?string $custom_id=null,
+		public ?int $component_type=null,
+		public ?array $values=null,
+		public ?string $target_id=null,
+		public ?array $components=null,
+	) {
+	}
 
 	public function getOptionString(): ?string {
 		$parts = [$this->name];

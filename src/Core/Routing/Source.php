@@ -38,7 +38,6 @@ class Source {
 		$this->name = $name;
 		$this->label = $label;
 		if (!isset($dimension)) {
-			/** @var BotConfig */
 			$config = Registry::getInstance(BotConfig::class);
 			$this->server = $config->main->dimension;
 		} else {

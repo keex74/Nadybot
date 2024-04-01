@@ -73,7 +73,7 @@ class TowerFeedHandler extends ModuleInstance implements EventFeedHandler {
 			}
 			$info = $mapper->hydrateObject($specs[0], $data);
 			$event = new ($specs[1])($info);
-			$this->logger->notice('Received tower-feed event {event}', ['event' => $event]);
+			$this->logger->info('Received tower-feed event {event}', ['event' => $event]);
 			if ($event instanceof CoreEvent) {
 				$this->eventManager->fireEvent($event);
 			}

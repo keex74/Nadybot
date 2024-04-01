@@ -4,8 +4,9 @@ namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
 use function Safe\preg_split;
 
+use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Modules\DISCORD\DiscordException;
+use Nadybot\Core\Modules\DISCORD\{ApplicationCommand, ApplicationCommandOption, DiscordException};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -26,11 +27,7 @@ use Nadybot\Core\{
 	Text,
 	UserException,
 };
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\{
-	ApplicationCommand,
-	ApplicationCommandOption,
-	Interaction,
-};
+use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\Interaction;
 use Psr\Log\LoggerInterface;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -341,9 +338,13 @@ class DiscordSlashCommandController extends ModuleInstance {
 		description: 'Handle Discord slash commands'
 	)]
 	public function handleSlashCommands(DiscordGatewayEvent $event): void {
+		$payload = $event->payload;
+		if (!isset($payload->d) || !is_array($payload->d)) {
+			return;
+		}
 		$this->logger->info('Received interaction on Discord');
-		$interaction = new Interaction();
-		$interaction->fromJSON($event->payload->d);
+		$mapper = new ObjectMapperUsingReflection();
+		$interaction = $mapper->hydrateObject(Interaction::class, $payload->d);
 		$this->logger->debug('Interaction decoded', [
 			'interaction' => $interaction,
 		]);
@@ -476,17 +477,22 @@ class DiscordSlashCommandController extends ModuleInstance {
 
 	/** Get the ApplicationCommand-definition for a single NCA\DefineCommand */
 	private function getApplicationCommandForCmdCfg(CmdCfg $cmdCfg): ?ApplicationCommand {
-		$cmd = new ApplicationCommand();
-		$cmd->type = $cmd::TYPE_CHAT_INPUT;
-		$cmd->name = $cmdCfg->cmd;
-		$cmd->description = $cmdCfg->description;
+		$cmd = new ApplicationCommand(
+			id: null,
+			application_id: null,
+			version: null,
+			guild_id: null,
+			type: ApplicationCommand::TYPE_CHAT_INPUT,
+			name: $cmdCfg->cmd,
+			description: $cmdCfg->description,
+		);
 
 		/** @var int[] */
 		$types = [];
 		$methods = explode(',', $cmdCfg->file);
 		foreach ($methods as $methodDef) {
 			[$class, $method, $line] = preg_split('/[.:]/', $methodDef);
-			$obj = Registry::getInstance($class);
+			$obj = Registry::tryGetInstance($class);
 			if (!isset($obj)) {
 				continue;
 			}
@@ -503,11 +509,12 @@ class DiscordSlashCommandController extends ModuleInstance {
 			return $cmd;
 		}
 
-		$option = new ApplicationCommandOption();
-		$option->name = 'parameters';
-		$option->description = 'Parameters for this command';
-		$option->type = $option::TYPE_STRING;
-		$option->required = min($types) === self::APP_TYPE_REQ_PARAMS;
+		$option = new ApplicationCommandOption(
+			name: 'parameters',
+			description: 'Parameters for this command',
+			type: ApplicationCommandOption::TYPE_STRING,
+			required: min($types) === self::APP_TYPE_REQ_PARAMS,
+		);
 		$cmd->options = [$option];
 
 		return $cmd;

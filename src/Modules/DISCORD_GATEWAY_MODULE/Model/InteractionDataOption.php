@@ -2,9 +2,12 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\Modules\DISCORD\ReducedStringableTrait;
+use Stringable;
 
-class InteractionDataOption extends JSONDataModel {
+class InteractionDataOption implements Stringable {
+	use ReducedStringableTrait;
+
 	public const TYPE_SUB_COMMAND = 1;
 	public const TYPE_SUB_COMMAND_GROUP = 2;
 	public const TYPE_STRING = 3;
@@ -27,24 +30,22 @@ class InteractionDataOption extends JSONDataModel {
 	/** attachment object */
 	public const TYPE_ATTACHMENT = 11;
 
-	/** Name of the parameter */
-	public string $name;
-
-	/** Value of application command option type */
-	public int $type;
-
-	/** Value of the option resulting from user input */
-	public null|string|int|float $value = null;
-
 	/**
-	 * Present if this option is a group or subcommand
-	 *
-	 * @var \Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\InteractionDataOption[]
+	 * @param string                $name    Name of the parameter
+	 * @param int                   $type    Value of application command option type
+	 * @param null|string|int|float $value   Value of the option resulting from user input
+	 * @param ?self[]               $options Present if this option is a group or subcommand
+	 * @param ?bool                 $focused true if this option is the currently
+	 *                                       focused option for autocomplete
 	 */
-	public ?array $options = null;
-
-	/** true if this option is the currently focused option for autocomplete */
-	public ?bool $focused = null;
+	public function __construct(
+		public string $name,
+		public int $type,
+		public null|string|int|float $value=null,
+		public ?array $options=null,
+		public ?bool $focused=null,
+	) {
+	}
 
 	public function getOptionString(): string {
 		if (!isset($this->options)) {

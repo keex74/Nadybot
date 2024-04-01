@@ -2,8 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
-use Nadybot\Core\Modules\DISCORD\DiscordChannel;
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\GuildMember;
+use Nadybot\Core\Modules\DISCORD\{DiscordChannel, GuildMember};
 
 class DiscordVoiceJoinEvent extends DiscordVoiceEvent {
 	public const EVENT_MASK = 'discord_voice_join';

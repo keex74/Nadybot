@@ -2,9 +2,14 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use Nadybot\Core\JSONDataModel;
+use Stringable;
 
-class DiscordEmbedField extends JSONDataModel {
-	public string $name;
-	public string $value;
+class DiscordEmbedField implements Stringable {
+	use ReducedStringableTrait;
+
+	public function __construct(
+		public string $name,
+		public string $value,
+	) {
+	}
 }

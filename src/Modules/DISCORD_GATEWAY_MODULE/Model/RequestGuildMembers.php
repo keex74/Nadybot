@@ -2,15 +2,20 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
-class RequestGuildMembers {
-	public ?string $query = '';
-	public int $limit = 0;
-	public ?bool $presences = null;
+use Nadybot\Core\Modules\DISCORD\ReducedStringableTrait;
+use Stringable;
 
-	/** @var string[] */
-	public ?array $user_ids = null;
-	public ?string $nonce;
+class RequestGuildMembers implements Stringable {
+	use ReducedStringableTrait;
 
-	public function __construct(public string $guild_id) {
+	/** @param string[] $user_ids */
+	public function __construct(
+		public string $guild_id,
+		public ?string $query='',
+		public int $limit=0,
+		public ?bool $presences=null,
+		public ?array $user_ids=null,
+		public ?string $nonce=null,
+	) {
 	}
 }

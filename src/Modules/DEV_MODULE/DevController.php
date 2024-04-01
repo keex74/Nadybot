@@ -139,7 +139,7 @@ class DevController extends ModuleInstance {
 		foreach ($calls as $call) {
 			[$name, $method] = explode('.', $call);
 			[$method, $line] = explode(':', $method);
-			$instance = Registry::getInstance($name);
+			$instance = Registry::tryGetInstance($name);
 			if (!isset($instance)) {
 				continue;
 			}

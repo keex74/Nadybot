@@ -61,11 +61,7 @@ class BotConfig {
 		$vars['file_path'] = $filePath;
 		$mapper = new ObjectMapperUsingReflection();
 
-		/** @var BotConfig $config */
-		$config = $mapper->hydrateObject(
-			self::class,
-			$vars
-		);
+		$config = $mapper->hydrateObject(self::class, $vars);
 		return $config;
 	}
 

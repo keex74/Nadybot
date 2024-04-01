@@ -2,43 +2,32 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use DateTime;
-use Nadybot\Core\JSONDataModel;
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\Guild;
+use DateTimeImmutable;
+use Stringable;
 
-class DiscordChannelInvite extends JSONDataModel {
-	public string $code;
-
-	/** Partial guild object */
-	public ?Guild $guild = null;
-
-	/** The channel this invite is for */
-	public DiscordChannel $channel;
-
-	/** The user who created the invite */
-	public ?DiscordUser $inviter = null;
-
-	/** the type of target for this voice channel invite */
-	public ?int $target_type = null;
-
-	/** the user whose stream to display for this voice channel stream invite */
-	public ?DiscordUser $target_user = null;
+class DiscordChannelInvite implements Stringable {
+	use ReducedStringableTrait;
 
 	/**
-	 * approximate count of online members, returned from the
-	 * GET /invites/<code> endpoint when with_counts is true
+	 * @param DiscordChannel     $channel                    The channel this invite is for
+	 * @param ?Guild             $guild                      Partial guild object
+	 * @param ?DiscordUser       $inviter                    The user who created the invite
+	 * @param ?int               $target_type                the type of target for this voice channel invite
+	 * @param ?DiscordUser       $target_user                the user whose stream to display for this voice channel stream invite
+	 * @param ?int               $approximate_presence_count approximate count of online members, returned from the GET /invites/<code> endpoint when with_counts is true
+	 * @param ?int               $approximate_member_count   approximate count of total members, returned from the GET /invites/<code> endpoint when with_counts is true
+	 * @param ?DateTimeImmutable $expires_at                 the expiration date of this invite, returned from the GET /invites/<code> endpoint when with_expiration is true
 	 */
-	public ?int $approximate_presence_count = null;
-
-	/**
-	 * approximate count of total members, returned from the
-	 * GET /invites/<code> endpoint when with_counts is true
-	 */
-	public ?int $approximate_member_count = null;
-
-	/**
-	 * the expiration date of this invite, returned from the
-	 * GET /invites/<code> endpoint when with_expiration is true
-	 */
-	public ?DateTime $expires_at = null;
+	public function __construct(
+		public string $code,
+		public DiscordChannel $channel,
+		public ?Guild $guild=null,
+		public ?DiscordUser $inviter=null,
+		public ?int $target_type=null,
+		public ?DiscordUser $target_user=null,
+		public ?int $approximate_presence_count=null,
+		public ?int $approximate_member_count=null,
+		public ?DateTimeImmutable $expires_at=null,
+	) {
+	}
 }

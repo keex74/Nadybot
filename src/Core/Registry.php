@@ -3,6 +3,8 @@
 namespace Nadybot\Core;
 
 use function Safe\preg_match;
+
+use Exception;
 use Nadybot\Core\Attributes as NCA;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -43,12 +45,32 @@ class Registry {
 	}
 
 	/** Get the instance for the name $name or null if  none registered yet */
-	public static function getInstance(string $name, bool $reload=false): ?object {
+	public static function tryGetInstance(string $name, bool $reload=false): ?object {
 		$name = static::formatName($name);
 
 		$instance = Registry::$repo[$name]??null;
 		if ($instance === null) {
 			static::getLogger()->warning("Could not find instance for '{$name}'");
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * @template T of object
+	 *
+	 * @param class-string<T> $class
+	 *
+	 * @return T
+	 *
+	 * @throws Exception if no instance is found
+	 */
+	public static function getInstance(string $class): object {
+		$searchClass = static::formatName($class);
+
+		$instance = Registry::$repo[$searchClass]??null;
+		if ($instance === null || !is_a($instance, $class, false)) {
+			throw new Exception("Unable to find an instance of {$class}");
 		}
 
 		return $instance;
@@ -78,7 +100,7 @@ class Registry {
 					}
 					$dependencyName = static::formatName($type->getName());
 				}
-				$dependency = Registry::getInstance($dependencyName);
+				$dependency = Registry::tryGetInstance($dependencyName);
 				if ($dependency === null) {
 					static::getLogger()->warning(
 						"Could not resolve dependency '{dependencyName}' in '{class}'",

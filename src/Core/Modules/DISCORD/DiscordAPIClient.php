@@ -6,15 +6,14 @@ use function Amp\{async, delay};
 use function Safe\{json_decode, json_encode};
 use Amp\Http\Client\Interceptor\SetRequestHeaderIfUnset;
 use Amp\Http\Client\{BufferedContent, HttpClient, HttpClientBuilder, Request};
+use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
 use Nadybot\Core\{
 	Attributes as NCA,
 	HttpRetryRateLimits,
-	JSONDataModel,
 	ModuleInstance,
 	Safe,
 };
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\{ApplicationCommand, Emoji, GuildMember};
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop;
 use RuntimeException;
@@ -24,6 +23,8 @@ use Throwable;
 
 /**
  * A Discord API-client
+ *
+ * @psalm-suppress InternalMethod
  */
 #[NCA\Instance]
 class DiscordAPIClient extends ModuleInstance {
@@ -68,17 +69,16 @@ class DiscordAPIClient extends ModuleInstance {
 	}
 
 	public function getGateway(): DiscordGateway {
-		return $this->sendRequest(
-			new Request(self::DISCORD_API . '/gateway/bot'),
-			new DiscordGateway(),
-		);
+		$body = $this->sendRequest(new Request(self::DISCORD_API . '/gateway/bot'));
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObject(DiscordGateway::class, json_decode($body, true));
 	}
 
 	public function modifyGuildMember(string $guildId, string $userId, string $data): stdClass {
 		$uri = self::DISCORD_API . "/guilds/{$guildId}/members/{$userId}";
 		$request = new Request($uri, 'PATCH');
 		$request->setBody(new DiscordBody($data));
-		return $this->sendRequest($request, new stdClass());
+		return json_decode($this->sendRequest($request), false);
 	}
 
 	/** @return ApplicationCommand[] */
@@ -89,7 +89,9 @@ class DiscordAPIClient extends ModuleInstance {
 		$url = self::DISCORD_API . "/applications/{$applicationId}/commands";
 		$request = new Request($url, 'PUT');
 		$request->setBody(new DiscordBody($message));
-		return $this->sendRequest($request, [new ApplicationCommand()]);
+		$json = $this->sendRequest($request);
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObjects(ApplicationCommand::class, json_decode($json, true))->toArray();
 	}
 
 	public function deleteGlobalApplicationCommand(
@@ -97,15 +99,14 @@ class DiscordAPIClient extends ModuleInstance {
 		string $commandId,
 	): stdClass {
 		$url = self::DISCORD_API . "/applications/{$applicationId}/commands/{$commandId}";
-		return $this->sendRequest(new Request($url, 'DELETE'), new stdClass());
+		return json_decode($this->sendRequest(new Request($url, 'DELETE')), false);
 	}
 
 	/** @return ApplicationCommand[] */
 	public function getGlobalApplicationCommands(string $applicationId): array {
-		return $this->sendRequest(
-			new Request(self::DISCORD_API . "/applications/{$applicationId}/commands"),
-			[new ApplicationCommand()]
-		);
+		$mapper = new ObjectMapperUsingReflection();
+		$json = $this->sendRequest(new Request(self::DISCORD_API . "/applications/{$applicationId}/commands"));
+		return $mapper->hydrateObjects(ApplicationCommand::class, json_decode($json, true))->toArray();
 	}
 
 	public function sendInteractionResponse(
@@ -116,14 +117,12 @@ class DiscordAPIClient extends ModuleInstance {
 		$url = DiscordAPIClient::DISCORD_API . "/interactions/{$interactionId}/{$interactionToken}/callback";
 		$request = new Request($url, 'POST');
 		$request->setBody(new DiscordBody($message));
-		return $this->sendRequest($request, new stdClass());
+		return json_decode($this->sendRequest($request), false);
 	}
 
 	public function leaveGuild(string $guildId): stdClass {
-		return $this->sendRequest(new Request(
-			self::DISCORD_API . "/users/@me/guilds/{$guildId}",
-			'DELETE'
-		), new stdClass());
+		$request = new Request(self::DISCORD_API . "/users/@me/guilds/{$guildId}", 'DELETE');
+		return json_decode($this->sendRequest($request), false);
 	}
 
 	public function queueToChannel(string $channel, string $message): void {
@@ -172,7 +171,9 @@ class DiscordAPIClient extends ModuleInstance {
 			json_encode(['recipient_id' => $user]),
 			'application/json; charset=utf-8'
 		));
-		$channel = $this->sendRequest($request, new DiscordChannel());
+		$json = $this->sendRequest($request);
+		$mapper = new ObjectMapperUsingReflection();
+		$channel = $mapper->hydrateObject(DiscordChannel::class, json_decode($json, true));
 		$this->queueToChannel($channel->id, $message);
 	}
 
@@ -185,7 +186,9 @@ class DiscordAPIClient extends ModuleInstance {
 			'channelId' => $channelId,
 		]);
 		$request = new Request(self::DISCORD_API . "/channels/{$channelId}");
-		return $this->sendRequest($request, new DiscordChannel());
+		$json = $this->sendRequest($request);
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObject(DiscordChannel::class, json_decode($json, true));
 	}
 
 	public function getUser(string $userId): DiscordUser {
@@ -198,8 +201,10 @@ class DiscordAPIClient extends ModuleInstance {
 			]);
 			return $this->userCache[$userId];
 		}
+		$mapper = new ObjectMapperUsingReflection();
 		$request = new Request(self::DISCORD_API . "/users/{$userId}");
-		$user = $this->sendRequest($request, new DiscordUser());
+		$json = $this->sendRequest($request);
+		$user = $mapper->hydrateObject(DiscordUser::class, json_decode($json, true));
 		$this->cacheUser($user);
 		return $user;
 	}
@@ -223,7 +228,9 @@ class DiscordAPIClient extends ModuleInstance {
 			return $this->guildMemberCache[$guildId][$userId];
 		}
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/members/{$userId}");
-		$member = $this->sendRequest($request, new GuildMember());
+		$json = $this->sendRequest($request);
+		$mapper = new ObjectMapperUsingReflection();
+		$member = $mapper->hydrateObject(GuildMember::class, json_decode($json, true));
 		$this->cacheGuildMember($guildId, $member);
 		return $member;
 	}
@@ -239,7 +246,9 @@ class DiscordAPIClient extends ModuleInstance {
 			]),
 			'application/json; charset=utf-8'
 		));
-		return $this->sendRequest($request, new DiscordChannelInvite());
+		$json = $this->sendRequest($request);
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObject(DiscordChannelInvite::class, json_decode($json, true));
 	}
 
 	/**
@@ -249,7 +258,9 @@ class DiscordAPIClient extends ModuleInstance {
 	 */
 	public function getGuildInvites(string $guildId): array {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/invites");
-		return $this->sendRequest($request, [new DiscordChannelInvite()]);
+		$json = json_decode($this->sendRequest($request), true);
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObjects(DiscordChannelInvite::class, $json)->toArray();
 	}
 
 	/**
@@ -259,7 +270,9 @@ class DiscordAPIClient extends ModuleInstance {
 	 */
 	public function getGuildEvents(string $guildId): array {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/scheduled-events?with_user_count=true");
-		return $this->sendRequest($request, [new DiscordScheduledEvent()]);
+		$json = json_decode($this->sendRequest($request), true);
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObjects(DiscordScheduledEvent::class, $json)->toArray();
 	}
 
 	/**
@@ -269,7 +282,9 @@ class DiscordAPIClient extends ModuleInstance {
 	 */
 	public function getEmojis(string $guildId): array {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/emojis");
-		return $this->sendRequest($request, [new Emoji()]);
+		$json = json_decode($this->sendRequest($request), true);
+		$mapper = new ObjectMapperUsingReflection();
+		return $mapper->hydrateObjects(Emoji::class, $json)->toArray();
 	}
 
 	/** Register a new Emoji in the $guildId */
@@ -283,7 +298,9 @@ class DiscordAPIClient extends ModuleInstance {
 			]),
 			'application/json; charset=utf-8'
 		));
-		return $this->sendRequest($request, new Emoji());
+		$mapper = new ObjectMapperUsingReflection();
+		$json = json_decode($this->sendRequest($request), true);
+		return $mapper->hydrateObject(Emoji::class, $json);
 	}
 
 	/** Change the data for an already existing Emoji */
@@ -300,13 +317,15 @@ class DiscordAPIClient extends ModuleInstance {
 			]),
 			'application/json; charset=utf-8'
 		));
-		return $this->sendRequest($request, new Emoji());
+		$mapper = new ObjectMapperUsingReflection();
+		$json = json_decode($this->sendRequest($request), true);
+		return $mapper->hydrateObject(Emoji::class, $json);
 	}
 
 	/** Delete an already existing emoji */
 	public function deleteEmoji(string $guildId, string $emojiId): stdClass {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/emojis/{$emojiId}", 'DELETE');
-		return $this->sendRequest($request, new stdClass());
+		return json_decode($this->sendRequest($request), false);
 	}
 
 	private function getClient(): HttpClient {
@@ -339,15 +358,18 @@ class DiscordAPIClient extends ModuleInstance {
 			$url = self::DISCORD_API . "/channels/{$item->channelId}/messages";
 			$request = new Request($url, 'POST');
 			$request->setBody(new DiscordBody($item->message));
-			$this->sendRequest($request, new stdClass());
+			$result = $this->sendRequest($request);
 			if (isset($item->suspension)) {
-				$item->suspension->resume();
+				$item->suspension->resume($result);
 			}
 		} catch (Throwable $e) {
 			$this->logger->error('Sending message failed: {error}', [
 				'error' => $e->getMessage(),
 				'exception' => $e,
 			]);
+			if (isset($item->suspension)) {
+				$item->suspension->throw($e);
+			}
 		}
 		$this->processQueue();
 	}
@@ -371,7 +393,7 @@ class DiscordAPIClient extends ModuleInstance {
 			$url = self::DISCORD_API . "/webhooks/{$item->applicationId}/{$item->interactionToken}";
 			$request = new Request($url, 'POST');
 			$request->setBody(new DiscordBody($item->message));
-			$result = $this->sendRequest($request, new stdClass());
+			$result = $this->sendRequest($request);
 			if (isset($item->suspension)) {
 				$item->suspension->resume($result);
 			}
@@ -380,18 +402,14 @@ class DiscordAPIClient extends ModuleInstance {
 				'error' => $e->getMessage(),
 				'exception' => $e,
 			]);
+			if (isset($item->suspension)) {
+				$item->suspension->throw($e);
+			}
 		}
 		$this->processWebhookQueue();
 	}
 
-	/**
-	 * @template T of JSONDataModel|stdClass|JSONDataModel[]
-	 *
-	 * @param T $o
-	 *
-	 * @return T
-	 */
-	private function sendRequest(Request $request, JSONDataModel|stdClass|array $o): JSONDataModel|stdClass|array {
+	private function sendRequest(Request $request): string {
 		$client = $this->getClient();
 		$maxTries = 3;
 		$retries = $maxTries;
@@ -458,8 +476,7 @@ class DiscordAPIClient extends ModuleInstance {
 			$this->logger->notice('Message sent successfully.');
 		}
 		if ($response->getStatus() === 204) {
-			/** @psalm-suppress InvalidReturnStatement */
-			return new stdClass();
+			return '{}';
 		}
 		if ($response->getHeader('content-type') !== 'application/json') {
 			throw new Exception(
@@ -467,31 +484,6 @@ class DiscordAPIClient extends ModuleInstance {
 				'Content-Type: ' . ($response->getHeader('content-type') ?? '<empty>')
 			);
 		}
-		$reply = json_decode($body);
-		if (is_array($o)) {
-			$result = [];
-			foreach ($reply as $element) {
-				$obj = clone $o[0];
-				$obj->fromJSON($element);
-				$result []= $obj;
-			}
-			$reply = $result;
-		} elseif (is_object($o) && $o instanceof JSONDataModel) {
-			$o->fromJSON($reply);
-
-			/** @psalm-suppress NoValue */
-			$reply = $o;
-		}
-		if (is_object($reply)) {
-			$this->logger->info('Decoded discord reply into {class}', [
-				'class' => basename(str_replace('\\', '/', $reply::class)),
-				'object' => $reply,
-			]);
-		} elseif (is_array($reply)) {
-			$this->logger->info('Decoded discord reply into an array', [
-				'object' => $reply,
-			]);
-		}
-		return $reply;
+		return $body;
 	}
 }

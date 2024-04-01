@@ -2,10 +2,12 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use DateTime;
-use Nadybot\Core\JSONDataModel;
+use DateTimeImmutable;
+use Stringable;
 
-class DiscordChannel extends JSONDataModel {
+class DiscordChannel implements Stringable {
+	use ReducedStringableTrait;
+
 	/** text channel within a server */
 	public const GUILD_TEXT = 0;
 
@@ -42,70 +44,52 @@ class DiscordChannel extends JSONDataModel {
 	/** Channel that can only contain threads */
 	public const GUILD_FORUM = 15;
 
-	public string $id;
-	public int $type;
-	public ?string $guild_id = null;
-
-	/** sorting position of the channel */
-	public ?int $position = null;
-
 	/**
-	 * explicit permission overwrites for members and roles
-	 *
-	 * @var array<mixed>
+	 * @param ?int               $position              sorting position of the channel
+	 * @param ?array<mixed>      $permission_overwrites explicit permission overwrites for members
+	 *                                                  and roles
+	 * @param ?string            $name                  the name of the channel (2-100 characters)
+	 * @param ?string            $topic                 the channel topic (0-1024 characters)
+	 * @param ?bool              $nsfw                  Whether the channel is "not safe for work"
+	 * @param ?string            $last_message_id       the id of the last message sent in this
+	 *                                                  channel (may not point to an existing or
+	 *                                                  valid message)
+	 * @param ?int               $bitrate               bitrate (in bits) of the voice channel
+	 * @param ?int               $user_limit            the user limit of the voice channel
+	 * @param ?int               $rate_limit_per_user   amount of seconds a user has to wait
+	 *                                                  before sending another message (0-21600);
+	 *                                                  bots, as well as users with the permission
+	 *                                                  manage_messages or manage_channel, are
+	 *                                                  unaffected
+	 * @param ?DiscordUser[]     $recipients            the recipients of the DM
+	 * @param ?string            $icon                  icon hash
+	 * @param ?string            $owner_id              id of the DM creator
+	 * @param ?string            $application_id        application id of the group DM creator
+	 *                                                  if it is bot-created
+	 * @param ?string            $parent_id             id of the parent category for a channel
+	 *                                                  (each parent category can contain up to
+	 *                                                  50 channels)
+	 * @param ?DateTimeImmutable $last_pin_timestamp    when the last pinned message was pinned
 	 */
-	public ?array $permission_overwrites = null;
-
-	/** the name of the channel (2-100 characters) */
-	public ?string $name = null;
-
-	/** the channel topic (0-1024 characters) */
-	public ?string $topic = null;
-
-	/** Whether the channel is "not safe for work" */
-	public ?bool $nsfw;
-
-	/**
-	 * the id of the last message sent in this channel
-	 * (may not point to an existing or valid message)
-	 */
-	public ?string $last_message_id = null;
-
-	/** bitrate (in bits) of the voice channel */
-	public ?int $bitrate = null;
-
-	/** the user limit of the voice channel */
-	public ?int $user_limit = null;
-
-	/**
-	 * amount of seconds a user has to wait before sending another message (0-21600);
-	 * bots, as well as users with the permission manage_messages or manage_channel,
-	 * are unaffected
-	 */
-	public ?int $rate_limit_per_user = null;
-
-	/**
-	 * the recipients of the DM
-	 *
-	 * @var \Nadybot\Core\Modules\DISCORD\DiscordUser[]
-	 */
-	public ?array $recipients = null;
-
-	/** icon hash */
-	public ?string $icon = null;
-
-	/** id of the DM creator */
-	public ?string $owner_id = null;
-
-	/** application id of the group DM creator if it is bot-created */
-	public ?string $application_id = null;
-
-	/**
-	 * id of the parent category for a channel
-	 * (each parent category can contain up to 50 channels)
-	 */
-	public ?string $parent_id = null;
-
-	/** when the last pinned message was pinned */
-	public ?DateTime $last_pin_timestamp = null;
+	public function __construct(
+		public string $id,
+		public int $type,
+		public ?string $guild_id=null,
+		public ?int $position=null,
+		public ?array $permission_overwrites=null,
+		public ?string $name=null,
+		public ?string $topic=null,
+		public ?bool $nsfw=null,
+		public ?string $last_message_id=null,
+		public ?int $bitrate=null,
+		public ?int $user_limit=null,
+		public ?int $rate_limit_per_user=null,
+		public ?array $recipients=null,
+		public ?string $icon=null,
+		public ?string $owner_id=null,
+		public ?string $application_id=null,
+		public ?string $parent_id=null,
+		public ?DateTimeImmutable $last_pin_timestamp=null,
+	) {
+	}
 }

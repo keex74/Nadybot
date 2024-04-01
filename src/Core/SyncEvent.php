@@ -16,7 +16,6 @@ abstract class SyncEvent extends Event {
 		?int $sourceDimension=null,
 		?bool $forceSync=null,
 	) {
-		/** @var BotConfig */
 		$config = Registry::getInstance(BotConfig::class);
 		$this->sourceBot = $sourceBot ?? $config->main->character;
 		$this->sourceDimension = $sourceDimension ?? $config->main->dimension;
@@ -28,7 +27,6 @@ abstract class SyncEvent extends Event {
 			return true;
 		}
 
-		/** @var BotConfig */
 		$config = Registry::getInstance(BotConfig::class);
 		$myName = $config->main->character;
 		$myDim = $config->main->dimension;

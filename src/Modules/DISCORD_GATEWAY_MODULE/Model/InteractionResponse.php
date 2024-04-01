@@ -2,9 +2,12 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\Modules\DISCORD\ReducedStringableTrait;
+use Stringable;
 
-class InteractionResponse extends JSONDataModel {
+class InteractionResponse implements Stringable {
+	use ReducedStringableTrait;
+
 	public const TYPE_PONG = 1;
 	public const TYPE_CHANNEL_MESSAGE_WITH_SOURCE = 4;
 	public const TYPE_DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5;
@@ -13,9 +16,13 @@ class InteractionResponse extends JSONDataModel {
 	public const TYPE_APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8;
 	public const TYPE_MODAL = 9;
 
-	/** the type of response */
-	public int $type;
-
-	/** an optional response message */
-	public ?InteractionCallbackData $data = null;
+	/**
+	 * @param int                      $type the type of response
+	 * @param ?InteractionCallbackData $data an optional response message
+	 */
+	public function __construct(
+		public int $type,
+		public ?InteractionCallbackData $data=null,
+	) {
+	}
 }

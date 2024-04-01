@@ -74,42 +74,28 @@ class Template extends DefineSetting {
 			'c-admin-level' => '<red>Administrator<end>',
 		];
 
-		/** @var ?SettingManager */
-		$settingManager = Registry::getInstance('settingmanager');
-		if (isset($settingManager)) {
-			if ($settingManager->getBool('guild_channel_status') === false) {
-				$this->exampleValues['channel-name'] = '<myname>';
-			}
+		$settingManager = Registry::getInstance(SettingManager::class);
+		if ($settingManager->getBool('guild_channel_status') === false) {
+			$this->exampleValues['channel-name'] = '<myname>';
 		}
 
-		/** @var ?NickController */
-		$nickController = Registry::getInstance('nickcontroller');
+		$nickController = Registry::getInstance(NickController::class);
 
-		/** @var ?Text */
-		$text = Registry::getInstance('text');
-		if (isset($nickController, $text)) {
-			$this->exampleValues['nick'] = 'Nickname';
-			$this->exampleValues['c-nick'] = $text->renderPlaceholders(
-				$nickController->nickFormat,
-				[
-					'nick' => $this->exampleValues['nick'],
-					'main' => $this->exampleValues['main'],
-				]
-			);
-		}
+		$this->exampleValues['nick'] = 'Nickname';
+		$this->exampleValues['c-nick'] = Text::renderPlaceholders(
+			$nickController->nickFormat,
+			[
+				'nick' => $this->exampleValues['nick'],
+				'main' => $this->exampleValues['main'],
+			]
+		);
 
-		/** @var ?AccessManager */
-		$accessManager = Registry::getInstance('accessmanager');
-		if (isset($accessManager)) {
-			$alName = ucfirst($accessManager->getDisplayName('admin'));
-			$this->exampleValues['admin-level'] = $alName;
-		}
+		$accessManager = Registry::getInstance(AccessManager::class);
+		$alName = ucfirst($accessManager->getDisplayName('admin'));
+		$this->exampleValues['admin-level'] = $alName;
 
-		/** @var ?OnlineController */
-		$onlineController = Registry::getInstance('onlinecontroller');
-		if (isset($onlineController)) {
-			$this->exampleValues['c-admin-level'] = $onlineController->rankColorAdmin.
-				$this->exampleValues['admin-level'] . '<end>';
-		}
+		$onlineController = Registry::getInstance(OnlineController::class);
+		$this->exampleValues['c-admin-level'] = $onlineController->rankColorAdmin.
+			$this->exampleValues['admin-level'] . '<end>';
 	}
 }

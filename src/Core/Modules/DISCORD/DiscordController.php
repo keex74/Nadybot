@@ -13,7 +13,6 @@ use Nadybot\Core\{
 	Text,
 };
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordGatewayController;
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\Guild;
 
 /**
  * @author Nadyita (RK5)
@@ -161,12 +160,12 @@ class DiscordController extends ModuleInstance {
 			$text = '';
 			$embeds []= $embed;
 		}
+		if (str_ends_with($text, '     ')) {
+			$text .= "\n_ _";
+		}
 		$msg = new DiscordMessageOut($text);
 		if (count($embeds)) {
 			$msg->embeds = $embeds;
-		}
-		if (str_ends_with($msg->content, '     ')) {
-			$msg->content.="\n_ _";
 		}
 		return $msg;
 	}
@@ -269,9 +268,10 @@ class DiscordController extends ModuleInstance {
 		$fields = preg_split("/\n(<font color=#FCA712>.+?\n|<header2>[^>]+?<end>|<header2>.+?\n)/", $matches[1], -1, \PREG_SPLIT_DELIM_CAPTURE);
 		for ($i = 1; $i < count($fields); $i+=2) {
 			$embed->fields ??= [];
-			$field = new DiscordEmbedField();
-			$field->name = $fix($fields[$i]);
-			$field->value = $fix($fields[$i+1]);
+			$field = new DiscordEmbedField(
+				name: $fix($fields[$i]),
+				value: $fix($fields[$i+1]),
+			);
 
 			$field->name = Safe::pregReplace("/\[(.+?)\]\(.*?\)/", '$1', $field->name);
 			if (strlen($field->value) > 1_024) {

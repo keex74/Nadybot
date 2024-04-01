@@ -2,6 +2,13 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-class DiscordComponent {
-	public int $type;
+use Stringable;
+
+class DiscordComponent implements Stringable {
+	use ReducedStringableTrait;
+
+	public function __construct(
+		public int $type,
+	) {
+	}
 }

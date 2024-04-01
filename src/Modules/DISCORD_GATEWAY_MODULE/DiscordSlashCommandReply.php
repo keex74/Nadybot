@@ -61,12 +61,14 @@ class DiscordSlashCommandReply implements CommandReply {
 	 * the actual result later.
 	 */
 	public function sendStateUpdate(): void {
-		$response = new InteractionResponse();
-		$response->type = $response::TYPE_DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
-		$response->data = new InteractionCallbackData();
-		$response->data->flags = $this->slashCtrl->discordSlashCommands === $this->slashCtrl::SLASH_EPHEMERAL
-			? InteractionCallbackData::EPHEMERAL
-			: null;
+		$response = new InteractionResponse(
+			type: InteractionResponse::TYPE_DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+			data: new InteractionCallbackData(
+				flags: $this->slashCtrl->discordSlashCommands === $this->slashCtrl::SLASH_EPHEMERAL
+					? InteractionCallbackData::EPHEMERAL
+					: null
+			)
+		);
 		async(
 			$this->discordAPIClient->sendInteractionResponse(...),
 			$this->interactionId,

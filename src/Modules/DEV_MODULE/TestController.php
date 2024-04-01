@@ -3,10 +3,11 @@
 namespace Nadybot\Modules\DEV_MODULE;
 
 use function Amp\async;
-use function Safe\{date, json_decode, json_encode};
+use function Safe\{date};
 use Amp\File\{FilesystemException};
 use AO\Client\{Basic, WorkerPackage};
 use AO\Package;
+use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
 use Nadybot\Core\Event\PrivateChannelMsgEvent;
 use Nadybot\Core\{
@@ -226,7 +227,7 @@ class TestController extends ModuleInstance {
 		string $event
 	): void {
 		[$instanceName, $methodName] = explode('.', $event);
-		$instance = Registry::getInstance($instanceName);
+		$instance = Registry::tryGetInstance($instanceName);
 		if ($instance === null) {
 			$context->reply("Instance <highlight>{$instanceName}<end> does not exist.");
 		} elseif (!method_exists($instance, $methodName)) {
@@ -365,45 +366,43 @@ class TestController extends ModuleInstance {
 		PCharacter $nick,
 		string $content
 	): void {
-		$message = new DiscordMessageIn();
-		$payload = json_decode(
-			'{'.
-				'"type":0,'.
-				'"tts":false,'.
-				'"timestamp":"2021-05-09T06:44:07.143000+00:00",'.
-				'"referenced_message":null,'.
-				'"pinned":false,'.
-				'"nonce":"840841547619500032",'.
-				'"mentions":[],'.
-				'"mention_roles":[],'.
-				'"mention_everyone":false,'.
-				'"member":{'.
-					'"roles":["731589704247410729"],'.
-					'"nick":' . json_encode($nick()) . ','.
-					'"mute":false,'.
-					'"joined_at":"2020-07-11T16:46:42.205000+00:00",'.
-					'"hoisted_role":null,'.
-					'"deaf":false'.
-				'},'.
-				'"id":"840841548081528852",'.
-				'"flags":0,'.
-				'"embeds":[],'.
-				'"edited_timestamp":null,'.
-				'"content":' . json_encode($content) . ','.
-				'"components":[],'.
-				'"channel_id":"731553649184211064",'.
-				'"author":{'.
-					'"username":' . json_encode($nick()) . ','.
-					'"public_flags":0,'.
-					'"id":"356025105371103232",'.
-					'"discriminator":"9062",'.
-					'"avatar":"65fdc56a8ee53e6d197f1076f6b7813a"'.
-				'},'.
-				'"attachments":[],'.
-				'"guild_id":"731552006069551184"'.
-			'}'
-		);
-		$message->fromJSON($payload);
+		$mapper = new ObjectMapperUsingReflection();
+		$payload = [
+			'type' => 0,
+			'tts' => false,
+			'timestamp' => '2021-05-09T06:44:07.143000+00:00',
+			'referenced_message' => null,
+			'pinned' => false,
+			'nonce' => '840841547619500032',
+			'mentions' => [],
+			'mention_roles' => [],
+			'mention_everyone' => false,
+			'member' => [
+				'roles' => ['731589704247410729'],
+				'nick' => $nick(),
+				'mute' => false,
+				'joined_at' => '2020-07-11T16:46:42.205000+00:00',
+				'hoisted_role' => null,
+				'deaf' => false,
+			],
+			'id' => '840841548081528852',
+			'flags' => 0,
+			'embeds' => [],
+			'edited_timestamp' => null,
+			'content' => $content,
+			'components' => [],
+			'channel_id' => '731553649184211064',
+			'author' => [
+				'username' => $nick(),
+				'public_flags' => 0,
+				'id' => '356025105371103232',
+				'discriminator' => '9062',
+				'avatar' => '65fdc56a8ee53e6d197f1076f6b7813a',
+			],
+			'attachments' => [],
+			'guild_id' => '731552006069551184',
+		];
+		$message = $mapper->hydrateObject(DiscordMessageIn::class, $payload);
 		$event = new DiscordMessageEvent(
 			message: $message->content,
 			sender: $nick(),

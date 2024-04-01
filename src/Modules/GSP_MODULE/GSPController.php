@@ -232,7 +232,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		$mapper = new ObjectMapperUsingReflection();
 		try {
 			$show = $mapper->hydrateObject(Show::class, json_decode($body, true));
-		} catch (\Throwable) {
+		} catch (\Throwable $e) {
 			return 'GSP seems to have problems with their service. Please try again later.';
 		}
 		if (empty($show->history)) {
@@ -303,7 +303,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		$mapper = new ObjectMapperUsingReflection();
 		try {
 			$show = $mapper->hydrateObject(Show::class, json_decode($body, true));
-		} catch (\Throwable) {
+		} catch (\Throwable $e) {
 			return 'GSP seems to have problems with their service. Please try again later.';
 		}
 		$blob = "<header2>GSP<end>\n<tab>";

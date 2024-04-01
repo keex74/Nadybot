@@ -2,11 +2,10 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use Nadybot\Core\JSONDataModel;
 use Revolt\EventLoop\Suspension;
 
 class WebhookQueueItem {
-	/** @param null|Suspension<JSONDataModel|\stdClass|JSONDataModel[]> $suspension */
+	/** @param null|Suspension<string> $suspension */
 	public function __construct(
 		public string $applicationId,
 		public string $interactionToken,

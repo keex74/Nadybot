@@ -255,6 +255,14 @@ enum Playfield: int {
 		};
 	}
 
+	public static function tryByName(string $name): ?self {
+		try {
+			return self::byName($name);
+		} catch (ValueError) {
+			return null;
+		}
+	}
+
 	public function long(): string {
 		return match ($this) {
 			self::FourHoles => '4 Holes',

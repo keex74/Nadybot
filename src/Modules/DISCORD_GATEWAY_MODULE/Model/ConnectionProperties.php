@@ -2,14 +2,19 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
-use Nadybot\Core\JSONDataModel;
+use Nadybot\Core\Modules\DISCORD\ReducedStringableTrait;
+use Stringable;
 
-class ConnectionProperties extends JSONDataModel {
+class ConnectionProperties implements Stringable {
+	use ReducedStringableTrait;
+
 	public string $os;
-	public string $browser = 'Nadybot';
-	public string $device = 'Nadybot';
 
-	public function __construct() {
-		$this->os = php_uname('s');
+	public function __construct(
+		?string $os=null,
+		public string $browser='Nadybot',
+		public string $device='Nadybot',
+	) {
+		$this->os = $os ?? php_uname('s');
 	}
 }

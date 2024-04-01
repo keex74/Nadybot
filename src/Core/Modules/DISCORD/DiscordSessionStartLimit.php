@@ -2,18 +2,22 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use Nadybot\Core\JSONDataModel;
+use Stringable;
 
-class DiscordSessionStartLimit extends JSONDataModel {
-	/** The total number of session starts the current user is allowed */
-	public int $total;
+class DiscordSessionStartLimit implements Stringable {
+	use ReducedStringableTrait;
 
-	/** The remaining number of session starts the current user is allowed */
-	public int $remaining;
-
-	/** The number of milliseconds after which the limit resets */
-	public int $reset_after;
-
-	/** The number of identify requests allowed per 5 seconds */
-	public int $max_concurrency;
+	/**
+	 * @param int $total           The total number of session starts the current user is allowed
+	 * @param int $remaining       The remaining number of session starts the current user is allowed
+	 * @param int $reset_after     The number of milliseconds after which the limit resets
+	 * @param int $max_concurrency The number of identify requests allowed per 5 seconds
+	 */
+	public function __construct(
+		public int $total,
+		public int $remaining,
+		public int $reset_after,
+		public int $max_concurrency,
+	) {
+	}
 }

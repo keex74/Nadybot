@@ -2,8 +2,13 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use Nadybot\Core\JSONDataModel;
+use Stringable;
 
-class DiscordScheduledEventMetadata extends JSONDataModel {
-	public ?string $location=null;
+class DiscordScheduledEventMetadata implements Stringable {
+	use ReducedStringableTrait;
+
+	public function __construct(
+		public ?string $location=null
+	) {
+	}
 }

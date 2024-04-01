@@ -31,10 +31,7 @@ class RaffleItem {
 				if ($matches[1][$i] !== $matches[2][$i]) {
 					$ql = $matches[3][$i];
 				} else {
-					/** @var ItemsController */
 					$items = Registry::getInstance(ItemsController::class);
-
-					/** @var SpiritsController */
 					$spirits = Registry::getInstance(SpiritsController::class);
 
 					$hasItemGroup = $items->hasItemGroup((int)$matches[1][$i]);

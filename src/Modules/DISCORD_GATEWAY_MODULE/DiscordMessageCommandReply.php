@@ -20,8 +20,6 @@ use Nadybot\Core\{
 	Routing\Source,
 };
 
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\GuildMember;
-
 class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 	protected string $channelId;
 	protected bool $isDirectMsg;
@@ -69,8 +67,6 @@ class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 		if (!is_array($msg)) {
 			$msg = [$msg];
 		}
-		$fakeGM = new GuildMember();
-		$fakeGM->nick = $this->config->main->character;
 		if (!$this->isDirectMsg) {
 			$channel = $this->discordGatewayController->lookupChannel($this->channelId);
 			if (isset($channel)) {
