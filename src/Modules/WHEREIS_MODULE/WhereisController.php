@@ -8,9 +8,9 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
+	Playfield,
 	Text,
 };
-use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
 
 /**
  * @author Jaqueme
@@ -32,31 +32,21 @@ class WhereisController extends ModuleInstance {
 	#[NCA\Inject]
 	private DB $db;
 
-	#[NCA\Inject]
-	private PlayfieldController $pfController;
-
 	#[NCA\Setup]
 	public function setup(): void {
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/whereis.csv');
 	}
 
-	/** @return Collection<WhereisResult> */
+	/** @return Collection<Whereis> */
 	public function getByName(string ...$name): Collection {
 		return $this->db->table('whereis AS w')
 			->whereIn('name', $name)
-			->asObj(WhereisResult::class)
-			->each(function (WhereisResult $wi): void {
-				$wi->pf = $this->pfController->getPlayfieldById($wi->playfield_id);
-			});
+			->asObj(Whereis::class);
 	}
 
-	/** @return Collection<WhereisResult> */
+	/** @return Collection<Whereis> */
 	public function getAll(): Collection {
-		return $this->db->table('whereis AS w')
-			->asObj(WhereisResult::class)
-			->each(function (WhereisResult $wi): void {
-				$wi->pf = $this->pfController->getPlayfieldById($wi->playfield_id);
-			});
+		return $this->db->table('whereis AS w')->asObj(Whereis::class);
 	}
 
 	/** Show the location of NPCs or places */
@@ -72,13 +62,12 @@ class WhereisController extends ModuleInstance {
 		$this->db->addWhereFromParams($query, $words, 'keywords', 'or');
 
 		/** @var Collection<string> */
-		$lines = $query->asObj(WhereisResult::class)
-			->map(function (WhereisResult $npc): string {
-				$npc->pf = $this->pfController->getPlayfieldById($npc->playfield_id);
+		$lines = $query->asObj(Whereis::class)
+			->map(static function (Whereis $npc): string {
 				$line = "<pagebreak><header2>{$npc->name}<end>\n".
 					"<tab>{$npc->answer}";
-				if (isset($npc->pf) && $npc->xcoord !== 0 && $npc->ycoord !== 0) {
-					$line .= ' ' . $this->text->makeChatcmd("{$npc->xcoord}x{$npc->ycoord} {$npc->pf->short_name}", "/waypoint {$npc->xcoord} {$npc->ycoord} {$npc->pf->id}");
+				if ($npc->playfield !== Playfield::Unknown && $npc->xcoord !== 0 && $npc->ycoord !== 0) {
+					$line .= ' ' . $npc->toWaypoint();
 				}
 				return $line;
 			});

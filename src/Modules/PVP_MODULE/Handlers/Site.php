@@ -3,8 +3,7 @@
 namespace Nadybot\Modules\PVP_MODULE\Handlers;
 
 use Nadybot\Core\ParamClass\PTowerSite;
-use Nadybot\Core\{Registry, UserException};
-use Nadybot\Modules\HELPBOT_MODULE\{Playfield, PlayfieldController};
+use Nadybot\Core\{Playfield, UserException};
 use Nadybot\Modules\PVP_MODULE\Attributes\Argument;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 
@@ -23,7 +22,7 @@ class Site extends Base {
 		if (!isset($this->pf) || !isset($this->siteId)) {
 			return false;
 		}
-		return $this->pf->id === $site->playfield->value && $this->siteId === $site->site_id;
+		return $this->pf === $site->playfield && $this->siteId === $site->site_id;
 	}
 
 	protected function validateValue(): void {
@@ -32,8 +31,7 @@ class Site extends Base {
 		}
 		$site = new PTowerSite($this->value);
 
-		$pfCtrl = Registry::getInstance(PlayfieldController::class);
-		$this->pf = $pfCtrl->getPlayfieldByName($site->pf);
+		$this->pf = Playfield::tryByName($site->pf);
 		if (!isset($this->pf)) {
 			throw new UserException("'<highlight>{$this->value}<end>' is not a known playfield.");
 		}

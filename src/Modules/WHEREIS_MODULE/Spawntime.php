@@ -6,10 +6,10 @@ use Illuminate\Support\Collection;
 use Nadybot\Core\DBRow;
 
 class Spawntime extends DBRow {
-	/** @var Collection<WhereisResult> */
+	/** @var Collection<Whereis> */
 	public Collection $coordinates;
 
-	/** @param ?Collection<WhereisResult> $coordinates */
+	/** @param ?Collection<Whereis> $coordinates */
 	public function __construct(
 		public string $mob,
 		public ?string $alias=null,

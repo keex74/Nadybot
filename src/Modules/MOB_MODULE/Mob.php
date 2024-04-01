@@ -3,6 +3,7 @@
 namespace Nadybot\Modules\MOB_MODULE;
 
 use EventSauce\ObjectHydrator\MapFrom;
+use Nadybot\Core\Playfield;
 
 class Mob {
 	public const T_PRISONER = 'prisoner';
@@ -49,7 +50,7 @@ class Mob {
 		public string $type,
 		#[MapFrom('coordinates.x', '.')] public int $x,
 		#[MapFrom('coordinates.y', '.')] public int $y,
-		#[MapFrom('playfield')] public int $playfield_id,
+		public Playfield $playfield,
 		public ?int $instance,
 		#[MapFrom('status.status', '.')] public string $status,
 		#[MapFrom('status.last_killed', '.')] public ?int $last_killed,

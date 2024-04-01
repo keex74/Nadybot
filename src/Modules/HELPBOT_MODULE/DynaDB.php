@@ -2,11 +2,11 @@
 
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
-use Nadybot\Core\DBRow;
+use Nadybot\Core\{Attributes as NCA, DBRow, Playfield};
 
 class DynaDB extends DBRow {
 	public function __construct(
-		public int $playfield_id,
+		#[NCA\DB\ColName('playfield_id')] public Playfield $playfield,
 		public string $mob,
 		public int $min_ql,
 		public int $max_ql,

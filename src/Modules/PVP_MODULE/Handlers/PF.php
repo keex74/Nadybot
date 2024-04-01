@@ -3,8 +3,7 @@
 namespace Nadybot\Modules\PVP_MODULE\Handlers;
 
 use Nadybot\Core\ParamClass\PPlayfield;
-use Nadybot\Core\{Registry, UserException};
-use Nadybot\Modules\HELPBOT_MODULE\{Playfield, PlayfieldController};
+use Nadybot\Core\{Playfield, UserException};
 use Nadybot\Modules\PVP_MODULE\Attributes\Argument;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 
@@ -21,7 +20,7 @@ class PF extends Base {
 		if (!isset($this->pf)) {
 			return false;
 		}
-		return $this->pf->id === $site->playfield->value;
+		return $this->pf === $site->playfield;
 	}
 
 	protected function validateValue(): void {
@@ -29,8 +28,7 @@ class PF extends Base {
 			throw new UserException("'<highlight>{$this->value}<end>' is not a playfield format");
 		}
 
-		$pfCtrl = Registry::getInstance(PlayfieldController::class);
-		$this->pf = $pfCtrl->getPlayfieldByName($this->value);
+		$this->pf = Playfield::tryByName($this->value);
 		if (!isset($this->pf)) {
 			throw new UserException("'<highlight>{$this->value}<end>' is not a known playfield.");
 		}

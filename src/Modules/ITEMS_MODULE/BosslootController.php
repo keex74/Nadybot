@@ -8,11 +8,12 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
+	Playfield,
 	Text,
 };
 use Nadybot\Modules\WHEREIS_MODULE\{
+	Whereis,
 	WhereisController,
-	WhereisResult,
 };
 use Psr\Log\LoggerInterface;
 
@@ -189,14 +190,11 @@ class BosslootController extends ModuleInstance {
 	private function getBossLocations(string $bossName): Collection {
 		/** @var Collection<string> */
 		$locations = $this->whereisController->getByName($bossName)
-			->map(function (WhereisResult $npc): string {
-				if ($npc->playfield_id === 0 || ($npc->xcoord === 0 && $npc->ycoord === 0)) {
+			->map(static function (Whereis $npc): string {
+				if ($npc->playfield === Playfield::Unknown || ($npc->xcoord === 0 && $npc->ycoord === 0)) {
 					return $npc->answer;
 				}
-				return $this->text->makeChatcmd(
-					$npc->answer,
-					"/waypoint {$npc->xcoord} {$npc->ycoord} {$npc->playfield_id}"
-				);
+				return $npc->toWaypoint($npc->answer);
 			});
 		return $locations;
 	}

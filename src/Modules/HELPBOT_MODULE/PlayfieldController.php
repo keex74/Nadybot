@@ -9,6 +9,7 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
+	Playfield as CorePlayfield,
 	Safe,
 	Text,
 };
@@ -38,17 +39,9 @@ class PlayfieldController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	/** @var array<int,Playfield> */
-	private array $playfields = [];
-
 	#[NCA\Setup]
 	public function setup(): void {
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/playfields.csv');
-
-		$this->playfields = $this->db->table('playfields')
-			->asObj(Playfield::class)
-			->keyBy('id')
-			->toArray();
 	}
 
 	/** Show a list of playfields, including their id, short name, and long name */
@@ -139,24 +132,27 @@ class PlayfieldController extends ModuleInstance {
 		}
 
 		if (isset($playfieldId)) {
-			$playfield = $this->getPlayfieldById($playfieldId);
+			$playfieldName = (string)$playfieldId;
+			$playfield = CorePlayfield::tryFrom($playfieldId);
 			if (isset($playfield)) {
-				$playfieldName = $playfield->short_name;
+				$playfieldName = $playfield->short();
 			}
 		} elseif (isset($playfieldName)) {
-			$playfield = $this->getPlayfieldByName($playfieldName);
+			$playfield = CorePlayfield::tryByName($playfieldName);
 			if (!isset($playfield)) {
 				$context->reply("Unknown playfield {$playfieldName}");
 				return;
 			}
-			$playfieldId = $playfield->id;
-			$playfieldName = $playfield->short_name;
+			$playfieldId = $playfield->value;
+			$playfieldName = $playfield->short();
 		} else {
 			$context->reply('Wrong waypoint format.');
 			return;
 		}
 
-		$context->reply($this->processWaypointCommand($xCoords, $yCoords, $playfieldName??(string)$playfieldId, $playfieldId));
+		/** @psalm-suppress PossiblyInvalidArgument */
+		$reply = $this->processWaypointCommand($xCoords, $yCoords, $playfieldName, $playfieldId);
+		$context->reply($reply);
 	}
 
 	public function getPlayfieldByName(string $playfieldName): ?Playfield {
@@ -168,22 +164,11 @@ class PlayfieldController extends ModuleInstance {
 			->first();
 	}
 
-	public function getPlayfieldById(int $playfieldId): ?Playfield {
-		return $this->playfields[$playfieldId] ?? null;
-	}
-
 	/** @return Collection<Playfield> */
 	public function searchPlayfieldsByName(string $playfieldName): Collection {
 		return $this->db->table('playfields')
 			->whereIlike('long_name', $playfieldName)
 			->orWhereIlike('short_name', $playfieldName)
-			->asObj(Playfield::class);
-	}
-
-	/** @return Collection<Playfield> */
-	public function searchPlayfieldsByIds(int ...$ids): Collection {
-		return $this->db->table('playfields')
-			->whereIn('id', $ids)
 			->asObj(Playfield::class);
 	}
 

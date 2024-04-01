@@ -11,12 +11,12 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Nadybot,
 	ParamClass\PWord,
+	Playfield,
 	Safe,
 	SettingManager,
 	SettingMode,
 	Text,
 };
-use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
 
 /**
  * Commands this class contains:
@@ -54,9 +54,6 @@ class ChatRallyController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private PlayfieldController $playfieldController;
 
 	#[NCA\Inject]
 	private Nadybot $chatBot;
@@ -117,18 +114,18 @@ class ChatRallyController extends ModuleInstance {
 			$playfieldId = (int)$playfield();
 			$playfieldName = (string)$playfieldId;
 
-			$pfObj = $this->playfieldController->getPlayfieldById($playfieldId);
-			if ($pfObj !== null && isset($pfObj->short_name)) {
-				$playfieldName = $pfObj->short_name;
+			$pfObj = Playfield::tryFrom($playfieldId);
+			if ($pfObj !== null && $pfObj !== Playfield::Unknown) {
+				$playfieldName = $pfObj->short();
 			}
 		} else {
 			$playfieldName = $playfield();
-			$pfObj = $this->playfieldController->getPlayfieldByName($playfieldName);
+			$pfObj = Playfield::tryByName($playfieldName);
 			if ($pfObj === null) {
 				$context->reply("Could not find playfield '{$playfieldName}'");
 				return;
 			}
-			$playfieldId = $pfObj->id;
+			$playfieldId = $pfObj->value;
 		}
 		$this->set($playfieldName, $playfieldId, (string)$xCoords, (string)$yCoords);
 		$this->replyCurrentRally($context);
@@ -162,9 +159,9 @@ class ChatRallyController extends ModuleInstance {
 		}
 
 		$name = (string)$playfieldId;
-		$playfield = $this->playfieldController->getPlayfieldById($playfieldId);
-		if ($playfield !== null && isset($playfield->short_name)) {
-			$name = $playfield->short_name;
+		$playfield = Playfield::tryFrom($playfieldId);
+		if ($playfield !== null && $playfield !== Playfield::Unknown) {
+			$name = $playfield->short();
 		}
 		$this->set($name, $playfieldId, $xCoords, $yCoords);
 		$this->replyCurrentRally($context);

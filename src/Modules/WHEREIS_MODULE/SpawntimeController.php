@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
+	Playfield,
 	Safe,
 	Text,
 };
@@ -48,7 +49,7 @@ class SpawntimeController extends ModuleInstance {
 		foreach ($spawntime->coordinates as $row) {
 			$blob .= "<header2>{$row->name}<end>\n".
 				"{$row->answer}";
-			if ($row->playfield_id !== 0 && $row->xcoord !== 0 && $row->ycoord !== 0) {
+			if ($row->playfield !== Playfield::Unknown && $row->xcoord !== 0 && $row->ycoord !== 0) {
 				$blob .= ' [' . $row->toWaypoint() . ']';
 			}
 			$blob .= "\n\n";
@@ -138,9 +139,9 @@ class SpawntimeController extends ModuleInstance {
 				).
 				']';
 		} elseif ($row->coordinates->count() === 1) {
-			/** @var WhereisResult */
+			/** @var Whereis */
 			$coords = $row->coordinates->firstOrFail();
-			if ($coords->playfield_id != 0 && $coords->xcoord != 0 && $coords->ycoord != 0) {
+			if ($coords->playfield !== Playfield::Unknown && $coords->xcoord != 0 && $coords->ycoord != 0) {
 				$line .= ' ['. $coords->toWaypoint() . ']';
 			}
 		}
@@ -156,7 +157,7 @@ class SpawntimeController extends ModuleInstance {
 		$mobs = $this->whereisController->getAll();
 		$spawnTimes->each(static function (Spawntime $spawn) use ($mobs) {
 			$spawn->coordinates = $mobs->filter(
-				static function (WhereisResult $row) use ($spawn): bool {
+				static function (Whereis $row) use ($spawn): bool {
 					return strncasecmp($row->name, $spawn->mob, strlen($spawn->mob)) === 0;
 				}
 			)->values();

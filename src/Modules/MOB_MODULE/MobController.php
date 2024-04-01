@@ -10,8 +10,7 @@ use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes\{Event, HandlesCommand};
 use Nadybot\Core\Routing\{RoutableMessage, Source};
 use Nadybot\Core\{Attributes as NCA, CmdContext, MessageHub, ModuleInstance, Safe, Text, Util};
-use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
-use Nadybot\Modules\WHEREIS_MODULE\{WhereisController, WhereisResult};
+use Nadybot\Modules\WHEREIS_MODULE\{Whereis, WhereisController};
 use Psr\Log\LoggerInterface;
 use Safe\Exceptions\JsonException;
 
@@ -64,9 +63,6 @@ class MobController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private HttpClientBuilder $builder;
-
-	#[NCA\Inject]
-	private PlayfieldController $pfCtrl;
 
 	#[NCA\Inject]
 	private WhereisController $whereisCtrl;
@@ -167,15 +163,13 @@ class MobController extends ModuleInstance {
 	)]
 	public function announceMobAttacked(MobAttackedEvent $event): void {
 		$mob = $event->mob;
-		$pf = $this->pfCtrl->getPlayfieldById($mob->playfield_id);
-		assert(isset($pf));
 		$blob = $this->text->makeChatcmd(
-			"{$mob->x}x{$mob->y} {$pf->short_name}",
-			"/waypoint {$mob->x} {$mob->y} {$mob->playfield_id}"
+			"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
+			"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 		);
 		$msg = "<highlight>{$mob->name}<end> is being attacked in ".
 			((array)$this->text->makeBlob(
-				$pf->long_name,
+				$mob->playfield->long(),
 				$blob,
 				"{$mob->name} waypoint",
 			))[0] . '.';
@@ -190,15 +184,13 @@ class MobController extends ModuleInstance {
 	)]
 	public function announceMobSpawn(MobSpawnEvent $event): void {
 		$mob = $event->mob;
-		$pf = $this->pfCtrl->getPlayfieldById($mob->playfield_id);
-		assert(isset($pf));
 		$blob = $this->text->makeChatcmd(
-			"{$mob->x}x{$mob->y} {$pf->short_name}",
-			"/waypoint {$mob->x} {$mob->y} {$mob->playfield_id}"
+			"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
+			"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 		);
 		$msg = "<highlight>{$mob->name}<end> has spawned in ".
 			((array)$this->text->makeBlob(
-				$pf->long_name,
+				$mob->playfield->long(),
 				$blob,
 				"{$mob->name} waypoint",
 			))[0] . '.';
@@ -213,15 +205,13 @@ class MobController extends ModuleInstance {
 	)]
 	public function announceMobDeath(MobDeathEvent $event): void {
 		$mob = $event->mob;
-		$pf = $this->pfCtrl->getPlayfieldById($mob->playfield_id);
-		assert(isset($pf));
 		$blob = $this->text->makeChatcmd(
-			"{$mob->x}x{$mob->y} {$pf->short_name}",
-			"/waypoint {$mob->x} {$mob->y} {$mob->playfield_id}"
+			"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
+			"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 		);
 		$msg = "<highlight>{$mob->name}<end> was killed in ".
 			((array)$this->text->makeBlob(
-				$pf->long_name,
+				$mob->playfield->long(),
 				$blob,
 				"{$mob->name} waypoint",
 			))[0] . '.';
@@ -447,23 +437,21 @@ class MobController extends ModuleInstance {
 	}
 
 	private function renderMob(Mob $mob): string {
-		$pf = $this->pfCtrl->getPlayfieldById($mob->playfield_id);
-		assert(isset($pf));
 		$status = $this->renderMobStatus($mob);
 
 		/** @var string */
 		$basename = Safe::pregReplace("/\s+\(placeholder\)/i", '', $mob->name);
 		$whereis = $this->whereisCtrl->getByName($basename);
 		if ($whereis->count() === 1) {
-			/** @var WhereisResult */
+			/** @var Whereis */
 			$whereMob = $whereis->firstOrFail();
 			$mob->x = $whereMob->xcoord;
 			$mob->y = $whereMob->ycoord;
 		}
 		return "<header2>{$mob->name}<end> [".
 			$this->text->makeChatcmd(
-				"{$mob->x}x{$mob->y} {$pf->short_name}",
-				"/waypoint {$mob->x} {$mob->y} {$mob->playfield_id}"
+				"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
+				"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 			) . "] - <i>{$mob->type}-{$mob->key}</i>\n".
 			"<tab>{$status}";
 	}

@@ -59,15 +59,12 @@ class HelpbotController extends ModuleInstance {
 		$range1 = (int)floor($ql - $ql / 10);
 		$range2 = (int)ceil($ql + $ql / 10);
 
-		/** @var Collection<DynaDBSearch> */
+		/** @var Collection<DynaDB> */
 		$data = $this->db->table('dynadb AS d')
 			->where('max_ql', '>=', $range1)
 			->where('min_ql', '<=', $range2)
 			->orderBy('min_ql')
-			->asObj(DynaDBSearch::class)
-			->each(function (DynaDBSearch $ql): void {
-				$ql->pf = $this->pfController->getPlayfieldById($ql->playfield_id);
-			});
+			->asObj(DynaDB::class);
 		if ($data->isEmpty()) {
 			$context->reply(
 				"No dynacamps found between level <highlight>{$range1}<end> ".
@@ -96,10 +93,7 @@ class HelpbotController extends ModuleInstance {
 		$data = $this->db->table('dynadb AS d')
 			->whereIn('playfield_id', $playfields->pluck('id')->toArray())
 			->orWhereIlike('mob', "%{$dbSearch}%")
-			->asObj(DynaDBSearch::class)
-			->each(function (DynaDBSearch $search): void {
-				$search->pf = $this->pfController->getPlayfieldById($search->playfield_id);
-			});
+			->asObj(DynaDB::class);
 		$count = count($data);
 
 		if (!$count) {
@@ -192,14 +186,14 @@ class HelpbotController extends ModuleInstance {
 	/**
 	 * Format the dynacamp results as a blob for a popup
 	 *
-	 * @param Collection<DynaDBSearch> $data
+	 * @param Collection<DynaDB> $data
 	 */
 	private function formatResults(Collection $data): string {
 		$blob = '';
 
-		/** @var Collection<string,Collection<DynaDBSearch>> */
-		$data = $data->filter(static fn (DynaDBSearch $search): bool => isset($search->pf))
-			->groupBy('pf.long_name')
+		/** @var Collection<string,Collection<DynaDB>> */
+		$data = $data
+			->groupBy(static fn (DynaDB $search): string => $search->playfield->long())
 			->sortKeys();
 
 		foreach ($data as $pfName => $rows) {
@@ -207,7 +201,7 @@ class HelpbotController extends ModuleInstance {
 			foreach ($rows as $row) {
 				$coordLink = $this->text->makeChatcmd(
 					"{$row->x_coord}x{$row->y_coord}",
-					"/waypoint {$row->x_coord} {$row->y_coord} {$row->playfield_id}"
+					"/waypoint {$row->x_coord} {$row->y_coord} {$row->playfield->value}"
 				);
 				$range = "{$row->min_ql}-{$row->max_ql}";
 				if (strlen($range) < 7) {

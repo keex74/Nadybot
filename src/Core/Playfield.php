@@ -265,6 +265,7 @@ enum Playfield: int {
 
 	public function long(): string {
 		return match ($this) {
+			self::Unknown => 'Unknown playfield or instance',
 			self::FourHoles => '4 Holes',
 			self::Andromeda => 'Andromeda',
 			self::Aegean => 'Aegean',
@@ -364,6 +365,7 @@ enum Playfield: int {
 
 	public function short(): string {
 		return match ($this) {
+			self::Unknown => 'UNKNWN',
 			self::FourHoles => '4HO',
 			self::Andromeda => 'AND',
 			self::Aegean => 'AEG',
@@ -461,6 +463,7 @@ enum Playfield: int {
 		};
 	}
 
+	case Unknown = 0;
 	case FourHoles = 760;
 	case Andromeda = 655;
 	case Aegean = 585;

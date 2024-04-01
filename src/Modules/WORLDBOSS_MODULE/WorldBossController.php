@@ -19,6 +19,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 	ParamClass\PDuration,
 	ParamClass\PRemove,
+	Playfield,
 	Routing\Character,
 	Routing\RoutableMessage,
 	Routing\Source,
@@ -27,7 +28,6 @@ use Nadybot\Core\{
 	UserException,
 	Util,
 };
-use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
 use Psr\Log\LoggerInterface;
 use Safe\DateTime;
 use Safe\Exceptions\JsonException;
@@ -340,9 +340,6 @@ class WorldBossController extends ModuleInstance {
 	private EventManager $eventManager;
 
 	#[NCA\Inject]
-	private PlayfieldController $pfController;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Inject]
@@ -516,10 +513,10 @@ class WorldBossController extends ModuleInstance {
 		$coords = self::BOSS_DATA[$timer->mob_name][self::COORDS] ?? null;
 		$mobName = $timer->mob_name;
 		if (isset($coords) && !$startpage) {
-			$pf = $this->pfController->getPlayfieldById($coords[2]);
-			if (isset($pf)) {
+			$pf = Playfield::tryFrom($coords[2]);
+			if (isset($pf) && $pf !== Playfield::Unknown) {
 				$wpLink = $this->text->makeChatcmd(
-					$pf->long_name,
+					$pf->long(),
 					"/waypoint {$coords[0]} {$coords[1]} {$coords[2]}"
 				);
 				$blob = $timer->mob_name . " is in [{$wpLink}]";
@@ -1220,13 +1217,13 @@ class WorldBossController extends ModuleInstance {
 		if (!isset($coords)) {
 			return '.';
 		}
-		$pf = $this->pfController->getPlayfieldById($coords[2]);
-		if (!isset($pf)) {
+		$pf = Playfield::tryFrom($coords[2]);
+		if (!isset($pf) || $pf === Playfield::Unknown) {
 			return '';
 		}
 		$msg = '';
 		$wpLink = $this->text->makeChatcmd(
-			$pf->long_name,
+			$pf->long(),
 			"/waypoint {$coords[0]} {$coords[1]} {$coords[2]}"
 		);
 		$blob = $timer->mob_name . " is in [{$wpLink}]";

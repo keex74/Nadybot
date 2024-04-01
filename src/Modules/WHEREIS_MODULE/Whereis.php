@@ -2,12 +2,28 @@
 
 namespace Nadybot\Modules\WHEREIS_MODULE;
 
-class Whereis {
-	public int $id;
-	public string $name;
-	public string $answer;
-	public ?string $keywords;
-	public int $playfield_id;
-	public int $xcoord;
-	public int $ycoord;
+use Nadybot\Core\{Attributes as NCA, DBRow, Playfield, Text};
+
+class Whereis extends DBRow {
+	public function __construct(
+		public int $id,
+		public string $name,
+		public string $answer,
+		public ?string $keywords,
+		#[NCA\DB\ColName('playfield_id')] public Playfield $playfield,
+		public int $xcoord,
+		public int $ycoord,
+	) {
+	}
+
+	public function toWaypoint(?string $name=null): string {
+		if (!isset($name)) {
+			$name = "{$this->xcoord}x{$this->ycoord}";
+			if ($this->playfield !== Playfield::Unknown) {
+				$name .= ' ' . $this->playfield->short();
+			}
+		}
+		$coords = "{$this->xcoord} {$this->ycoord} {$this->playfield->value}";
+		return Text::makeChatcmd($name, "/waypoint {$coords}");
+	}
 }
