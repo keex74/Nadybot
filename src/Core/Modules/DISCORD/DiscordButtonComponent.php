@@ -16,7 +16,7 @@ class DiscordButtonComponent implements Stringable {
 	/**
 	 * @param int     $style     one of button styles
 	 * @param string  $label     text that appears on the button, max 80 characters
-	 * @param ?object $emoji     name, id, and animated
+	 * @param ?Emoji  $emoji     name, id, and animated
 	 * @param ?string $custom_id a developer-defined identifier for the button, max 100 characters
 	 * @param ?string $url       a url for link-style buttons
 	 * @param bool    $disabled  whether the button is disabled (default false)
@@ -25,7 +25,7 @@ class DiscordButtonComponent implements Stringable {
 		public int $style,
 		public string $label,
 		public int $type=2,
-		public ?object $emoji=null,
+		public ?Emoji $emoji=null,
 		public ?string $custom_id=null,
 		public ?string $url=null,
 		public bool $disabled=false,

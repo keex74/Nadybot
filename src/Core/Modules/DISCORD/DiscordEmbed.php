@@ -8,7 +8,7 @@ use Stringable;
 class DiscordEmbed implements Stringable {
 	use ReducedStringableTrait;
 
-	/** @param null|DiscordEmbedField[] $fields */
+	/** @param ?DiscordEmbedField[] $fields */
 	public function __construct(
 		public ?string $title=null,
 		public ?string $type='rich',
@@ -16,12 +16,12 @@ class DiscordEmbed implements Stringable {
 		public ?string $url=null,
 		public ?DateTimeImmutable $timestamp=null,
 		public ?int $color=null,
-		public ?object $footer=null,
-		public ?object $image=null,
-		public ?object $thumbnail=null,
-		public ?object $video=null,
-		public ?object $provider=null,
-		public ?object $author=null,
+		public ?DiscordEmbedFooter $footer=null,
+		public ?DiscordEmbedImage $image=null,
+		public ?DiscordEmbedThumbnail $thumbnail=null,
+		public ?DiscordEmbedVideo $video=null,
+		public ?DiscordEmbedProvider $provider=null,
+		public ?DiscordEmbedAuthor $author=null,
 		public ?array $fields=null,
 	) {
 	}

@@ -3,6 +3,8 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use DateTimeImmutable;
+use Nadybot\Core\Attributes\CastToStdClass;
+use stdClass;
 use Stringable;
 
 class DiscordMessageIn implements Stringable {
@@ -21,9 +23,9 @@ class DiscordMessageIn implements Stringable {
 	 * @param ?array<mixed>     $attachments
 	 * @param DiscordEmbed[]    $embeds
 	 * @param ?array<mixed>     $reactions
-	 * @param ?Activity         $activity          sent with Rich Presence-related chat embeds
-	 * @param ?object           $application       sent with Rich Presence-related chat embeds
-	 * @param ?object           $message_reference reference data sent with crossposted messages
+	 * @param ?MessageActivity  $activity          sent with Rich Presence-related chat embeds
+	 * @param ?stdClass         $application       sent with Rich Presence-related chat embeds
+	 * @param ?stdClass         $message_reference reference data sent with crossposted messages
 	 * @param ?int              $flags             message flags ORd together, describes extra
 	 *                                             features of the message
 	 */
@@ -48,9 +50,9 @@ class DiscordMessageIn implements Stringable {
 		public mixed $nonce=null,
 		public bool $pinned=false,
 		public ?string $webhook_id=null,
-		public ?Activity $activity=null,
-		public ?object $application=null,
-		public ?object $message_reference=null,
+		public ?MessageActivity $activity=null,
+		#[CastToStdClass] public ?stdClass $application=null,
+		#[CastToStdClass] public ?stdClass $message_reference=null,
 		public ?int $flags=null,
 	) {
 	}

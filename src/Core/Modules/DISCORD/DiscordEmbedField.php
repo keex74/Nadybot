@@ -10,6 +10,7 @@ class DiscordEmbedField implements Stringable {
 	public function __construct(
 		public string $name,
 		public string $value,
+		public ?bool $inline=null,
 	) {
 	}
 }
