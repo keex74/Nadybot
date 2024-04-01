@@ -101,12 +101,12 @@ class PlayfieldController extends ModuleInstance {
 
 		$playfieldName = $args[4];
 
-		$playfield = $this->getPlayfieldByName($playfieldName);
+		$playfield = CorePlayfield::tryByName($playfieldName);
 		if ($playfield === null) {
 			$context->reply("Could not find playfield '{$playfieldName}'.");
 			return;
 		}
-		$context->reply($this->processWaypointCommand($xCoords, $yCoords, $playfield->short_name??'UNKNOWN', $playfield->id));
+		$context->reply($this->processWaypointCommand($xCoords, $yCoords, $playfield->short(), $playfield->value));
 	}
 
 	/** Create a waypoint link in the chat */
@@ -153,15 +153,6 @@ class PlayfieldController extends ModuleInstance {
 		/** @psalm-suppress PossiblyInvalidArgument */
 		$reply = $this->processWaypointCommand($xCoords, $yCoords, $playfieldName, $playfieldId);
 		$context->reply($reply);
-	}
-
-	public function getPlayfieldByName(string $playfieldName): ?Playfield {
-		return $this->db->table('playfields')
-			->whereIlike('long_name', $playfieldName)
-			->orWhereIlike('short_name', $playfieldName)
-			->limit(1)
-			->asObj(Playfield::class)
-			->first();
 	}
 
 	/** @return Collection<Playfield> */

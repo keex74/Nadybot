@@ -25,6 +25,7 @@ use Nadybot\Core\{
 	ParamClass\PFaction,
 	ParamClass\PPlayfield,
 	ParamClass\PWord,
+	Playfield,
 	Registry,
 	SettingManager,
 	Text,
@@ -32,7 +33,6 @@ use Nadybot\Core\{
 	Util,
 };
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordMessageEvent;
-use Nadybot\Modules\HELPBOT_MODULE\PlayfieldController;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -85,9 +85,6 @@ class TestController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private CommandManager $commandManager;
-
-	#[NCA\Inject]
-	private PlayfieldController $playfieldController;
 
 	#[NCA\Inject]
 	private EventManager $eventManager;
@@ -191,7 +188,7 @@ class TestController extends ModuleInstance {
 		string $defOrg,
 		PPlayfield $playfield
 	): void {
-		$pf = $this->playfieldController->getPlayfieldByName($playfield());
+		$pf = Playfield::tryByName($playfield());
 		if (!isset($pf)) {
 			$context->reply("There is no playfield <highlight>{$playfield}<end>.");
 			return;
@@ -199,7 +196,7 @@ class TestController extends ModuleInstance {
 		$this->sendTowerMsg(
 			"The {$attFaction} organization {$attOrg} ".
 			"attacked the {$defFaction} {$defOrg} at their base in ".
-			"{$pf->long_name}. The attackers won!!"
+			"{$pf->long()}. The attackers won!!"
 		);
 	}
 
