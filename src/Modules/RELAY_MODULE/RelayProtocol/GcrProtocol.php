@@ -233,10 +233,11 @@ class GcrProtocol implements RelayProtocolInterface {
 		if (!count($matches = Safe::pregMatch('/##logon_log(off|on)_spam##(.+)##end##$/s', $text))) {
 			return null;
 		}
-		$online = new Online();
-		$online->online = $matches[1] === 'on';
-		$online->message = $this->replaceBeBotColors($matches[2]);
-		$online->renderPath = false;
+		$online = new Online(
+			online: $matches[1] === 'on',
+			message: $this->replaceBeBotColors($matches[2]),
+			renderPath: false,
+		);
 		$r = new RoutableEvent(
 			type: RoutableEvent::TYPE_EVENT,
 			path: [],

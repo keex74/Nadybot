@@ -3,7 +3,10 @@
 namespace Nadybot\Core\Routing\Events;
 
 class Base {
-	public string $type;
-	public bool $renderPath = true;
-	public ?string $message;
+	public function __construct(
+		public string $type,
+		public bool $renderPath=true,
+		public ?string $message=null,
+	) {
+	}
 }

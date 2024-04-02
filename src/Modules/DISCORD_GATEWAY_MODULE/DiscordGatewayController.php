@@ -965,19 +965,22 @@ class DiscordGatewayController extends ModuleInstance {
 		)
 	]
 	public function announceVoiceStateChange(DiscordVoiceEvent $event): void {
-		$e = new Online();
 		$userId = null;
 		if (isset($event->member->user)) {
 			$userId = $this->discordGatewayCommandHandler->getNameForDiscordId($event->member->user->id);
 		}
-		$e->char = new Character($userId ?? $event->member->getName());
+		$eChar = new Character($userId ?? $event->member->getName());
+		$e = new Online(
+			char: $eChar,
+			main: $userId ?? $event->member->getName(),
+		);
 		$chanName = $event->discord_channel->name ?? $event->discord_channel->id;
 		if ($event instanceof DiscordVoiceLeaveEvent) {
-			$msg = $e->char->name.
+			$msg = $eChar->name.
 				" has left the voice channel <highlight>{$chanName}<end>.";
 			$e->online = false;
 		} else {
-			$msg = $e->char->name.
+			$msg = $eChar->name.
 				" has entered the voice channel <highlight>{$chanName}<end>.";
 			$e->online = true;
 		}

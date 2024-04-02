@@ -677,15 +677,17 @@ class GuildController extends ModuleInstance {
 		}
 		$msg = $this->getLogonMessage($sender);
 		$uid = $this->chatBot->getUid($sender);
-		$e = new Online();
-		$e->char = new Character($sender, $uid);
-		$e->main = $this->altsController->getMainOf($sender);
-		$e->online = true;
-		$e->message = $msg;
+		$eMain = $this->altsController->getMainOf($sender);
+		$e = new Online(
+			char: new Character($sender, $uid),
+			main: $eMain,
+			online: true,
+			message: $msg,
+		);
 		$this->dispatchRoutableEvent($e);
 		if (isset($msg)) {
 			$this->chatBot->sendGuild($msg, true);
-			$this->lastLogonMsgs[$e->main] = time();
+			$this->lastLogonMsgs[$eMain] = time();
 		}
 	}
 
@@ -738,13 +740,15 @@ class GuildController extends ModuleInstance {
 		$uid = $this->chatBot->getUid($sender);
 
 		$msg = $this->getLogoffMessage($sender);
-		$e = new Online();
-		$e->char = new Character($sender, $uid);
-		$e->main = $this->altsController->getMainOf($sender);
-		$e->online = false;
-		$e->message = $msg;
+		$eMain = $this->altsController->getMainOf($sender);
+		$e = new Online(
+			char: new Character($sender, $uid),
+			main: $eMain,
+			online: false,
+			message: $msg,
+		);
 		$this->dispatchRoutableEvent($e);
-		$this->lastLogoffMsgs[$e->main] = time();
+		$this->lastLogoffMsgs[$eMain] = time();
 		if ($msg === null) {
 			return;
 		}

@@ -150,7 +150,7 @@ class Tyrbot implements RelayProtocolInterface {
 	 * @psalm-return list<string>
 	 */
 	protected function encodeUserStateChange(RoutableEvent $r, Online $event): array {
-		if (!$this->syncOnline) {
+		if (!$this->syncOnline || !isset($event->char)) {
 			return [];
 		}
 		$packet = [

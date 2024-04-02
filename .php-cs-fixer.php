@@ -122,7 +122,7 @@ return $config
 		'no_singleline_whitespace_before_semicolons' => true,
 		'no_space_around_double_colon' => true,
 		'no_spaces_after_function_name' => true,
-		'no_spaces_inside_parenthesis' => true,
+		'spaces_inside_parentheses' => ['space' => 'none'],
 		'no_spaces_around_offset' => ['positions' => ['array' => 'inside']],
 		'spaces_inside_parentheses' => ['space' => 'none'],
 //		'no_superfluous_elseif' => true,

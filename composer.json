@@ -48,7 +48,6 @@
 		"amphp/cache": "^2.0.0",
 		"amphp/file": "3.x-dev",
 		"amphp/websocket-client": "^2.0.0",
-		"netresearch/jsonmapper": "^4.0.0",
 		"eventsauce/object-hydrator": "^1.1.0",
 		"amphp/http-tunnel": "^2.0.0-beta.2",
 		"nadylib/imex": "dev-main",

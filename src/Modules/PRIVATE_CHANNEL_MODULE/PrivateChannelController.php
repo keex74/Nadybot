@@ -1068,14 +1068,16 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return;
 		}
 		$uid = $this->chatBot->getUid($sender);
-		$e = new Online();
-		$e->char = new Character($sender, $uid);
-		$e->main = $this->altsController->getMainOf($sender);
-		$e->online = true;
-		$e->message = $msg;
+		$eMain = $this->altsController->getMainOf($sender);
+		$e = new Online(
+			char: new Character($sender, $uid),
+			main: $eMain,
+			online: true,
+			message: $msg,
+		);
 		$this->dispatchRoutableEvent($e);
 		$this->chatBot->sendPrivate($msg, true);
-		$this->guildController->lastLogonMsgs[$e->main] = time();
+		$this->guildController->lastLogonMsgs[$eMain] = time();
 
 		$whois = $this->playerManager->byName($sender);
 		if (!isset($whois)) {
@@ -1193,15 +1195,15 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		$this->eventManager->fireEvent($event);
 
 		$uid = $this->chatBot->getUid($sender);
-		$e = new Online();
-		$e->char = new Character($sender, $uid);
-		$e->main = $this->altsController->getMainOf($sender);
-		$e->online = false;
-		if (isset($msg)) {
-			$e->message = $msg;
-		}
+		$eMain = $this->altsController->getMainOf($sender);
+		$e = new Online(
+			char: new Character($sender, $uid),
+			main: $eMain,
+			online: false,
+			message: $msg,
+		);
 		$this->dispatchRoutableEvent($e);
-		$this->guildController->lastLogoffMsgs[$e->main] = time();
+		$this->guildController->lastLogoffMsgs[$eMain] = time();
 	}
 
 	#[NCA\Event(

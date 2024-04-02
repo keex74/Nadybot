@@ -7,9 +7,17 @@ use Nadybot\Core\Routing\Character;
 class Online extends Base {
 	public const TYPE = 'online';
 
-	public Character $char;
-	public string $main;
-	public string $type = self::TYPE;
-	public bool $online = true;
-	public bool $renderPath = false;
+	public function __construct(
+		public ?Character $char=null,
+		public ?string $main=null,
+		public bool $online=true,
+		bool $renderPath=false,
+		?string $message=null,
+	) {
+		parent::__construct(
+			type: self::TYPE,
+			renderPath: $renderPath,
+			message: $message,
+		);
+	}
 }

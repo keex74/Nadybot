@@ -5,7 +5,6 @@ namespace Nadybot\Modules\RELAY_MODULE\RelayProtocol;
 use function Safe\{json_decode, json_encode};
 
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToSerializeObject};
-use JsonMapper;
 use Nadybot\Core\Modules\ALTS\AltsController;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -30,7 +29,6 @@ use Nadybot\Modules\{
 };
 use Psr\Log\LoggerInterface;
 use Safe\Exceptions\JsonException;
-use stdClass;
 
 use Throwable;
 
@@ -116,7 +114,7 @@ class NadyNative implements RelayProtocolInterface {
 		}
 		$serialized = array_shift($message->packages);
 		try {
-			$data = json_decode($serialized, false, 10, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
+			$data = json_decode($serialized, true, 10, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
 		} catch (JsonException $e) {
 			$this->logger->error(
 				'Invalid data received via Nadynative protocol',
@@ -127,8 +125,9 @@ class NadyNative implements RelayProtocolInterface {
 			);
 			return null;
 		}
-		$data->type ??= RoutableEvent::TYPE_MESSAGE;
-		switch ($data->type) {
+		$mapper = new ObjectMapperUsingReflection();
+		$data['type'] ??= RoutableEvent::TYPE_MESSAGE;
+		switch ($data['type']) {
 			case 'online_list_request':
 				if ($this->syncOnline) {
 					$this->sendOnlineList();
@@ -136,39 +135,38 @@ class NadyNative implements RelayProtocolInterface {
 				return null;
 			case 'online_list':
 				if ($this->syncOnline) {
-					$this->handleOnlineList($message->sender, $data);
+					$cmd = $mapper->hydrateObject(OnlineList::class, $data);
+					$this->handleOnlineList($message->sender, $cmd);
 				}
 				return null;
 		}
 		$event = new RoutableEvent(type: $data->type);
-		foreach (($data->path??[]) as $hop) {
+		foreach (($data['path']??[]) as $hop) {
 			$source = new Source(
-				$hop->type,
-				$hop->name,
-				$hop->label??null,
-				$hop->dimension??null
+				$hop['type'],
+				$hop['name'],
+				$hop['label']??null,
+				$hop['dimension']??null
 			);
 			$event->appendPath($source);
 		}
-		$event->data = $data->data??null;
-		if (isset($data->char) && is_object($data->char) && ($data->char instanceof stdClass) && isset($data->char->name)) {
+		$eventData = $data['data']??null;
+		if (isset($data['char']) && is_array($data['char']) && isset($data['char']['name'])) {
 			$event->setCharacter(
 				new Character(
-					$data->char->name,
-					$data->char->id??null,
-					$data->char->dimension??null
+					$data['char']['name'],
+					$data['char']['id']??null,
+					$data['char']['dimension']??null
 				)
 			);
 		}
 		if ($event->type === RoutableEvent::TYPE_EVENT
-			&& is_object($event->data)
-			&& ($event->data instanceof stdClass)
-			&& ($event->data->type??null) === Online::TYPE
+			&& is_array($eventData)
+			&& ($eventData['type']??null) === Online::TYPE
 			&& isset($message->sender)
 			&& $this->syncOnline
 		) {
-			// @todo Get rid of JsonMapper here
-			$event->data = (new JsonMapper())->map($event->data, new Online());
+			$event->data = $mapper->hydrateObject(Online::class, $eventData);
 			$this->logger->debug('Received online event for {relay}', [
 				'relay' => $this->relay->getName(),
 				'event' => $event,
@@ -176,16 +174,17 @@ class NadyNative implements RelayProtocolInterface {
 			$this->handleOnlineEvent($message->sender, $event);
 		}
 		if ($event->type === RoutableEvent::TYPE_EVENT
-			&& is_object($event->data)
-			&& fnmatch('sync(*)', $event->data->type??'', \FNM_CASEFOLD)
+			&& is_array($eventData)
+			&& fnmatch('sync(*)', $eventData['type']??'', \FNM_CASEFOLD)
 		) {
 			$this->logger->debug('Received sync event for {relay}', [
 				'relay' => $this->relay->getName(),
 				'event' => $event,
 			]);
-			$this->handleExtSyncEvent($event->data);
+			$this->handleExtSyncEvent($eventData);
 			return null;
 		}
+		$event->data = json_decode(json_encode($eventData), false, 10, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
 		$this->logger->debug('Received routable event for {relay}', [
 			'relay' => $this->relay->getName(),
 			'event' => $event,
@@ -241,7 +240,8 @@ class NadyNative implements RelayProtocolInterface {
 		return (static::$supportedFeatures & $feature) === $feature;
 	}
 
-	protected function handleExtSyncEvent(object $event): void {
+	/** @param array<mixed> $event */
+	protected function handleExtSyncEvent(array $event): void {
 		try {
 			$fullEvent = SyncEventFactory::create($event);
 		} catch (Throwable $e) {
