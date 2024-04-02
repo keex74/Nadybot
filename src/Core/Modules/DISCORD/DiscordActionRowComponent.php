@@ -2,12 +2,14 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
+
 class DiscordActionRowComponent extends DiscordComponent {
 	public int $type = 1;
 
 	/** @param DiscordComponent[] $components the actual components */
 	public function __construct(
-		public array $components=[],
+		#[CastListToType(DiscordComponent::class)] public array $components=[],
 	) {
 	}
 }

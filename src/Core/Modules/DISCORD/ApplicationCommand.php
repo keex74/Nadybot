@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use function Safe\json_encode;
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 
 use Stringable;
 
@@ -54,7 +55,7 @@ class ApplicationCommand implements Stringable {
 		public int $type=self::TYPE_CHAT_INPUT,
 		public ?array $name_localizations=null,
 		public ?array $description_localizations=null,
-		public ?array $options=null,
+		#[CastListToType(ApplicationCommandOption::class)] public ?array $options=null,
 		public ?string $default_member_permissions=null,
 		public ?bool $dm_permission=true,
 		public ?bool $default_permission=null,
@@ -62,11 +63,18 @@ class ApplicationCommand implements Stringable {
 	}
 
 	public function isSameAs(self $cmd): bool {
-		$cmp = clone $cmd;
-		unset($cmp->id);
-		unset($cmp->application_id);
-		unset($cmp->version);
-		$cmp->default_permission = null;
-		return json_encode($this) === json_encode($cmp);
+		foreach (get_object_vars($this) as $key => $myValue) {
+			if (in_array($key, ['id', 'application_id', 'version'])) {
+				continue;
+			}
+			if (is_array($myValue)) {
+				if (json_encode($cmd->{$key}) !== json_encode($myValue)) {
+					return false;
+				}
+			} elseif ($cmd->{$key} !== $myValue) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

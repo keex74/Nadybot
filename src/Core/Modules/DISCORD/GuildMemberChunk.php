@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class GuildMemberChunk implements Stringable {
@@ -24,9 +25,9 @@ class GuildMemberChunk implements Stringable {
 		public string $guild_id,
 		public int $chunk_index,
 		public int $chunk_count,
-		public array $members=[],
-		public ?array $not_found=null,
-		public ?array $presences=null,
+		#[CastListToType(GuildMember::class)] public array $members=[],
+		#[CastListToType('string')] public ?array $not_found=null,
+		#[CastListToType(DiscordPresence::class)] public ?array $presences=null,
 		public ?string $nonce=null,
 	) {
 	}

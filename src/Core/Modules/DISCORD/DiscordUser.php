@@ -38,4 +38,11 @@ class DiscordUser implements Stringable {
 		public ?int $public_flags=null,
 	) {
 	}
+
+	public function getName(): string {
+		if ($this->discriminator === '0') {
+			return $this->username;
+		}
+		return "{$this->username}#{$this->discriminator}";
+	}
 }

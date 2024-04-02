@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use DateTimeImmutable;
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\Attributes\CastToStdClass;
 use stdClass;
 use Stringable;
@@ -11,23 +12,23 @@ class DiscordMessageIn implements Stringable {
 	use ReducedStringableTrait;
 
 	/**
-	 * @param ?DiscordUser      $author            user object the author of this message
-	 *                                             (not guaranteed to be a valid user, see below)
-	 * @param string            $content           The actual content of the message
-	 * @param DateTimeImmutable $timestamp         when this message was sent
-	 * @param ?GuildMember      $member            partial guild member object member properties
-	 *                                             for this message's author
-	 * @param DiscordUser[]     $mentions
-	 * @param array<mixed>      $mention_roles
-	 * @param ?array<mixed>     $mention_channels
-	 * @param ?array<mixed>     $attachments
-	 * @param DiscordEmbed[]    $embeds
-	 * @param ?array<mixed>     $reactions
-	 * @param ?MessageActivity  $activity          sent with Rich Presence-related chat embeds
-	 * @param ?stdClass         $application       sent with Rich Presence-related chat embeds
-	 * @param ?stdClass         $message_reference reference data sent with crossposted messages
-	 * @param ?int              $flags             message flags ORd together, describes extra
-	 *                                             features of the message
+	 * @param ?DiscordUser         $author            user object the author of this message
+	 *                                                (not guaranteed to be a valid user, see below)
+	 * @param string               $content           The actual content of the message
+	 * @param DateTimeImmutable    $timestamp         when this message was sent
+	 * @param ?GuildMember         $member            partial guild member object member properties
+	 *                                                for this message's author
+	 * @param DiscordUser[]        $mentions
+	 * @param array<mixed>         $mention_roles
+	 * @param ?array<mixed>        $mention_channels
+	 * @param ?DiscordAttachment[] $attachments
+	 * @param DiscordEmbed[]       $embeds
+	 * @param ?array<mixed>        $reactions
+	 * @param ?MessageActivity     $activity          sent with Rich Presence-related chat embeds
+	 * @param ?stdClass            $application       sent with Rich Presence-related chat embeds
+	 * @param ?stdClass            $message_reference reference data sent with crossposted messages
+	 * @param ?int                 $flags             message flags ORd together, describes extra
+	 *                                                features of the message
 	 */
 	public function __construct(
 		public string $id,
@@ -41,11 +42,11 @@ class DiscordMessageIn implements Stringable {
 		public ?DateTimeImmutable $edited_timestamp=null,
 		public bool $tts=false,
 		public bool $mention_everyone=false,
-		public array $mentions=[],
+		#[CastListToType(DiscordUser::class)] public array $mentions=[],
 		public array $mention_roles=[],
 		public ?array $mention_channels=null,
-		public ?array $attachments=[],
-		public array $embeds=[],
+		#[CastListToType(DiscordAttachment::class)] public ?array $attachments=[],
+		#[CastListToType(DiscordEmbed::class)] public array $embeds=[],
 		public ?array $reactions=null,
 		public mixed $nonce=null,
 		public bool $pinned=false,

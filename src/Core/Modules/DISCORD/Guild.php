@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use DateTimeImmutable;
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class Guild implements Stringable {
@@ -94,12 +95,12 @@ class Guild implements Stringable {
 		public ?int $approximate_presence_count,
 		public bool $owner=false,
 		public int $permissions=0,
-		public array $roles=[],
-		public array $emojis=[],
-		public array $features=[],
-		public array $voice_states=[],
-		public array $members=[],
-		public array $channels=[],
+		#[CastListToType(Role::class)] public array $roles=[],
+		#[CastListToType(Emoji::class)] public array $emojis=[],
+		#[CastListToType('string')] public array $features=[],
+		#[CastListToType(VoiceState::class)] public array $voice_states=[],
+		#[CastListToType(GuildMember::class)] public array $members=[],
+		#[CastListToType(DiscordChannel::class)] public array $channels=[],
 		public ?int $max_presences=25_000,
 	) {
 	}

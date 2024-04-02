@@ -221,7 +221,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		}
 
 		$user = $this->discordAPIClient->getUser($discordUserId);
-		$context->char->name = $user->username . '#' . $user->discriminator;
+		$context->char->name = $user->getName();
 		$blob = "The Discord user <highlight>{$context->char->name}<end> has requested to be linked with your ".
 			'game account. If you confirm the link, that discord user will be linked '.
 			'with this account, be able to run the same commands and have the same rights '.

@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use DateTimeImmutable;
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class GuildMember implements Stringable {
@@ -17,7 +18,7 @@ class GuildMember implements Stringable {
 	 * @param ?DateTimeImmutable $premium_since when the user started boosting the guild
 	 */
 	public function __construct(
-		public array $roles,
+		#[CastListToType('string')] public array $roles,
 		public DateTimeImmutable $joined_at,
 		public bool $deaf,
 		public bool $mute,
@@ -32,7 +33,7 @@ class GuildMember implements Stringable {
 			return $this->nick;
 		}
 		if (isset($this->user)) {
-			return $this->user->username . '#' . $this->user->discriminator;
+			return $this->user->getName();
 		}
 		return 'UnknownUser';
 	}

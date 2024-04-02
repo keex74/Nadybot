@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\Modules\DISCORD\ReducedStringableTrait;
 use Stringable;
 
@@ -14,7 +15,7 @@ class RequestGuildMembers implements Stringable {
 		public ?string $query='',
 		public int $limit=0,
 		public ?bool $presences=null,
-		public ?array $user_ids=null,
+		#[CastListToType('string')] public ?array $user_ids=null,
 		public ?string $nonce=null,
 	) {
 	}

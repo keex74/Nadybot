@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use DateTimeImmutable;
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class DiscordEmbed implements Stringable {
@@ -22,7 +23,7 @@ class DiscordEmbed implements Stringable {
 		public ?DiscordEmbedVideo $video=null,
 		public ?DiscordEmbedProvider $provider=null,
 		public ?DiscordEmbedAuthor $author=null,
-		public ?array $fields=null,
+		#[CastListToType(DiscordEmbedField::class)] public ?array $fields=null,
 	) {
 	}
 }

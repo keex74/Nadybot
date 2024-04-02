@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class DiscordPresence implements Stringable {
@@ -18,7 +19,7 @@ class DiscordPresence implements Stringable {
 		public DiscordUser $user,
 		public ?string $guild_id=null,
 		public ?string $status=null,
-		public ?array $activities=null,
+		#[CastListToType(Activity::class)] public ?array $activities=null,
 		public ?DiscordClientStatus $client_status=null,
 	) {
 	}

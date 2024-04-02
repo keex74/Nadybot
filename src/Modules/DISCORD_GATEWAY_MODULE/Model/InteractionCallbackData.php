@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\Modules\DISCORD\{DiscordActionRowComponent, DiscordAllowedMentions, DiscordAttachment, DiscordEmbed, ReducedStringableTrait};
 use Stringable;
 
@@ -27,11 +28,11 @@ class InteractionCallbackData implements Stringable {
 	public function __construct(
 		public ?bool $tts=null,
 		public ?string $content=null,
-		public ?array $embeds=null,
+		#[CastListToType(DiscordEmbed::class)] public ?array $embeds=null,
 		public ?DiscordAllowedMentions $allowed_mentions=null,
 		public ?int $flags=null,
-		public ?array $components=null,
-		public ?array $attachments=null,
+		#[CastListToType(DiscordActionRowComponent::class)] public ?array $components=null,
+		#[CastListToType(DiscordAttachment::class)] public ?array $attachments=null,
 	) {
 	}
 }

@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class DiscordAllowedMentions implements Stringable {
@@ -14,9 +15,9 @@ class DiscordAllowedMentions implements Stringable {
 	 * @param bool                        $replied_user For replies, whether to mention the author of the message being replied to (default false)
 	 */
 	public function __construct(
-		public array $parse=[],
-		public array $roles=[],
-		public array $users=[],
+		#[CastListToType(DiscordAllowedMentionType::class)] public array $parse=[],
+		#[CastListToType('string')] public array $roles=[],
+		#[CastListToType('string')] public array $users=[],
 		public bool $replied_user=false,
 	) {
 	}

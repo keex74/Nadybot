@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class ApplicationCommandOption implements Stringable {
@@ -50,8 +51,8 @@ class ApplicationCommandOption implements Stringable {
 		public ?array $name_localizations=null,
 		public ?array $description_localizations=null,
 		public bool $required=false,
-		public ?array $choices=null,
-		public ?array $options=null,
+		#[CastListToType(ApplicationCommandOptionChoice::class)] public ?array $choices=null,
+		#[CastListToType(ApplicationCommandOption::class)] public ?array $options=null,
 		public ?array $channel_types=null,
 		public null|int|float $min_value=null,
 		public null|int|float $max_value=null,

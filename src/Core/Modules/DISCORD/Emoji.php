@@ -2,16 +2,17 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class Emoji implements Stringable {
 	use ReducedStringableTrait;
 
-	/** @param ?mixed[] $roles */
+	/** @param ?string[] $roles */
 	public function __construct(
 		public string $id,
 		public string $name,
-		public ?array $roles,
+		#[CastListToType('string')] public ?array $roles,
 		public ?DiscordUser $user,
 		public ?bool $require_colors,
 		public ?bool $managed,

@@ -4,6 +4,7 @@ namespace Nadybot\Core\Modules\DISCORD;
 
 use EventSauce\ObjectHydrator\DoNotSerialize;
 use Nadybot\Core\StringableTrait;
+use ReflectionException;
 
 trait ReducedStringableTrait {
 	use StringableTrait;
@@ -17,6 +18,28 @@ trait ReducedStringableTrait {
 			$refProp = $refClass->getProperty($key);
 			if ($refProp->isInitialized($this) === false) {
 				continue;
+			}
+			if ($refProp->hasDefaultValue()) {
+				$defaultValue = $refProp->getDefaultValue();
+				if ($defaultValue === $value) {
+					continue;
+				}
+			} elseif ($refProp->isPromoted() && null !== ($refFunc = $refClass->getConstructor())) {
+				$params = $refFunc->getParameters();
+				$isDefault = false;
+				foreach ($params as $param) {
+					if ($param->name !== $key) {
+						continue;
+					}
+					try {
+						$isDefault = $param->getDefaultValue() === $value;
+						break;
+					} catch (ReflectionException) {
+					}
+				}
+				if ($isDefault) {
+					continue;
+				}
 			}
 			if ($value === null) {
 				continue;

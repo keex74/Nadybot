@@ -495,8 +495,8 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		$mapper = new ObjectMapperUsingReflection();
 		$chunk = $mapper->hydrateObject(GuildMemberChunk::class, $event->payload->d);
-		$this->logger->debug('Processing incoming discord members chunk', [
-			'message' => $chunk,
+		$this->logger->debug('Processing incoming discord members chunk {chunk}', [
+			'chunk' => $chunk,
 		]);
 		$oldMembers = [];
 		$guild = $this->guilds[$chunk->guild_id] ?? null;
@@ -531,7 +531,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$mapper = new ObjectMapperUsingReflection();
 		$message = $mapper->hydrateObject(DiscordMessageIn::class, $event->payload->d);
 
-		$this->logger->debug('Processing incoming discord message', [
+		$this->logger->info('Processing incoming discord message {message}', [
 			'message' => $message,
 		]);
 		if (!isset($message->author)) {
@@ -542,7 +542,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 
 		$this->discordAPIClient->cacheUser($message->author);
-		$name = $message->author->username . '#' . $message->author->discriminator;
+		$name = $message->author->getName();
 		$member = null;
 		if (isset($message->member)) {
 			$member = $message->member;
@@ -689,27 +689,15 @@ class DiscordGatewayController extends ModuleInstance {
 		$mapper = new ObjectMapperUsingReflection();
 		$guild = $mapper->hydrateObject(Guild::class, $event->payload->d);
 
+		$this->logger->info('Received {event} for {guild}', [
+			'event' => $event->payload->t,
+			'guild' => $guild,
+		]);
+
 		$this->guilds[$guild->id] = $guild;
 		$this->sendRequestGuildMembers($guild->id);
 		async($this->registerEmojis(...), $guild);
-		async(function () use ($guild): void {
-			try {
-				$invites = $this->discordAPIClient->getGuildInvites($guild->id);
-				$this->cacheInvites($guild->id, $invites);
-			} catch (DiscordException $e) {
-				if ($e->getCode() !== 403) {
-					return;
-				}
-				$this->logger->warning(
-					"Your bot doesn't have enough rights to manage ".
-					'invitations for the Discord server "{discordServer}"',
-					[
-						'discordServer' => $guild->name,
-					]
-				);
-				$this->noManageInviteRights[$guild->id] = true;
-			}
-		});
+		async($this->readAndCacheGuildInvites(...), $guild);
 		foreach ($guild->voice_states as $voiceState) {
 			if (!isset($voiceState->user_id)) {
 				continue;
@@ -755,20 +743,21 @@ class DiscordGatewayController extends ModuleInstance {
 			return;
 		}
 		$guildId = $event->payload->d['id'] ?? null;
-		if (is_string($guildId)) {
-			$guild = $this->guilds[$guildId] ?? null;
-			if (isset($guild)) {
-				$this->logger->notice('Left Discord server {serverName}', [
-					'serverName' => $guild->name,
-				]);
-			} else {
-				$this->logger->notice('Left Discord server id {guildId}', [
-					'guildId' => $guildId,
-				]);
-			}
-			unset($this->guilds[$guildId]);
-			unset($this->invites[$guildId]);
+		if (!is_string($guildId)) {
+			return;
 		}
+		$guild = $this->guilds[$guildId] ?? null;
+		if (isset($guild)) {
+			$this->logger->notice('Left Discord server {serverName}', [
+				'serverName' => $guild->name,
+			]);
+		} else {
+			$this->logger->notice('Left Discord server id {guildId}', [
+				'guildId' => $guildId,
+			]);
+		}
+		unset($this->guilds[$guildId]);
+		unset($this->invites[$guildId]);
 	}
 
 	#[
@@ -788,6 +777,11 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		$mapper = new ObjectMapperUsingReflection();
 		$channel = $mapper->hydrateObject(DiscordChannel::class, $event->payload->d);
+
+		$this->logger->info('Received {event} for {channel}', [
+			'event' => $event->payload->t,
+			'channel' => $channel,
+		]);
 
 		// Not a guild-channel? Must be a DM channel which we don't cache anyway
 		if (!isset($channel->guild_id)) {
@@ -869,7 +863,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$this->me = $user;
 		$this->logger->notice(
 			'Successfully logged into Discord Gateway as '.
-			$user->username . '#' . $user->discriminator
+			$user->getName()
 		);
 		$this->mustReconnect = true;
 		$this->reconnectDelay = 5;
@@ -886,10 +880,9 @@ class DiscordGatewayController extends ModuleInstance {
 		if (!isset($this->me)) {
 			return;
 		}
-		$this->logger->notice(
-			'Session successfully resumed as '.
-			$this->me->username . '#' . $this->me->discriminator
-		);
+		$this->logger->notice('Session successfully resumed as {user}', [
+			'user' => $this->me->getName(),
+		]);
 		$this->mustReconnect = true;
 	}
 
@@ -905,6 +898,10 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		$mapper = new ObjectMapperUsingReflection();
 		$voiceState = $mapper->hydrateObject(VoiceState::class, $payload->d);
+		$this->logger->info('Received {event}: {voice_state}', [
+			'event' => 'voice_state_update',
+			'voice_state' => $voiceState,
+		]);
 
 		if (!isset($voiceState->channel_id) || $voiceState->channel_id === '') {
 			$this->handleVoiceChannelLeave($voiceState);
@@ -1083,7 +1080,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$blob = implode("\n\n", $guildBlobs);
 		$context->reply(
 			$this->text->blobWrap(
-				"Connected as {$this->me->username}#{$this->me->discriminator} to ",
+				"Connected as {$this->me->getName()} to ",
 				$this->text->makeBlob(
 					count($this->guilds) . ' Discord server'.
 					((count($this->guilds) !== 1) ? 's' : ''),
@@ -1537,6 +1534,25 @@ class DiscordGatewayController extends ModuleInstance {
 		$rMsg = new RoutableMessage("Discord event <highlight>{$event->name}<end> is now over.");
 		$rMsg->prependPath(new Source('discord', 'event-end'));
 		$this->messageHub->handle($rMsg);
+	}
+
+	private function readAndCacheGuildInvites(Guild $guild): void {
+		try {
+			$invites = $this->discordAPIClient->getGuildInvites($guild->id);
+			$this->cacheInvites($guild->id, $invites);
+		} catch (DiscordException $e) {
+			if ($e->getCode() !== 403) {
+				return;
+			}
+			$this->logger->warning(
+				"Your bot doesn't have enough rights to manage ".
+				'invitations for the Discord server "{discordServer}"',
+				[
+					'discordServer' => $guild->name,
+				]
+			);
+			$this->noManageInviteRights[$guild->id] = true;
+		}
 	}
 
 	private function renderEvent(Guild $guild, DiscordScheduledEvent $event): string {
@@ -2072,7 +2088,8 @@ class DiscordGatewayController extends ModuleInstance {
 					$payload = $message->buffer();
 					$this->inStats->inc();
 
-					async($this->processWebsocketMessage(...), $payload);
+					async($this->processWebsocketMessage(...), $payload)
+						->catch(EventLoop::getErrorHandler());
 				}
 				if ($this->client->getCloseInfo()->isByPeer()) {
 					throw new WebsocketClosedException(
@@ -2298,9 +2315,7 @@ class DiscordGatewayController extends ModuleInstance {
 						Util::date($invite->expires_at->getTimestamp());
 				}
 				if (isset($invite->inviter) && !$this->isMe($invite->inviter->id)) {
-					$blob .= ' - created by '.
-						$invite->inviter->username.
-						'#' . $invite->inviter->discriminator;
+					$blob .= ' - created by ' . $invite->inviter->getName();
 				}
 			}
 			$blobs []= $blob;

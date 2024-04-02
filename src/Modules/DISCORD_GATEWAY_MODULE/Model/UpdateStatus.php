@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\Modules\DISCORD\{Activity, ReducedStringableTrait};
 use Nadybot\Core\{Registry, SettingManager};
 use Stringable;
@@ -22,7 +23,7 @@ class UpdateStatus implements Stringable {
 	 */
 	public function __construct(
 		public ?int $since=null,
-		public ?array $activities=null,
+		#[CastListToType(Activity::class)] public ?array $activities=null,
 		public string $status=self::STATUS_ONLINE,
 		public bool $afk=false,
 	) {

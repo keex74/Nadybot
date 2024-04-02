@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\Attributes\CastToStdClass;
 use Nadybot\Core\Modules\DISCORD\{ReducedStringableTrait, SelectOptionValue};
 use stdClass;
@@ -40,11 +41,11 @@ class InteractionData implements Stringable {
 		public string $name,
 		public int $type,
 		#[CastToStdClass] public ?stdClass $resolved=null,
-		public ?array $options=null,
+		#[CastListToType(InteractionDataOption::class)] public ?array $options=null,
 		public ?string $guild_id=null,
 		public ?string $custom_id=null,
 		public ?int $component_type=null,
-		public ?array $values=null,
+		#[CastListToType(SelectOptionValue::class)] public ?array $values=null,
 		public ?string $target_id=null,
 		#[CastToStdClass] public ?array $components=null,
 	) {

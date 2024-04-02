@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\Modules\DISCORD\ReducedStringableTrait;
 use Stringable;
 
@@ -24,7 +25,7 @@ class IdentifyPacket implements Stringable {
 		public string $token,
 		public ?bool $compress=null,
 		public ?int $large_threshold=null,
-		public ?array $shard=null,
+		#[CastListToType('int')] public ?array $shard=null,
 		public ?bool $guild_subscriptions=null,
 		public ?int $intents=null,
 		?ConnectionProperties $properties=null,
