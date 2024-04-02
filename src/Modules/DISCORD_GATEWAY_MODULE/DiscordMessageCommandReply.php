@@ -90,7 +90,11 @@ class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 				);
 			}
 			foreach ($messageObj->split() as $msgPart) {
-				async($this->discordAPIClient->queueToChannel(...), $this->channelId, $msgPart->toJSON());
+				async(
+					$this->discordAPIClient->queueToChannel(...),
+					$this->channelId,
+					$msgPart->toJSON()
+				)->catch(Nadybot::asyncErrorHandler(...));
 			}
 		}
 	}

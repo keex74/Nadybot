@@ -109,7 +109,8 @@ class TestController extends ModuleInstance {
 		}
 		$testContext->message = substr($line, 1);
 		$this->commandManager->processCmd($testContext);
-		async($this->runTests(...), $commands, $context, $logFile);
+		async($this->runTests(...), $commands, $context, $logFile)
+			->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	/** Pretend that &lt;char&gt; joins your org */

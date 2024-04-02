@@ -97,7 +97,7 @@ class PlayerLookupJob {
 			await($threads);
 			$this->logger->info('All threads done, stopping lookup.');
 			$callback(...$args);
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	private function startThread(int $threadNum): void {

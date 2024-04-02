@@ -332,7 +332,8 @@ class DiscordGatewayController extends ModuleInstance {
 		} else {
 			$packet->d->activities = [];
 		}
-		async($this->client->sendText(...), json_encode($packet));
+		async($this->client->sendText(...), json_encode($packet))
+			->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	/** Start, stop or restart the websocket connection if the token changes */
@@ -343,7 +344,7 @@ class DiscordGatewayController extends ModuleInstance {
 			$this->client->close();
 		}
 		if ($newValue !== '' && $newValue !== 'off') {
-			async($this->connect(...));
+			async($this->connect(...))->catch(Nadybot::asyncErrorHandler(...));
 		}
 	}
 
@@ -360,7 +361,7 @@ class DiscordGatewayController extends ModuleInstance {
 		if (empty($botToken) || $botToken === 'off') {
 			return;
 		}
-		async($this->connectToGateway(...));
+		async($this->connectToGateway(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function processWebsocketWrite(): void {
@@ -696,8 +697,8 @@ class DiscordGatewayController extends ModuleInstance {
 
 		$this->guilds[$guild->id] = $guild;
 		$this->sendRequestGuildMembers($guild->id);
-		async($this->registerEmojis(...), $guild);
-		async($this->readAndCacheGuildInvites(...), $guild);
+		async($this->registerEmojis(...), $guild)->catch(Nadybot::asyncErrorHandler(...));
+		async($this->readAndCacheGuildInvites(...), $guild)->catch(Nadybot::asyncErrorHandler(...));
 		foreach ($guild->voice_states as $voiceState) {
 			if (!isset($voiceState->user_id)) {
 				continue;
@@ -868,7 +869,8 @@ class DiscordGatewayController extends ModuleInstance {
 		$this->mustReconnect = true;
 		$this->reconnectDelay = 5;
 		$this->reconnectUrl = $payload->d['resume_gateway_url'] ?? null;
-		async($this->discordSlashCommandController->syncSlashCommands(...));
+		async($this->discordSlashCommandController->syncSlashCommands(...))
+			->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	#[NCA\Event(
@@ -1045,7 +1047,12 @@ class DiscordGatewayController extends ModuleInstance {
 				]);
 			}
 			$json = json_encode($data);
-			async($this->discordAPIClient->modifyGuildMember(...), $guildId, $userId, $json);
+			async(
+				$this->discordAPIClient->modifyGuildMember(...),
+				$guildId,
+				$userId,
+				$json
+			)->catch(Nadybot::asyncErrorHandler(...));
 		}
 	}
 
@@ -1105,7 +1112,7 @@ class DiscordGatewayController extends ModuleInstance {
 			$context->reply('The bot is already connected to Discord.');
 			return;
 		}
-		async($this->connectToGateway(...));
+		async($this->connectToGateway(...))->catch(Nadybot::asyncErrorHandler(...));
 		$context->reply('Connecting to Discord.');
 	}
 
@@ -2089,7 +2096,7 @@ class DiscordGatewayController extends ModuleInstance {
 					$this->inStats->inc();
 
 					async($this->processWebsocketMessage(...), $payload)
-						->catch(EventLoop::getErrorHandler());
+						->catch(Nadybot::asyncErrorHandler(...));
 				}
 				if ($this->client->getCloseInfo()->isByPeer()) {
 					throw new WebsocketClosedException(

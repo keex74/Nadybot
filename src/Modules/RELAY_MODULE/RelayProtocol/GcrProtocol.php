@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	DBSchema\Player,
 	Modules\PLAYER_LOOKUP\PlayerManager,
+	Nadybot,
 	Routing\Character,
 	Routing\Events\Online,
 	Routing\RoutableEvent,
@@ -149,7 +150,7 @@ class GcrProtocol implements RelayProtocolInterface {
 			if (count($send)) {
 				$this->relay->receiveFromMember($this, $send);
 			}
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 		return [];
 	}
 
@@ -263,7 +264,7 @@ class GcrProtocol implements RelayProtocolInterface {
 							: "{$player->guild}")
 						: "{$player->name}";
 				$callback($player->name, $channel, $matches['char']);
-			});
+			})->catch(Nadybot::asyncErrorHandler(...));
 		} elseif (count($matches = Safe::pregMatch('/^online (.+)$/', $text))) {
 			async(function () use ($matches, $sender): void {
 				$player = $this->playerManager->byName($sender);
@@ -288,7 +289,7 @@ class GcrProtocol implements RelayProtocolInterface {
 						$name
 					);
 				}
-			});
+			})->catch(Nadybot::asyncErrorHandler(...));
 		} elseif (count($matches = Safe::pregMatch('/^onlinereq$/', $text))) {
 			$onlineList = $this->getOnlineList();
 			if (isset($onlineList)) {

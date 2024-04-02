@@ -53,7 +53,7 @@ class MassMsgReceiver implements MessageReceiver {
 					$this->chatBot->sendMassTell($message, $name);
 				},
 			]
-		);
+		)->catch(Nadybot::asyncErrorHandler(...));
 		return true;
 	}
 }

@@ -16,6 +16,7 @@ use Nadybot\Core\{
 	DB,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerManager,
+	Nadybot,
 	ParamClass\PNonNumberWord,
 	Profession,
 	Safe,
@@ -87,7 +88,8 @@ class BuffPerksController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		async($this->initPerksDatabase(...));
+		async($this->initPerksDatabase(...))
+			->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	/** See which perks are available for your level and profession */

@@ -223,7 +223,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 		}
 
 		$this->ranks[$who] = new RaidRank(rank: $rank, name: $who);
-		async($this->buddylistManager->addName(...), $who, 'raidrank');
+		async($this->buddylistManager->addName(...), $who, 'raidrank')->ignore();
 
 		$audit = new Audit(
 			actor: $sender,

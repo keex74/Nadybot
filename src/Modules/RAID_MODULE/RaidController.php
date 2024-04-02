@@ -203,7 +203,7 @@ class RaidController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		async($this->resumeRaid(...));
+		async($this->resumeRaid(...))->catch(Nadybot::asyncErrorHandler(...));
 		$stateStats = new RaidStateStats();
 		Registry::injectDependencies($stateStats);
 		$this->statsController->registerProvider($stateStats, 'states');

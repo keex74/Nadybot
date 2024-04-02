@@ -102,7 +102,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 		if (empty($new) || $new === 'off') {
 			return;
 		}
-		async($this->updateWebUI(...));
+		async($this->updateWebUI(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	#[NCA\Event(

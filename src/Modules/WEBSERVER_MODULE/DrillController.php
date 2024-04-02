@@ -13,7 +13,7 @@ use Amp\Websocket\WebsocketClosedException;
 use Amp\{CancelledException, DeferredFuture, TimeoutCancellation, TimeoutException};
 
 use Nadybot\Core\Event\{ConnectEvent, RecvMsgEvent};
-use Nadybot\Core\{Attributes as NCA, Config\BotConfig, EventManager, ModuleInstance, Registry, Safe, StopExecutionException, UserException};
+use Nadybot\Core\{Attributes as NCA, Config\BotConfig, EventManager, ModuleInstance, Nadybot, Registry, Safe, StopExecutionException, UserException};
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -55,7 +55,7 @@ class DrillController extends ModuleInstance {
 		if ($this->drillServer === self::OFF) {
 			return;
 		}
-		async($this->connect(...));
+		async($this->connect(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	#[NCA\SettingChangeHandler('drill_server')]
@@ -69,7 +69,7 @@ class DrillController extends ModuleInstance {
 		if ($new === self::OFF) {
 			return;
 		}
-		async($this->connect(...), $new);
+		async($this->connect(...), $new)->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function connect(?string $url=null): void {

@@ -103,7 +103,11 @@ class DiscordChannel implements MessageReceiver {
 
 		// Relay the message to the discord channel
 		foreach ($discordMsg->split() as $msgPart) {
-			async($this->discordAPIClient->queueToChannel(...), $this->id, $msgPart->toJSON())->ignore();
+			async(
+				$this->discordAPIClient->queueToChannel(...),
+				$this->id,
+				$msgPart->toJSON()
+			)->ignore();
 		}
 		return true;
 	}

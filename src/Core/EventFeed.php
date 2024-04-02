@@ -117,7 +117,7 @@ class EventFeed {
 			if (isset($this->connection)) {
 				$this->connection->send($joinPackage);
 			}
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function unregisterEventFeedHandler(string $room, EventFeedHandler $handler): void {
@@ -163,7 +163,7 @@ class EventFeed {
 			if (isset($this->connection)) {
 				$this->connection->send($leavePackage);
 			}
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function mainLoop(): void {
@@ -171,7 +171,7 @@ class EventFeed {
 			while ($this->singleLoop()) {
 				delay(self::RECONNECT_DELAY);
 			}
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	protected function connect(): ?Highway\Connection {

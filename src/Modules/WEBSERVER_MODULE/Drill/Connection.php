@@ -7,7 +7,7 @@ use function Amp\{async, delay};
 
 use Amp\Socket\{ConnectContext, ConnectException, Socket};
 use Amp\Websocket\Client\WebsocketConnection;
-use Nadybot\Core\{Attributes as NCA, Registry};
+use Nadybot\Core\{Attributes as NCA, Nadybot, Registry};
 use Nadybot\Modules\WEBSERVER_MODULE\WebserverController;
 use Psr\Log\LoggerInterface;
 
@@ -43,7 +43,7 @@ class Connection {
 			return false;
 		}
 		$this->logger->info('Connected Drill to local webserver');
-		async($this->mainLoop(...));
+		async($this->mainLoop(...))->catch(Nadybot::asyncErrorHandler(...));
 		return true;
 	}
 

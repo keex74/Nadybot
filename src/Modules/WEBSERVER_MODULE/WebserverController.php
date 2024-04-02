@@ -21,6 +21,7 @@ use Nadybot\Core\{
 	DB,
 	Filesystem,
 	ModuleInstance,
+	Nadybot,
 	Registry,
 	Safe,
 };
@@ -206,7 +207,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 			return;
 		}
 		$this->shutdown();
-		async($this->listen(...));
+		async($this->listen(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function getServer(): ?HttpServer {

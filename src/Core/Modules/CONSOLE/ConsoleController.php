@@ -205,7 +205,7 @@ class ConsoleController extends ModuleInstance {
 		}
 		if ($this->useReadline) {
 			readline_add_history($line);
-			async($this->saveHistory(...));
+			async($this->saveHistory(...))->catch(Nadybot::asyncErrorHandler(...));
 			readline_callback_handler_install('> ', fn (?string $line) => $this->processLine($line));
 		}
 
@@ -214,17 +214,19 @@ class ConsoleController extends ModuleInstance {
 		$context->source = Source::CONSOLE;
 		$context->sendto = new ConsoleCommandReply($this->chatBot);
 		Registry::injectDependencies($context->sendto);
-		async(function () use ($context): void {
-			$uid = $this->chatBot->getUid($context->char->name);
-			$context->char->id = $uid;
-			$rMessage = new RoutableMessage($context->message);
-			$rMessage->setCharacter($context->char);
-			$rMessage->prependPath(new Source(Source::CONSOLE, 'Console'));
-			if ($this->messageHub->handle($rMessage) !== $this->messageHub::EVENT_DELIVERED) {
-				$context->setIsDM(true);
-			}
+		async($this->processContext(...), $context)->catch(Nadybot::asyncErrorHandler(...));
+	}
 
-			$this->commandManager->checkAndHandleCmd($context);
-		});
+	private function processContext(CmdContext $context): void {
+		$uid = $this->chatBot->getUid($context->char->name);
+		$context->char->id = $uid;
+		$rMessage = new RoutableMessage($context->message);
+		$rMessage->setCharacter($context->char);
+		$rMessage->prependPath(new Source(Source::CONSOLE, 'Console'));
+		if ($this->messageHub->handle($rMessage) !== $this->messageHub::EVENT_DELIVERED) {
+			$context->setIsDM(true);
+		}
+
+		$this->commandManager->checkAndHandleCmd($context);
 	}
 }

@@ -463,7 +463,7 @@ class Nadybot {
 			EventLoop::onSignal(\SIGTERM, $this->signalHandler(...));
 			EventLoop::onSignal(\SIGINT, $this->signalHandler(...));
 		}
-		async($this->aoPackageLoop(...));
+		async($this->aoPackageLoop(...))->catch($this->errorHandler(...));
 		EventLoop::repeat(1, $this->sendPings(...));
 		EventLoop::run();
 		$this->logger->notice('Graceful shutdown.');
@@ -1612,6 +1612,14 @@ class Nadybot {
 		}
 
 		$this->logger->notice($line);
+	}
+
+	public static function asyncErrorHandler(Throwable $e): void {
+		$logger = new LoggerWrapper('Core/Nadybot');
+		$logger->error('Async error: {error}', [
+			'error' => $e->getMessage(),
+			'exception' => $e,
+		]);
 	}
 
 	private function aoPackageLoop(): void {

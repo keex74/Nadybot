@@ -15,7 +15,6 @@ use Amp\{
 	Socket\ResourceSocket,
 	Socket\ServerSocket,
 };
-use Closure;
 use Exception;
 use Nadybot\Core\Event\ConnectEvent;
 use Nadybot\Core\Filesystem;
@@ -97,11 +96,11 @@ class MgmtInterfaceController extends ModuleInstance {
 			);
 		}
 		$this->stop();
-		async($this->start(...));
+		async($this->start(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function start(): void {
-		async($this->internalStart(...));
+		async($this->internalStart(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function stop(): void {
@@ -134,9 +133,9 @@ class MgmtInterfaceController extends ModuleInstance {
 		$this->logger->notice('Management Interface listening on {addr}', [
 			'addr' => $this->mgmtInterface,
 		]);
-		register_shutdown_function(Closure::fromCallable([$this, 'onShutdown']));
+		register_shutdown_function($this->onShutdown(...));
 		while ($socket = $server->accept()) {
-			async($this->handleConnection(...), $socket);
+			async($this->handleConnection(...), $socket)->catch(Nadybot::asyncErrorHandler(...));
 		}
 		if ($scheme === 'unix') {
 			try {

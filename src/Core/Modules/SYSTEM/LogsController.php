@@ -32,6 +32,7 @@ use Nadybot\Core\{
 	LegacyLogger,
 	LoggerWrapper,
 	ModuleInstance,
+	Nadybot,
 	ParamClass\PFilename,
 	ParamClass\PWord,
 	SettingManager,
@@ -343,7 +344,7 @@ class LogsController extends ModuleInstance {
 				$logger->popHandler();
 				$logger->popHandler();
 			}
-			async($this->uploadDebugLog(...), $context, $debugFile);
+			async($this->uploadDebugLog(...), $context, $debugFile)->catch(Nadybot::asyncErrorHandler(...));
 		});
 
 		$this->commandManager->processCmd($newContext);

@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	MessageHub,
 	MessageReceiver,
 	Modules\PLAYER_LOOKUP\PlayerManager,
+	Nadybot,
 	Routing\RoutableEvent,
 	Routing\Source,
 	SettingManager,
@@ -135,7 +136,7 @@ class Relay implements MessageReceiver {
 			foreach (get_object_vars($player) as $key => $value) {
 				$this->onlineChars[$where][$character]->{$key} = $value;
 			}
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function setOffline(string $sender, string $where, string $character, ?int $uid=null, ?int $dimension=null, ?string $main=null): void {

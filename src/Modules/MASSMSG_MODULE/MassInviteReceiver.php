@@ -62,7 +62,7 @@ class MassInviteReceiver implements MessageReceiver {
 					);
 				},
 			]
-		);
+		)->catch(Nadybot::asyncErrorHandler(...));
 		return true;
 	}
 }

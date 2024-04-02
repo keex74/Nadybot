@@ -183,7 +183,8 @@ class TradebotController extends ModuleInstance {
 				if ($this->buddylistManager->isOnline($botName)) {
 					$this->joinPrivateChannel($botName);
 				}
-				async($this->buddylistManager->addName(...), $botName, 'tradebot');
+				async($this->buddylistManager->addName(...), $botName, 'tradebot')
+					->catch(Nadybot::asyncErrorHandler(...));
 			}
 		}
 		if ($this->messageHub->hasRouteFor(Source::TRADEBOT)) {

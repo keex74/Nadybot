@@ -74,7 +74,7 @@ class DiscordSlashCommandReply implements CommandReply {
 			$this->interactionId,
 			$this->interactionToken,
 			$this->discordAPIClient->encode($response),
-		);
+		)->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	public function reply($msg): void {

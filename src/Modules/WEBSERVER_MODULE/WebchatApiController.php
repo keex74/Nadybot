@@ -105,7 +105,7 @@ class WebchatApiController extends ModuleInstance {
 			$uid = $this->chatBot->getUid($context->char->name);
 			$context->char->id = $uid;
 			$this->commandManager->checkAndHandleCmd($context);
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 		return new Response(status: HttpStatus::NO_CONTENT);
 	}
 }

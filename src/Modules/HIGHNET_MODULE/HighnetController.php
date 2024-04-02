@@ -820,62 +820,65 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			]);
 			return false;
 		}
-		async(function () use ($event, $channel, $message): void {
-			$botUid = $this->chatBot->char?->id;
-			if (!isset($botUid)) {
-				return;
-			}
-			$character = $event->getCharacter();
-			if (isset($character) && !isset($character->id)) {
-				$character = clone $character;
-				$character->id = $this->chatBot->getUid($character->name);
-			}
-			$message = new Message(
-				dimension: $character?->dimension ?? $this->config->main->dimension,
-				bot_uid: $botUid,
-				bot_name: $this->config->main->character,
-				sender_uid: $character?->id,
-				sender_name: $character?->name ?? $this->config->main->character,
-				main: $character ? $this->altsCtrl->getMainOf($character->name) : null,
-				nick: $character ? $this->nickCtrl->getNickname($character->name) : null,
-				sent: time(),
-				channel: $channel,
-				message: $message,
-			);
-			$serializer = new ObjectMapperUsingReflection();
-			$hwBody = $serializer->serializeObject($message);
-			if (!is_array($hwBody)) {
-				$this->logger->warning('Cannot serialize data for Highnet - dropping', [
-					'message' => $message,
-				]);
-				return;
-			}
-			$packet = new Highway\Out\Message(room: 'highnet', body: $hwBody);
-			$this->logger->debug('Sending message to Highnet: {data}', [
-				'data' => $hwBody,
-			]);
-			$this->eventFeed->connection->send($packet);
-
-			if (!$this->highnetRouteInternally) {
-				$this->logger->info('Internal Highnet routing disabled.');
-				return;
-			}
-			$missingReceivers = $this->getInternalRoutingReceivers($event, $channel);
-			if (count($missingReceivers)) {
-				$this->logger->info('Routing Highnet message internally to {targets}', [
-					'targets' => $missingReceivers,
-				]);
-			}
-
-			$rMsg = $this->nnMessageToRoutableMessage($message);
-			foreach ($missingReceivers as $missingReceiver) {
-				$handler = $this->msgHub->getReceiver($missingReceiver);
-				if (isset($handler)) {
-					$handler->receive($rMsg, $missingReceiver);
-				}
-			}
-		});
+		async($this->continueHandleIncoming(...), $event, $channel, $message)
+			->catch(Nadybot::asyncErrorHandler(...));
 		return true;
+	}
+
+	private function continueHandleIncoming(RoutableEvent $event, string $channel, string $message): void {
+		$botUid = $this->chatBot->char?->id;
+		if (!isset($botUid)) {
+			return;
+		}
+		$character = $event->getCharacter();
+		if (isset($character) && !isset($character->id)) {
+			$character = clone $character;
+			$character->id = $this->chatBot->getUid($character->name);
+		}
+		$message = new Message(
+			dimension: $character?->dimension ?? $this->config->main->dimension,
+			bot_uid: $botUid,
+			bot_name: $this->config->main->character,
+			sender_uid: $character?->id,
+			sender_name: $character?->name ?? $this->config->main->character,
+			main: $character ? $this->altsCtrl->getMainOf($character->name) : null,
+			nick: $character ? $this->nickCtrl->getNickname($character->name) : null,
+			sent: time(),
+			channel: $channel,
+			message: $message,
+		);
+		$serializer = new ObjectMapperUsingReflection();
+		$hwBody = $serializer->serializeObject($message);
+		if (!is_array($hwBody)) {
+			$this->logger->warning('Cannot serialize data for Highnet - dropping', [
+				'message' => $message,
+			]);
+			return;
+		}
+		$packet = new Highway\Out\Message(room: 'highnet', body: $hwBody);
+		$this->logger->debug('Sending message to Highnet: {data}', [
+			'data' => $hwBody,
+		]);
+		$this->eventFeed->connection?->send($packet);
+
+		if (!$this->highnetRouteInternally) {
+			$this->logger->info('Internal Highnet routing disabled.');
+			return;
+		}
+		$missingReceivers = $this->getInternalRoutingReceivers($event, $channel);
+		if (count($missingReceivers)) {
+			$this->logger->info('Routing Highnet message internally to {targets}', [
+				'targets' => $missingReceivers,
+			]);
+		}
+
+		$rMsg = $this->nnMessageToRoutableMessage($message);
+		foreach ($missingReceivers as $missingReceiver) {
+			$handler = $this->msgHub->getReceiver($missingReceiver);
+			if (isset($handler)) {
+				$handler->receive($rMsg, $missingReceiver);
+			}
+		}
 	}
 
 	/** Create a RoutableMessage from a Highnet message for internal routing only */

@@ -12,6 +12,7 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	HttpRetryRateLimits,
 	ModuleInstance,
+	Nadybot,
 	Safe,
 };
 use Psr\Log\LoggerInterface;
@@ -346,7 +347,7 @@ class DiscordAPIClient extends ModuleInstance {
 		}
 		$this->queueProcessing = true;
 		$item = array_shift($this->outQueue);
-		async($this->immediatelySendToChannel(...), $item)->ignore();
+		async($this->immediatelySendToChannel(...), $item)->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	private function immediatelySendToChannel(ChannelQueueItem $item): void {
@@ -381,7 +382,7 @@ class DiscordAPIClient extends ModuleInstance {
 		}
 		$this->webhookQueueProcessing = true;
 		$item = array_shift($this->webhookQueue);
-		async($this->immediatelySendToWebhook(...), $item)->ignore();
+		async($this->immediatelySendToWebhook(...), $item)->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	private function immediatelySendToWebhook(WebhookQueueItem $item): void {

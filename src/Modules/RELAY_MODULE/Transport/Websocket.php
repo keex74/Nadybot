@@ -130,7 +130,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 			foreach ($data as $chunk) {
 				$this->client->sendText($chunk);
 			}
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 		return [];
 	}
 
@@ -199,8 +199,8 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 			unset($this->initCallback);
 			$this->status = new RelayStatus(RelayStatus::READY, 'ready');
 			$callback();
-			async($this->mainLoop(...));
-		});
+			async($this->mainLoop(...))->catch(Nadybot::asyncErrorHandler(...));
+		})->catch(Nadybot::asyncErrorHandler(...));
 		return [];
 	}
 
@@ -220,7 +220,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 			} catch (Throwable) {
 			}
 			$callback();
-		});
+		})->catch(Nadybot::asyncErrorHandler(...));
 		return [];
 	}
 

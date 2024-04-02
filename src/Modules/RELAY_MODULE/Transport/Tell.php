@@ -119,7 +119,7 @@ class Tell implements TransportInterface {
 				$this->buddylistManager->addName(...),
 				$this->bot,
 				$this->relay->getName() . '_relay'
-			);
+			)->catch(Nadybot::asyncErrorHandler(...));
 		}
 		return [];
 	}
