@@ -13,7 +13,6 @@ use Nadybot\Core\{
 	Safe,
 	SettingManager,
 	Text,
-	Util,
 };
 use Psr\Log\LoggerInterface;
 
@@ -57,9 +56,6 @@ class ItemsController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	/** @var array<int,Skill> */
 	private array $skills = [];
@@ -425,16 +421,6 @@ class ItemsController extends ModuleInstance {
 			}
 			$row->numExactMatches = $numExactMatches;
 		}
-
-		/*
-		$this->util->mergesort($data, function($a, $b) {
-			if ($a->numExactMatches == $b->numExactMatches) {
-				return 0;
-			} else {
-				return ($a->numExactMatches > $b->numExactMatches) ? -1 : 1;
-			}
-		});
-		*/
 
 		return $data;
 	}
