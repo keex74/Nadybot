@@ -240,7 +240,7 @@ class DevController extends ModuleInstance {
 		$blob = '<header2>Current call stack<end>';
 		for ($i = 0; $i < $count; $i++) {
 			$pos = $count-$i;
-			$blob .= "\n<tab>" . $this->text->alignNumber($pos, 2, 'highlight') . ". {$lines[$i]}";
+			$blob .= "\n<tab>" . Text::alignNumber($pos, 2, 'highlight') . ". {$lines[$i]}";
 		}
 		$msg = $this->text->makeBlob("Current Stacktrace ({$count})", $blob);
 		$context->reply($msg);
@@ -278,7 +278,7 @@ class DevController extends ModuleInstance {
 	/** Create a custom item link */
 	#[NCA\HandlesCommand('makeitem')]
 	public function makeItemCommand(CmdContext $context, int $lowId, int $highId, int $ql, string $name): void {
-		$context->reply($this->text->makeItem($lowId, $highId, $ql, $name));
+		$context->reply(Text::makeItem($lowId, $highId, $ql, $name));
 	}
 
 	/** Create 1 or &lt;num blobs&gt; blobs of &lt;length&gt; characters */

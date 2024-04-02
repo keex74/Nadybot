@@ -54,11 +54,11 @@ class LinksController extends ModuleInstance {
 
 		$blob = "<header2>All my links<end>\n";
 		foreach ($links as $link) {
-			$remove = $this->text->makeChatcmd('remove', "/tell <myname> links rem {$link->id}");
+			$remove = Text::makeChatcmd('remove', "/tell <myname> links rem {$link->id}");
 			if ($this->showfullurls) {
-				$website = $this->text->makeChatcmd($link->website, "/start {$link->website}");
+				$website = Text::makeChatcmd($link->website, "/start {$link->website}");
 			} else {
-				$website = '[' . $this->text->makeChatcmd('visit', "/start {$link->website}") . ']';
+				$website = '[' . Text::makeChatcmd('visit', "/start {$link->website}") . ']';
 			}
 			$blob .= "<tab>{$website} <highlight>{$link->comments}<end> (by {$link->name}) [{$remove}]\n";
 		}

@@ -510,9 +510,9 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 				$status = '<grey>None<end>';
 			}
 
-			$remove = $this->text->makeChatcmd('remove', "/tell <myname> track rem {$user->uid}");
+			$remove = Text::makeChatcmd('remove', "/tell <myname> track rem {$user->uid}");
 
-			$history = $this->text->makeChatcmd('history', "/tell <myname> track show {$user->name}");
+			$history = Text::makeChatcmd('history', "/tell <myname> track show {$user->name}");
 
 			$blob .= "<tab><highlight>{$user->name}<end> ({$status}{$lastAction}) - [{$remove}] [{$history}]\n";
 		}
@@ -697,7 +697,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$orgs = (new Collection($orgs))->sortBy('name');
 		$blob = "<header2>Matching orgs<end>\n";
 		foreach ($orgs as $org) {
-			$addLink = $this->text->makeChatcmd('track', "/tell <myname> track addorg {$org->id}");
+			$addLink = Text::makeChatcmd('track', "/tell <myname> track addorg {$org->id}");
 			$blob .= "<tab>{$org->name} (<{$org->faction}>{$org->faction}<end>), ".
 				"ID {$org->id} - <highlight>{$org->num_members}<end> members ".
 				"[{$addLink}]\n";
@@ -763,11 +763,11 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			return strcasecmp($o1->org->name??'', $o2->org->name??'');
 		});
 
-		$lines = $orgs->map(function (TrackingOrg $o): ?string {
+		$lines = $orgs->map(static function (TrackingOrg $o): ?string {
 			if (!isset($o->org)) {
 				return null;
 			}
-			$delLink = $this->text->makeChatcmd('remove', "/tell <myname> track remorg {$o->org->id}");
+			$delLink = Text::makeChatcmd('remove', "/tell <myname> track remorg {$o->org->id}");
 			return "<tab>{$o->org->name} ({$o->org->faction->inColor()}) - ".
 				"<highlight>{$o->org->num_members}<end> members, added by <highlight>{$o->added_by}<end> ".
 				"[{$delLink}]";
@@ -869,14 +869,14 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$blob = $this->renderOnlineList($data->toArray(), isset($filters['edit']));
 		$footNotes = [];
 		if (!isset($filters['all'])) {
-			$allLink = $this->text->makeChatcmd(
+			$allLink = Text::makeChatcmd(
 				"<symbol>{$context->message} all",
 				"/tell <myname> {$context->message} all"
 			);
 			$footNotes []= "<i>Use {$allLink} to see hidden characters.</i>";
 		}
 		if (!isset($filters['edit'])) {
-			$editLink = $this->text->makeChatcmd(
+			$editLink = Text::makeChatcmd(
 				"<symbol>{$context->message} --edit",
 				"/tell <myname> {$context->message} --edit"
 			);
@@ -1033,10 +1033,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$blob .= ' :: ' . $player->faction->inColor($player->guild) . " ({$player->guild_rank})";
 		}
 		if ($edit) {
-			$historyLink = $this->text->makeChatcmd('history', "/tell <myname> track show {$player->name}");
-			$removeLink = $this->text->makeChatcmd('untrack', "/tell <myname> track rem {$player->charid}");
-			$hideLink = $this->text->makeChatcmd('hide', "/tell <myname> track hide {$player->charid}");
-			$unhideLink = $this->text->makeChatcmd('unhide', "/tell <myname> track unhide {$player->charid}");
+			$historyLink = Text::makeChatcmd('history', "/tell <myname> track show {$player->name}");
+			$removeLink = Text::makeChatcmd('untrack', "/tell <myname> track rem {$player->charid}");
+			$hideLink = Text::makeChatcmd('hide', "/tell <myname> track hide {$player->charid}");
+			$unhideLink = Text::makeChatcmd('unhide', "/tell <myname> track unhide {$player->charid}");
 			$blob .= " [{$removeLink}] [{$historyLink}]";
 			if ($player->hidden) {
 				$blob .= " [{$unhideLink}]";
@@ -1178,12 +1178,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			->orderByDesc('dt')
 			->select(['event', 'dt'])
 			->asObj(Tracking::class);
-		$hideLink = $this->text->makeChatcmd(
+		$hideLink = Text::makeChatcmd(
 			'hide',
 			"/tell <myname> track hide {$uid}"
 		);
 		if ($hidden) {
-			$hideLink = $this->text->makeChatcmd(
+			$hideLink = Text::makeChatcmd(
 				'unhide',
 				"/tell <myname> track unhide {$uid}"
 			);

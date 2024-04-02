@@ -72,7 +72,7 @@ class SettingsController extends ModuleInstance {
 			$blob .= '<tab>' . ($row->description??'No description given');
 
 			if ($row->mode === SettingMode::Edit) {
-				$editLink = $this->text->makeChatcmd('Modify', "/tell <myname> settings change {$row->name}");
+				$editLink = Text::makeChatcmd('Modify', "/tell <myname> settings change {$row->name}");
 				$blob .= " ({$editLink})";
 			}
 

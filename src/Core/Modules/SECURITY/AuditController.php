@@ -257,7 +257,7 @@ class AuditController extends ModuleInstance {
 				array_keys($prevParams),
 				array_values($prevParams)
 			));
-			$prevLink = $this->text->makeChatcmd('&lt; prev', "/tell <myname> audit {$cmdArgs}");
+			$prevLink = Text::makeChatcmd('&lt; prev', "/tell <myname> audit {$cmdArgs}");
 		}
 		if ($data->count() > $params['limit']) {
 			$nextParams = $params;
@@ -267,7 +267,7 @@ class AuditController extends ModuleInstance {
 				array_keys($nextParams),
 				array_values($nextParams)
 			));
-			$nextLink = $this->text->makeChatcmd('next &gt;', "/tell <myname> audit {$cmdArgs}");
+			$nextLink = Text::makeChatcmd('next &gt;', "/tell <myname> audit {$cmdArgs}");
 		}
 		return [$prevLink, $nextLink];
 	}

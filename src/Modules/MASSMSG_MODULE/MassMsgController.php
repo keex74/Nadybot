@@ -112,10 +112,10 @@ class MassMsgController extends ModuleInstance {
 	}
 
 	public function getMassMsgOptInOutBlob(): string {
-		$msgOnLink      = $this->text->makeChatcmd('On', '/tell <myname> massmsgs on');
-		$msgOffLink     = $this->text->makeChatcmd('Off', '/tell <myname> massmsgs off');
-		$invitesOnLink  = $this->text->makeChatcmd('On', '/tell <myname> massinvites on');
-		$invitesOffLink = $this->text->makeChatcmd('Off', '/tell <myname> massinvites off');
+		$msgOnLink      = Text::makeChatcmd('On', '/tell <myname> massmsgs on');
+		$msgOffLink     = Text::makeChatcmd('Off', '/tell <myname> massmsgs off');
+		$invitesOnLink  = Text::makeChatcmd('On', '/tell <myname> massinvites on');
+		$invitesOffLink = Text::makeChatcmd('Off', '/tell <myname> massinvites off');
 		$blob = "<header2>Not interested?<end>\n".
 			"<tab>Change your preferences:\n\n".
 			"<tab>[{$msgOnLink}] [{$msgOffLink}]  Mass messages\n".
@@ -298,10 +298,10 @@ class MassMsgController extends ModuleInstance {
 	public function massMsgNewsTile(string $sender): ?string {
 		$msgs = $this->preferences->get($sender, static::PREF_MSGS);
 		$invs = $this->preferences->get($sender, static::PREF_INVITES);
-		$msgOnLink      = $this->text->makeChatcmd('On', '/tell <myname> massmsgs on');
-		$msgOffLink     = $this->text->makeChatcmd('Off', '/tell <myname> massmsgs off');
-		$invitesOnLink  = $this->text->makeChatcmd('On', '/tell <myname> massinvites on');
-		$invitesOffLink = $this->text->makeChatcmd('Off', '/tell <myname> massinvites off');
+		$msgOnLink      = Text::makeChatcmd('On', '/tell <myname> massmsgs on');
+		$msgOffLink     = Text::makeChatcmd('Off', '/tell <myname> massmsgs off');
+		$invitesOnLink  = Text::makeChatcmd('On', '/tell <myname> massinvites on');
+		$invitesOffLink = Text::makeChatcmd('Off', '/tell <myname> massinvites off');
 		if ($msgs === 'no') {
 			$msgOffLink = '<off>Off<end>';
 		} else {
@@ -383,10 +383,10 @@ class MassMsgController extends ModuleInstance {
 		$character = $context->char->name;
 		$msgs = $this->preferences->get($character, static::PREF_MSGS);
 		$invs = $this->preferences->get($character, static::PREF_INVITES);
-		$msgOnLink      = $this->text->makeChatcmd('On', '/tell <myname> massmsgs on');
-		$msgOffLink     = $this->text->makeChatcmd('Off', '/tell <myname> massmsgs off');
-		$invitesOnLink  = $this->text->makeChatcmd('On', '/tell <myname> massinvites on');
-		$invitesOffLink = $this->text->makeChatcmd('Off', '/tell <myname> massinvites off');
+		$msgOnLink      = Text::makeChatcmd('On', '/tell <myname> massmsgs on');
+		$msgOffLink     = Text::makeChatcmd('Off', '/tell <myname> massmsgs off');
+		$invitesOnLink  = Text::makeChatcmd('On', '/tell <myname> massinvites on');
+		$invitesOffLink = Text::makeChatcmd('Off', '/tell <myname> massinvites off');
 		if ($msgs === 'no') {
 			$msgOffLink = '<off>Off<end>';
 		} else {

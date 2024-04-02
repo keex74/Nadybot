@@ -130,9 +130,6 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	private HttpClientBuilder $builder;
 
 	#[NCA\Inject]
-	private Text $text;
-
-	#[NCA\Inject]
 	private MessageHub $messageHub;
 
 	#[NCA\Inject]
@@ -233,13 +230,13 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 				$alert = new Alert();
 				$alert->time = $time - $alertTime;
 				if ($alertTime === 0) {
-					$alert->message = $this->text->renderPlaceholders($this->gauntletExpiredNotification, $tokens);
+					$alert->message = Text::renderPlaceholders($this->gauntletExpiredNotification, $tokens);
 				} else {
 					$tokens['expiry'] = $this->tmTime($time);
 					$tokens['duration'] = Util::unixtimeToReadable($alertTime);
 					$tokens['c-expiry'] = '<highlight>' . $tokens['expiry'] . '<end>';
 					$tokens['c-duration'] = '<highlight>' . $tokens['duration'] . '<end>';
-					$alert->message = $this->text->renderPlaceholders($this->gauntletExpiryWarning, $tokens);
+					$alert->message = Text::renderPlaceholders($this->gauntletExpiryWarning, $tokens);
 				}
 				$alerts []= $alert;
 			}
@@ -357,7 +354,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		];
 		$tokens['c-expiry'] = '<highlight>' . $tokens['expiry'] . '<end>';
 		$tokens['c-duration'] = '<highlight>' . $tokens['duration'] . '<end>';
-		$msg = $this->text->renderPlaceholders($this->gauntletSetNotification, $tokens);
+		$msg = Text::renderPlaceholders($this->gauntletSetNotification, $tokens);
 		$context->reply($msg);
 		$event = new SyncGaubuffEvent(
 			expires: $buffEnds,

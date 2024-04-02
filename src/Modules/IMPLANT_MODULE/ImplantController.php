@@ -224,13 +224,13 @@ class ImplantController extends ModuleInstance {
 		$indent = '<tab>';
 
 		$blob = "<header2>Requirements to wear:<end>\n".
-			$indent.$this->text->alignNumber($specs->requirements->abilities, 4, 'highlight').
+			$indent.Text::alignNumber($specs->requirements->abilities, 4, 'highlight').
 			" Ability\n".
-			$indent.$this->text->alignNumber($specs->requirements->treatment, 4, 'highlight').
+			$indent.Text::alignNumber($specs->requirements->treatment, 4, 'highlight').
 			" Treatment\n";
 
 		if ($specs->requirements->titleLevel > 0) {
-			$blob .= $indent.$this->text->alignNumber($specs->requirements->titleLevel, 4, 'highlight').
+			$blob .= $indent.Text::alignNumber($specs->requirements->titleLevel, 4, 'highlight').
 			" Title level\n";
 		}
 
@@ -256,11 +256,11 @@ class ImplantController extends ModuleInstance {
 			$buildMultiplier = [5.25, 4.35, 2.55];
 		}
 		$blob .= "<header2>Requirements to build:<end>\n".
-			$indent.$this->text->alignNumber((int)floor($buildMultiplier[0] * $ql), 4, 'highlight').
+			$indent.Text::alignNumber((int)floor($buildMultiplier[0] * $ql), 4, 'highlight').
 			" NP for Shiny\n".
-			$indent.$this->text->alignNumber((int)floor($buildMultiplier[1] * $ql), 4, 'highlight').
+			$indent.Text::alignNumber((int)floor($buildMultiplier[1] * $ql), 4, 'highlight').
 			" NP for Bright\n".
-			$indent.$this->text->alignNumber((int)floor($buildMultiplier[2] * $ql), 4, 'highlight').
+			$indent.Text::alignNumber((int)floor($buildMultiplier[2] * $ql), 4, 'highlight').
 			" NP for Faded\n\n";
 
 		$blob .= "<header2>Requirements to clean:<end>\n";
@@ -269,8 +269,8 @@ class ImplantController extends ModuleInstance {
 		} elseif ($ql > 200) {
 			$blob .= $indent . "Refined Implants cannot be cleaned.\n\n";
 		} else {
-			$blob .= $indent.$this->text->alignNumber($ql, 4, 'highlight') . " NanoProgramming\n".
-				$indent.$this->text->alignNumber((int)floor(4.75*$ql), 4, 'highlight') . " Break&Entry\n\n";
+			$blob .= $indent.Text::alignNumber($ql, 4, 'highlight') . " NanoProgramming\n".
+				$indent.Text::alignNumber((int)floor(4.75*$ql), 4, 'highlight') . " Break&Entry\n\n";
 		}
 
 		$minQL = 1;
@@ -281,9 +281,9 @@ class ImplantController extends ModuleInstance {
 		$brightQL = $this->getClusterMinQl($ql, 'bright');
 		$fadedQL = $this->getClusterMinQl($ql, 'faded');
 		$blob .= "<header2>Minimum Cluster QL:<end>\n".
-			$indent.$this->text->alignNumber(max($minQL, $shinyQL), 3, 'highlight') . " Shiny\n".
-			$indent.$this->text->alignNumber(max($minQL, $brightQL), 3, 'highlight') . " Bright\n".
-			$indent.$this->text->alignNumber(max($minQL, $fadedQL), 3, 'highlight') . " Faded\n\n";
+			$indent.Text::alignNumber(max($minQL, $shinyQL), 3, 'highlight') . " Shiny\n".
+			$indent.Text::alignNumber(max($minQL, $brightQL), 3, 'highlight') . " Bright\n".
+			$indent.Text::alignNumber(max($minQL, $fadedQL), 3, 'highlight') . " Faded\n\n";
 
 		$impName = 'Implant';
 		if ($type === self::JOBE) {
@@ -410,10 +410,10 @@ class ImplantController extends ModuleInstance {
 	 * @return string the rendered line including newline
 	 */
 	protected function renderBonusLine(ImplantBonusStats $stats, string $type): string {
-		$fromQL = $this->text->alignNumber($stats->range[0], 3, 'highlight');
-		$toQL   = $this->text->alignNumber($stats->range[1], 3, 'highlight');
+		$fromQL = Text::alignNumber($stats->range[0], 3, 'highlight');
+		$toQL   = Text::alignNumber($stats->range[1], 3, 'highlight');
 
-		$line = $this->text->alignNumber($stats->buff, 3, 'highlight').
+		$line = Text::alignNumber($stats->buff, 3, 'highlight').
 			" (QL {$fromQL} - QL {$toQL}) " . $stats->slot;
 		if ($stats->range[1] < 300) {
 			$nextBest = $this->getImplantQLSpecs($type, $stats->range[1]+1);

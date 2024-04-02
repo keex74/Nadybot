@@ -35,7 +35,7 @@ class LandController extends ModuleInstance {
 		}
 		$lines = [];
 		foreach ($this->nwCtrl->state as $pfId => $pfState) {
-			$lines[$pfState->longName] = $this->text->makeChatcmd(
+			$lines[$pfState->longName] = Text::makeChatcmd(
 				$pfState->longName,
 				"/tell <myname> nw lc {$pfState->shortName}"
 			) . " <highlight>({$pfState->shortName})<end>";

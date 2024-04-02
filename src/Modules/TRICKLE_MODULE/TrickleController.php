@@ -192,7 +192,7 @@ class TrickleController extends ModuleInstance {
 
 			$amount = ($result->amount??0) / 4;
 			$amountInt = (int)floor($amount);
-			$msg .= '<tab>' . $this->text->alignNumber($amountInt, 3, 'highlight').
+			$msg .= '<tab>' . Text::alignNumber($amountInt, 3, 'highlight').
 				'.<highlight>' . substr(number_format($amount-$amountInt, 2), 2) . '<end> '.
 				"<a href=skillid://{$result->skill_id}>{$result->name}</a>\n";
 		}

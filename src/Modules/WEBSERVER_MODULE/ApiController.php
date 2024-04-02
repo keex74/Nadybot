@@ -103,14 +103,14 @@ class ApiController extends ModuleInstance {
 			return;
 		}
 		$blocks = $keys->groupBy('character')
-			->map(function (Collection $keys, string $character): string {
+			->map(static function (Collection $keys, string $character): string {
 				return "<header2>{$character}<end>\n".
-					$keys->map(function (ApiKey $key): string {
-						$resetLink = $this->text->makeChatcmd(
+					$keys->map(static function (ApiKey $key): string {
+						$resetLink = Text::makeChatcmd(
 							'reset',
 							"/tell <myname> apiauth reset {$key->token}"
 						);
-						$delLink = $this->text->makeChatcmd(
+						$delLink = Text::makeChatcmd(
 							'remove',
 							"/tell <myname> apiauth rem {$key->token}"
 						);
@@ -177,7 +177,7 @@ class ApiController extends ModuleInstance {
 			"<header2>What to do with this?<end>\n".
 			"<tab>Store both of these safely, they cannot be retrieved later.\n".
 			'<tab>See '.
-			$this->text->makeChatcmd(
+			Text::makeChatcmd(
 				'the Nadybot WIKI',
 				'/start https://github.com/Nadybot/Nadybot/wiki/REST-API#signed-requests'
 			) . ' for a documentation on how to use them.';

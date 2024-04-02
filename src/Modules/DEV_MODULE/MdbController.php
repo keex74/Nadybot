@@ -38,7 +38,7 @@ class MdbController extends ModuleInstance {
 
 		$blob = '';
 		foreach ($categories as $category) {
-			$blob .= $this->text->makeChatcmd((string)$category->id, '/tell <myname> mdb ' . $category->id) . "\n";
+			$blob .= Text::makeChatcmd((string)$category->id, '/tell <myname> mdb ' . $category->id) . "\n";
 		}
 
 		$msg = $this->text->makeBlob('MDB Categories', $blob);
@@ -58,7 +58,7 @@ class MdbController extends ModuleInstance {
 
 		$blob = '';
 		foreach ($instances as $instance) {
-			$blob .= $this->text->makeChatcmd((string)$instance->id, "/tell <myname> mdb {$categoryId} " . $instance->id) . "\n";
+			$blob .= Text::makeChatcmd((string)$instance->id, "/tell <myname> mdb {$categoryId} " . $instance->id) . "\n";
 		}
 
 		$msg = $this->text->makeBlob("MDB Instances for Category {$categoryId}", $blob);

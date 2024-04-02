@@ -78,8 +78,8 @@ class AlienMiscController extends ModuleInstance {
 			->distinct()
 			->pluckStrings('profession')
 			->reduce(
-				function (string $blob, string $profession): string {
-					$professionLink = $this->text->makeChatcmd($profession, "/tell <myname> leprocs {$profession}");
+				static function (string $blob, string $profession): string {
+					$professionLink = Text::makeChatcmd($profession, "/tell <myname> leprocs {$profession}");
 					return "{$blob}<tab>{$professionLink}\n";
 				},
 				$blob
@@ -121,7 +121,7 @@ class AlienMiscController extends ModuleInstance {
 
 			$proc_trigger = "<green>{$row->proc_trigger}<end>";
 			$blob .= '<tab>'.
-				$this->text->alignNumber($row->research_lvl, 2).
+				Text::alignNumber($row->research_lvl, 2).
 				" - {$row->name} <orange>{$row->modifiers}<end> {$row->duration} {$proc_trigger}\n";
 		}
 		$blob .= "\n".
@@ -150,10 +150,10 @@ class AlienMiscController extends ModuleInstance {
 			->orderBy('profession')
 			->asObj(OfabArmorType::class)
 			->reduce(
-				function (string $blob, OfabArmorType $row) use ($qls): string {
+				static function (string $blob, OfabArmorType $row) use ($qls): string {
 					$blob .= "<pagebreak>{$row->profession->value} - Type {$row->type}\n";
 					foreach ($qls as $ql) {
-						$ql_link = $this->text->makeChatcmd((string)$ql, "/tell <myname> ofabarmor {$row->profession->short()} {$ql}");
+						$ql_link = Text::makeChatcmd((string)$ql, "/tell <myname> ofabarmor {$row->profession->short()} {$ql}");
 						$blob .= "[{$ql_link}] ";
 					}
 					return $blob . "\n\n";
@@ -209,7 +209,7 @@ class AlienMiscController extends ModuleInstance {
 		}
 
 		$blob = '';
-		$typeLink = $this->text->makeChatcmd("Kyr'Ozch Bio-Material - Type {$type}", "/tell <myname> bioinfo {$type}");
+		$typeLink = Text::makeChatcmd("Kyr'Ozch Bio-Material - Type {$type}", "/tell <myname> bioinfo {$type}");
 		$typeQl = round(.8 * $ql);
 		$blob .= "Upgrade with {$typeLink} (minimum QL {$typeQl})\n\n";
 
@@ -222,7 +222,7 @@ class AlienMiscController extends ModuleInstance {
 			if ($currQL === $ql) {
 				$blob .= "<yellow>[<end>{$currQL}<yellow>]<end> ";
 			} else {
-				$qlLink = $this->text->makeChatcmd((string)$currQL, "/tell <myname> ofabarmor {$profession->short()} {$currQL}");
+				$qlLink = Text::makeChatcmd((string)$currQL, "/tell <myname> ofabarmor {$profession->short()} {$currQL}");
 				$blob .= "[{$qlLink}] ";
 			}
 		}
@@ -248,7 +248,7 @@ class AlienMiscController extends ModuleInstance {
 				}
 				$blob .= "<end>\n";
 			}
-			$blob .= '<tab>' . $this->text->makeItem($row->lowid, $row->highid, $ql, $row->name);
+			$blob .= '<tab>' . Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
 
 			if ($row->upgrade === 0 || $row->upgrade === 3) {
 				$blob .= "  (<highlight>{$vp}<end> VP)";
@@ -278,10 +278,10 @@ class AlienMiscController extends ModuleInstance {
 			->orderBy('name')
 			->asObj(OfabWeapon::class)
 			->reduce(
-				function (string $blob, OfabWeapon $weapon) use ($qls): string {
+				static function (string $blob, OfabWeapon $weapon) use ($qls): string {
 					$blob .= "<pagebreak>{$weapon->name} - Type {$weapon->type}\n";
 					foreach ($qls as $ql) {
-						$ql_link = $this->text->makeChatcmd(
+						$ql_link = Text::makeChatcmd(
 							(string)$ql,
 							"/tell <myname> ofabweapons {$weapon->name} {$ql}"
 						);
@@ -316,7 +316,7 @@ class AlienMiscController extends ModuleInstance {
 
 		$blob = '';
 		$typeQl = round(.8 * $searchQL);
-		$typeLink = $this->text->makeChatcmd("Kyr'Ozch Bio-Material - Type {$row->type}", "/tell <myname> bioinfo {$row->type} {$typeQl}");
+		$typeLink = Text::makeChatcmd("Kyr'Ozch Bio-Material - Type {$row->type}", "/tell <myname> bioinfo {$row->type} {$typeQl}");
 		$blob .= "Upgrade with {$typeLink} (minimum QL {$typeQl})\n\n";
 
 		$blob = $this->db->table('ofabweaponscost')
@@ -324,11 +324,11 @@ class AlienMiscController extends ModuleInstance {
 			->select('ql')->distinct()
 			->pluckInts('ql')
 			->reduce(
-				function (string $blob, int $ql) use ($searchQL, $weapon): string {
+				static function (string $blob, int $ql) use ($searchQL, $weapon): string {
 					if ($ql === $searchQL) {
 						return "{$blob}<yellow>[<end>{$ql}<yellow>]<end> ";
 					}
-					$ql_link = $this->text->makeChatcmd(
+					$ql_link = Text::makeChatcmd(
 						(string)$ql,
 						"/tell <myname> ofabweapons {$weapon} {$ql}"
 					);

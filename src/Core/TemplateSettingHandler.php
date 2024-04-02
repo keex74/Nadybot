@@ -20,7 +20,7 @@ class TemplateSettingHandler extends SettingHandler {
 		if (isset($attr, $attr->exampleValues)) {
 			$examples = $attr->exampleValues;
 		}
-		return $this->text->renderPlaceholders($this->row->value??'', $examples);
+		return Text::renderPlaceholders($this->row->value??'', $examples);
 	}
 
 	/** Get all options for this setting or null if no options are available */
@@ -44,7 +44,7 @@ class TemplateSettingHandler extends SettingHandler {
 		$msg = "<header2>Predefined Values<end>\n";
 		if (isset($options_map)) {
 			foreach ($options_map as $key => $label) {
-				$saveLink = $this->text->makeChatcmd('select', "/tell <myname> settings save {$this->row->name} {$key}");
+				$saveLink = Text::makeChatcmd('select', "/tell <myname> settings save {$this->row->name} {$key}");
 				$label = htmlspecialchars($label);
 				$label = implode('<end>/<highlight>', explode('/', $label));
 				$msg .= "<tab><highlight>{$label}<end> [{$saveLink}]\n";
@@ -52,12 +52,12 @@ class TemplateSettingHandler extends SettingHandler {
 			}
 		} else {
 			foreach ($options as $char) {
-				$saveLink = $this->text->makeChatcmd(
+				$saveLink = Text::makeChatcmd(
 					'select',
 					"/tell <myname> settings save {$this->row->name} ".
 					htmlentities($char)
 				);
-				$char = $this->text->renderPlaceholders($char, $examples);
+				$char = Text::renderPlaceholders($char, $examples);
 				$char = implode("\n<tab>", explode("\n", $char));
 				$msg .= "<tab>{$char} [{$saveLink}]\n";
 			}

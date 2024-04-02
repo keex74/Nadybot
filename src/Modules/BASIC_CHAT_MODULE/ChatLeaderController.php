@@ -71,9 +71,6 @@ class ChatLeaderController extends ModuleInstance implements AccessLevelProvider
 	#[NCA\Inject]
 	private EventManager $eventManager;
 
-	#[NCA\Inject]
-	private Text $text;
-
 	/** Name of the leader character. */
 	private ?string $leader = null;
 
@@ -167,7 +164,7 @@ class ChatLeaderController extends ModuleInstance implements AccessLevelProvider
 			|| $eventObj->message[0] === $this->settingManager->get('symbol')) {
 			return;
 		}
-		$msg = $this->text->renderPlaceholders($this->leaderEchoFormat, ['message' => $eventObj->message]);
+		$msg = Text::renderPlaceholders($this->leaderEchoFormat, ['message' => $eventObj->message]);
 		$this->chatBot->sendPrivate($msg);
 	}
 

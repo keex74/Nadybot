@@ -690,7 +690,7 @@ class NotumWarsController extends ModuleInstance {
 			"{$pf->short()} {$site->site_id} ({$site->name})",
 		))[0];
 		$color = ($site->org_faction ?? Faction::Neutral)->lower();
-		$msg = $this->text->renderPlaceholders($this->gasChangeFormat, $tokens);
+		$msg = Text::renderPlaceholders($this->gasChangeFormat, $tokens);
 		$rMessage = new RoutableMessage($msg);
 		$rMessage->prependPath(new Source('pvp', "gas-change-{$color}"));
 		$this->msgHub->handle($rMessage);
@@ -699,11 +699,11 @@ class NotumWarsController extends ModuleInstance {
 		if ($newGas->gas === 75 && $oldGas?->gas !== 75 && isset($site->org_faction)) {
 			$source = "site-cold-{$site->org_faction->lower()}";
 			$trackerSource = 'site-cold';
-			$msg = $this->text->renderPlaceholders($this->siteGoesColdFormat, $tokens);
+			$msg = Text::renderPlaceholders($this->siteGoesColdFormat, $tokens);
 		} elseif ($newGas->gas !== 75 && $oldGas?->gas === 75 && isset($site->org_faction)) {
 			$source = "site-hot-{$site->org_faction->lower()}";
 			$trackerSource = 'site-hot';
-			$msg = $this->text->renderPlaceholders($this->siteGoesHotFormat, $tokens);
+			$msg = Text::renderPlaceholders($this->siteGoesHotFormat, $tokens);
 		} else {
 			return;
 		}
@@ -790,9 +790,9 @@ class NotumWarsController extends ModuleInstance {
 			}
 			$blob .= '<tab>Towers: 1 CT'.
 				", {$site->num_turrets} ".
-				$this->text->pluralize('turret', $site->num_turrets).
+				Text::pluralize('turret', $site->num_turrets).
 				", {$site->num_conductors} ".
-				$this->text->pluralize('conductor', $site->num_conductors).
+				Text::pluralize('conductor', $site->num_conductors).
 				"\n";
 		} else {
 			// If the site is unplanted, show destruction information and links to plant
@@ -841,7 +841,7 @@ class NotumWarsController extends ModuleInstance {
 			$links []= Text::makeChatcmd(
 				"{$numRecentAttacks} ".
 				(($this->mostRecentAttacksAge > 0) ? 'recent ' : '').
-				$this->text->pluralize('attack', $numRecentAttacks),
+				Text::pluralize('attack', $numRecentAttacks),
 				"/tell <myname> nw attacks {$pf->short()} {$site->site_id}"
 			);
 		}
@@ -850,7 +850,7 @@ class NotumWarsController extends ModuleInstance {
 			$links []= Text::makeChatcmd(
 				"{$numRecentOutcomes} ".
 				(($this->mostRecentOutcomesAge > 0) ? 'recent ' : '').
-				$this->text->pluralize('victory', $numRecentOutcomes),
+				Text::pluralize('victory', $numRecentOutcomes),
 				"/tell <myname> nw victory {$pf->short()} {$site->site_id}"
 			);
 		}
@@ -953,8 +953,8 @@ class NotumWarsController extends ModuleInstance {
 				"/tell <myname> <symbol>nw sites {$orgName}"
 			);
 			$faction = $orgFaction[$orgName] ?? Faction::Unknown;
-			$blob .= "\n<tab>" . $this->text->alignNumber($rank, 2).
-				'. ' . $this->text->alignNumber($points, 4, 'highlight', true).
+			$blob .= "\n<tab>" . Text::alignNumber($rank, 2).
+				'. ' . Text::alignNumber($points, 4, 'highlight', true).
 				' ' . $faction->inColor($orgName).
 				" [{$sitesLink}]";
 			$rank++;
@@ -1253,9 +1253,9 @@ class NotumWarsController extends ModuleInstance {
 		$qls[301] = 8;
 		foreach ($qls as $ql => $type) {
 			$maxQL = $ql - 1;
-			$blob .= "\n<tab>" . $this->text->alignNumber($minQL, 3).
+			$blob .= "\n<tab>" . Text::alignNumber($minQL, 3).
 				' - '.
-				$this->text->alignNumber($maxQL, 3).
+				Text::alignNumber($maxQL, 3).
 				': Type ' . $roman[$type-2];
 			$minQL = $ql;
 		}
@@ -1520,7 +1520,7 @@ class NotumWarsController extends ModuleInstance {
 			"{$pf->short()} {$site->site_id} ({$site->name})",
 		))[0];
 		$color = ($site->org_faction ?? Faction::Neutral)->lower();
-		$msg = $this->text->renderPlaceholders($this->sitePlantedFormat, $tokens);
+		$msg = Text::renderPlaceholders($this->sitePlantedFormat, $tokens);
 		$rMessage = new RoutableMessage($msg);
 		$rMessage->prependPath(new Source('pvp', "site-planted-{$color}"));
 		$this->msgHub->handle($rMessage);
@@ -1562,7 +1562,7 @@ class NotumWarsController extends ModuleInstance {
 			"{$pf->short()} {$site->site_id} ({$site->name})",
 		))[0];
 		$color = ($oldSite->org_faction ?? Faction::Neutral)->lower();
-		$msg = $this->text->renderPlaceholders($this->siteDestroyedFormat, $tokens);
+		$msg = Text::renderPlaceholders($this->siteDestroyedFormat, $tokens);
 		$rMessage = new RoutableMessage($msg);
 		$rMessage->prependPath(new Source('pvp', "site-destroyed-{$color}"));
 		$this->msgHub->handle($rMessage);
@@ -1588,9 +1588,9 @@ class NotumWarsController extends ModuleInstance {
 			"{$pf->short()} {$site->site_id} ({$site->name})",
 		))[0];
 		$tokens['c-site-num-turrets'] = $site->num_turrets . ' '.
-			$this->text->pluralize('turret', $site->num_turrets);
+			Text::pluralize('turret', $site->num_turrets);
 		$tokens['c-site-num-conductors'] = $site->num_conductors . ' '.
-			$this->text->pluralize('conductor', $site->num_conductors);
+			Text::pluralize('conductor', $site->num_conductors);
 		if ($oldSite->num_conductors < $site->num_conductors) {
 			$tokens['tower-delta'] = '+1';
 			$tokens['c-tower-delta'] = '<green>+1<end>';
@@ -1622,7 +1622,7 @@ class NotumWarsController extends ModuleInstance {
 		$subType = $tokens['tower-action'] . 'ed';
 		// Send "WW 6 conductors ±1 [details]"-message
 		$color = ($site->org_faction ?? Faction::Neutral)->lower();
-		$msg = $this->text->renderPlaceholders($this->siteTowerChangeFormat, $tokens);
+		$msg = Text::renderPlaceholders($this->siteTowerChangeFormat, $tokens);
 		$rMessage = new RoutableMessage($msg);
 		$rMessage->prependPath(new Source('pvp', "tower-{$subType}-{$color}"));
 		$this->msgHub->handle($rMessage);
@@ -1755,7 +1755,7 @@ class NotumWarsController extends ModuleInstance {
 		$line .= ' ' . $currentGas->colored();
 		if (isset($site->ct_pos)) {
 			$numTowers = $site->num_conductors + $site->num_turrets + 1;
-			$line .= ", {$numTowers} " . $this->text->pluralize('tower', $numTowers);
+			$line .= ", {$numTowers} " . Text::pluralize('tower', $numTowers);
 		}
 		$goesHot = $gas->goesHot($time);
 		$goesCold = $gas->goesCold($time);

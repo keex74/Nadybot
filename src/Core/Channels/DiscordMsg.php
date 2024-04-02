@@ -44,9 +44,6 @@ class DiscordMsg implements MessageReceiver {
 	#[NCA\Inject]
 	private SettingManager $settingManager;
 
-	#[NCA\Inject]
-	private Text $text;
-
 	public function getChannelName(): string {
 		return Source::DISCORD_MSG . '(*)';
 	}
@@ -61,7 +58,7 @@ class DiscordMsg implements MessageReceiver {
 			$msg = $baseEvent->message;
 			$renderPath = $baseEvent->renderPath;
 			if ($baseEvent->type === Online::TYPE) {
-				$msg = $this->text->removePopups($msg);
+				$msg = Text::removePopups($msg);
 			}
 		} else {
 			$msg = $event->getData();

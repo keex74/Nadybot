@@ -96,7 +96,7 @@ class GuideController extends ModuleInstance {
 		$linkContents = "<header2>Available guides<end>\n";
 		foreach ($topicList as $topic => $file) {
 			$linkContents .= '<tab>'.
-				$this->text->makeChatcmd($topic, "/tell <myname> guides {$file}") . "\n";
+				Text::makeChatcmd($topic, "/tell <myname> guides {$file}") . "\n";
 		}
 
 		if (count($topicList)) {

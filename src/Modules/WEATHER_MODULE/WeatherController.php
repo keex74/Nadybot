@@ -221,7 +221,7 @@ class WeatherController extends ModuleInstance {
 		$forecastSummary = $this->iconToForecastSummary($forecastIcon);
 		$precipitation = $weather->properties->timeseries[0]->data->next_1_hours?->details?->precipitation_amount ?? 0.00;
 		$precipitationForecast = $weather->properties->timeseries[0]->data->next_6_hours?->details?->precipitation_amount ?? 0.00;
-		$mapCommand = $this->text->makeChatcmd('OpenStreetMap', '/start '.$this->getOSMLink($nominatim));
+		$mapCommand = Text::makeChatcmd('OpenStreetMap', '/start '.$this->getOSMLink($nominatim));
 		$lastUpdated = $weather->properties->timeseries[0]->time;
 		$lastUpdated = str_replace('T', ' ', $lastUpdated);
 		$lastUpdated = str_replace('Z', ' UTC', $lastUpdated);
@@ -230,8 +230,8 @@ class WeatherController extends ModuleInstance {
 		$windStrength = $this->getWindStrength($currentWeather->wind_speed);
 		$osmLicence = preg_replace_callback(
 			'/(http[^ ]+)/',
-			function (array $matched) {
-				return $this->text->makeChatcmd($matched[1], '/start '.$matched[1]);
+			static function (array $matched) {
+				return Text::makeChatcmd($matched[1], '/start '.$matched[1]);
 			},
 			lcfirst($nominatim->licence)
 		);

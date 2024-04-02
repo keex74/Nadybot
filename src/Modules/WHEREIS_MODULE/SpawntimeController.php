@@ -133,7 +133,7 @@ class SpawntimeController extends ModuleInstance {
 			$line .= ' [' . $this->getLocationBlob($row) . ']';
 		} elseif ($row->coordinates->count() > 1) {
 			$line .= ' [' .
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					'locations (' . count($row->coordinates) . ')',
 					'/tell <myname> whereis ' . $row->mob
 				).

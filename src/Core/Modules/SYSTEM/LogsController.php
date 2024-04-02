@@ -119,9 +119,9 @@ class LogsController extends ModuleInstance {
 		sort($files);
 		$blob = '';
 		foreach ($files as $file) {
-			$fileLink  = $this->text->makeChatcmd($file, "/tell <myname> logs {$file}");
-			$errorLink = $this->text->makeChatcmd('ERROR', "/tell <myname> logs {$file} ERROR");
-			$chatLink  = $this->text->makeChatcmd('CHAT', "/tell <myname> logs {$file} CHAT");
+			$fileLink  = Text::makeChatcmd($file, "/tell <myname> logs {$file}");
+			$errorLink = Text::makeChatcmd('ERROR', "/tell <myname> logs {$file} ERROR");
+			$chatLink  = Text::makeChatcmd('CHAT', "/tell <myname> logs {$file} CHAT");
 			$blob .= "{$fileLink} [{$errorLink}] [{$chatLink}]\n";
 		}
 
@@ -265,7 +265,7 @@ class LogsController extends ModuleInstance {
 		$msg = $this->text->blobWrap(
 			'Changed ',
 			$this->text->makeBlob(
-				"{$numChanged} " . $this->text->pluralize('logger', $numChanged),
+				"{$numChanged} " . Text::pluralize('logger', $numChanged),
 				$blob
 			)
 		);
@@ -306,7 +306,7 @@ class LogsController extends ModuleInstance {
 		$msg = $this->text->blobWrap(
 			'Changed ',
 			$this->text->makeBlob(
-				"{$numChanged} " . $this->text->pluralize('logger', $numChanged),
+				"{$numChanged} " . Text::pluralize('logger', $numChanged),
 				$blob
 			),
 			($mask() !== '*') ? " matching <highlight>'{$mask}'<end>." : ''

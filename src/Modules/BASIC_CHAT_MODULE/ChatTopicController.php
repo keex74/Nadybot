@@ -58,9 +58,6 @@ class ChatTopicController extends ModuleInstance {
 	private SettingManager $settingManager;
 
 	#[NCA\Inject]
-	private Text $text;
-
-	#[NCA\Inject]
 	private ChatRallyController $chatRallyController;
 
 	#[NCA\Inject]
@@ -162,7 +159,7 @@ class ChatTopicController extends ModuleInstance {
 		$topic = $this->topic;
 		$topicCreator = $this->topicSetby;
 		$msg = "Topic: {$this->topicColor}{$topic}<end> (set by ".
-			$this->text->makeUserlink($topicCreator).
+			Text::makeUserlink($topicCreator).
 			", <highlight>{$topicAge} ago<end>)";
 		return $msg;
 	}

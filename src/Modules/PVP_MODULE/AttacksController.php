@@ -294,7 +294,7 @@ class AttacksController extends ModuleInstance {
 			$site?->getTokens() ?? [],
 			$pf->getTokens(),
 		);
-		$msg = $this->text->renderPlaceholders(
+		$msg = Text::renderPlaceholders(
 			$this->ownShieldDisabledFormat,
 			$tokens
 		);
@@ -391,7 +391,7 @@ class AttacksController extends ModuleInstance {
 		if (isset($site)) {
 			$tokens = array_merge($tokens, $site->getTokens());
 		}
-		$msg = $this->text->renderPlaceholders($this->ownTowerHitFormat, $tokens);
+		$msg = Text::renderPlaceholders($this->ownTowerHitFormat, $tokens);
 		$rMsg = new RoutableMessage($msg);
 		$rMsg->appendPath(new Source('pvp', 'tower-hit-own'));
 		$this->msgHub->handle($rMsg);
@@ -425,7 +425,7 @@ class AttacksController extends ModuleInstance {
 			$site->getTokens(),
 		);
 
-		$msg = $this->text->renderPlaceholders(
+		$msg = Text::renderPlaceholders(
 			$this->towerAttackFormat,
 			$tokens
 		);
@@ -470,7 +470,7 @@ class AttacksController extends ModuleInstance {
 		$format = isset($tokens['winning-faction'])
 			? $this->towerVictoryFormat
 			: $this->siteAbandonedFormat;
-		$msg = $this->text->renderPlaceholders($format, $tokens);
+		$msg = Text::renderPlaceholders($format, $tokens);
 
 		$details = $this->nwCtrl->renderSite($site, false, true, $outcome);
 		$shortSite = "{$pf->short()} {$site->site_id}";
@@ -779,12 +779,12 @@ class AttacksController extends ModuleInstance {
 
 	/** Return <highlight>{$count} tower time(s)<end> */
 	private function times(int $count): string {
-		return "<highlight>{$count} " . $this->text->pluralize('time', $count) . '<end>';
+		return "<highlight>{$count} " . Text::pluralize('time', $count) . '<end>';
 	}
 
 	/** Return <highlight>{$count} tower site(s)<end> */
 	private function sites(int $count): string {
-		return "<highlight>{$count} tower " . $this->text->pluralize('site', $count) . '<end>';
+		return "<highlight>{$count} tower " . Text::pluralize('site', $count) . '<end>';
 	}
 
 	private function renderAttackInfo(TowerAttackInfoEvent $info, Playfield $pf): string {
@@ -833,8 +833,8 @@ class AttacksController extends ModuleInstance {
 		$blob .= "<tab>Organization: <highlight>{$attack->defender->name}<end>\n";
 		$blob .= '<tab>Alignment: ' . $attack->defender->faction->inColor() . "\n\n";
 
-		$baseLink = $this->text->makeChatcmd("{$pf->short()} {$site->site_id}", "/tell <myname> nw lc {$pf->short()} {$site->site_id}");
-		$attackWaypoint = $this->text->makeChatcmd(
+		$baseLink = Text::makeChatcmd("{$pf->short()} {$site->site_id}", "/tell <myname> nw lc {$pf->short()} {$site->site_id}");
+		$attackWaypoint = Text::makeChatcmd(
 			"{$attack->location->x}x{$attack->location->y}",
 			"/waypoint {$attack->location->x} {$attack->location->y} {$pf->value}"
 		);
@@ -855,7 +855,7 @@ class AttacksController extends ModuleInstance {
 			$blob .= "Winner: <grey>abandoned<end>\n";
 		}
 		$blob .= 'Loser: ' . $outcome->losing_faction->inColor($outcome->losing_org) . "\n";
-		$siteLink = $this->text->makeChatcmd(
+		$siteLink = Text::makeChatcmd(
 			"{$pf->short()} {$site->site_id}",
 			"/tell <myname> <symbol>nw lc {$pf->short()} {$site->site_id}"
 		);
@@ -1018,7 +1018,7 @@ class AttacksController extends ModuleInstance {
 					? " (QL {$first->ql}) ["
 					: " (QL {$site->min_ql}-{$site->max_ql}) ["
 					).
-					$this->text->makeChatcmd(
+					Text::makeChatcmd(
 						'details',
 						"/tell <myname> <symbol>nw lc {$pf->short()} {$first->site_id}"
 					) . "]\n".
@@ -1039,14 +1039,14 @@ class AttacksController extends ModuleInstance {
 		}
 		$prevLink = '&lt;&lt;&lt;';
 		if ($page > 1) {
-			$prevLink = $this->text->makeChatcmd(
+			$prevLink = Text::makeChatcmd(
 				$prevLink,
 				"/tell <myname> {$baseCommand} " . ($page-1)
 			);
 		}
 		$nextLink = '';
 		if ($page * 15 < $numAttacks) {
-			$nextLink = $this->text->makeChatcmd(
+			$nextLink = Text::makeChatcmd(
 				'&gt;&gt;&gt;',
 				"/tell <myname> {$baseCommand} " . ($page+1)
 			);
@@ -1085,14 +1085,14 @@ class AttacksController extends ModuleInstance {
 		}
 		$prevLink = '&lt;&lt;&lt;';
 		if ($page > 1) {
-			$prevLink = $this->text->makeChatcmd(
+			$prevLink = Text::makeChatcmd(
 				$prevLink,
 				"/tell <myname> {$baseCommand} " . ($page-1)
 			);
 		}
 		$nextLink = '';
 		if ($page * 15 < $numAttacks) {
-			$nextLink = $this->text->makeChatcmd(
+			$nextLink = Text::makeChatcmd(
 				'&gt;&gt;&gt;',
 				"/tell <myname> {$baseCommand} " . ($page+1)
 			);
@@ -1147,7 +1147,7 @@ class AttacksController extends ModuleInstance {
 		$site = $this->nwCtrl->state[$attack->playfield->value][$attack->site_id] ?? null;
 		$pf = $attack->playfield;
 		if (isset($site)) {
-			$blob .= "\nSite: " . $this->text->makeChatcmd(
+			$blob .= "\nSite: " . Text::makeChatcmd(
 				"{$pf->short()} {$attack->site_id}",
 				"/tell <myname> nw lc {$pf->short()} {$attack->site_id}"
 			) . " (QL {$site->min_ql}-{$site->max_ql})";
@@ -1167,7 +1167,7 @@ class AttacksController extends ModuleInstance {
 			return null;
 		}
 		// This is a hacky way, until I make this function even more generic
-		$blob = $this->text->getPopups($this->nwAttacksCmd(
+		$blob = Text::getPopups($this->nwAttacksCmd(
 			$query,
 			'Tower Attacks',
 			'nw attacks',
@@ -1176,7 +1176,7 @@ class AttacksController extends ModuleInstance {
 		)[0])[0];
 		$blob = Safe::pregReplace('/^.+?<header2>/s', '<header2>', $blob);
 		$blob = '<tab>' . implode("\n<tab>", explode("\n", $blob));
-		$moreLink = $this->text->makeChatcmd('see more', "/tell <myname> nw attacks org {$whois->guild}");
+		$moreLink = Text::makeChatcmd('see more', "/tell <myname> nw attacks org {$whois->guild}");
 		return "<header2>Notum Wars [{$moreLink}]<end>\n{$blob}";
 	}
 }

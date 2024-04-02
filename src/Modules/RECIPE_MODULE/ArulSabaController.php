@@ -70,8 +70,8 @@ class ArulSabaController extends ModuleInstance {
 		$blob = "<header2>Choose the type of bracer<end>\n";
 		$blob = $this->db->table('arulsaba')
 			->asObj(ArulSaba::class)
-			->reduce(function (string $blob, ArulSaba $type): string {
-				$chooseLink = $this->text->makeChatcmd(
+			->reduce(static function (string $blob, ArulSaba $type): string {
+				$chooseLink = Text::makeChatcmd(
 					'Choose QL',
 					"/tell <myname> arulsaba {$type->name}"
 				);
@@ -113,8 +113,8 @@ class ArulSabaController extends ModuleInstance {
 			foreach ($item->buffs as $buff) {
 				$blob .= "<tab>{$buff->skill->name}: <highlight>+{$buff->amount}{$buff->skill->unit}<end>\n";
 			}
-			$leftLink = $this->text->makeChatcmd('Left', "/tell <myname> arulsaba {$arul->name} {$gems} left");
-			$rightLink = $this->text->makeChatcmd('Right', "/tell <myname> arulsaba {$arul->name} {$gems} right");
+			$leftLink = Text::makeChatcmd('Left', "/tell <myname> arulsaba {$arul->name} {$gems} left");
+			$rightLink = Text::makeChatcmd('Right', "/tell <myname> arulsaba {$arul->name} {$gems} right");
 			$blob .= "<tab>Recipe: [{$leftLink}] [{$rightLink}]\n\n";
 			$gems++;
 		}
@@ -437,7 +437,7 @@ class ArulSabaController extends ModuleInstance {
 			$ql = (string)($ing->ql ?? '');
 			if (isset($ing->item)) {
 				$item = $ing->item;
-				$link = $this->text->makeItem($item->lowid, $item->highid, $ing->ql ?? $item->lowql, $item->name);
+				$link = Text::makeItem($item->lowid, $item->highid, $ing->ql ?? $item->lowql, $item->name);
 				if ($item->lowql === $item->highql) {
 					$ql = '';
 				}
@@ -456,7 +456,7 @@ class ArulSabaController extends ModuleInstance {
 			} elseif ($ing->amount === 1) {
 				$amount = '<black>' . str_repeat('0', strlen((string)$maxAmount)-1) . '1×<end> ';
 			} else {
-				$amount = $this->text->alignNumber($ing->amount, strlen((string)$maxAmount), 'orange') . '× ';
+				$amount = Text::alignNumber($ing->amount, strlen((string)$maxAmount), 'orange') . '× ';
 			}
 			$blob .= "<tab>{$amount}{$ql}{$link}";
 			if (isset($ing->where)) {
@@ -488,13 +488,13 @@ class ArulSabaController extends ModuleInstance {
 	protected function renderStep(AODBItem $source, AODBItem $dest, AODBItem $result, array $skillReqs=[]): string {
 		$showImages = $this->arulsabaShowImages;
 		$sLink = $source->getLink();
-		$sIcon = $this->text->makeImage($source->icon);
+		$sIcon = Text::makeImage($source->icon);
 		$sIconLink = $source->getLink(name: $sIcon);
 		$dLink = $dest->getLink();
-		$dIcon = $this->text->makeImage($dest->icon);
+		$dIcon = Text::makeImage($dest->icon);
 		$dIconLink = $dest->getLink(name: $dIcon);
 		$rLink = $result->getLink();
-		$rIcon = $this->text->makeImage($result->icon);
+		$rIcon = Text::makeImage($result->icon);
 		$rIconLink = $result->getLink(name: $rIcon);
 
 		$line = '';

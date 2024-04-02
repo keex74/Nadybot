@@ -205,8 +205,8 @@ class PermissionSetMappingController extends ModuleInstance {
 			return;
 		}
 		$sets = $this->cmdManager->getPermissionSets();
-		$choices = $sets->map(function (CmdPermissionSet $set) use ($source): string {
-			return '<tab>' . $this->text->makeChatcmd($set->name, "/tell <myname> cmdmap permset set {$source} {$set->name}");
+		$choices = $sets->map(static function (CmdPermissionSet $set) use ($source): string {
+			return '<tab>' . Text::makeChatcmd($set->name, "/tell <myname> cmdmap permset set {$source} {$set->name}");
 		})->join("\n");
 		$context->reply(
 			$this->text->makeBlob(
@@ -243,8 +243,8 @@ class PermissionSetMappingController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$choices = (new Collection(explode(';', $row->options)))->map(function (string $option) use ($source): string {
-			return "<tab><highlight>{$option}<end> [" . $this->text->makeChatcmd('use this', "/tell <myname> cmdmap symbol set {$source} {$option}") . ']';
+		$choices = (new Collection(explode(';', $row->options)))->map(static function (string $option) use ($source): string {
+			return "<tab><highlight>{$option}<end> [" . Text::makeChatcmd('use this', "/tell <myname> cmdmap symbol set {$source} {$option}") . ']';
 		})->join("\n");
 		$context->reply(
 			$this->text->makeBlob(
@@ -316,13 +316,13 @@ class PermissionSetMappingController extends ModuleInstance {
 	}
 
 	protected function renderPermSetMapping(CmdPermSetMapping $map): string {
-		$deleteLink = $this->text->makeChatcmd('delete', "/tell <myname> cmdmap rem {$map->source}");
-		$permSetLink = $this->text->makeChatcmd('change', "/tell <myname> cmdmap permset pick {$map->source}");
-		$symbolLink = $this->text->makeChatcmd('change', "/tell <myname> cmdmap symbol pick {$map->source}");
+		$deleteLink = Text::makeChatcmd('delete', "/tell <myname> cmdmap rem {$map->source}");
+		$permSetLink = Text::makeChatcmd('change', "/tell <myname> cmdmap permset pick {$map->source}");
+		$symbolLink = Text::makeChatcmd('change', "/tell <myname> cmdmap symbol pick {$map->source}");
 		$symOptText = $map->symbol_optional ? 'no' : 'yes';
-		$symbolOptionalLink = $this->text->makeChatcmd($symOptText, "/tell <myname> cmdmap symbolopt set {$map->source} {$symOptText}");
+		$symbolOptionalLink = Text::makeChatcmd($symOptText, "/tell <myname> cmdmap symbolopt set {$map->source} {$symOptText}");
 		$feedbackText = $map->feedback ? 'no' : 'yes';
-		$feedbackLink = $this->text->makeChatcmd($feedbackText, "/tell <myname> cmdmap feedback set {$map->source} {$feedbackText}");
+		$feedbackLink = Text::makeChatcmd($feedbackText, "/tell <myname> cmdmap feedback set {$map->source} {$feedbackText}");
 		$block = "<header2>{$map->source}<end> [{$deleteLink}]\n".
 			"<tab>Permission set: <highlight>{$map->permission_set}<end> [{$permSetLink}]\n".
 			'<tab>Symbol: <highlight>'.

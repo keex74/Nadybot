@@ -178,7 +178,7 @@ class AltInfo {
 
 	public function formatCharName(string $name, ?bool $online): string {
 		if ($online) {
-			return $this->text->makeChatcmd($name, "/tell {$name}");
+			return Text::makeChatcmd($name, "/tell {$name}");
 		}
 		return $name;
 	}
@@ -203,7 +203,7 @@ class AltInfo {
 		if (!isset($nick)) {
 			return null;
 		}
-		$text = $this->text->renderPlaceholders(
+		$text = Text::renderPlaceholders(
 			$nick,
 			['nick' => $nick, 'main' => $this->main]
 		);
@@ -219,9 +219,9 @@ class AltInfo {
 		$profDisplay = $this->settingManager->getInt('alts_profession_display')??1;
 
 		$online = $this->buddylistManager->isOnline($this->main);
-		$blob  = $this->text->alignNumber($player->level, 3, 'highlight');
+		$blob  = Text::alignNumber($player->level, 3, 'highlight');
 		$blob .= ' ';
-		$blob .= $this->text->alignNumber($player->ai_level, 2, 'green');
+		$blob .= Text::alignNumber($player->ai_level, 2, 'green');
 		$blob .= ' ';
 		if ($profDisplay & 1 && $player->profession !== null) {
 			$blob .= $player->profession->toIcon() . ' ';
@@ -269,9 +269,9 @@ class AltInfo {
 		foreach ($alts as $row) {
 			/** @var AltPlayer $row */
 			$online = $this->buddylistManager->isOnline($row->alt);
-			$blob .= $this->text->alignNumber($row->player?->level??0, 3, 'highlight');
+			$blob .= Text::alignNumber($row->player?->level??0, 3, 'highlight');
 			$blob .= ' ';
-			$blob .= $this->text->alignNumber($row->player?->ai_level??0, 2, 'green');
+			$blob .= Text::alignNumber($row->player?->ai_level??0, 2, 'green');
 			$blob .= ' ';
 			if ($profDisplay & 1 && isset($row->player) && $row->player->profession !== null) {
 				$blob .= $row->player->profession->toIcon() . ' ';

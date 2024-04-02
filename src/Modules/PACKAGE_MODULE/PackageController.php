@@ -140,7 +140,7 @@ class PackageController extends ModuleInstance {
 			if (!isset($package)) {
 				continue;
 			}
-			$infoLink = $this->text->makeChatcmd('details', "/tell <myname> package info {$package->name}");
+			$infoLink = Text::makeChatcmd('details', "/tell <myname> package info {$package->name}");
 			$installLink = '';
 			$installedVersion = null;
 			if ($package->state === static::EXTRA) {
@@ -154,13 +154,13 @@ class PackageController extends ModuleInstance {
 				// @phpstan-ignore-next-line
 				if ($pGroup->highest_supported && isset($installedVersion) && $installedVersion !== '') {
 					if (SemanticVersion::compareUsing($installedVersion, $pGroup->highest_supported->version, '<')) {
-						$installLink = '[' . $this->text->makeChatcmd(
+						$installLink = '[' . Text::makeChatcmd(
 							'update',
 							"/tell <myname> package update {$pGroup->highest_supported->name} {$pGroup->highest_supported->version}"
 						) . ']';
 					}
 				} else {
-					$installLink = '[' . $this->text->makeChatcmd(
+					$installLink = '[' . Text::makeChatcmd(
 						'install',
 						"/tell <myname> package install {$pGroup->highest_supported->name} {$pGroup->highest_supported->version}"
 					) . ']';
@@ -187,7 +187,7 @@ class PackageController extends ModuleInstance {
 				$blob .= '<tab>Installed: <highlight>'.
 					($installedVersion ?: 'unknown version').
 					'<end> ['.
-					$this->text->makeChatcmd(
+					Text::makeChatcmd(
 						'uninstall',
 						"/tell <myname> package uninstall {$package->name}"
 					) . "]\n";
@@ -238,7 +238,7 @@ class PackageController extends ModuleInstance {
 			$blob .= '<tab>Installed: <highlight>'.
 				($installedVersion !== '' ? $installedVersion : 'yes, unknown version').
 				'<end> ['.
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					'uninstall',
 					"/tell <myname> package uninstall {$packages[0]->name}"
 				) . "]\n";
@@ -248,11 +248,11 @@ class PackageController extends ModuleInstance {
 			$blob .= "<tab><highlight>{$package->version}<end>";
 			if ($package->compatible) {
 				if ($package->state === static::EXTRA) {
-					$installLink = $this->text->makeChatcmd(
+					$installLink = Text::makeChatcmd(
 						'install',
 						"/tell <myname> package install {$package->name} {$package->version}"
 					);
-					$updateLink = $this->text->makeChatcmd(
+					$updateLink = Text::makeChatcmd(
 						'update',
 						"/tell <myname> package update {$package->name} {$package->version}"
 					);
@@ -781,7 +781,7 @@ class PackageController extends ModuleInstance {
 			$blob .= '<tab>Installed: <highlight>'.
 				($installedVersion !== '' ? $installedVersion : 'yes, unknown version').
 				'<end> ['.
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					'uninstall',
 					"/tell <myname> package uninstall {$packages[0]->name}"
 				) . "]\n";
@@ -791,11 +791,11 @@ class PackageController extends ModuleInstance {
 			$blob .= "<tab><highlight>{$package->version}<end>";
 			if ($package->compatible) {
 				if ($package->state === static::EXTRA) {
-					$installLink = $this->text->makeChatcmd(
+					$installLink = Text::makeChatcmd(
 						'install',
 						"/tell <myname> package install {$package->name} {$package->version}"
 					);
-					$updateLink = $this->text->makeChatcmd(
+					$updateLink = Text::makeChatcmd(
 						'update',
 						"/tell <myname> package update {$package->name} {$package->version}"
 					);

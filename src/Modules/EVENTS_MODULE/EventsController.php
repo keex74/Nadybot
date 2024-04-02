@@ -222,8 +222,8 @@ class EventsController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$link = '[' . $this->text->makeChatcmd('join this event', "/tell <myname> events join {$id}").'] ';
-		$link .= '[' . $this->text->makeChatcmd('leave this event', "/tell <myname> events leave {$id}")."]\n\n";
+		$link = '[' . Text::makeChatcmd('join this event', "/tell <myname> events join {$id}").'] ';
+		$link .= '[' . Text::makeChatcmd('leave this event', "/tell <myname> events leave {$id}")."]\n\n";
 
 		$link .= "<header2>Currently planning to attend<end>\n";
 		$eventlist = explode(',', $row->event_attendees);
@@ -240,9 +240,9 @@ class EventsController extends ModuleInstance {
 			$alt = '';
 			if (count($altInfo->getAllValidatedAlts()) > 0) {
 				if ($altInfo->main == $name) {
-					$alt = ' <highlight>::<end> [' . $this->text->makeChatcmd('alts', "/tell <myname> alts {$name}") . ']';
+					$alt = ' <highlight>::<end> [' . Text::makeChatcmd('alts', "/tell <myname> alts {$name}") . ']';
 				} else {
-					$alt = ' <highlight>::<end> ' . $this->text->makeChatcmd("Alts of {$altInfo->main}", "/tell <myname> alts {$name}");
+					$alt = ' <highlight>::<end> ' . Text::makeChatcmd("Alts of {$altInfo->main}", "/tell <myname> alts {$name}");
 				}
 			}
 
@@ -286,9 +286,9 @@ class EventsController extends ModuleInstance {
 				}
 				$upcoming .= "<tab>Event Name: <highlight>{$row->event_name}<end>     [Event ID {$row->id}]\n";
 				$upcoming .= "<tab>Author: <highlight>{$row->submitter_name}<end>\n";
-				$upcoming .= '<tab>Attendance: <highlight>' . $this->text->makeChatcmd("{$attendance} signed up", "/tell <myname> events list {$row->id}") . '<end>' .
-					' [' . $this->text->makeChatcmd('join', "/tell <myname> events join {$row->id}") . '] [' .
-					$this->text->makeChatcmd('leave', "/tell <myname> events leave {$row->id}") . "]\n";
+				$upcoming .= '<tab>Attendance: <highlight>' . Text::makeChatcmd("{$attendance} signed up", "/tell <myname> events list {$row->id}") . '<end>' .
+					' [' . Text::makeChatcmd('join', "/tell <myname> events join {$row->id}") . '] [' .
+					Text::makeChatcmd('leave', "/tell <myname> events leave {$row->id}") . "]\n";
 				$upcoming .= '<tab>Description: <highlight>' . ($row->event_desc ?? '&lt;empty&gt;') . "<end>\n";
 				$upcoming .= '<tab>Date Submitted: <highlight>' . Util::date($row->time_submitted) . "<end>\n\n";
 				$upcomingEvents = $upcoming.$upcomingEvents;
@@ -296,7 +296,7 @@ class EventsController extends ModuleInstance {
 				$past =  '<tab>Event Date: <highlight>' . Util::date($row->event_date) . "<end>\n";
 				$past .= "<tab>Event Name: <highlight>{$row->event_name}<end>     [Event ID {$row->id}]\n";
 				$past .= "<tab>Author: <highlight>{$row->submitter_name}<end>\n";
-				$past .= '<tab>Attendance: <highlight>' . $this->text->makeChatcmd("{$attendance} signed up", "/tell <myname> events list {$row->id}") . "<end>\n";
+				$past .= '<tab>Attendance: <highlight>' . Text::makeChatcmd("{$attendance} signed up", "/tell <myname> events list {$row->id}") . "<end>\n";
 				$past .= '<tab>Description: <highlight>' . ($row->event_desc??'&lt;empty&gt;') . "<end>\n";
 				$past .= '<tab>Date Submitted: <highlight>' . Util::date($row->time_submitted) . "<end>\n\n";
 				$pastEvents .= $past;
@@ -379,7 +379,7 @@ class EventsController extends ModuleInstance {
 		if ($data->count() === 0) {
 			return null;
 		}
-		$eventsLink = $this->text->makeChatcmd('see more', '/tell <myname> events');
+		$eventsLink = Text::makeChatcmd('see more', '/tell <myname> events');
 		$blob = "<header2>Events [{$eventsLink}]<end>\n";
 		$blob .= $data->map(static function (EventModel $event): string {
 			return '<tab>' . ((isset($event->event_date) && $event->event_date > 0)

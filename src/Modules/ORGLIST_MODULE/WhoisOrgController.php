@@ -130,9 +130,9 @@ class WhoisOrgController extends ModuleInstance {
 			$profession = Profession::from($prof);
 
 			$link .= '<tab>'.
-				$this->text->alignNumber($profMembers, 3, 'highlight').
+				Text::alignNumber($profMembers, 3, 'highlight').
 				'  ('.
-				$this->text->alignNumber(
+				Text::alignNumber(
 					(int)round(($profMembers*100)/$numMembers, 1),
 					(count($countProfs) > 1) ? 2 : 3
 				).

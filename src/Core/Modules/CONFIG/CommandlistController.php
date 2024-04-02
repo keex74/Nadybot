@@ -61,13 +61,13 @@ class CommandlistController extends ModuleInstance {
 			if ($isMod) {
 				$onLink = '<black>[on]<end>';
 				if ($numDisabled > 0) {
-					$onLink = '[' . $this->text->makeChatcmd('on', "/tell <myname> config cmd {$cmd->cmd} enable all") . ']';
+					$onLink = '[' . Text::makeChatcmd('on', "/tell <myname> config cmd {$cmd->cmd} enable all") . ']';
 				}
 				$offLink = '<black>[off]<end>';
 				if ($numEnabled > 0) {
-					$offLink = '[' . $this->text->makeChatcmd('off', "/tell <myname> config cmd {$cmd->cmd} disable all") . ']';
+					$offLink = '[' . Text::makeChatcmd('off', "/tell <myname> config cmd {$cmd->cmd} disable all") . ']';
 				}
-				$rightsLink = $this->text->makeChatcmd('rights', "/tell <myname> config cmd {$cmd->cmd}");
+				$rightsLink = Text::makeChatcmd('rights', "/tell <myname> config cmd {$cmd->cmd}");
 				$links = "[{$rightsLink}]  {$onLink}  {$offLink}";
 			}
 			$status = [];

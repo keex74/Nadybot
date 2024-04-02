@@ -171,7 +171,7 @@ class PermissionSetController extends ModuleInstance {
 			"<tab>Channels: <highlight>{$channelNames}<end>";
 		if (empty($set->mappings)) {
 			$block .= "\n<tab>Actions: [".
-				$this->text->makeChatcmd('delete', "/tell <myname> permset rem {$set->name}").
+				Text::makeChatcmd('delete', "/tell <myname> permset rem {$set->name}").
 				']';
 		}
 		return $block;

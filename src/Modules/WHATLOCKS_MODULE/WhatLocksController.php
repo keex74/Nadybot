@@ -60,10 +60,10 @@ class WhatLocksController extends ModuleInstance {
 			);
 		})->sort(static function (SkillIdCount $s1, SkillIdCount $s2): int {
 			return strnatcmp($s1->skill->name, $s2->skill->name);
-		})->map(function (SkillIdCount $row) {
-			return $this->text->alignNumber($row->amount, 4).
+		})->map(static function (SkillIdCount $row) {
+			return Text::alignNumber($row->amount, 4).
 				' - '.
-				$this->text->makeChatcmd($row->skill->name, "/tell <myname> whatlocks {$row->skill->name}");
+				Text::makeChatcmd($row->skill->name, "/tell <myname> whatlocks {$row->skill->name}");
 		});
 		$blob = "<header2>Choose a skill to see which items lock it<end>\n<tab>".
 			$lines->join("\n<pagebreak><tab>");
@@ -92,8 +92,8 @@ class WhatLocksController extends ModuleInstance {
 		usort($skills, static function (Skill $a, Skill $b): int {
 			return strnatcmp($a->name, $b->name);
 		});
-		$lines = array_map(function (Skill $skill) {
-			return $this->text->makeChatcmd(
+		$lines = array_map(static function (Skill $skill) {
+			return Text::makeChatcmd(
 				$skill->name,
 				"/tell <myname> whatlocks {$skill->name}"
 			);

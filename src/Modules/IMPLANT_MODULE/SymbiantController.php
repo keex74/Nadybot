@@ -186,7 +186,7 @@ class SymbiantController extends ModuleInstance {
 				}
 				$aoids []= $config->{$slot}[0]->ID;
 			}
-			$blob .= ' [' . $this->text->makeChatcmd(
+			$blob .= ' [' . Text::makeChatcmd(
 				'compare',
 				'/tell <myname> symbcompare ' . implode(' ', $aoids)
 			) . "]<end>\n";
@@ -198,14 +198,14 @@ class SymbiantController extends ModuleInstance {
 				/** @var Symbiant[] */
 				$symbs = array_slice($config->{$slot}, 0, 3);
 				$links = array_map(
-					function (Symbiant $symb): string {
+					static function (Symbiant $symb): string {
 						$name =  "QL{$symb->QL}";
 						if ($symb->Unit === 'Special') {
 							$name = $symb->Name;
 						} elseif (count($matches = Safe::pregMatch("/\b(Alpha|Beta)$/", $symb->Name)) === 2) {
 							$name = $matches[1];
 						}
-						return $this->text->makeItem($symb->ID, $symb->ID, $symb->QL, $name);
+						return Text::makeItem($symb->ID, $symb->ID, $symb->QL, $name);
 					},
 					$symbs
 				);
@@ -265,7 +265,7 @@ class SymbiantController extends ModuleInstance {
 				if ($inAlpha) {
 					$where []= 'alpha';
 				}
-				$lines []= "<tab>- {$unitName} (" . $this->text->enumerate(...$where) . ')';
+				$lines []= "<tab>- {$unitName} (" . Text::enumerate(...$where) . ')';
 			}
 			$result []= implode("\n", $lines);
 		}

@@ -124,18 +124,18 @@ class RaffleController extends ModuleInstance {
 
 	public function getRaffleAdminPage(string $sender): string {
 		$blob = "<header2>Join / Leave<end>\n".
-			'<tab>' . $this->text->makeChatcmd('Join the raffle', '/tell <myname> raffle join') . "\n".
-			'<tab>' . $this->text->makeChatcmd('Leave the raffle', '/tell <myname> raffle leave') . "\n\n".
+			'<tab>' . Text::makeChatcmd('Join the raffle', '/tell <myname> raffle join') . "\n".
+			'<tab>' . Text::makeChatcmd('Leave the raffle', '/tell <myname> raffle leave') . "\n\n".
 			"<header2>Announce<end>\n".
-			'<tab>' . $this->text->makeChatcmd('Announce raffle', '/tell <myname> raffle announce') . "\n".
-			'<tab>' . $this->text->makeChatcmd('Announce raffle closing soon', "/tell <myname> raffle announce {$sender}'s raffle will be closing soon") . "\n".
-			'<tab>' . $this->text->makeChatcmd('Announce raffle still open', "/tell <myname> raffle announce {$sender}'s raffle is still running") . "\n\n".
+			'<tab>' . Text::makeChatcmd('Announce raffle', '/tell <myname> raffle announce') . "\n".
+			'<tab>' . Text::makeChatcmd('Announce raffle closing soon', "/tell <myname> raffle announce {$sender}'s raffle will be closing soon") . "\n".
+			'<tab>' . Text::makeChatcmd('Announce raffle still open', "/tell <myname> raffle announce {$sender}'s raffle is still running") . "\n\n".
 			"<header2>End the raffle<end>\n".
-			'<tab>' . $this->text->makeChatcmd('Cancel the raffle', '/tell <myname> raffle cancel') . "\n".
-			'<tab>' . $this->text->makeChatcmd('Show winners', '/tell <myname> raffle end') . "\n".
+			'<tab>' . Text::makeChatcmd('Cancel the raffle', '/tell <myname> raffle cancel') . "\n".
+			'<tab>' . Text::makeChatcmd('Show winners', '/tell <myname> raffle end') . "\n".
 			'<tab>Set a timer:';
 		foreach (['20s', '30s', '40s', '1m', '2m'] as $time) {
-			$blob .= ' [' . $this->text->makeChatcmd($time, "/tell <myname> raffle timer {$time}") . ']';
+			$blob .= ' [' . Text::makeChatcmd($time, "/tell <myname> raffle timer {$time}") . ']';
 		}
 		$blob .= "\n";
 
@@ -305,7 +305,7 @@ class RaffleController extends ModuleInstance {
 			return;
 		}
 		$count = count($raffle->slots);
-		$items = $this->text->pluralize('item', $count);
+		$items = Text::pluralize('item', $count);
 		$msg = "\n<yellow>:::<end> <red>{$raffle->raffler} has added {$count} {$items} to the raffle<end> <yellow>:::<end>\n".
 			$this->fancyFrame($raffle->toString('<tab>'));
 		$blob = $this->getJoinLeaveBlob();
@@ -733,8 +733,8 @@ class RaffleController extends ModuleInstance {
 		$result = [];
 		$items = $this->raffle->toList();
 		for ($i = 0; $i < count($items); $i++) {
-			$joinLink = $this->text->makeChatcmd('Join', '/tell <myname> raffle join ' . ($i+1));
-			$leaveLink = $this->text->makeChatcmd('Leave', '/tell <myname> raffle leave ' . ($i+1));
+			$joinLink = Text::makeChatcmd('Join', '/tell <myname> raffle join ' . ($i+1));
+			$leaveLink = Text::makeChatcmd('Leave', '/tell <myname> raffle leave ' . ($i+1));
 			$result []= ((count($items) > 1) ? 'Item ' . ($i + 1) . ': ' : '') . "[{$joinLink}] [{$leaveLink}] - <highlight>{$items[$i]}<end>";
 		}
 		return $result;
@@ -751,7 +751,7 @@ class RaffleController extends ModuleInstance {
 				"<highlight>{$bonusPerLoss}<end> points for all upcoming ".
 				"raffles until they won.\n\n";
 		}
-		$blob .= '[' . $this->text->makeChatcmd('Leave All', '/tell <myname> raffle leave') . ']'.
+		$blob .= '[' . Text::makeChatcmd('Leave All', '/tell <myname> raffle leave') . ']'.
 			" Leave raffle for all items\n\n".
 			"<header2>Item(s) for raffle<end>\n".
 			'<tab>' . implode("\n<tab>", $this->getJoinLeaveLinks()) . "\n";

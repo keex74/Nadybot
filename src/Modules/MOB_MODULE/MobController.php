@@ -163,7 +163,7 @@ class MobController extends ModuleInstance {
 	)]
 	public function announceMobAttacked(MobAttackedEvent $event): void {
 		$mob = $event->mob;
-		$blob = $this->text->makeChatcmd(
+		$blob = Text::makeChatcmd(
 			"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
 			"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 		);
@@ -184,7 +184,7 @@ class MobController extends ModuleInstance {
 	)]
 	public function announceMobSpawn(MobSpawnEvent $event): void {
 		$mob = $event->mob;
-		$blob = $this->text->makeChatcmd(
+		$blob = Text::makeChatcmd(
 			"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
 			"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 		);
@@ -205,7 +205,7 @@ class MobController extends ModuleInstance {
 	)]
 	public function announceMobDeath(MobDeathEvent $event): void {
 		$mob = $event->mob;
-		$blob = $this->text->makeChatcmd(
+		$blob = Text::makeChatcmd(
 			"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
 			"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 		);
@@ -408,7 +408,7 @@ class MobController extends ModuleInstance {
 				$color = ($hp > 75) ? 'highlight' : (($hp <= 25) ? 'red' : 'yellow');
 				return "{$status} (last seen ".
 					Util::unixtimeToReadable(time() - $mob->last_seen).
-					' ago with ' . $this->text->alignNumber($hp, 3, $color) . '% HP)';
+					' ago with ' . Text::alignNumber($hp, 3, $color) . '% HP)';
 			case $mob::STATUS_DOWN:
 				$status = '<off>DEAD<end>';
 				if (!isset($mob->last_killed)) {
@@ -430,7 +430,7 @@ class MobController extends ModuleInstance {
 				$hp = (int)round($mob->hp_percent??100, 0);
 				$color = ($hp > 75) ? 'highlight' : (($hp <= 25) ? 'red' : 'yellow');
 				return '<on>UP<end>, '.
-					$this->text->alignNumber($hp, 3, $color) . '% HP';
+					Text::alignNumber($hp, 3, $color) . '% HP';
 			default:
 				return '<unknown>UNKNOWN<end>';
 		}
@@ -449,7 +449,7 @@ class MobController extends ModuleInstance {
 			$mob->y = $whereMob->ycoord;
 		}
 		return "<header2>{$mob->name}<end> [".
-			$this->text->makeChatcmd(
+			Text::makeChatcmd(
 				"{$mob->x}x{$mob->y} {$mob->playfield->short()}",
 				"/waypoint {$mob->x} {$mob->y} {$mob->playfield->value}"
 			) . "] - <i>{$mob->type}-{$mob->key}</i>\n".

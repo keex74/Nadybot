@@ -600,7 +600,7 @@ class RelayController extends ModuleInstance {
 			$blobs []= $this->renderRelay($relay);
 		}
 		$blob = implode("\n\n", $blobs);
-		$wikiLink = $this->text->makeChatcmd(
+		$wikiLink = Text::makeChatcmd(
 			'Nadybot WIKI',
 			'/start https://github.com/Nadybot/Nadybot/wiki/Routing#colors'
 		);
@@ -702,13 +702,13 @@ class RelayController extends ModuleInstance {
 			foreach (['incoming', 'outgoing'] as $type) {
 				if ($eConf->{$type}) {
 					$line .= ' <on>' . ucfirst($type) . '<end> ['.
-						$this->text->makeChatcmd(
+						Text::makeChatcmd(
 							'disable',
 							"/tell <myname> relay config {$relay->name} eventmod {$event->name} disable {$type}"
 						) . ']';
 				} else {
 					$line .= ' <off>' . ucfirst($type) . '<end> ['.
-						$this->text->makeChatcmd(
+						Text::makeChatcmd(
 							'enable',
 							"/tell <myname> relay config {$relay->name} eventmod {$event->name} enable {$type}"
 						) . ']';
@@ -1262,7 +1262,7 @@ class RelayController extends ModuleInstance {
 				'<tab>'.
 				implode("\n<tab>", explode("\n", trim($description)));
 			if (count($spec->params)) {
-				$entry .= "\n<tab>[" . $this->text->makeChatcmd('details', "/tell <myname> relay list {$subCommand} {$spec->name}") . ']';
+				$entry .= "\n<tab>[" . Text::makeChatcmd('details', "/tell <myname> relay list {$subCommand} {$spec->name}") . ']';
 			}
 			$blobs []= $entry;
 		}
@@ -1493,11 +1493,11 @@ class RelayController extends ModuleInstance {
 		} else {
 			$blob .= '<tab>Status: <red>error<end>';
 		}
-		$delLink = $this->text->makeChatcmd(
+		$delLink = Text::makeChatcmd(
 			'delete',
 			"/tell <myname> relay rem {$relay->id}"
 		);
-		$descrLink = $this->text->makeChatcmd(
+		$descrLink = Text::makeChatcmd(
 			'describe',
 			"/tell <myname> relay describe {$relay->id}"
 		);
@@ -1540,11 +1540,11 @@ class RelayController extends ModuleInstance {
 			$example = 'Text from the ' . strtolower($lastHop->label ?? 'test').
 				'-chat has no color set.';
 		}
-		$tagLink = $this->text->makeChatcmd(
+		$tagLink = Text::makeChatcmd(
 			"{$lastHop->label}-tag color",
 			"/tell <myname> route color tag pick {$lastHop->type} via relay({$relay->name})"
 		);
-		$textLink = $this->text->makeChatcmd(
+		$textLink = Text::makeChatcmd(
 			'text color',
 			"/tell <myname> route color text pick {$lastHop->type} via relay({$relay->name})"
 		);

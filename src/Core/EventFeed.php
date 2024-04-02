@@ -49,9 +49,6 @@ class EventFeed {
 	private Nadybot $chatBot;
 
 	#[NCA\Inject]
-	private Text $text;
-
-	#[NCA\Inject]
 	private EventManager $eventManager;
 
 	private bool $isReconnect = false;
@@ -397,7 +394,7 @@ class EventFeed {
 			$attachedRooms []= $room;
 		}
 		$this->logger->notice('Global event feed attached to {rooms}', [
-			'rooms' => count($attachedRooms) ? $this->text->enumerate(...$attachedRooms) : 'no rooms',
+			'rooms' => count($attachedRooms) ? Text::enumerate(...$attachedRooms) : 'no rooms',
 		]);
 	}
 }

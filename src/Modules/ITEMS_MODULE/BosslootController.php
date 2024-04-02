@@ -108,7 +108,7 @@ class BosslootController extends ModuleInstance {
 				]);
 				continue;
 			}
-			$blob .= '<tab>' . $this->text->makeImage($row2->item->icon) . "\n";
+			$blob .= '<tab>' . Text::makeImage($row2->item->icon) . "\n";
 			$blob .= '<tab>' . $row2->item->getLink($row2->item->highql, $row2->itemname) . "\n\n";
 		}
 		$output = $this->text->makeBlob($row->bossname, $blob);
@@ -152,7 +152,7 @@ class BosslootController extends ModuleInstance {
 		$data = $query->asObj(BossLootdb::class);
 		$this->addItemsToLoot($data);
 
-		$blob = "<pagebreak><header2>{$row->bossname} [" . $this->text->makeChatcmd('details', "/tell <myname> boss {$row->bossname}") . "]<end>\n";
+		$blob = "<pagebreak><header2>{$row->bossname} [" . Text::makeChatcmd('details', "/tell <myname> boss {$row->bossname}") . "]<end>\n";
 		$locations = $this->getBossLocations($row->bossname);
 		if ($locations->count()) {
 			$blob .= '<tab>Location: ' . $locations->join(', ') . "\n";

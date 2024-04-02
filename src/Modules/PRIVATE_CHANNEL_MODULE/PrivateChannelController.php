@@ -463,7 +463,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 
 		$lines = [];
 		foreach ($inactiveMembers as $inactiveMember) {
-			$remLink = $this->text->makeChatcmd(
+			$remLink = Text::makeChatcmd(
 				'kick',
 				"/tell <myname> member remall {$inactiveMember->name}",
 			);
@@ -788,9 +788,9 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return $result;
 		})->flatten()->sortByDesc('avgLevel')->sortByDesc('numPlayers');
 
-		$lines = $orgStats->map(function (OrgCount $org) use ($online): string {
+		$lines = $orgStats->map(static function (OrgCount $org) use ($online): string {
 			$guild = $org->orgName ?? '(none)';
-			$percent = $this->text->alignNumber(
+			$percent = Text::alignNumber(
 				(int)round($org->numPlayers * 100 / $online->count(), 0),
 				3
 			);
@@ -1163,7 +1163,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 
 		$tokens = $this->getTokensForJoinLeave($player, $whois, $altInfo);
-		$leaveMessage = $this->text->renderPlaceholders($this->privLeaveMessage, $tokens);
+		$leaveMessage = Text::renderPlaceholders($this->privLeaveMessage, $tokens);
 		$leaveMessage = Safe::pregReplace(
 			'/&lt;([a-z]+)&gt;/',
 			'<$1>',
@@ -1459,7 +1459,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 
 	protected function getLogonMessageForPlayer(?Player $whois, string $player, AltInfo $altInfo): string {
 		$tokens = $this->getTokensForJoinLeave($player, $whois, $altInfo);
-		$joinMessage = $this->text->renderPlaceholders($this->privJoinMessage, $tokens);
+		$joinMessage = Text::renderPlaceholders($this->privJoinMessage, $tokens);
 		$joinMessage = Safe::pregReplace(
 			'/&lt;([a-z]+)&gt;/',
 			'<$1>',

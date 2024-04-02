@@ -52,19 +52,19 @@ class AlienArmorController extends ModuleInstance {
 	public function aiarmorListCommand(CmdContext $context): void {
 		$list = 'Please choose from the following which armor to view information on:';
 		$list .= "\n\n<header2>Normal Armor<end>";
-		$list .= "\n<tab>" . $this->text->makeChatcmd('Strong Armor', '/tell <myname> aiarmor Strong');
-		$list .= "\n<tab>" . $this->text->makeChatcmd('Supple Armor', '/tell <myname> aiarmor Supple');
-		$list .= "\n<tab>" . $this->text->makeChatcmd('Enduring Armor', '/tell <myname> aiarmor Enduring');
-		$list .= "\n<tab>" . $this->text->makeChatcmd('Observant Armor', '/tell <myname> aiarmor Observant');
-		$list .= "\n<tab>" . $this->text->makeChatcmd('Arithmetic Armor', '/tell <myname> aiarmor Arithmetic');
-		$list .= "\n<tab>" . $this->text->makeChatcmd('Spiritual Armor', '/tell <myname> aiarmor Spiritual');
+		$list .= "\n<tab>" . Text::makeChatcmd('Strong Armor', '/tell <myname> aiarmor Strong');
+		$list .= "\n<tab>" . Text::makeChatcmd('Supple Armor', '/tell <myname> aiarmor Supple');
+		$list .= "\n<tab>" . Text::makeChatcmd('Enduring Armor', '/tell <myname> aiarmor Enduring');
+		$list .= "\n<tab>" . Text::makeChatcmd('Observant Armor', '/tell <myname> aiarmor Observant');
+		$list .= "\n<tab>" . Text::makeChatcmd('Arithmetic Armor', '/tell <myname> aiarmor Arithmetic');
+		$list .= "\n<tab>" . Text::makeChatcmd('Spiritual Armor', '/tell <myname> aiarmor Spiritual');
 		$list .= "\n\n<header2>Combined Armor<end>";
-		$list .= "\n<tab>" . $this->text->makeChatcmd("Combined Commando's Armor", '/tell <myname> aiarmor cc');
-		$list .= "\n<tab>" . $this->text->makeChatcmd("Combined Mercenary's Armor", '/tell <myname> aiarmor cm');
-		$list .= "\n<tab>" . $this->text->makeChatcmd("Combined Officer's", '/tell <myname> aiarmor co');
-		$list .= "\n<tab>" . $this->text->makeChatcmd("Combined Paramedic's Armor", '/tell <myname> aiarmor cp');
-		$list .= "\n<tab>" . $this->text->makeChatcmd("Combined Scout's Armor", '/tell <myname> aiarmor cs');
-		$list .= "\n<tab>" . $this->text->makeChatcmd("Combined Sharpshooter's Armor", '/tell <myname> aiarmor css');
+		$list .= "\n<tab>" . Text::makeChatcmd("Combined Commando's Armor", '/tell <myname> aiarmor cc');
+		$list .= "\n<tab>" . Text::makeChatcmd("Combined Mercenary's Armor", '/tell <myname> aiarmor cm');
+		$list .= "\n<tab>" . Text::makeChatcmd("Combined Officer's", '/tell <myname> aiarmor co');
+		$list .= "\n<tab>" . Text::makeChatcmd("Combined Paramedic's Armor", '/tell <myname> aiarmor cp');
+		$list .= "\n<tab>" . Text::makeChatcmd("Combined Scout's Armor", '/tell <myname> aiarmor cs');
+		$list .= "\n<tab>" . Text::makeChatcmd("Combined Sharpshooter's Armor", '/tell <myname> aiarmor css');
 		$msg = $this->text->makeBlob('Alien Armor List', $list);
 		$context->reply($msg);
 	}
@@ -308,11 +308,11 @@ class AlienArmorController extends ModuleInstance {
 
 		$list .= "<header2>Source Armor<end>\n";
 		$list .= $this->itemsController->getItemAndIcon($nameArmorSource, $sourceQL) . " QL{$sourceQL}";
-		$list .= ' (' . $this->text->makeChatcmd('Tradeskill process for this item', "/tell <myname> aiarmor {$nameSrc} {$sourceQL}") . ")\n\n";
+		$list .= ' (' . Text::makeChatcmd('Tradeskill process for this item', "/tell <myname> aiarmor {$nameSrc} {$sourceQL}") . ")\n\n";
 
 		$list .= "<header2>Target Armor<end>\n";
 		$list .= $this->itemsController->getItemAndIcon($nameArmorTarget, $targetQL) . " QL{$targetQL}";
-		$list .= ' (' . $this->text->makeChatcmd('Tradeskill process for this item', "/tell <myname> aiarmor {$nameTarget} {$targetQL}") . ')';
+		$list .= ' (' . Text::makeChatcmd('Tradeskill process for this item', "/tell <myname> aiarmor {$nameTarget} {$targetQL}") . ')';
 		$msg = $this->text->makeBlob("Building process for {$ql} {$nameArmorResult}", $list);
 		$context->reply($msg);
 	}

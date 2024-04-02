@@ -42,7 +42,7 @@ class TimezoneController extends ModuleInstance {
 
 		$blob = "<header2>Available timezones areas<end>\n";
 		foreach ($timezoneAreas as $area => $code) {
-			$blob .= '<tab>' . $this->text->makeChatcmd($area, "/tell <myname> timezone {$area}") . "\n";
+			$blob .= '<tab>' . Text::makeChatcmd($area, "/tell <myname> timezone {$area}") . "\n";
 		}
 		$msg = $this->text->makeBlob('Timezone Areas', $blob);
 		$context->reply($msg);
@@ -67,7 +67,7 @@ class TimezoneController extends ModuleInstance {
 
 		$blob = "<header2>Timezones in {$area}<end>\n";
 		foreach ($timezones as $timezone) {
-			$blob .= '<tab>' . $this->text->makeChatcmd($timezone, "/tell <myname> timezone set {$timezone}") . "\n";
+			$blob .= '<tab>' . Text::makeChatcmd($timezone, "/tell <myname> timezone set {$timezone}") . "\n";
 		}
 		$msg = $this->text->makeBlob("Timezones for {$area} ({$count})", $blob);
 		$context->reply($msg);

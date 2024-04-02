@@ -177,15 +177,15 @@ class ImplantDesignerController extends ModuleInstance {
 	public function implantdesignerSlotCommand(CmdContext $context, PImplantSlot $slot): void {
 		$slot = $slot();
 
-		$blob  = '[' . $this->text->makeChatcmd('See Build', '/tell <myname> implantdesigner');
+		$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 		$blob .= ']<tab>[';
-		$blob .= $this->text->makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
+		$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
 		$blob .= ']<tab>[';
-		$blob .= $this->text->makeChatcmd('Require Ability', "/tell <myname> implantdesigner {$slot} require");
+		$blob .= Text::makeChatcmd('Require Ability', "/tell <myname> implantdesigner {$slot} require");
 		$blob .= "]\n\n\n";
 		$blob .= '<header2>Implants<end>  ';
 		foreach ([25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300] as $ql) {
-			$blob .= $this->text->makeChatcmd((string)$ql, "/tell <myname> implantdesigner {$slot} {$ql}") . ' ';
+			$blob .= Text::makeChatcmd((string)$ql, "/tell <myname> implantdesigner {$slot} {$ql}") . ' ';
 		}
 		$blob .= "\n\n" . $this->getSymbiantsLinks($slot);
 		$blob .= "\n\n\n";
@@ -387,11 +387,11 @@ class ImplantDesignerController extends ModuleInstance {
 		} elseif (!empty($slotObj->shiny) && !empty($slotObj->bright) && !empty($slotObj->faded)) {
 			$msg = 'You must have at least one empty cluster to require an ability.';
 		} else {
-			$blob  = '[' . $this->text->makeChatcmd('See Build', '/tell <myname> implantdesigner');
+			$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 			$blob .= ']<tab>[';
-			$blob .= $this->text->makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
+			$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
 			$blob .= "]\n\n\n";
-			$blob .= $this->text->makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
+			$blob .= Text::makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
 			if ($slotObj instanceof stdClass) {
 				$blob .= $this->getImplantSummary($slotObj) . "\n";
 			}
@@ -399,7 +399,7 @@ class ImplantDesignerController extends ModuleInstance {
 			$abilities = $this->db->table('Ability')->select('Name')
 				->pluckStrings('Name')->toArray();
 			foreach ($abilities as $ability) {
-				$blob .= $this->text->makeChatcmd($ability, "/tell <myname> implantdesigner {$slot} require {$ability}") . "\n";
+				$blob .= Text::makeChatcmd($ability, "/tell <myname> implantdesigner {$slot} require {$ability}") . "\n";
 			}
 			$msg = $this->text->makeBlob("Implant Designer Require Ability ({$slot})", $blob);
 		}
@@ -430,11 +430,11 @@ class ImplantDesignerController extends ModuleInstance {
 		} elseif (!empty($slotObj->shiny) && !empty($slotObj->bright) && !empty($slotObj->faded)) {
 			$msg = 'You must have at least one empty cluster to require an ability.';
 		} else {
-			$blob  = '[' . $this->text->makeChatcmd('See Build', '/tell <myname> implantdesigner');
+			$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 			$blob .= ']<tab>[';
-			$blob .= $this->text->makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
+			$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
 			$blob .= "]\n\n\n";
-			$blob .= $this->text->makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
+			$blob .= Text::makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
 			if ($slotObj instanceof stdClass) {
 				$blob .= $this->getImplantSummary($slotObj) . "\n";
 			}
@@ -482,8 +482,8 @@ class ImplantDesignerController extends ModuleInstance {
 				}
 
 				/** @var string[] */
-				$results = array_map(function ($item) use ($slot) {
-					return empty($item[1]) ? '-Empty-' : $this->text->makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot} {$item[0]} {$item[1]}");
+				$results = array_map(static function ($item) use ($slot) {
+					return empty($item[1]) ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot} {$item[0]} {$item[1]}");
 				}, $results);
 				if ($results[0] != $primary) {
 					$blob .= "\n" . $results[0] . "\n";
@@ -602,7 +602,7 @@ class ImplantDesignerController extends ModuleInstance {
 			return $val <=> 0;
 		});
 
-		$blob  = '[' . $this->text->makeChatcmd('See Build', '/tell <myname> implantdesigner');
+		$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 		$blob .= "]\n\n\n";
 
 		$blob .= "<header2>Requirements to Equip<end>\n";
@@ -740,15 +740,15 @@ class ImplantDesignerController extends ModuleInstance {
 	private function getImplantDesignerBuild(string $sender): string {
 		$design = $this->getDesign($sender, '@');
 
-		$blob = '[' . $this->text->makeChatcmd('Results', '/tell <myname> implantdesigner results');
+		$blob = '[' . Text::makeChatcmd('Results', '/tell <myname> implantdesigner results');
 		$blob .= ']<tab>[';
-		$blob .= $this->text->makeChatcmd('Clear All', '/tell <myname> implantdesigner clear');
+		$blob .= Text::makeChatcmd('Clear All', '/tell <myname> implantdesigner clear');
 		$blob .= ']<tab>[';
-		$blob .= $this->text->makeChatcmd('Shopping List', '/tell <myname> implantshoppinglist');
+		$blob .= Text::makeChatcmd('Shopping List', '/tell <myname> implantshoppinglist');
 		$blob .= "]\n\n\n";
 
 		foreach ($this->slots as $slot) {
-			$blob .= $this->text->makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
+			$blob .= Text::makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
 			if (!empty($design->{$slot})) {
 				$blob .= $this->getImplantSummary($design->{$slot});
 			} else {
@@ -814,11 +814,11 @@ class ImplantDesignerController extends ModuleInstance {
 	}
 
 	private function getSymbiantsLinks(string $slot): string {
-		$artilleryLink = $this->text->makeChatcmd('Artillery', "/tell <myname> symb {$slot} artillery");
-		$controlLink = $this->text->makeChatcmd('Control', "/tell <myname> symb {$slot} control");
-		$exterminationLink = $this->text->makeChatcmd('Extermination', "/tell <myname> symb {$slot} extermination");
-		$infantryLink = $this->text->makeChatcmd('Infantry', "/tell <myname> symb {$slot} infantry");
-		$supportLink = $this->text->makeChatcmd('Support', "/tell <myname> symb {$slot} support");
+		$artilleryLink = Text::makeChatcmd('Artillery', "/tell <myname> symb {$slot} artillery");
+		$controlLink = Text::makeChatcmd('Control', "/tell <myname> symb {$slot} control");
+		$exterminationLink = Text::makeChatcmd('Extermination', "/tell <myname> symb {$slot} extermination");
+		$infantryLink = Text::makeChatcmd('Infantry', "/tell <myname> symb {$slot} infantry");
+		$supportLink = Text::makeChatcmd('Support', "/tell <myname> symb {$slot} support");
 		return "<header2>Symbiants<end>  {$artilleryLink}  {$controlLink}  {$exterminationLink}  {$infantryLink}  {$supportLink}";
 	}
 
@@ -828,10 +828,10 @@ class ImplantDesignerController extends ModuleInstance {
 			$msg .= " - {$design->{$slot}->{$grade}}";
 		}
 		$msg .= "\n";
-		$msg .= $this->text->makeChatcmd('-Empty-', "/tell <myname> implantdesigner {$slot} {$grade} clear") . "\n";
+		$msg .= Text::makeChatcmd('-Empty-', "/tell <myname> implantdesigner {$slot} {$grade} clear") . "\n";
 		$skills = $this->getClustersForSlot($slot, $grade);
 		foreach ($skills as $skill) {
-			$msg .= $this->text->makeChatcmd($skill, "/tell <myname> implantdesigner {$slot} {$grade} {$skill}") . "\n";
+			$msg .= Text::makeChatcmd($skill, "/tell <myname> implantdesigner {$slot} {$grade} {$skill}") . "\n";
 		}
 		$msg .= "\n\n";
 		return $msg;

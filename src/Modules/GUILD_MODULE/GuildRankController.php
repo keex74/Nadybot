@@ -143,7 +143,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 				$this->accessManager->getDisplayName($accessLevel).
 				'<end>';
 			if (isset($mapKeys[$rank])) {
-				$blob .= ' [' . $this->text->makeChatcmd('remove', "/tell <myname> maprank del {$rank}") . ']';
+				$blob .= ' [' . Text::makeChatcmd('remove', "/tell <myname> maprank del {$rank}") . ']';
 			}
 			$blob .= "\n";
 		}

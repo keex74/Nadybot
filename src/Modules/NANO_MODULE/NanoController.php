@@ -139,7 +139,7 @@ class NanoController extends ModuleInstance {
 			$defColor = $this->settingManager->getString('default_window_color');
 			if ($currentNanoline !== $row->strain || $currentSubstrain !== $row->sub_strain) {
 				if (!empty($row->strain)) {
-					$nanolineLink = $this->text->makeChatcmd('see all nanos', "/tell <myname> nanolines {$row->strain}");
+					$nanolineLink = Text::makeChatcmd('see all nanos', "/tell <myname> nanolines {$row->strain}");
 					$blob .= "\n<pagebreak><header2>{$row->school} {$defColor}&gt;<end> {$row->strain}";
 					if ($row->sub_strain) {
 						$blob .= " {$defColor}&gt;<end> {$row->sub_strain}";
@@ -153,15 +153,15 @@ class NanoController extends ModuleInstance {
 			}
 			$nanoLink = $this->makeNanoLink($row);
 			$gmiLink = ($this->nanoAddGMI && isset($row->crystal_id))
-				? ' [' . $this->text->makeChatcmd('GMI', "/tell <myname> gmi {$row->crystal_id}") . ']'
+				? ' [' . Text::makeChatcmd('GMI', "/tell <myname> gmi {$row->crystal_id}") . ']'
 				: '';
 			$idLink = ($this->nanoAddID && isset($row->nano_id))
-				? ' ID ' . $this->text->alignNumber($row->nano_id, 6)
+				? ' ID ' . Text::alignNumber($row->nano_id, 6)
 				: '';
 			$crystalLink = isset($row->crystal_id)
-				? $this->text->makeItem($row->crystal_id, $row->crystal_id, $row->ql, 'Crystal')
+				? Text::makeItem($row->crystal_id, $row->crystal_id, $row->ql, 'Crystal')
 				: 'Crystal';
-			$info = 'QL' . $this->text->alignNumber($row->ql, 3) . $gmiLink . $idLink . " [{$crystalLink}] {$nanoLink} ({$row->location})";
+			$info = 'QL' . Text::alignNumber($row->ql, 3) . $gmiLink . $idLink . " [{$crystalLink}] {$nanoLink} ({$row->location})";
 			$info .= ' - ' . implode(', ', Text::arraySprintf('<highlight>%s<end>', ...$row->professions));
 			$blob .= "<tab>{$info}\n";
 		}
@@ -216,7 +216,7 @@ class NanoController extends ModuleInstance {
 		$blob = "<header2>Choose a profession<end>\n";
 		$command = $froobOnly ? 'nanolinesfroob' : 'nanolines';
 		foreach ($profs as $prof) {
-			$blob .= '<tab>' . $this->text->makeChatcmd($prof, "/tell <myname> {$command} {$prof}");
+			$blob .= '<tab>' . Text::makeChatcmd($prof, "/tell <myname> {$command} {$prof}");
 			$blob .= "\n";
 		}
 		$blob .= $this->getFooter();
@@ -281,7 +281,7 @@ class NanoController extends ModuleInstance {
 
 		$blob = "<header2>All nano locations<end>\n";
 		foreach ($nanoCount as $loc => $count) {
-			$blob .= '<tab>' . $this->text->makeChatcmd(
+			$blob .= '<tab>' . Text::makeChatcmd(
 				$loc,
 				"/tell <myname> nanoloc {$loc}"
 			) . " ({$count}) \n";
@@ -322,12 +322,12 @@ class NanoController extends ModuleInstance {
 			/** @var Nano $nano */
 			$nanoLink = $this->makeNanoLink($nano);
 			$gmiLink = ($this->nanoAddGMI && isset($nano->crystal_id))
-				? ' [' . $this->text->makeChatcmd('GMI', "/tell <myname> gmi {$nano->crystal_id}") . ']'
+				? ' [' . Text::makeChatcmd('GMI', "/tell <myname> gmi {$nano->crystal_id}") . ']'
 				: '';
 			$crystalLink = isset($nano->crystal_id)
-				? $this->text->makeItem($nano->crystal_id, $nano->crystal_id, $nano->ql, 'Crystal')
+				? Text::makeItem($nano->crystal_id, $nano->crystal_id, $nano->ql, 'Crystal')
 				: 'Crystal';
-			$blob .= 'QL' . $this->text->alignNumber($nano->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink}";
+			$blob .= 'QL' . Text::alignNumber($nano->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink}";
 			if (count($nano->professions)) {
 				$blob .= ' - ' . implode(', ', Text::arraySprintf('<highlight>%s<end>', ...$nano->professions));
 			}
@@ -498,7 +498,7 @@ class NanoController extends ModuleInstance {
 			if ($froobOnly) {
 				$cmdName = 'bestnanosfroob';
 			}
-			$blob = $this->text->makeChatcmd(
+			$blob = Text::makeChatcmd(
 				'Show verbose list',
 				"/tell <myname> {$cmdName} long {$profession->short()} {$level}",
 			) . "\n\n{$blob}";
@@ -513,14 +513,14 @@ class NanoController extends ModuleInstance {
 		$nanoSkillsNeeded = $this->getNanoSkillsNeeded($nanos);
 		$blob = '<header2>Required Nanoskills<end>'.
 			"\n".
-			'<tab>MM: ' . $this->text->alignNumber($nanoSkillsNeeded->mm, 4, 'highlight', true).
-			'<tab>BM: ' . $this->text->alignNumber($nanoSkillsNeeded->bm, 4, 'highlight', true).
+			'<tab>MM: ' . Text::alignNumber($nanoSkillsNeeded->mm, 4, 'highlight', true).
+			'<tab>BM: ' . Text::alignNumber($nanoSkillsNeeded->bm, 4, 'highlight', true).
 			"\n".
-			'<tab>PM: ' . $this->text->alignNumber($nanoSkillsNeeded->pm, 4, 'highlight', true).
-			'<tab>SI: ' . $this->text->alignNumber($nanoSkillsNeeded->si, 4, 'highlight', true).
+			'<tab>PM: ' . Text::alignNumber($nanoSkillsNeeded->pm, 4, 'highlight', true).
+			'<tab>SI: ' . Text::alignNumber($nanoSkillsNeeded->si, 4, 'highlight', true).
 			"\n".
-			'<tab>TS: ' . $this->text->alignNumber($nanoSkillsNeeded->ts, 4, 'highlight', true).
-			'<tab>MC: ' . $this->text->alignNumber($nanoSkillsNeeded->mc, 4, 'highlight', true).
+			'<tab>TS: ' . Text::alignNumber($nanoSkillsNeeded->ts, 4, 'highlight', true).
+			'<tab>MC: ' . Text::alignNumber($nanoSkillsNeeded->mc, 4, 'highlight', true).
 			"\n\n";
 		$defColor = $this->settingManager->getString('default_window_color');
 		if ($compact) {
@@ -540,13 +540,13 @@ class NanoController extends ModuleInstance {
 				$blob .= " &gt; {$nanoLink}";
 			} else {
 				$gmiLink = ($this->nanoAddGMI && isset($row->crystal_id))
-					? ' [' . $this->text->makeChatcmd('GMI', "/tell <myname> gmi {$row->crystal_id}") . ']'
+					? ' [' . Text::makeChatcmd('GMI', "/tell <myname> gmi {$row->crystal_id}") . ']'
 					: '';
 				$crystalLink = isset($row->crystal_id)
-					? $this->text->makeItem($row->crystal_id, $row->crystal_id, $row->ql, 'Crystal')
+					? Text::makeItem($row->crystal_id, $row->crystal_id, $row->ql, 'Crystal')
 					: 'Crystal';
 				if (!empty($row->strain)) {
-					$nanolineLink = $this->text->makeChatcmd('see all nanos', "/tell <myname> nanolines {$row->strain}");
+					$nanolineLink = Text::makeChatcmd('see all nanos', "/tell <myname> nanolines {$row->strain}");
 					$blob .= "\n<pagebreak><header2>{$row->school} {$defColor}&gt;<end> {$row->strain}";
 					if ($row->sub_strain) {
 						$blob .= " {$defColor}&gt;<end> {$row->sub_strain}";
@@ -555,7 +555,7 @@ class NanoController extends ModuleInstance {
 				} else {
 					$blob .= "\n<pagebreak><header2>Unknown/General<end>\n";
 				}
-				$info = 'QL' . $this->text->alignNumber($row->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink} ({$row->location})";
+				$info = 'QL' . Text::alignNumber($row->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink} ({$row->location})";
 				$blob .= "<tab>{$info}\n";
 				$reqs = [];
 				foreach (['mm', 'bm', 'pm', 'si', 'ts', 'mc'] as $skill) {
@@ -618,12 +618,12 @@ class NanoController extends ModuleInstance {
 			}
 			$nanoLink = $this->makeNanoLink($nano);
 			$gmiLink = ($this->nanoAddGMI && isset($nano->crystal_id))
-				? ' [' . $this->text->makeChatcmd('GMI', "/tell <myname> gmi {$nano->crystal_id}") . ']'
+				? ' [' . Text::makeChatcmd('GMI', "/tell <myname> gmi {$nano->crystal_id}") . ']'
 				: '';
 			$crystalLink = isset($nano->crystal_id)
-				? $this->text->makeItem($nano->crystal_id, $nano->crystal_id, $nano->ql, 'Crystal')
+				? Text::makeItem($nano->crystal_id, $nano->crystal_id, $nano->ql, 'Crystal')
 				: 'Crystal';
-			$blob .= '<tab>' . $this->text->alignNumber($nano->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink} ({$nano->location})\n";
+			$blob .= '<tab>' . Text::alignNumber($nano->ql, 3) . $gmiLink . " [{$crystalLink}] {$nanoLink} ({$nano->location})\n";
 		}
 		$blob .= $this->getFooter();
 		$msg = $this->text->makeBlob("All {$data[0]->strain} Nanos", $blob);
@@ -678,7 +678,7 @@ class NanoController extends ModuleInstance {
 				$blob .= "<pagebreak><header2>{$row->school}<end>\n";
 				$lastSchool = $row->school;
 			}
-			$blob .= '<tab>' . $this->text->makeChatcmd($strain, "/tell <myname> {$command} {$shortProf} > {$row->strain}");
+			$blob .= '<tab>' . Text::makeChatcmd($strain, "/tell <myname> {$command} {$shortProf} > {$row->strain}");
 			$blob .= "\n";
 		}
 		$blob .= $this->getFooter();

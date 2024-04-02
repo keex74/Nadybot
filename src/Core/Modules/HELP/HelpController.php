@@ -111,7 +111,7 @@ class HelpController extends ModuleInstance {
 				$blob .= "\n<pagebreak><header2>{$row->module}<end>\n";
 				$currentModule = $row->module;
 			}
-			$helpLink = $this->text->makeChatcmd($row->name, "/tell <myname> help {$row->name}");
+			$helpLink = Text::makeChatcmd($row->name, "/tell <myname> help {$row->name}");
 			$blob .= "<tab>{$helpLink}: {$row->description}\n";
 		}
 
@@ -160,8 +160,8 @@ class HelpController extends ModuleInstance {
 			$data[$module] = $this->configController->getModuleDescription($module) ?? '&lt;no description&gt;';
 			$data[$module] = preg_replace_callback(
 				"/(https?:\/\/[^\s\n<]+)/s",
-				function (array $matches): string {
-					return $this->text->makeChatcmd($matches[1], "/start {$matches[1]}");
+				static function (array $matches): string {
+					return Text::makeChatcmd($matches[1], "/start {$matches[1]}");
 				},
 				$data[$module]
 			);

@@ -236,7 +236,7 @@ class CommentController extends ModuleInstance {
 				"<end>\n".
 				'<tab>Action: ';
 			if ($category->user_managed) {
-				$blob .= $this->text->makeChatcmd(
+				$blob .= Text::makeChatcmd(
 					'delete',
 					"/tell <myname> comment category rem {$category->name}"
 				);
@@ -579,7 +579,7 @@ class CommentController extends ModuleInstance {
 		$line = "{$comment->comment} (<highlight>{$comment->created_by}<end>, ".
 			($addCategory ? "<highlight>{$comment->category}<end>, " : '').
 			Util::date($comment->created_at) . ') ['.
-			$this->text->makeChatcmd('delete', "/tell <myname> comment del {$comment->id}").
+			Text::makeChatcmd('delete', "/tell <myname> comment del {$comment->id}").
 			']';
 		return $line;
 	}

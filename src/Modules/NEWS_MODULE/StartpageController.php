@@ -153,7 +153,7 @@ class StartpageController extends ModuleInstance {
 		)
 	]
 	public function timeTile(string $sender): ?string {
-		$seeMoreLink = $this->text->makeChatcmd('see more', '/tell <myname> time');
+		$seeMoreLink = Text::makeChatcmd('see more', '/tell <myname> time');
 		$time = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 		$aoTime = $time->add(new DateInterval('P27474Y'));
 		$blob = "<header2>Time [{$seeMoreLink}]<end>\n".
@@ -280,7 +280,7 @@ class StartpageController extends ModuleInstance {
 		$blobLines = [];
 		ksort($unusedTiles);
 		foreach ($unusedTiles as $name => $tile) {
-			$pickLink = $this->text->makeChatcmd('pick this', "/tell <myname> startpage pick {$pos} {$name}");
+			$pickLink = Text::makeChatcmd('pick this', "/tell <myname> startpage pick {$pos} {$name}");
 			$line = "<header2>{$name} [{$pickLink}]<end>\n".
 				'<tab>' . implode("\n<tab>", explode("\n", $tile->description)) . "\n";
 			if (isset($tile->example)) {
@@ -513,7 +513,7 @@ class StartpageController extends ModuleInstance {
 
 	protected function getInsertLine(int $num): string {
 		return '<tab><black>0 - <end>['.
-			$this->text->makeChatcmd('insert new', "/tell <myname> startpage pick {$num}").
+			Text::makeChatcmd('insert new', "/tell <myname> startpage pick {$num}").
 			"]\n";
 	}
 
@@ -523,17 +523,17 @@ class StartpageController extends ModuleInstance {
 		$i = 0;
 		foreach ($tiles as $name => $tile) {
 			$blobLines []= $this->getInsertLine($i);
-			$descrLink = $this->text->makeChatcmd('details', "/tell <myname> startpage describe {$name}");
-			$remLink = $this->text->makeChatcmd('delete', "/tell <myname> startpage rem {$name}");
+			$descrLink = Text::makeChatcmd('details', "/tell <myname> startpage describe {$name}");
+			$remLink = Text::makeChatcmd('delete', "/tell <myname> startpage rem {$name}");
 			$moveUpLink = '<black>[up]<end>';
 			$moveDownLink = '<black>[down]<end>';
 			if ($i > 0) {
-				$moveUpLink = '[' . $this->text->makeChatcmd('up', "/tell <myname> startpage move {$name} up") . ']';
+				$moveUpLink = '[' . Text::makeChatcmd('up', "/tell <myname> startpage move {$name} up") . ']';
 			}
 			if ($i < count($tiles) - 1) {
-				$moveDownLink = '[' . $this->text->makeChatcmd('down', "/tell <myname> startpage move {$name} down") . ']';
+				$moveDownLink = '[' . Text::makeChatcmd('down', "/tell <myname> startpage move {$name} down") . ']';
 			}
-			$line = '<tab>' . $this->text->alignNumber($i+1, strlen((string)count($tiles))).
+			$line = '<tab>' . Text::alignNumber($i+1, strlen((string)count($tiles))).
 				" - {$moveUpLink} {$moveDownLink}   <highlight>{$name}<end> [{$descrLink}] [{$remLink}]\n";
 			$blobLines []= $line;
 			$i++;
@@ -546,6 +546,6 @@ class StartpageController extends ModuleInstance {
 		return "{$intro}\n\n".
 			"<header2>Your layout<end>\n\n".
 			implode("\n", $blobLines). "\n\n\n".
-			'[' . $this->text->makeChatcmd('preview', '/tell <myname> start') . ']';
+			'[' . Text::makeChatcmd('preview', '/tell <myname> start') . ']';
 	}
 }

@@ -156,7 +156,7 @@ class BuffPerksController extends ModuleInstance {
 			if (!isset($level->aoid)) {
 				continue;
 			}
-			$perkItem = $this->text->makeItem(
+			$perkItem = Text::makeItem(
 				$level->aoid,
 				$level->aoid,
 				$level->perk_level,
@@ -189,7 +189,7 @@ class BuffPerksController extends ModuleInstance {
 			}
 			if (isset($level->action, $level->action->aodb)) {
 				$blob .= '<tab>Add Action: '.
-					$this->text->makeItem(
+					Text::makeItem(
 						$level->action->aodb->lowid,
 						$level->action->aodb->highid,
 						$level->action->aodb->lowql,
@@ -197,11 +197,11 @@ class BuffPerksController extends ModuleInstance {
 					).
 					($level->action->scaling ? ' (<highlight>scaling<end>)' : '').
 					"\n<tab>".
-					$this->text->makeItem(
+					Text::makeItem(
 						$level->action->aodb->lowid,
 						$level->action->aodb->highid,
 						$level->action->aodb->lowql,
-						$this->text->makeImage($level->action->aodb->icon)
+						Text::makeImage($level->action->aodb->icon)
 					).
 					"\n";
 			}
@@ -289,7 +289,7 @@ class BuffPerksController extends ModuleInstance {
 				$blob = "<header2>Choose a skill<end>\n";
 				foreach ($skills as $skill) {
 					$blob .= '<tab>'.
-						$this->text->makeChatcmd(
+						Text::makeChatcmd(
 							$skill->name,
 							"/tell <myname> perks {$level} {$profession->value} {$skill->name}"
 						).
@@ -378,7 +378,7 @@ class BuffPerksController extends ModuleInstance {
 			if ($perk->expansion === static::ALIEN_INVASION) {
 				$color = '<green>';
 			}
-			$detailsLink = $this->text->makeChatcmd(
+			$detailsLink = Text::makeChatcmd(
 				'details',
 				"/tell <myname> perks show {$perk->name}"
 			);
@@ -419,7 +419,7 @@ class BuffPerksController extends ModuleInstance {
 				}
 				$blob .= sprintf(
 					"<tab><tab>Add Action at %s: %s%s\n",
-					$this->text->alignNumber($action->perk_level, strlen((string)$maxLevel)),
+					Text::alignNumber($action->perk_level, strlen((string)$maxLevel)),
 					$action->aodb->getLink(),
 					$action->scaling ? ' (<highlight>scaling<end>)' : ''
 				);

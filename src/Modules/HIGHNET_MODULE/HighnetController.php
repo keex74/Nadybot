@@ -360,7 +360,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			return;
 		}
 		$numClients = "{$this->numClients} ".
-				$this->text->pluralize('client', $this->numClients);
+				Text::pluralize('client', $this->numClients);
 		$popup = "<header2>How to talk on Highnet<end>\n".
 			"In order to talk to other bots on a Highnet channel, use\n".
 			"<tab><highlight>{$this->highnetPrefix}&lt;channel&gt; &lt;message&gt;<end> - ".
@@ -386,7 +386,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			$recs = $this->msgHub->getReceiversFor("highnet({$channel})");
 			$visMsg = 'Not seen on this bot';
 			if (count($recs)) {
-				$visMsg = 'On ' . $this->text->enumerate(...$recs);
+				$visMsg = 'On ' . Text::enumerate(...$recs);
 			}
 			$popup .= "\n<tab><highlight>{$channel}<end>: {$visMsg}";
 		}
@@ -408,8 +408,8 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		$channelMsg = 'Connected to the following Highnet channels: '.
 			(count($this->channels)
 			? (
-				$this->text->enumerate(
-					...$this->text->arraySprintf('<highlight>%s<end>', ...$this->channels)
+				Text::enumerate(
+					...Text::arraySprintf('<highlight>%s<end>', ...$this->channels)
 				) . " with <highlight>{$numClients}<end> attached"
 			)
 			: '&lt;none&gt;');
@@ -692,11 +692,11 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		$blob = '<header2>Information about this message<end>';
 		$blob .= "\n<tab>Sent: <highlight>" . Util::date($message->sent) . '<end>';
 
-		$blockTempLink = $this->text->makeChatcmd(
+		$blockTempLink = Text::makeChatcmd(
 			'block 15min',
 			"/tell <myname> highnet filter 15m dimension {$message->dimension}"
 		);
-		$blockPermLink = $this->text->makeChatcmd(
+		$blockPermLink = Text::makeChatcmd(
 			'block',
 			"/tell <myname> highnet filter permanent dimension {$message->dimension}"
 		);
@@ -705,11 +705,11 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			'(' . $this->dimensionToName($message->dimension) . ')'.
 			"<end> [{$blockTempLink}] [{$blockPermLink}]";
 
-		$blockTempLink = $this->text->makeChatcmd(
+		$blockTempLink = Text::makeChatcmd(
 			'block 15min',
 			"/tell <myname> highnet filter 15m channel {$message->channel}"
 		);
-		$blockPermLink = $this->text->makeChatcmd(
+		$blockPermLink = Text::makeChatcmd(
 			'block',
 			"/tell <myname> highnet filter permanent channel {$message->channel}"
 		);
@@ -721,11 +721,11 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		if (isset($message->sender_uid)) {
 			$senderName .= " (UID {$message->sender_uid})";
 		}
-		$blockTempLink = $this->text->makeChatcmd(
+		$blockTempLink = Text::makeChatcmd(
 			'block 15min',
 			"/tell <myname> highnet filter 15m sender {$message->sender_name} {$message->dimension}"
 		);
-		$blockPermLink = $this->text->makeChatcmd(
+		$blockPermLink = Text::makeChatcmd(
 			'block',
 			"/tell <myname> highnet filter permanent sender {$message->sender_name} {$message->dimension}"
 		);
@@ -735,21 +735,21 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		if (isset($message->bot_uid)) {
 			$botName .= " (UID {$message->bot_uid})";
 		}
-		$blockTempLink = $this->text->makeChatcmd(
+		$blockTempLink = Text::makeChatcmd(
 			'block 15min',
 			"/tell <myname> highnet filter 15m bot {$message->bot_name} {$message->dimension}"
 		);
-		$blockPermLink = $this->text->makeChatcmd(
+		$blockPermLink = Text::makeChatcmd(
 			'block',
 			"/tell <myname> highnet filter permanent bot {$message->bot_name} {$message->dimension}"
 		);
 		$blob .= "\n<tab>Via Bot: <highlight>{$botName}<end> [{$blockTempLink}] [{$blockPermLink}]";
 
-		$filtersCmd = $this->text->makeChatcmd(
+		$filtersCmd = Text::makeChatcmd(
 			'<symbol>highnet filters',
 			'/tell <myname> highnet filters'
 		);
-		$highnetCmd = $this->text->makeChatcmd(
+		$highnetCmd = Text::makeChatcmd(
 			'<symbol>highnet',
 			'/tell <myname> highnet'
 		);
@@ -1026,7 +1026,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			$remaining = $entry->expires - time();
 			$line .= ' - expires in ' . Util::unixtimeToReadable($remaining, false);
 		}
-		$deleteLink = $this->text->makeChatcmd(
+		$deleteLink = Text::makeChatcmd(
 			'del',
 			"/tell <myname> highnet filter del {$entry->id}"
 		);

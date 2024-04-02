@@ -231,12 +231,12 @@ class ItemsController extends ModuleInstance {
 		}
 		$blob = "<header2><u>Low ID    Low QL    High ID    High QL    Name                                         </u><end>\n";
 		foreach ($items as $item) {
-			$itemLinkLow = $this->text->makeItem($item->lowid, $item->highid, $item->lowql, (string)$item->lowid);
-			$itemLinkHigh = $this->text->makeItem($item->lowid, $item->highid, $item->highql, (string)$item->highid);
-			$blob .= str_replace((string)$item->lowid, $itemLinkLow, $this->text->alignNumber($item->lowid, 6)).
-				'       ' . $this->text->alignNumber($item->lowql, 3).
-				'     ' . (($item->highid === $item->lowid) ? '        ' : str_replace((string)$item->highid, $itemLinkHigh, $this->text->alignNumber($item->highid, 6))).
-				'         ' . (($item->highid === $item->lowid) ? '         <black>|<end>' : $this->text->alignNumber($item->highql, 3) . '    ').
+			$itemLinkLow = Text::makeItem($item->lowid, $item->highid, $item->lowql, (string)$item->lowid);
+			$itemLinkHigh = Text::makeItem($item->lowid, $item->highid, $item->highql, (string)$item->highid);
+			$blob .= str_replace((string)$item->lowid, $itemLinkLow, Text::alignNumber($item->lowid, 6)).
+				'       ' . Text::alignNumber($item->lowql, 3).
+				'     ' . (($item->highid === $item->lowid) ? '        ' : str_replace((string)$item->highid, $itemLinkHigh, Text::alignNumber($item->highid, 6))).
+				'         ' . (($item->highid === $item->lowid) ? '         <black>|<end>' : Text::alignNumber($item->highql, 3) . '    ').
 				$item->name . "\n";
 		}
 		if (count($items) >= $this->maxitems) {
@@ -263,7 +263,7 @@ class ItemsController extends ModuleInstance {
 		// local database
 		$data = $this->findItemsFromLocal($search, $ql, $dontExclude);
 
-		$aoiaPlusLink = $this->text->makeChatcmd('AOIA+', '/start https://sourceforge.net/projects/aoiaplus');
+		$aoiaPlusLink = Text::makeChatcmd('AOIA+', '/start https://sourceforge.net/projects/aoiaplus');
 		$footer = 'QLs between <red>[<end>brackets<red>]<end> denote items matching your name search';
 		if (count(array_filter($data, static fn (ItemSearchResult $i): bool => !$i->in_game))) {
 			$footer .= "\n<red>(!)<end> means: This item is GM/ARK-only, not in the game, or unavailable";
@@ -486,7 +486,7 @@ class ItemsController extends ModuleInstance {
 					$list .= "\n";
 				}
 				if ($showImages) {
-					$list .= "\n<pagebreak>" . $this->text->makeImage($row->icon) . "\n";
+					$list .= "\n<pagebreak>" . Text::makeImage($row->icon) . "\n";
 				}
 				if (isset($row->group_id)) {
 					$list .= $row->name;
@@ -499,7 +499,7 @@ class ItemsController extends ModuleInstance {
 			}
 			$oldGroup = $row->group_id ?? null;
 			if (!isset($row->group_id)) {
-				$list .= $this->text->makeItem($row->lowid, $row->highid, $row->ql, $row->name);
+				$list .= Text::makeItem($row->lowid, $row->highid, $row->ql, $row->name);
 				if (!$row->in_game) {
 					$list .= ' <red>(!)<end>';
 				}
@@ -525,11 +525,11 @@ class ItemsController extends ModuleInstance {
 					}
 					unset($nameMatches);
 				}
-				$item = $this->text->makeItem($row->lowid, $row->highid, $row->ql, (string)$row->ql);
+				$item = Text::makeItem($row->lowid, $row->highid, $row->ql, (string)$row->ql);
 				if ($ql === $row->ql) {
 					$list .= "<yellow>[<end>{$item}<yellow>]<end>";
 				} elseif (isset($ql) && $ql > $row->lowql && $ql < $row->highql && $ql < $row->ql) {
-					$list .= '<yellow>[<end>' . $this->text->makeItem($row->lowid, $row->highid, $ql, (string)$ql) . '<yellow>]<end>';
+					$list .= '<yellow>[<end>' . Text::makeItem($row->lowid, $row->highid, $ql, (string)$ql) . '<yellow>]<end>';
 					$list .= ", {$item}";
 				} elseif (
 					isset($ql)
@@ -538,7 +538,7 @@ class ItemsController extends ModuleInstance {
 					&& $data[$itemNum+1]->lowql > $ql
 				) {
 					$list .= $item;
-					$list .= ', <yellow>[<end>' . $this->text->makeItem($row->lowid, $row->highid, $ql, (string)$ql) . '<yellow>]<end>';
+					$list .= ', <yellow>[<end>' . Text::makeItem($row->lowid, $row->highid, $ql, (string)$ql) . '<yellow>]<end>';
 				} else {
 					$list .= $item;
 				}
@@ -605,7 +605,7 @@ class ItemsController extends ModuleInstance {
 			return null;
 		}
 		$ql ??= $row->highql;
-		return $this->text->makeItem($row->lowid, $row->highid, $ql, $row->name);
+		return Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
 	}
 
 	public function getItemAndIcon(string $name, ?int $ql=null): string {
@@ -624,8 +624,8 @@ class ItemsController extends ModuleInstance {
 			return $name;
 		}
 		$ql ??= $row->highql;
-		return $this->text->makeImage($row->icon) . "\n" .
-			$this->text->makeItem($row->lowid, $row->highid, $ql, $row->name);
+		return Text::makeImage($row->icon) . "\n" .
+			Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
 	}
 
 	/**

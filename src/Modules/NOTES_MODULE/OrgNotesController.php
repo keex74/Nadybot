@@ -137,7 +137,7 @@ class OrgNotesController extends ModuleInstance {
 		foreach ($notes as $note) {
 			$removeLink = '';
 			if ($this->canDeleteOrgNote($note, $context->char->name)) {
-				$removeLink = ' [' . $this->text->makeChatcmd(
+				$removeLink = ' [' . Text::makeChatcmd(
 					'remove',
 					"/tell <myname> orgnote rem {$note->id}"
 				) . ']';

@@ -92,8 +92,8 @@ class DiscController extends ModuleInstance {
 	}
 
 	public function discCommand(CmdContext $context, Disc $disc): void {
-		$discLink = $this->text->makeItem($disc->disc_id, $disc->disc_id, $disc->disc_ql, $disc->disc_name);
-		$nanoLink = $this->text->makeItem($disc->crystal_id, $disc->crystal_id, $disc->crystal_ql, $disc->crystal_name);
+		$discLink = Text::makeItem($disc->disc_id, $disc->disc_id, $disc->disc_ql, $disc->disc_name);
+		$nanoLink = Text::makeItem($disc->crystal_id, $disc->crystal_id, $disc->crystal_ql, $disc->crystal_name);
 		$nanoDetails = $this->getNanoDetails($disc);
 		if (!isset($nanoDetails)) {
 			$context->reply("Cannot find the nano details for {$disc->disc_name}.");
@@ -132,7 +132,7 @@ class DiscController extends ModuleInstance {
 	public function getDiscChoiceDialogue(array $discs): array {
 		$blob = [];
 		foreach ($discs as $disc) {
-			$text = $this->text->makeChatcmd($disc->disc_name, '/tell <myname> disc '.$disc->disc_name);
+			$text = Text::makeChatcmd($disc->disc_name, '/tell <myname> disc '.$disc->disc_name);
 			$blob []= $text;
 		}
 		$msg = $this->text->makeBlob(

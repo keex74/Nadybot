@@ -492,7 +492,7 @@ class SkillsController extends ModuleInstance {
 		$maBaseSpeed = (($maSkill - $skillList[$i]) * ($maFistSpeed[($i + 1)] - $maFistSpeed[$i])) / ($skillList[($i + 1)] - $skillList[$i]) + $maFistSpeed[$i]; // @phpstan-ignore-line
 		$maFistSpeed = round($maBaseSpeed, 2);
 		$dmg = "<highlight>{$min}<end>-<highlight>{$max}<end> (<highlight>{$crit}<end>)";
-		$blob .= '<header2>Martial Artist<end> ('.  $this->text->makeItem($maAOID[$i], $maAOID[$i+1], $aoidQL, 'item') . ")\n";
+		$blob .= '<header2>Martial Artist<end> ('.  Text::makeItem($maAOID[$i], $maAOID[$i+1], $aoidQL, 'item') . ")\n";
 		$blob .= "<tab>Fist speed:   <highlight>{$maFistSpeed}<end>s/<highlight>{$maFistSpeed}<end>s\n";
 		$blob .= "<tab>Fist damage: {$dmg}\n\n";
 
@@ -500,7 +500,7 @@ class SkillsController extends ModuleInstance {
 		$max = Util::interpolate($skillList[$i], $skillList[($i + 1)], $shadeMaxList[$i], $shadeMaxList[($i + 1)], $maSkill);
 		$crit = Util::interpolate($skillList[$i], $skillList[($i + 1)], $shadeCritList[$i], $shadeCritList[($i + 1)], $maSkill);
 		$dmg = '<highlight>'.$min.'<end>-<highlight>'.$max.'<end> (<highlight>'.$crit.'<end>)';
-		$blob .= '<header2>Shade<end> ('.  $this->text->makeItem($shadeAOID[$i], $shadeAOID[$i+1], $aoidQL, 'item') . ")\n";
+		$blob .= '<header2>Shade<end> ('.  Text::makeItem($shadeAOID[$i], $shadeAOID[$i+1], $aoidQL, 'item') . ")\n";
 		$blob .= "<tab>Fist speed:   <highlight>{$speed}<end>s/<highlight>{$speed}<end>s\n";
 		$blob .= "<tab>Fist damage: {$dmg}\n\n";
 
@@ -508,7 +508,7 @@ class SkillsController extends ModuleInstance {
 		$max = Util::interpolate($skillList[$i], $skillList[($i + 1)], $otherMaxList[$i], $otherMaxList[($i + 1)], $maSkill);
 		$crit = Util::interpolate($skillList[$i], $skillList[($i + 1)], $otherCritList[$i], $otherCritList[($i + 1)], $maSkill);
 		$dmg = '<highlight>'.$min.'<end>-<highlight>'.$max.'<end> (<highlight>'.$crit.'<end>)';
-		$blob .= '<header2>All other professions<end> ('.  $this->text->makeItem($otherAOID[$i], $otherAOID[$i+1], $aoidQL, 'item') . ")\n";
+		$blob .= '<header2>All other professions<end> ('.  Text::makeItem($otherAOID[$i], $otherAOID[$i+1], $aoidQL, 'item') . ")\n";
 		$blob .= "<tab>Fist speed:   <highlight>{$speed}<end>s/<highlight>{$speed}<end>s\n";
 		$blob .= "<tab>Fist damage: {$dmg}\n\n";
 
@@ -620,7 +620,7 @@ class SkillsController extends ModuleInstance {
 		$rechargeTime = Util::interpolate($row->lowql, $row->highql, $lowAttributes->recharge_time, $highAttributes->recharge_time, $ql);
 		$rechargeTime /= 100;
 		$attackTime /= 100;
-		$itemLink = $this->text->makeItem($row->lowid, $row->highid, $ql, $row->name);
+		$itemLink = Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
 
 		$blob = '';
 
@@ -741,8 +741,8 @@ class SkillsController extends ModuleInstance {
 		$blob = "<header2>Weapons matching {$search}<end>\n";
 		foreach ($data as $item) {
 			$useQL = $ql ?? $item->ql;
-			$itemLink = $this->text->makeItem($item->lowid, $item->highid, $useQL, $item->name);
-			$statsLink = $this->text->makeChatcmd('stats', "/tell <myname> weapon {$item->lowid} {$useQL}");
+			$itemLink = Text::makeItem($item->lowid, $item->highid, $useQL, $item->name);
+			$statsLink = Text::makeChatcmd('stats', "/tell <myname> weapon {$item->lowid} {$useQL}");
 			$blob .= "<tab>[{$statsLink}] {$itemLink} (QL {$useQL})\n";
 		}
 		$msg = $this->text->makeBlob('Weapons (' . count($data) .')', $blob);
@@ -826,8 +826,8 @@ class SkillsController extends ModuleInstance {
 			$blob .= '<tab>DEF ';
 			$blob .= $this->getAggdefBar($percent);
 			$blob .= ' AGG ';
-			$blob .= $this->text->alignNumber($init, 4, 'highlight');
-			$blob .= ' (' . $this->text->alignNumber($percent, 3) . "%)\n";
+			$blob .= Text::alignNumber($init, 4, 'highlight');
+			$blob .= ' (' . Text::alignNumber($percent, 3) . "%)\n";
 		}
 		return $blob;
 	}

@@ -91,7 +91,7 @@ class ReputationController extends ModuleInstance {
 					Util::date($comment->created_at) . ')';
 			}
 			if (count($charData->comments) > 3 && count($comments) > 0) {
-				$details_link = $this->text->makeChatcmd('see all', "/tell <myname> reputation {$comments[0]->character} all");
+				$details_link = Text::makeChatcmd('see all', "/tell <myname> reputation {$comments[0]->character} all");
 				$blob .= "\n<tab>[{$details_link}]";
 			}
 			$blobs []= $blob;
@@ -175,7 +175,7 @@ class ReputationController extends ModuleInstance {
 		}
 
 		if (!isset($all) && $numComments > count($comments)) {
-			$blob .= "\n" . $this->text->makeChatcmd('Show all comments', "/tell <myname> reputation {$name} all");
+			$blob .= "\n" . Text::makeChatcmd('Show all comments', "/tell <myname> reputation {$name} all");
 		}
 
 		$msg = $this->text->makeBlob("Reputation for {$name} (+{$numPositive} -{$numNegative})", $blob);

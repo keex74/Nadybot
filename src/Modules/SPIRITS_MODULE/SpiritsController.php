@@ -247,8 +247,8 @@ class SpiritsController extends ModuleInstance {
 				->asObj(AODBEntry::class)
 				->first();
 			if ($dbSpirit) {
-				$msg .= $this->text->makeImage($dbSpirit->icon) . ' ';
-				$msg .= $this->text->makeItem($dbSpirit->lowid, $dbSpirit->highid, $dbSpirit->highql, $dbSpirit->name) . "\n";
+				$msg .= Text::makeImage($dbSpirit->icon) . ' ';
+				$msg .= Text::makeItem($dbSpirit->lowid, $dbSpirit->highid, $dbSpirit->highql, $dbSpirit->name) . "\n";
 				$msg .= "Minimum Level={$spirit->level}   Slot={$spirit->spot}   Agility/Sense Needed={$spirit->agility}\n\n";
 			}
 		}

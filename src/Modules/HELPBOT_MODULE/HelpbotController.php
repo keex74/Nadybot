@@ -199,7 +199,7 @@ class HelpbotController extends ModuleInstance {
 		foreach ($data as $pfName => $rows) {
 			$blob .= "\n<pagebreak><header2>{$pfName}<end>\n";
 			foreach ($rows as $row) {
-				$coordLink = $this->text->makeChatcmd(
+				$coordLink = Text::makeChatcmd(
 					"{$row->x_coord}x{$row->y_coord}",
 					"/waypoint {$row->x_coord} {$row->y_coord} {$row->playfield->value}"
 				);

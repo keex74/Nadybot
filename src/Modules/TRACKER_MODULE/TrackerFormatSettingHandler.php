@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\TRACKER_MODULE;
 
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\{Attributes as NCA, Faction, Profession, SettingHandler};
+use Nadybot\Core\{Attributes as NCA, Faction, Profession, SettingHandler, Text};
 
 /**
  * Class to represent a setting with a tracker format value for NadyBot
@@ -54,7 +54,7 @@ class TrackerFormatSettingHandler extends SettingHandler {
 
 		$player = $this->getDummyPlayer();
 		foreach ($options as $example) {
-			$selectLink = $this->text->makeChatcmd(
+			$selectLink = Text::makeChatcmd(
 				'select',
 				"/tell <myname> settings save {$this->row->name} {$example}",
 			);

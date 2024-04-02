@@ -147,8 +147,8 @@ class ProfileController extends ModuleInstance {
 		$linkContents = '';
 		foreach ($profileList as $profile) {
 			$name = ucfirst(strtolower($profile));
-			$viewLink = $this->text->makeChatcmd('view', "/tell <myname> profile view {$profile}");
-			$loadLink = $this->text->makeChatcmd('load', "/tell <myname> profile load {$profile}");
+			$viewLink = Text::makeChatcmd('view', "/tell <myname> profile view {$profile}");
+			$loadLink = Text::makeChatcmd('load', "/tell <myname> profile load {$profile}");
 			$linkContents .= "{$name} [{$viewLink}] [{$loadLink}]\n";
 		}
 

@@ -139,14 +139,14 @@ class NewsController extends ModuleInstance {
 			$blob .= ($item->confirmed ? '<grey>' : '<highlight>').
 				"{$item->news}<end>\n";
 			$blob .= "By {$item->name} " . Util::date($item->time) . ' ';
-			$blob .= '[' . $this->text->makeChatcmd('remove', "/tell <myname> news rem {$item->id}") . '] ';
+			$blob .= '[' . Text::makeChatcmd('remove', "/tell <myname> news rem {$item->id}") . '] ';
 			if ($item->sticky) {
-				$blob .= '[' . $this->text->makeChatcmd('unpin', "/tell <myname> news unpin {$item->id}") . '] ';
+				$blob .= '[' . Text::makeChatcmd('unpin', "/tell <myname> news unpin {$item->id}") . '] ';
 			} else {
-				$blob .= '[' . $this->text->makeChatcmd('pin', "/tell <myname> news pin {$item->id}") . '] ';
+				$blob .= '[' . Text::makeChatcmd('pin', "/tell <myname> news pin {$item->id}") . '] ';
 			}
 			if (!$item->confirmed) {
-				$blob .= '[' . $this->text->makeChatcmd('confirm', "/tell <myname> news confirm {$item->id}") . '] ';
+				$blob .= '[' . Text::makeChatcmd('confirm', "/tell <myname> news confirm {$item->id}") . '] ';
 			}
 			$blob .= "\n";
 			$sticky = $item->sticky;
@@ -537,7 +537,7 @@ class NewsController extends ModuleInstance {
 			return null;
 		}
 		$blob = '<header2>News ['.
-			$this->text->makeChatcmd('see all', '/tell <myname> news') . "]<end>\n";
+			Text::makeChatcmd('see all', '/tell <myname> news') . "]<end>\n";
 		$blobLines = [];
 		foreach ($unreadNews as $news) {
 			$firstLine = explode("\n", $news->news)[0];

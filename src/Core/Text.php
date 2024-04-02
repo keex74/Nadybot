@@ -19,21 +19,6 @@ class Text {
 	private SettingManager $settingManager;
 
 	/**
-	 * Create an interactive string from a list of commands and titles
-	 *
-	 * @param array<string,string> $links An array in the form ["title" => "chat command (/tell ...)"]
-	 *
-	 * @return string A string that combines all links into one
-	 */
-	public static function makeHeaderLinks(array $links): string {
-		$output = '';
-		foreach ($links as $title => $command) {
-			$output .= ' ::: ' . self::makeChatcmd($title, $command, 'style="text-decoration:none;"') . ' ::: ';
-		}
-		return $output;
-	}
-
-	/**
 	 * Wraps a block in a before and after part
 	 *
 	 * @param string          $before String before the link

@@ -55,9 +55,6 @@ class DiscordController extends ModuleInstance {
 	private BotConfig $config;
 
 	#[NCA\Inject]
-	private Text $text;
-
-	#[NCA\Inject]
 	private DiscordAPIClient $discordAPIClient;
 
 	#[NCA\Inject]
@@ -115,7 +112,7 @@ class DiscordController extends ModuleInstance {
 					'id' => $match[1],
 					'ql' => $match[3],
 				];
-				$url = $this->text->renderPlaceholders($this->itemWebsite, $tokens);
+				$url = Text::renderPlaceholders($this->itemWebsite, $tokens);
 				return "[{$match[4]}]({$url})";
 			},
 			$text,
@@ -131,7 +128,7 @@ class DiscordController extends ModuleInstance {
 				$tokens = [
 					'id' => $match[1],
 				];
-				$url = $this->text->renderPlaceholders($this->itemWebsite, $tokens);
+				$url = Text::renderPlaceholders($this->itemWebsite, $tokens);
 				return "[{$match[2]}]({$url})";
 			},
 			$text,

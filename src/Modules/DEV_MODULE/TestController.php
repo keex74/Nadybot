@@ -530,10 +530,10 @@ class TestController extends ModuleInstance {
 		$files = $this->util->getFilesInDirectory($this->path);
 		$count = count($files);
 		sort($files);
-		$blob = $this->text->makeChatcmd('All Tests', '/tell <myname> test all') . "\n";
+		$blob = Text::makeChatcmd('All Tests', '/tell <myname> test all') . "\n";
 		foreach ($files as $file) {
 			$name = str_replace('.txt', '', $file);
-			$blob .= $this->text->makeChatcmd($name, "/tell <myname> test {$name}") . "\n";
+			$blob .= Text::makeChatcmd($name, "/tell <myname> test {$name}") . "\n";
 		}
 		$msg = $this->text->makeBlob("Tests Available ({$count})", $blob);
 		$context->reply($msg);

@@ -151,8 +151,8 @@ class GauntletInventoryController extends ModuleInstance {
 			$numArmors = 1;
 		}
 		// Do blob box
-		$gauTradeCmd = $this->text->makeChatcmd('<symbol>gautrade', '/tell <myname> gautrade');
-		$gauListMask = $this->text->makeChatcmd('%d Armor', "/tell <myname> gaulist {$name} %d");
+		$gauTradeCmd = Text::makeChatcmd('<symbol>gautrade', '/tell <myname> gautrade');
+		$gauListMask = Text::makeChatcmd('%d Armor', "/tell <myname> gaulist {$name} %d");
 		$list = "Tradeskill: [{$gauTradeCmd}]\n" .
 			'Needed items for: ['.
 			sprintf($gauListMask, 1, 1) . '|' .
@@ -161,13 +161,13 @@ class GauntletInventoryController extends ModuleInstance {
 		$list .= "<header2>Items needed for {$numArmors} Bastion armor parts<end>\n".
 			"<tab>[ + increase amount | <green>Amount you have<end> | <red>Amount you still need<end> | - decrease amount ]\n\n";
 
-		$incLink = $this->text->makeChatcmd(' + ', "/tell <myname> gaulist add {$name} %d");
-		$decLink = $this->text->makeChatcmd(' - ', "/tell <myname> gaulist del {$name} %d");
+		$incLink = Text::makeChatcmd(' + ', "/tell <myname> gaulist add {$name} %d");
+		$decLink = Text::makeChatcmd(' - ', "/tell <myname> gaulist del {$name} %d");
 		$headerLine = '<tab>';
 		$line = '<tab>';
 		for ($i = 0; $i <= 16; $i++) {
 			$data = $this->gaulisttab[$i];
-			$itemLink = $this->text->makeItem($data[0], $data[0], 1, $this->text->makeImage($data[1]));
+			$itemLink = Text::makeItem($data[0], $data[0], 1, Text::makeImage($data[1]));
 			$headerLine .= "    {$itemLink}    ";
 			$line .= '['.
 				sprintf($incLink, $i).
@@ -184,7 +184,7 @@ class GauntletInventoryController extends ModuleInstance {
 				$line = '<tab>';
 			}
 		}
-		$refreshLink = $this->text->makeChatcmd('Refresh', "/tell <myname> gaulist {$name} {$numArmors}");
+		$refreshLink = Text::makeChatcmd('Refresh', "/tell <myname> gaulist {$name} {$numArmors}");
 		$list .= "\n<tab>[{$refreshLink}]";
 		$blob = (array)$this->text->makeBlob("Bastion inventory for {$name}", $list);
 		foreach ($blob as &$page) {

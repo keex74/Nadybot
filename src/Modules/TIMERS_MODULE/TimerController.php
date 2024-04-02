@@ -418,7 +418,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 			$name = $timer->name;
 			$owner = $timer->owner;
 
-			$remove_link = $this->text->makeChatcmd('Remove', "/tell <myname> timers rem {$timer->id}");
+			$remove_link = Text::makeChatcmd('Remove', "/tell <myname> timers rem {$timer->id}");
 
 			$repeatingInfo = '';
 			if ($timer->callback === 'timercontroller.repeatingTimerCallback') {

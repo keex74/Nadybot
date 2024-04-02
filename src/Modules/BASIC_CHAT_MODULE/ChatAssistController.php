@@ -147,7 +147,7 @@ class ChatAssistController extends ModuleInstance {
 	public function getAssistMessage(): string {
 		$blob = '';
 		foreach ($this->callers as $name => $callerList) {
-			$clearLink = $this->text->makeChatcmd('Clear', "/tell <myname> callers clear {$callerList->name}");
+			$clearLink = Text::makeChatcmd('Clear', "/tell <myname> callers clear {$callerList->name}");
 			if (strlen($name)) {
 				$blob .= "<header2>{$callerList->name} [{$clearLink}]<end>\n";
 			} else {
@@ -156,9 +156,9 @@ class ChatAssistController extends ModuleInstance {
 			for ($i = 0; $i < count($callerList->callers); $i++) {
 				$caller = $callerList->callers[$i]->name;
 				$blob .= '<tab>' . ($i + 1) . '. <highlight>' . $caller . '<end>'.
-					' [' . $this->text->makeChatcmd('Macro', "/macro {$caller} /assist {$caller}") . ']'.
-					' [' . $this->text->makeChatcmd('Assist', "/assist {$caller}") . ']'.
-					' [' . $this->text->makeChatcmd('Remove', "/tell <myname> callers rem {$name}.{$caller}") . ']'.
+					' [' . Text::makeChatcmd('Macro', "/macro {$caller} /assist {$caller}") . ']'.
+					' [' . Text::makeChatcmd('Assist', "/assist {$caller}") . ']'.
+					' [' . Text::makeChatcmd('Remove', "/tell <myname> callers rem {$name}.{$caller}") . ']'.
 					"\n";
 			}
 			$blob .= "\n<tab>Macro: <highlight>/macro ";
@@ -169,7 +169,7 @@ class ChatAssistController extends ModuleInstance {
 			}
 			$blob .= ' /assist ' . implode(' \\n /assist ', $callerList->getNames());
 			$blob .= "<end>\n<tab>Once: ".
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					'Assist',
 					'/assist ' . implode(' \\n /assist ', $callerList->getNames())
 				);
@@ -284,8 +284,8 @@ class ChatAssistController extends ModuleInstance {
 				$context->reply("No callers found that were added by <highlight>{$assistList}<end>.");
 				return;
 			}
-			$addedBy = $this->text->arraySprintf('<highlight>%s<end>', ...$addedBy);
-			$search = $this->text->enumerate(...$addedBy);
+			$addedBy = Text::arraySprintf('<highlight>%s<end>', ...$addedBy);
+			$search = Text::enumerate(...$addedBy);
 			$msg = "All callers added by {$search} have been cleared";
 		}
 		$countAfter = $this->countCallers();
@@ -500,7 +500,7 @@ class ChatAssistController extends ModuleInstance {
 		$undo = $count = count($this->lastCallers);
 		$blob = "<header2>Last changes to callers<end>\n";
 		foreach ($this->lastCallers as $backup) {
-			$undoLink = $this->text->makeChatcmd(
+			$undoLink = Text::makeChatcmd(
 				'Undo to here',
 				"/tell <myname> callers undo {$undo}"
 			);
@@ -524,7 +524,7 @@ class ChatAssistController extends ModuleInstance {
 			return;
 		}
 		$blob = "<header2>Assist macro<end>\n".
-			'<tab>' . $this->text->makeChatcmd('Click me for a macro', "/macro {$name} /assist {$name}");
+			'<tab>' . Text::makeChatcmd('Click me for a macro', "/macro {$name} /assist {$name}");
 		$context->reply(
 			$this->text->blobWrap(
 				'Please all ',
@@ -584,8 +584,8 @@ class ChatAssistController extends ModuleInstance {
 		$this->callers['']->creator = $context->char->name;
 		$this->callers['']->name = '';
 		$this->callers['']->callers = $pickedCallers;
-		$callers = $this->text->arraySprintf('<highlight>%s<end>', ...$callerNames);
-		$msg = 'Set ' . $this->text->enumerate(...$callers) . ' to be the new callers';
+		$callers = Text::arraySprintf('<highlight>%s<end>', ...$callerNames);
+		$msg = 'Set ' . Text::enumerate(...$callers) . ' to be the new callers';
 		$this->storeBackup($backup);
 
 		$blob = $this->getAssistMessage();

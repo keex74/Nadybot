@@ -66,7 +66,7 @@ class PlayerHistoryController extends ModuleInstance {
 				continue;
 			}
 			$ailevel = $entry->defender_rank;
-			$ailevel = $this->text->alignNumber($ailevel, 2, 'green');
+			$ailevel = Text::alignNumber($ailevel, 2, 'green');
 
 			if ($entry->faction === Faction::Omni) {
 				$faction = $entry->faction->inColor() . '    ';
@@ -84,7 +84,7 @@ class PlayerHistoryController extends ModuleInstance {
 					$guild .= " (<highlight>{$entry->guild_rank_name}<end>)";
 				}
 			}
-			$level = $this->text->alignNumber($entry->level, 3);
+			$level = Text::alignNumber($entry->level, 3);
 
 			$blob .= "{$date} <highlight>|<end>  {$level}  <highlight>|<end> {$ailevel} <highlight>|<end> {$faction} <highlight>|<end> {$entry->breed} <highlight>|<end> {$guild}\n";
 		}

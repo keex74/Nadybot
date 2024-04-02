@@ -25,8 +25,6 @@ use Nadybot\Core\{
 ]
 class RemovePopups implements EventModifier {
 	protected bool $removeLinks = false;
-	#[NCA\Inject]
-	private Text $text;
 
 	public function __construct(bool $removeLinks=false) {
 		$this->removeLinks = $removeLinks;
@@ -41,7 +39,7 @@ class RemovePopups implements EventModifier {
 			if (!isset($message)) {
 				return $event;
 			}
-			$message = $this->text->removePopups($message, $this->removeLinks);
+			$message = Text::removePopups($message, $this->removeLinks);
 			$modifiedEvent = clone $event;
 			if (isset($modifiedEvent->data) && ($modifiedEvent->data instanceof Base)) {
 				$modifiedEvent->data->message = $message;
@@ -52,7 +50,7 @@ class RemovePopups implements EventModifier {
 		if (!isset($message)) {
 			return null;
 		}
-		$message = $this->text->removePopups($message, $this->removeLinks);
+		$message = Text::removePopups($message, $this->removeLinks);
 		$modifiedEvent = clone $event;
 		$modifiedEvent->setData($message);
 		return $modifiedEvent;

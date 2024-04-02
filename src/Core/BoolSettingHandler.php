@@ -16,9 +16,9 @@ class BoolSettingHandler extends OptionsSettingHandler {
 
 	public function getModifyLink(): string {
 		if ($this->row->value === '1') {
-			return $this->text->makeChatcmd('disable', "/tell <myname> settings save {$this->row->name} 0");
+			return Text::makeChatcmd('disable', "/tell <myname> settings save {$this->row->name} 0");
 		}
-		return $this->text->makeChatcmd('enable', "/tell <myname> settings save {$this->row->name} 1");
+		return Text::makeChatcmd('enable', "/tell <myname> settings save {$this->row->name} 1");
 	}
 
 	/** @inheritDoc */

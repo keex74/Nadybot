@@ -200,7 +200,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 			$streams[] = sprintf(
 				'%s: %s',
 				$stream->id,
-				$this->text->makeChatcmd('tune in', '/start '.$stream->url)
+				Text::makeChatcmd('tune in', '/start '.$stream->url)
 			);
 		}
 		$blob .= implode("\n<tab>", $streams);

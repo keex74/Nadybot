@@ -25,7 +25,7 @@ abstract class SettingHandler {
 	}
 
 	public function getModifyLink(): string {
-		return $this->text->makeChatcmd('modify', '/tell <myname> settings change ' . $this->row->name);
+		return Text::makeChatcmd('modify', '/tell <myname> settings change ' . $this->row->name);
 	}
 
 	/** Get a displayable representation of the setting */
@@ -58,12 +58,12 @@ abstract class SettingHandler {
 		$msg = "<header2>Predefined Options<end>\n";
 		if (isset($options_map)) {
 			foreach ($options_map as $key => $label) {
-				$saveLink = $this->text->makeChatcmd('select', "/tell <myname> settings save {$this->row->name} {$key}");
+				$saveLink = Text::makeChatcmd('select', "/tell <myname> settings save {$this->row->name} {$key}");
 				$msg .= '<tab><highlight>' . htmlspecialchars($label) . "<end> [{$saveLink}]\n";
 			}
 		} else {
 			foreach ($options as $char) {
-				$saveLink = $this->text->makeChatcmd('select', "/tell <myname> settings save {$this->row->name} {$char}");
+				$saveLink = Text::makeChatcmd('select', "/tell <myname> settings save {$this->row->name} {$char}");
 				$msg .= '<tab><highlight>' . htmlspecialchars($char) . "<end> [{$saveLink}]\n";
 			}
 		}

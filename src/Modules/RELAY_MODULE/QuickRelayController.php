@@ -67,7 +67,7 @@ class QuickRelayController extends ModuleInstance {
 		];
 		$blobs = [];
 		foreach ($types as $type => $description) {
-			$runLink = $this->text->makeChatcmd(
+			$runLink = Text::makeChatcmd(
 				'instructions',
 				"/tell <myname> quickrelay {$type}"
 			);

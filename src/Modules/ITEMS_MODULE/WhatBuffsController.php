@@ -116,7 +116,7 @@ class WhatBuffsController extends ModuleInstance {
 			->distinct()
 			->asObj(Skill::class);
 		foreach ($skills as $skill) {
-			$blob .= '<tab>' . $this->text->makeChatcmd($skill->name, "/tell <myname> {$command} {$skill->name}") . "\n";
+			$blob .= '<tab>' . Text::makeChatcmd($skill->name, "/tell <myname> {$command} {$skill->name}") . "\n";
 		}
 		$blob .= "\nItem Extraction Info provided by AOIA+";
 		$msg = $this->text->makeBlob("WhatBuffs{$suffix} - Choose Skill", $blob);
@@ -231,7 +231,7 @@ class WhatBuffsController extends ModuleInstance {
 		$blob = "<header2>Choose the skill to buff<end>\n";
 		foreach ($data as $row) {
 			$blob .= '<tab>'.
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					ucfirst($row->skill),
 					"/tell <myname> {$command} {$type} {$row->skill}"
 				).
@@ -309,7 +309,7 @@ class WhatBuffsController extends ModuleInstance {
 		if ($count > 1) {
 			$blob .= "<header2>Choose a skill<end>\n";
 			foreach ($data as $row) {
-				$blob .= '<tab>' . $this->text->makeChatcmd(ucfirst($row->name), "/tell <myname> {$command} {$row->name}") . "\n";
+				$blob .= '<tab>' . Text::makeChatcmd(ucfirst($row->name), "/tell <myname> {$command} {$row->name}") . "\n";
 			}
 			$blob .= "\nItem Extraction Info provided by AOIA+";
 			$msg = $this->text->makeBlob("WhatBuffs{$suffix} - Choose Skill", $blob);
@@ -377,7 +377,7 @@ class WhatBuffsController extends ModuleInstance {
 		}
 		$blob = "<header2>Choose buff type<end>\n";
 		foreach ($data as $row) {
-			$blob .= '<tab>' . $this->text->makeChatcmd(ucfirst($row->item_type), "/tell <myname> {$command} {$row->item_type} {$skillName}") . " ({$row->num})\n";
+			$blob .= '<tab>' . Text::makeChatcmd(ucfirst($row->item_type), "/tell <myname> {$command} {$row->item_type} {$skillName}") . " ({$row->num})\n";
 		}
 		$blob .= "\nItem Extraction Info provided by AOIA+";
 		$msg = $this->text->makeBlob("WhatBuffs{$suffix} {$skillName} - Choose Type", $blob);
@@ -572,7 +572,7 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	public function showItemLink(AODBEntry $item, int $ql): string {
-		return $this->text->makeItem($item->lowid, $item->highid, $ql, $item->name);
+		return Text::makeItem($item->lowid, $item->highid, $ql, $item->name);
 	}
 
 	/**
@@ -638,7 +638,7 @@ class WhatBuffsController extends ModuleInstance {
 				continue;
 			}
 			$sign = ($item->amount > 0) ? '+' : '-';
-			$prefix = '<tab>' . $sign.$this->text->alignNumber(abs($item->amount), $maxDigits, 'highlight');
+			$prefix = '<tab>' . $sign.Text::alignNumber(abs($item->amount), $maxDigits, 'highlight');
 			$blob .= $prefix . $item->unit . '  ';
 			$blob .= $this->getSlotPrefix($item, $category);
 			$blob .= $this->showItemLink($item, $item->highql);
@@ -648,8 +648,8 @@ class WhatBuffsController extends ModuleInstance {
 			if ($item->amount > $item->low_amount) {
 				$blob .= " ({$item->low_amount} - {$item->amount})";
 				if ($this->commandManager->cmdEnabled('bestql')) {
-					$link = $this->text->makeItem($item->lowid, $item->highid, 0, $item->name);
-					$blob .= ' ' . $this->text->makeChatcmd(
+					$link = Text::makeItem($item->lowid, $item->highid, 0, $item->name);
+					$blob .= ' ' . Text::makeChatcmd(
 						'Breakpoints',
 						"/tell <myname> bestql {$item->lowql} {$item->low_amount} ".
 							$maxQL[$item->lowid] . ' ' . $maxAmount[$item->lowid].
@@ -733,7 +733,7 @@ class WhatBuffsController extends ModuleInstance {
 				$perk->profs = 'All';
 			}
 			$sign = ($perk->amount > 0) ? '+' : '-';
-			$prefix = "<tab>{$sign}" . $this->text->alignNumber(abs($perk->amount), $maxDigits, 'highlight');
+			$prefix = "<tab>{$sign}" . Text::alignNumber(abs($perk->amount), $maxDigits, 'highlight');
 			$blob .= $prefix . "{$perk->unit}  {$perk->name} ({$color}{$perk->profs}<end>)\n";
 		}
 
@@ -768,7 +768,7 @@ class WhatBuffsController extends ModuleInstance {
 			if ($item->ncu === 999) {
 				$item->ncu = 0;
 			}
-			$prefix = '<tab>' . $this->text->alignNumber($item->amount, $maxDigits, 'highlight');
+			$prefix = '<tab>' . Text::alignNumber($item->amount, $maxDigits, 'highlight');
 			$blob .= $prefix . $item->unit . "  <a href='itemid://53019/{$item->id}'>{$item->name}</a> ";
 			if (isset($item->low_ncu, $item->low_amount)) {
 				$blob .= "({$item->low_ncu} NCU (<highlight>{$item->low_amount}<end>) - {$item->ncu} NCU (<highlight>{$item->amount}<end>))";
@@ -776,7 +776,7 @@ class WhatBuffsController extends ModuleInstance {
 				$blob .= "({$item->ncu} NCU)";
 			}
 			if ($item->lowid > 0 && isset($item->lowql)) {
-				$blob .= ' (from ' . $this->text->makeItem($item->lowid, $item->highid??$item->lowid, $item->lowql, $item->use_name??'') . ')';
+				$blob .= ' (from ' . Text::makeItem($item->lowid, $item->highid??$item->lowid, $item->lowql, $item->use_name??'') . ')';
 			}
 			$blob .= "\n";
 		}
@@ -806,7 +806,7 @@ class WhatBuffsController extends ModuleInstance {
 			$command = 'whatbuffs' . ($froobFriendly ? 'froob' : '');
 			$suffix = $froobFriendly ? 'Froob' : '';
 			foreach ($skills as $skill) {
-				$blob .= $this->text->makeChatcmd(ucfirst($skill->name), "/tell <myname> {$command} {$category} {$skill->name}") . "\n";
+				$blob .= Text::makeChatcmd(ucfirst($skill->name), "/tell <myname> {$command} {$category} {$skill->name}") . "\n";
 			}
 			$msg = $this->text->makeBlob("WhatBuffs{$suffix} - Choose Skill", $blob);
 		}

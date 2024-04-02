@@ -188,11 +188,11 @@ class LootController extends ModuleInstance {
 		}
 		$compressedList = $this->compressLootHistory($items);
 		$rolls = $compressedList->groupBy('roll');
-		$lines = $rolls->map(function (Collection $items, int $roll): string {
+		$lines = $rolls->map(static function (Collection $items, int $roll): string {
 			/** @var LootHistory */
 			$firstItem = $items->firstOrFail();
-			$showLink = $this->text->makeChatcmd(
-				$items->count() . ' ' . $this->text->pluralize('item', $items->count()),
+			$showLink = Text::makeChatcmd(
+				$items->count() . ' ' . Text::pluralize('item', $items->count()),
 				"/tell <myname> loot history {$firstItem->roll}"
 			);
 			return '<tab>' . Util::date($firstItem->dt) . ' - '.
@@ -282,8 +282,8 @@ class LootController extends ModuleInstance {
 		if (isset($lastOnly)) {
 			$items = $items->where('roll', $items->firstOrFail()->roll);
 		}
-		$lines = $items->map(function (LootHistory $item): string {
-			$rollLink = $this->text->makeChatcmd(
+		$lines = $items->map(static function (LootHistory $item): string {
+			$rollLink = Text::makeChatcmd(
 				Util::date($item->dt),
 				"/tell <myname> loot history {$item->roll}"
 			);
@@ -342,7 +342,7 @@ class LootController extends ModuleInstance {
 		$compressedList = $this->compressLootHistory($items);
 
 		$lines = $compressedList->map(function (LootHistory $item): string {
-			$rollLink = $this->text->makeChatcmd(
+			$rollLink = Text::makeChatcmd(
 				Util::date($item->dt),
 				"/tell <myname> loot history {$item->roll}"
 			);
@@ -567,7 +567,7 @@ class LootController extends ModuleInstance {
 			$item->multiloot = $multiloot;
 
 			if (isset($itemHighID)) {
-				$item->display = $this->text->makeItem($itemLowID??$itemHighID, $itemHighID, $itemQL??1, $itemName);
+				$item->display = Text::makeItem($itemLowID??$itemHighID, $itemHighID, $itemQL??1, $itemName);
 			} else {
 				$item->display = $itemName;
 			}
@@ -667,7 +667,7 @@ class LootController extends ModuleInstance {
 		$numItems = 0;
 		foreach ($this->residual as $key => $item) {
 			if ($item->icon !== null && $this->showLootPics) {
-				$list .= $this->text->makeImage($item->icon) . "\n";
+				$list .= Text::makeImage($item->icon) . "\n";
 			}
 
 			$ml = '';
@@ -799,9 +799,9 @@ class LootController extends ModuleInstance {
 		// Show winner list
 		if (!empty($this->residual)) {
 			$list .= "\n\n".
-				$this->text->makeChatcmd('Reroll remaining items', '/tell <myname> reroll').
+				Text::makeChatcmd('Reroll remaining items', '/tell <myname> reroll').
 				'<tab>'.
-				$this->text->makeChatcmd('Announce remaining items FFA', '/tell <myname> ffa');
+				Text::makeChatcmd('Announce remaining items FFA', '/tell <myname> ffa');
 		}
 		$msg = $this->text->makeBlob('Winner List', $list);
 		if (!empty($this->residual)) {
@@ -905,18 +905,18 @@ class LootController extends ModuleInstance {
 			return $msg;
 		}
 
-		$flatroll = $this->text->makeChatcmd('<symbol>flatroll', '/tell <myname> flatroll');
+		$flatroll = Text::makeChatcmd('<symbol>flatroll', '/tell <myname> flatroll');
 		$list = "Use {$flatroll} to roll.\n\n";
 		$players = 0;
 		$items = count($this->loot);
 		foreach ($this->loot as $key => $item) {
-			$add = $this->text->makeChatcmd('add', "/tell <myname> add {$key}");
-			$rem = $this->text->makeChatcmd('remove', '/tell <myname> rem');
+			$add = Text::makeChatcmd('add', "/tell <myname> add {$key}");
+			$rem = Text::makeChatcmd('remove', '/tell <myname> rem');
 			$added_players = count($item->users);
 			$players += $added_players;
 
 			if ($item->icon !== null && $this->showLootPics) {
-				$list .= $this->text->makeImage($item->icon) . "\n";
+				$list .= Text::makeImage($item->icon) . "\n";
 			}
 
 			$ml = '';
@@ -1058,8 +1058,8 @@ class LootController extends ModuleInstance {
 		if (count($winners) === 0) {
 			$line .= ': &lt;No one added&gt;';
 		} else {
-			$winners = $this->text->arraySprintf('<green>%s<end>', ...$winners);
-			$line .= ': ' . $this->text->enumerate(...$winners);
+			$winners = Text::arraySprintf('<green>%s<end>', ...$winners);
+			$line .= ': ' . Text::enumerate(...$winners);
 		}
 		return $line;
 	}

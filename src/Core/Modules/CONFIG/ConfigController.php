@@ -102,14 +102,14 @@ class ConfigController extends ModuleInstance {
 	public function configCommand(CmdContext $context): void {
 		$permSets = $this->commandManager->getPermissionSets();
 		$blob = "<header2>Quick config<end>\n".
-			$permSets->map(function (CmdPermissionSet $set): string {
+			$permSets->map(static function (CmdPermissionSet $set): string {
 				return '<tab>' . ucfirst(strtolower($set->name)) . ' Commands [' .
-					$this->text->makeChatcmd('enable all', '/tell <myname> config cmd enable ' . $set->name) . '] [' .
-					$this->text->makeChatcmd('disable all', '/tell <myname> config cmd disable ' . $set->name) . ']';
+					Text::makeChatcmd('enable all', '/tell <myname> config cmd enable ' . $set->name) . '] [' .
+					Text::makeChatcmd('disable all', '/tell <myname> config cmd disable ' . $set->name) . ']';
 			})->join("\n").
 			"\n<tab>ALL Commands [" .
-				$this->text->makeChatcmd('enable all', '/tell <myname> config cmd enable all') . '] [' .
-				$this->text->makeChatcmd('disable all', '/tell <myname> config cmd disable all') . "]\n\n\n";
+				Text::makeChatcmd('enable all', '/tell <myname> config cmd enable all') . '] [' .
+				Text::makeChatcmd('disable all', '/tell <myname> config cmd disable all') . "]\n\n\n";
 		$modules = $this->getModules();
 
 		foreach ($modules as $module) {
@@ -123,15 +123,15 @@ class ConfigController extends ModuleInstance {
 				$a = '<off>Disabled<end>';
 			}
 
-			$c = '[' . $this->text->makeChatcmd('configure', "/tell <myname> config {$module->name}") . ']';
+			$c = '[' . Text::makeChatcmd('configure', "/tell <myname> config {$module->name}") . ']';
 
 			$on = '<black>[ON]<end>';
 			if ($numDisabled > 0) {
-				$on = '[' . $this->text->makeChatcmd('ON', "/tell <myname> config mod {$module->name} enable all") . ']';
+				$on = '[' . Text::makeChatcmd('ON', "/tell <myname> config mod {$module->name} enable all") . ']';
 			}
 			$off = '<black>[OFF]<end>';
 			if ($numEnabled > 0) {
-				$off = '[' . $this->text->makeChatcmd('OFF', "/tell <myname> config mod {$module->name} disable all") . ']';
+				$off = '[' . Text::makeChatcmd('OFF', "/tell <myname> config mod {$module->name} disable all") . ']';
 			}
 			$blob .= "{$on} {$off} {$c} " . strtoupper($module->name) . " ({$a})\n";
 		}
@@ -616,8 +616,8 @@ class ConfigController extends ModuleInstance {
 		$module = strtoupper($module());
 		$found = false;
 
-		$on = $this->text->makeChatcmd('enable', "/tell <myname> config mod {$module} enable all");
-		$off = $this->text->makeChatcmd('disable', "/tell <myname> config mod {$module} disable all");
+		$on = Text::makeChatcmd('enable', "/tell <myname> config mod {$module} enable all");
+		$off = Text::makeChatcmd('disable', "/tell <myname> config mod {$module} disable all");
 
 		$blob = "Enable/disable entire module: [{$on}] [{$off}]\n";
 		$description = $this->getModuleDescription($module);
@@ -625,8 +625,8 @@ class ConfigController extends ModuleInstance {
 			$description = implode('<br><tab>', explode("\n", $description));
 			$description = preg_replace_callback(
 				"/(https?:\/\/[^\s\n<]+)/s",
-				function (array $matches): string {
-					return $this->text->makeChatcmd($matches[1], "/start {$matches[1]}");
+				static function (array $matches): string {
+					return Text::makeChatcmd($matches[1], "/start {$matches[1]}");
 				},
 				$description
 			);
@@ -664,19 +664,19 @@ class ConfigController extends ModuleInstance {
 			if ($row->cmdevent === 'cmd') {
 				$enabled = array_column($row->permissions, 'enabled');
 				if (in_array(false, $enabled, true)) {
-					$statusLinks []= $this->text->makeChatcmd('enable', "/tell <myname> config cmd {$row->cmd} enable all");
+					$statusLinks []= Text::makeChatcmd('enable', "/tell <myname> config cmd {$row->cmd} enable all");
 				}
 				if (in_array(true, $enabled, true)) {
-					$statusLinks []= $this->text->makeChatcmd('disable', "/tell <myname> config cmd {$row->cmd} disable all");
+					$statusLinks []= Text::makeChatcmd('disable', "/tell <myname> config cmd {$row->cmd} disable all");
 				}
-				$cmdNameLink = $this->text->makeChatcmd($row->cmd, "/tell <myname> config cmd {$row->cmd}");
+				$cmdNameLink = Text::makeChatcmd($row->cmd, "/tell <myname> config cmd {$row->cmd}");
 			} elseif ($row->cmdevent === 'subcmd') {
 				$enabled = array_column($row->permissions, 'enabled');
 				if (in_array(false, $enabled, true)) {
-					$statusLinks []= $this->text->makeChatcmd('enable', "/tell <myname> config subcmd {$row->cmd} enable all");
+					$statusLinks []= Text::makeChatcmd('enable', "/tell <myname> config subcmd {$row->cmd} enable all");
 				}
 				if (in_array(true, $enabled, true)) {
-					$statusLinks []= $this->text->makeChatcmd('disable', "/tell <myname> config subcmd {$row->cmd} disable all");
+					$statusLinks []= Text::makeChatcmd('disable', "/tell <myname> config subcmd {$row->cmd} disable all");
 				}
 
 				/** @psalm-suppress PossiblyUndefinedArrayOffset */
@@ -714,9 +714,9 @@ class ConfigController extends ModuleInstance {
 		}
 		foreach ($data as $row) {
 			if ($row->status) {
-				$statusLink = $this->text->makeChatcmd('disable', '/tell <myname> config event '.$row->type.' '.$row->file.' disable all');
+				$statusLink = Text::makeChatcmd('disable', '/tell <myname> config event '.$row->type.' '.$row->file.' disable all');
 			} else {
-				$statusLink = $this->text->makeChatcmd('enable', '/tell <myname> config event '.$row->type.' '.$row->file.' enable all');
+				$statusLink = Text::makeChatcmd('enable', '/tell <myname> config event '.$row->type.' '.$row->file.' enable all');
 			}
 
 			if ($row->status == 1) {
@@ -986,8 +986,8 @@ class ConfigController extends ModuleInstance {
 			$msg .= "{$status} (Access: {$perm->access_level})\n";
 		}
 		$msg .= 'Set status: [';
-		$msg .= $this->text->makeChatcmd('enabled', "/tell <myname> config cmd {$cmd} enable {$permSet}") . '] [';
-		$msg .= $this->text->makeChatcmd('disabled', "/tell <myname> config cmd {$cmd} disable {$permSet}") . "]\n";
+		$msg .= Text::makeChatcmd('enabled', "/tell <myname> config cmd {$cmd} enable {$permSet}") . '] [';
+		$msg .= Text::makeChatcmd('disabled', "/tell <myname> config cmd {$cmd} disable {$permSet}") . "]\n";
 
 		$msg .= 'Set access level: ';
 		$showRaidAL = $this->showRaidAL();
@@ -999,7 +999,7 @@ class ConfigController extends ModuleInstance {
 				continue;
 			}
 			$alName = $this->getAdminDescription($accessLevel);
-			$msg .= $this->text->makeChatcmd("{$alName}", "/tell <myname> config cmd {$cmd} admin {$permSet} {$accessLevel}") . '  ';
+			$msg .= Text::makeChatcmd("{$alName}", "/tell <myname> config cmd {$cmd} admin {$permSet} {$accessLevel}") . '  ';
 		}
 		$msg .= "\n";
 		return $msg;
@@ -1045,8 +1045,8 @@ class ConfigController extends ModuleInstance {
 
 			$subcmdList .= "<tab>Current Status: {$status} (Access: {$perms->access_level}) \n";
 			$subcmdList .= '<tab>Set status: [';
-			$subcmdList .= $this->text->makeChatcmd('enabled', "/tell <myname> config subcmd {$command->cmd} enable {$permSet}") . '] [';
-			$subcmdList .= $this->text->makeChatcmd('disabled', "/tell <myname> config subcmd {$command->cmd} disable {$permSet}") . "]\n";
+			$subcmdList .= Text::makeChatcmd('enabled', "/tell <myname> config subcmd {$command->cmd} enable {$permSet}") . '] [';
+			$subcmdList .= Text::makeChatcmd('disabled', "/tell <myname> config subcmd {$command->cmd} disable {$permSet}") . "]\n";
 
 			$subcmdList .= '<tab>Set access level: ';
 			foreach ($this->accessManager->getAccessLevels() as $accessLevel => $level) {
@@ -1057,7 +1057,7 @@ class ConfigController extends ModuleInstance {
 					continue;
 				}
 				$alName = $this->getAdminDescription($accessLevel);
-				$subcmdList .= $this->text->makeChatcmd($alName, "/tell <myname> config subcmd {$command->cmd} admin {$permSet} {$accessLevel}") . '  ';
+				$subcmdList .= Text::makeChatcmd($alName, "/tell <myname> config subcmd {$command->cmd} admin {$permSet} {$accessLevel}") . '  ';
 			}
 			$subcmdList .= "\n\n";
 		}

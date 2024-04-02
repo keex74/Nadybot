@@ -358,17 +358,17 @@ class LootListsController extends ModuleInstance {
 		$itemlink = $this->getApfItems();
 		$list = '';
 		// CRU
-		$list .= $this->text->makeImage(257_196) . "\n";
+		$list .= Text::makeImage(257_196) . "\n";
 		$list .= "Name: {$itemlink['ICE']}\n";
 		$list .= "Purpose: {$itemlink['ICEU']}\n";
 		$list .= "Note: <highlight>Drops on all Alien Playfield 5 times from the Boss.<end>\n\n";
 
 		// Token Credit Items
-		$list .= $this->text->makeImage(218_775) . "\n";
+		$list .= Text::makeImage(218_775) . "\n";
 		$list .= "Name: {$itemlink['KBAP']}\n";
-		$list .= $this->text->makeImage(218_758) . "\n";
+		$list .= Text::makeImage(218_758) . "\n";
 		$list .= "Name: {$itemlink['KVPU']}\n";
-		$list .= $this->text->makeImage(218_768) . "\n";
+		$list .= Text::makeImage(218_768) . "\n";
 		$list .= "Name: {$itemlink['KRI']}\n";
 		$list .= 'Purpose: '.
 			"<highlight>Kyr'Ozch Rank Identification, ".
@@ -379,14 +379,14 @@ class LootListsController extends ModuleInstance {
 		$list .= "Note: <highlight>Drops on all Alien Playfield from the Boss (one from each type).<end>\n\n";
 
 		// Token Board
-		$list .= $this->text->makeImage(230_855) . "\n";
+		$list .= Text::makeImage(230_855) . "\n";
 		$list .= "Name: {$itemlink['BOARD']}\n";
 		$list .= "Purpose: - {$itemlink['OTAE']}\n";
 		$list .= "<tab><tab>     - {$itemlink['CMP']}\n";
 		$list .= "Note: <highlight>Drops on all Alien Playfield from the Boss.<end>\n\n";
 
 		// Action Probability Estimator
-		$list .= $this->text->makeImage(203_502) . "\n";
+		$list .= Text::makeImage(203_502) . "\n";
 		$list .= "Name: {$itemlink['APE']}\n";
 		$list .= "Purpose: - {$itemlink['EMCH']}\n";
 		$list .= "<tab><tab>     - {$itemlink['CKCNH']}\n";
@@ -399,7 +399,7 @@ class LootListsController extends ModuleInstance {
 		$list .= "<tab><tab>     - {$itemlink['YCSH']}\n\n";
 
 		// Dynamic Gas Redistribution Valves
-		$list .= $this->text->makeImage(205_508) . "\n";
+		$list .= Text::makeImage(205_508) . "\n";
 		$list .= "Name: {$itemlink['DGRV']}\n";
 		$list .= "Purpose: - {$itemlink['HLOA']}\n";
 		$list .= "<tab><tab>     - {$itemlink['SKR2']}\n";
@@ -418,17 +418,17 @@ class LootListsController extends ModuleInstance {
 		$itemlink = $this->getApfItems();
 		$list = '';
 		// CRU
-		$list .= $this->text->makeImage(257_196) . "\n";
+		$list .= Text::makeImage(257_196) . "\n";
 		$list .= "Name: {$itemlink['ICE']}\n";
 		$list .= "Purpose: {$itemlink['ICEU']}\n";
 		$list .= "Note: <highlight>Drops on all Alien Playfield 5 times from the Boss.<end>\n\n";
 
 		// Token Credit Items
-		$list .= $this->text->makeImage(218_775) . "\n";
+		$list .= Text::makeImage(218_775) . "\n";
 		$list .= "Name: {$itemlink['KBAP']}\n";
-		$list .= $this->text->makeImage(218_758) . "\n";
+		$list .= Text::makeImage(218_758) . "\n";
 		$list .= "Name: {$itemlink['KVPU']}\n";
-		$list .= $this->text->makeImage(218_768) . "\n";
+		$list .= Text::makeImage(218_768) . "\n";
 		$list .= "Name: {$itemlink['KRI']}\n";
 		$list .= 'Purpose: '.
 			"<highlight>Kyr'Ozch Rank Identification, ".
@@ -439,19 +439,19 @@ class LootListsController extends ModuleInstance {
 		$list .= "Note: <highlight>Drops on all Alien Playfields from the Boss (one from each type).<end>\n\n";
 
 		// Token Board
-		$list .= $this->text->makeImage(230_855) . "\n";
+		$list .= Text::makeImage(230_855) . "\n";
 		$list .= "Name: {$itemlink['BOARD']}\n";
 		$list .= "Purpose: - {$itemlink['OTAE']}\n";
 		$list .= "<tab><tab>     - {$itemlink['CMP']}\n";
 		$list .= "Note: <highlight>Drops on all Alien Playfield from the Boss.<end>\n\n";
 
 		// APF Belt
-		$list .= $this->text->makeImage(11_618) . "\n";
+		$list .= Text::makeImage(11_618) . "\n";
 		$list .= "Name: {$itemlink['IAPU']}\n";
 		$list .= "Purpose: - {$itemlink['HVBCP']}\n\n";
 
 		// Notum coil
-		$list .= $this->text->makeImage(257_195) . "\n";
+		$list .= Text::makeImage(257_195) . "\n";
 		$list .= "Name: {$itemlink['NAC']}\n";
 		$list .= "Purpose: - {$itemlink['TAHSC']}\n";
 		$list .= "<tab><tab>     - {$itemlink['ONC']}\n";
@@ -472,17 +472,17 @@ class LootListsController extends ModuleInstance {
 		$list = '';
 
 		// CRU
-		$list .= $this->text->makeImage(257_196) . "\n";
+		$list .= Text::makeImage(257_196) . "\n";
 		$list .= "Name: {$itemlink['ICE']}\n";
 		$list .= "Purpose: {$itemlink['ICEU']}\n";
 		$list .= "Note: <highlight>Drops on all Alien Playfield 5 times from the Boss.<end>\n\n";
 
 		// Token Credit Items
-		$list .= $this->text->makeImage(218_775) . "\n";
+		$list .= Text::makeImage(218_775) . "\n";
 		$list .= "Name: {$itemlink['KBAP']}\n";
-		$list .= $this->text->makeImage(218_758) . "\n";
+		$list .= Text::makeImage(218_758) . "\n";
 		$list .= "Name: {$itemlink['KVPU']}\n";
-		$list .= $this->text->makeImage(218_768) . "\n";
+		$list .= Text::makeImage(218_768) . "\n";
 		$list .= "Name: {$itemlink['KRI']}\n";
 		$list .= 'Purpose: '.
 			"<highlight>Kyr'Ozch Rank Identification, ".
@@ -493,21 +493,21 @@ class LootListsController extends ModuleInstance {
 		$list .= "Note: <highlight>Drops on all Alien Playfield from the Boss (one from each type).<end>\n\n";
 
 		// Token Board
-		$list .= $this->text->makeImage(230_855) . "\n";
+		$list .= Text::makeImage(230_855) . "\n";
 		$list .= "Name:{$itemlink['BOARD']}\n";
 		$list .= "Purpose: - {$itemlink['OTAE']}\n";
 		$list .= "<tab><tab>     - {$itemlink['CMP']}\n";
 		$list .= "Note: <highlight>Drops on all Alien Playfield from the Boss.<end>\n\n";
 
 		// Energy Redistribution Unit
-		$list .= $this->text->makeImage(257_197) . "\n";
+		$list .= Text::makeImage(257_197) . "\n";
 		$list .= "Name: {$itemlink['ERU']}\n";
 		$list .= "Purpose: - {$itemlink['BOB']}\n";
 		$list .= "<tab><tab>     - {$itemlink['DVLPR']}\n";
 		$list .= "<tab><tab>     - {$itemlink['VNGW']}\n\n";
 
 		// Visible Light Remodulation Device
-		$list .= $this->text->makeImage(235_270) . "\n";
+		$list .= Text::makeImage(235_270) . "\n";
 		$list .= "Name: {$itemlink['VLRD']}\n";
 		$list .= "Purpose: - {$itemlink['DVRPR']}\n";
 		$list .= "<tab><tab>     - {$itemlink['SSSS']}\n";
@@ -590,31 +590,31 @@ class LootListsController extends ModuleInstance {
 	#[NCA\Help\Group('loot-pande')]
 	public function pandeCommand(CmdContext $context): void {
 		$list  = '<header2>The Beast<end>';
-		$list .= "\n<tab>".$this->text->makeChatcmd('All Beast Loot (long)', '/tell <myname> beast');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Beast Armor', '/tell <myname> beastarmor');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Beast Weapons', '/tell <myname> beastweaps');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Beast Stars', '/tell <myname> beaststars');
+		$list .= "\n<tab>".Text::makeChatcmd('All Beast Loot (long)', '/tell <myname> beast');
+		$list .= "\n<tab>".Text::makeChatcmd('Beast Armor', '/tell <myname> beastarmor');
+		$list .= "\n<tab>".Text::makeChatcmd('Beast Weapons', '/tell <myname> beastweaps');
+		$list .= "\n<tab>".Text::makeChatcmd('Beast Stars', '/tell <myname> beaststars');
 		$list .= "\n\n<header2>The Night Heart<end>";
-		$list .= "\n<tab>".$this->text->makeChatcmd('TNH', '/tell <myname> tnh');
+		$list .= "\n<tab>".Text::makeChatcmd('TNH', '/tell <myname> tnh');
 		$list .= "\n\n<header2>West Zodiacs<end>";
-		$list .= "\n<tab>".$this->text->makeChatcmd('Aries', '/tell <myname> aries');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Leo', '/tell <myname> leo');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Virgo', '/tell <myname> virgo');
+		$list .= "\n<tab>".Text::makeChatcmd('Aries', '/tell <myname> aries');
+		$list .= "\n<tab>".Text::makeChatcmd('Leo', '/tell <myname> leo');
+		$list .= "\n<tab>".Text::makeChatcmd('Virgo', '/tell <myname> virgo');
 		$list .= "\n\n<header2>East Zodiacs<end>";
-		$list .= "\n<tab>".$this->text->makeChatcmd('Aquarius', '/tell <myname> aquarius');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Cancer', '/tell <myname> cancer');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Gemini', '/tell <myname> gemini');
+		$list .= "\n<tab>".Text::makeChatcmd('Aquarius', '/tell <myname> aquarius');
+		$list .= "\n<tab>".Text::makeChatcmd('Cancer', '/tell <myname> cancer');
+		$list .= "\n<tab>".Text::makeChatcmd('Gemini', '/tell <myname> gemini');
 		$list .= "\n<header2>Middle Zodiacs<end>";
-		$list .= "\n<tab>".$this->text->makeChatcmd('Libra', '/tell <myname> libra');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Pisces', '/tell <myname> pisces');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Taurus', '/tell <myname> taurus');
+		$list .= "\n<tab>".Text::makeChatcmd('Libra', '/tell <myname> libra');
+		$list .= "\n<tab>".Text::makeChatcmd('Pisces', '/tell <myname> pisces');
+		$list .= "\n<tab>".Text::makeChatcmd('Taurus', '/tell <myname> taurus');
 		$list .= "\n\n<header2>North Zodiacs<end>";
-		$list .= "\n<tab>".$this->text->makeChatcmd('Capricorn', '/tell <myname> capricorn');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Sagittarius', '/tell <myname> sagittarius');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Scorpio', '/tell <myname> scorpio');
+		$list .= "\n<tab>".Text::makeChatcmd('Capricorn', '/tell <myname> capricorn');
+		$list .= "\n<tab>".Text::makeChatcmd('Sagittarius', '/tell <myname> sagittarius');
+		$list .= "\n<tab>".Text::makeChatcmd('Scorpio', '/tell <myname> scorpio');
 		$list .= "\n\n<header2>Other<end>";
-		$list .= "\n<tab>".$this->text->makeChatcmd('Shadowbreeds', '/tell <myname> sb');
-		$list .= "\n<tab>".$this->text->makeChatcmd('Bastion', '/tell <myname> bastion');
+		$list .= "\n<tab>".Text::makeChatcmd('Shadowbreeds', '/tell <myname> sb');
+		$list .= "\n<tab>".Text::makeChatcmd('Bastion', '/tell <myname> bastion');
 
 		$list .= "\n\nPandemonium Loot By Marinerecon (RK2)";
 
@@ -711,17 +711,17 @@ class LootListsController extends ModuleInstance {
 	public function halloweenCommand(CmdContext $context): void {
 		$guph = "Griefing Uncle Pumpkin-Heads can be found at the following locations:\n".
 			'<tab>- Level <black>0<end>10-<black>0<end>50: '.
-			$this->text->makeChatcmd('Holes in the Wall', '/waypoint 504 306 791') . "\n".
+			Text::makeChatcmd('Holes in the Wall', '/waypoint 504 306 791') . "\n".
 			'<tab>- Level <black>0<end>50-100: '.
-			$this->text->makeChatcmd('Stret West Bank', '/waypoint 1411 1428 790') . "\n".
+			Text::makeChatcmd('Stret West Bank', '/waypoint 1411 1428 790') . "\n".
 			'<tab>- Level 100-150: '.
-			$this->text->makeChatcmd('2HO east of the grid', '/waypoint 850 1460 635') . "\n".
+			Text::makeChatcmd('2HO east of the grid', '/waypoint 850 1460 635') . "\n".
 			'<tab>- Level 125-180: '.
-			$this->text->makeChatcmd('4 Holes at the ferry', '/waypoint 1960 942 760') . "\n".
+			Text::makeChatcmd('4 Holes at the ferry', '/waypoint 1960 942 760') . "\n".
 			'<tab>- Level 150-200: '.
-			$this->text->makeChatcmd('Upper Stret East Bank', '/waypoint 1770 2391 650') . "\n".
+			Text::makeChatcmd('Upper Stret East Bank', '/waypoint 1770 2391 650') . "\n".
 			'<tab>- Level 200-250: '.
-			$this->text->makeChatcmd('Broken Shores along the river', '/waypoint 1266 1889 665') . "\n".
+			Text::makeChatcmd('Broken Shores along the river', '/waypoint 1266 1889 665') . "\n".
 			"<tab>- Level <black>00<end>1-300: Notum Mining Area\n";
 		$blob = Safe::pregReplace("/(<header2>.*?<end>\n)/", "$1\n{$guph}", $this->findRaidLoot('Halloween', 'Griefing Uncle Pumpkin-Head', $context));
 		$blob .= "\n<pagebreak><header2>Ganking Uncle Pumpkin-Head<end>\n\n".
@@ -772,19 +772,19 @@ class LootListsController extends ModuleInstance {
 			/** @var RaidLoot $row */
 			$actions = [];
 			if ($lootEnabled && $this->showLootLootLinks) {
-				$actions []= $this->text->makeChatcmd(
+				$actions []= Text::makeChatcmd(
 					'loot',
 					"/tell <myname> loot add {$row->id}"
 				);
 			}
 			if ($lootEnabled && $auctionsEnabled && $this->showLootAuctionLinks) {
-				$actions []= $this->text->makeChatcmd(
+				$actions []= Text::makeChatcmd(
 					'auction',
 					"/tell <myname> loot auction {$row->id}"
 				);
 			}
 			if ($lootEnabled && $rafflesEnabled && $this->showLootRaffleLinks) {
-				$actions []= $this->text->makeChatcmd(
+				$actions []= Text::makeChatcmd(
 					'raffle',
 					"/tell <myname> loot raffle {$row->id}"
 				);
@@ -798,7 +798,7 @@ class LootListsController extends ModuleInstance {
 						$blob .= '[' . implode('] [', $actions) . '] - ';
 					}
 				}
-				$blob .= $this->text->makeItem($row->item->lowid, $row->item->highid, $row->ql, $name);
+				$blob .= Text::makeItem($row->item->lowid, $row->item->highid, $row->ql, $name);
 			} else {
 				if (count($actions)) {
 					$blob .= '[' . implode('] [', $actions) . '] - ';
@@ -816,7 +816,7 @@ class LootListsController extends ModuleInstance {
 			}
 			if ($showLootPics) {
 				$blob .= "\n";
-				$blob .= $this->text->makeChatcmd('To Loot', "/tell <myname> loot add {$row->id}");
+				$blob .= Text::makeChatcmd('To Loot', "/tell <myname> loot add {$row->id}");
 				$blob .= "\n";
 			}
 			$blob .= "\n";
@@ -833,18 +833,18 @@ class LootListsController extends ModuleInstance {
 	#[NCA\HandlesCommand('lox')]
 	#[NCA\Help\Group('loot-lox')]
 	public function loxCommand(CmdContext $context): void {
-		$list  = $this->text->makeChatcmd('Ground Chief Vortexx', '/tell <myname> vortexx');
+		$list  = Text::makeChatcmd('Ground Chief Vortexx', '/tell <myname> vortexx');
 		$list .= "\n<tab>- Eye\n";
 		$list .= "<tab>- Left Arm\n";
 		$list .= "<tab>- Right Wrist\n";
 		$list .= "<tab>- Waist\n\n";
-		$list .= $this->text->makeChatcmd('The Xan (aka 12-man)', '/tell <myname> 12m');
+		$list .= Text::makeChatcmd('The Xan (aka 12-man)', '/tell <myname> 12m');
 		$list .= "\n<tab>- Ear\n";
 		$list .= "<tab>- Right Arm\n";
 		$list .= "<tab>- Right Hand\n";
 		$list .= "<tab>- Thigh\n";
 		$list .= "<tab>- Feet\n\n";
-		$list .= $this->text->makeChatcmd('The Alien Threat (aka Mitaar)', '/tell <myname> mitaar');
+		$list .= Text::makeChatcmd('The Alien Threat (aka Mitaar)', '/tell <myname> mitaar');
 		$list .= "\n<tab>- Brain\n";
 		$list .= "<tab>- Chest\n";
 		$list .= "<tab>- Left Wrist\n";
@@ -856,45 +856,45 @@ class LootListsController extends ModuleInstance {
 	/** @return array<string,string> */
 	protected function getApfItems(): array {
 		$itemlink = [];
-		$itemlink['ICE'] = $this->text->makeItem(257_968, 257_968, 1, 'Hacker ICE-Breaker Source');
-		$itemlink['BOARD'] = $this->text->makeItem(257_706, 257_706, 1, "Kyr'Ozch Helmet");
-		$itemlink['APE'] = $this->text->makeItem(257_960, 257_960, 250, 'Action Probability Estimator');
-		$itemlink['DGRV'] = $this->text->makeItem(257_962, 257_962, 250, 'Dynamic Gas Redistribution Valves');
-		$itemlink['KBAP'] = $this->text->makeItem(257_529, 257_529, 1, "Kyr'Ozch Battlesuit Audio Processor");
-		$itemlink['KVPU'] = $this->text->makeItem(257_533, 257_533, 1, "Kyr'Ozch Video Processing Unit");
-		$itemlink['KRI'] = $this->text->makeItem(257_531, 257_531, 1, "Kyr'Ozch Rank Identification");
-		$itemlink['ICEU'] = $this->text->makeItem(257_110, 257_110, 1, 'Intrusion Countermeasure Electronics Upgrade');
-		$itemlink['OTAE'] = $this->text->makeItem(257_112, 257_112, 1, 'Omni-Tek Award - Exemplar');
-		$itemlink['CMP'] = $this->text->makeItem(257_113, 257_113, 1, 'Clan Merits - Paragon');
-		$itemlink['EMCH'] = $this->text->makeItem(257_379, 257_379, 200, "Extruder's Molybdenum Crash Helmet");
-		$itemlink['CKCNH'] = $this->text->makeItem(257_115, 257_115, 200, "Conscientious Knight Commander Nizno's Helmet");
-		$itemlink['SKCGH'] = $this->text->makeItem(257_114, 257_114, 200, "Sworn Knight Commander Genevra's Helmet");
-		$itemlink['BCOH'] = $this->text->makeItem(257_383, 257_383, 300, "Blackmane's Combined Officer's Headwear");
-		$itemlink['GCCH'] = $this->text->makeItem(257_381, 257_381, 300, "Gannondorf's Combined Commando's Headwear");
-		$itemlink['HCSH'] = $this->text->makeItem(257_384, 257_384, 300, "Haitte's Combined Sharpshooter's Headwear");
-		$itemlink['OCPH'] = $this->text->makeItem(257_377, 257_377, 300, "Odum's Combined Paramedic's Headwear");
-		$itemlink['SCMH'] = $this->text->makeItem(257_380, 257_380, 300, "Sillum's Combined Mercenary's Headwear");
-		$itemlink['YCSH'] = $this->text->makeItem(257_382, 257_382, 300, "Yakomo's Combined Scout's Headwear");
-		$itemlink['HLOA'] = $this->text->makeItem(257_128, 257_128, 300, 'High Lord of Angst');
-		$itemlink['SKR2'] = $this->text->makeItem(257_967, 257_967, 300, "Silenced Kyr'Ozch Rifle - Type 2");
-		$itemlink['SKR3'] = $this->text->makeItem(257_131, 257_131, 300, "Silenced Kyr'Ozch Rifle - Type 3");
-		$itemlink['ASC'] = $this->text->makeItem(257_126, 257_126, 300, 'Amplified Sleek Cannon');
-		$itemlink['IAPU'] = $this->text->makeItem(257_959, 257_959, 1, 'Inertial Adjustment Processing Unit');
-		$itemlink['HVBCP'] = $this->text->makeItem(257_119, 257_119, 300, "Hadrulf's Viral Belt Component Platform");
-		$itemlink['NAC'] = $this->text->makeItem(257_963, 257_963, 250, 'Notum Amplification Coil');
-		$itemlink['TAHSC'] = $this->text->makeItem(257_124, 257_124, 300, 'Twice Augmented Hellspinner Shock Cannon');
-		$itemlink['ONC'] = $this->text->makeItem(257_118, 257_118, 250, "ObiTom's Nano Calculator");
-		$itemlink['AKC12'] = $this->text->makeItem(257_143, 257_143, 300, "Amplified Kyr'Ozch Carbine - Type 12");
-		$itemlink['AKC13'] = $this->text->makeItem(257_142, 257_142, 300, "Amplified Kyr'Ozch Carbine - Type 13");
-		$itemlink['AKC5'] = $this->text->makeItem(257_144, 257_144, 300, "Amplified Kyr'Ozch Carbine - Type 5");
-		$itemlink['ERU'] = $this->text->makeItem(257_961, 257_961, 250, 'Energy Redistribution Unit');
-		$itemlink['BOB'] = $this->text->makeItem(257_147, 257_147, 300, 'Blades of Boltar');
-		$itemlink['DVLPR'] = $this->text->makeItem(257_116, 257_116, 1, "De'Valos Lava Protection Ring");
-		$itemlink['VLRD'] = $this->text->makeItem(257_964, 257_964, 250, 'Visible Light Remodulation Device');
-		$itemlink['DVRPR'] = $this->text->makeItem(257_117, 257_117, 1, "De'Valos Radiation Protection Ring");
-		$itemlink['SSSS'] = $this->text->makeItem(257_141, 257_141, 300, 'Scoped Salabim Shotgun Supremo');
-		$itemlink['EPP'] = $this->text->makeItem(258_345, 258_345, 300, "Explosif's Polychromatic Pillows");
-		$itemlink['VNGW'] = $this->text->makeItem(257_123, 257_123, 300, 'Vektor ND Grand Wyrm');
+		$itemlink['ICE'] = Text::makeItem(257_968, 257_968, 1, 'Hacker ICE-Breaker Source');
+		$itemlink['BOARD'] = Text::makeItem(257_706, 257_706, 1, "Kyr'Ozch Helmet");
+		$itemlink['APE'] = Text::makeItem(257_960, 257_960, 250, 'Action Probability Estimator');
+		$itemlink['DGRV'] = Text::makeItem(257_962, 257_962, 250, 'Dynamic Gas Redistribution Valves');
+		$itemlink['KBAP'] = Text::makeItem(257_529, 257_529, 1, "Kyr'Ozch Battlesuit Audio Processor");
+		$itemlink['KVPU'] = Text::makeItem(257_533, 257_533, 1, "Kyr'Ozch Video Processing Unit");
+		$itemlink['KRI'] = Text::makeItem(257_531, 257_531, 1, "Kyr'Ozch Rank Identification");
+		$itemlink['ICEU'] = Text::makeItem(257_110, 257_110, 1, 'Intrusion Countermeasure Electronics Upgrade');
+		$itemlink['OTAE'] = Text::makeItem(257_112, 257_112, 1, 'Omni-Tek Award - Exemplar');
+		$itemlink['CMP'] = Text::makeItem(257_113, 257_113, 1, 'Clan Merits - Paragon');
+		$itemlink['EMCH'] = Text::makeItem(257_379, 257_379, 200, "Extruder's Molybdenum Crash Helmet");
+		$itemlink['CKCNH'] = Text::makeItem(257_115, 257_115, 200, "Conscientious Knight Commander Nizno's Helmet");
+		$itemlink['SKCGH'] = Text::makeItem(257_114, 257_114, 200, "Sworn Knight Commander Genevra's Helmet");
+		$itemlink['BCOH'] = Text::makeItem(257_383, 257_383, 300, "Blackmane's Combined Officer's Headwear");
+		$itemlink['GCCH'] = Text::makeItem(257_381, 257_381, 300, "Gannondorf's Combined Commando's Headwear");
+		$itemlink['HCSH'] = Text::makeItem(257_384, 257_384, 300, "Haitte's Combined Sharpshooter's Headwear");
+		$itemlink['OCPH'] = Text::makeItem(257_377, 257_377, 300, "Odum's Combined Paramedic's Headwear");
+		$itemlink['SCMH'] = Text::makeItem(257_380, 257_380, 300, "Sillum's Combined Mercenary's Headwear");
+		$itemlink['YCSH'] = Text::makeItem(257_382, 257_382, 300, "Yakomo's Combined Scout's Headwear");
+		$itemlink['HLOA'] = Text::makeItem(257_128, 257_128, 300, 'High Lord of Angst');
+		$itemlink['SKR2'] = Text::makeItem(257_967, 257_967, 300, "Silenced Kyr'Ozch Rifle - Type 2");
+		$itemlink['SKR3'] = Text::makeItem(257_131, 257_131, 300, "Silenced Kyr'Ozch Rifle - Type 3");
+		$itemlink['ASC'] = Text::makeItem(257_126, 257_126, 300, 'Amplified Sleek Cannon');
+		$itemlink['IAPU'] = Text::makeItem(257_959, 257_959, 1, 'Inertial Adjustment Processing Unit');
+		$itemlink['HVBCP'] = Text::makeItem(257_119, 257_119, 300, "Hadrulf's Viral Belt Component Platform");
+		$itemlink['NAC'] = Text::makeItem(257_963, 257_963, 250, 'Notum Amplification Coil');
+		$itemlink['TAHSC'] = Text::makeItem(257_124, 257_124, 300, 'Twice Augmented Hellspinner Shock Cannon');
+		$itemlink['ONC'] = Text::makeItem(257_118, 257_118, 250, "ObiTom's Nano Calculator");
+		$itemlink['AKC12'] = Text::makeItem(257_143, 257_143, 300, "Amplified Kyr'Ozch Carbine - Type 12");
+		$itemlink['AKC13'] = Text::makeItem(257_142, 257_142, 300, "Amplified Kyr'Ozch Carbine - Type 13");
+		$itemlink['AKC5'] = Text::makeItem(257_144, 257_144, 300, "Amplified Kyr'Ozch Carbine - Type 5");
+		$itemlink['ERU'] = Text::makeItem(257_961, 257_961, 250, 'Energy Redistribution Unit');
+		$itemlink['BOB'] = Text::makeItem(257_147, 257_147, 300, 'Blades of Boltar');
+		$itemlink['DVLPR'] = Text::makeItem(257_116, 257_116, 1, "De'Valos Lava Protection Ring");
+		$itemlink['VLRD'] = Text::makeItem(257_964, 257_964, 250, 'Visible Light Remodulation Device');
+		$itemlink['DVRPR'] = Text::makeItem(257_117, 257_117, 1, "De'Valos Radiation Protection Ring");
+		$itemlink['SSSS'] = Text::makeItem(257_141, 257_141, 300, 'Scoped Salabim Shotgun Supremo');
+		$itemlink['EPP'] = Text::makeItem(258_345, 258_345, 300, "Explosif's Polychromatic Pillows");
+		$itemlink['VNGW'] = Text::makeItem(257_123, 257_123, 300, 'Vektor ND Grand Wyrm');
 		return $itemlink;
 	}
 }

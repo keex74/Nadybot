@@ -124,9 +124,9 @@ class QuoteController extends ModuleInstance {
 		$idList = $this->db->table('quote')
 			->whereIlike('poster', $searchParam)
 			->asObj(Quote::class)
-			->map(function (Quote $quote): string {
+			->map(static function (Quote $quote): string {
 				assert(isset($quote->id));
-				return $this->text->makeChatcmd(
+				return Text::makeChatcmd(
 					(string)$quote->id,
 					"/tell <myname> quote {$quote->id}"
 				);
@@ -140,9 +140,9 @@ class QuoteController extends ModuleInstance {
 		$idList = $this->db->table('quote')
 			->whereIlike('msg', $searchParam)
 			->asObj(Quote::class)
-			->map(function (Quote $quote): string {
+			->map(static function (Quote $quote): string {
 				assert(isset($quote->id));
-				return $this->text->makeChatcmd(
+				return Text::makeChatcmd(
 					(string)$quote->id,
 					"/tell <myname> quote {$quote->id}"
 				);
@@ -238,19 +238,19 @@ class QuoteController extends ModuleInstance {
 		$msg .= 'Action:';
 		if (!empty($this->config->general->orgName)) {
 			$msg .= ' ['.
-				$this->text->makeChatcmd('To orgchat', "/tell <myname> quote org {$row->id}").
+				Text::makeChatcmd('To orgchat', "/tell <myname> quote org {$row->id}").
 			']';
 		}
 		$msg .= ' ['.
-			$this->text->makeChatcmd('To Privchat', "/tell <myname> quote priv {$row->id}").
+			Text::makeChatcmd('To Privchat', "/tell <myname> quote priv {$row->id}").
 		"]\n\n";
 
 		$msg .= "<header2>Quotes posted by \"{$poster}\"<end>\n";
 		$idList = $this->db->table('quote')
 			->where('poster', $poster)
 			->asObj(Quote::class)
-			->map(function (Quote $row): string {
-				return $this->text->makeChatcmd(
+			->map(static function (Quote $row): string {
+				return Text::makeChatcmd(
 					(string)$row->id,
 					"/tell <myname> quote {$row->id}"
 				);

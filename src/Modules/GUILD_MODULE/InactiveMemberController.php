@@ -79,7 +79,7 @@ class InactiveMemberController extends ModuleInstance {
 			}
 			$alt->logged_off ??= 0;
 			$numInactive++;
-			$altsLink = $this->text->makeChatcmd(
+			$altsLink = Text::makeChatcmd(
 				'alts',
 				"/tell <myname> alts {$alt->main}"
 			);

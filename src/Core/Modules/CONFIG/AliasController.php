@@ -153,7 +153,7 @@ class AliasController extends ModuleInstance {
 		foreach ($grouped as $key => $aliases) {
 			$blob .= "<header2>{$key}<end>\n";
 			foreach ($aliases as $alias) {
-				$removeLink = $this->text->makeChatcmd('Remove', "/tell <myname> alias rem {$alias->alias}");
+				$removeLink = Text::makeChatcmd('Remove', "/tell <myname> alias rem {$alias->alias}");
 				if ($alias->cmd === $key) {
 					$blob .= "<tab>{$alias->alias} {$removeLink}\n";
 				} else {

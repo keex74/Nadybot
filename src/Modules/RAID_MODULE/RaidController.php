@@ -263,21 +263,21 @@ class RaidController extends ModuleInstance {
 			if ($this->raidPointsController->raidTickerRequiresLock && !$this->raid->locked) {
 				$blob .= ' (<red>not locked<end>)';
 			}
-			$sppCmd = $this->text->makeChatcmd('pause', '/tell <myname> raid spp pause');
+			$sppCmd = Text::makeChatcmd('pause', '/tell <myname> raid spp pause');
 			if ($this->raid->ticker_paused) {
-				$sppCmd = $this->text->makeChatcmd('resume', '/tell <myname> raid spp resume');
+				$sppCmd = Text::makeChatcmd('resume', '/tell <myname> raid spp resume');
 			}
 			$blob .= " [{$sppCmd}]\n";
 		} else {
 			$blob .= "<tab>Points: <highlight>Given for each kill by the raid leader(s)<end>\n";
 		}
 		$blob .= "\n[".
-			$this->text->makeChatcmd('join', '/tell <myname> raid join').
+			Text::makeChatcmd('join', '/tell <myname> raid join').
 			'] / ['.
-			$this->text->makeChatcmd('leave', '/tell <myname> raid leave').
+			Text::makeChatcmd('leave', '/tell <myname> raid leave').
 			'] the raid.';
 		$blob .= "\n\n[".
-			$this->text->makeChatcmd('go lft', '/lft <myname>').
+			Text::makeChatcmd('go lft', '/lft <myname>').
 			']';
 		return $blob;
 	}
@@ -289,7 +289,7 @@ class RaidController extends ModuleInstance {
 		$blob = "<header2>Raid Control Interface<end>\n".
 			'<tab>Raid Status: Running for <highlight>'.
 			Util::unixtimeToReadable(time() - $this->raid->started) . '<end>'.
-			' [' . $this->text->makeChatcmd('stop', '/tell <myname> raid stop') . "]\n".
+			' [' . Text::makeChatcmd('stop', '/tell <myname> raid stop') . "]\n".
 			'<tab>Points Status: ';
 		if ($this->raid->seconds_per_point > 0) {
 			$blob .= '<highlight>1 point every '.
@@ -300,7 +300,7 @@ class RaidController extends ModuleInstance {
 			$blob .= '<highlight>Given by the raid leader(s)<end>';
 			if ($sppDefault > 0) {
 				$blob .= ' ['.
-					$this->text->makeChatcmd(
+					Text::makeChatcmd(
 						'enable ticker',
 						"/tell <myname> raid spp {$sppDefault}s"
 					).
@@ -312,13 +312,13 @@ class RaidController extends ModuleInstance {
 		$blob .=  "<tab>Raiders: <highlight>{$numRaiders}<end>";
 		if ($this->raid->max_members > 0) {
 			$blob .= "/<highlight>{$this->raid->max_members}<end>";
-			$blob .= ' [' . $this->text->makeChatcmd(
+			$blob .= ' [' . Text::makeChatcmd(
 				'remove limit',
 				'/tell <myname> raid limit off'
 			) . ']';
 		} else {
 			foreach ([12, 24, 36] as $limit) {
-				$blob .= ' [' . $this->text->makeChatcmd(
+				$blob .= ' [' . Text::makeChatcmd(
 					"limit to {$limit}",
 					"/tell <myname> raid limit {$limit}"
 				) . ']';
@@ -328,22 +328,22 @@ class RaidController extends ModuleInstance {
 		$blob .= '<tab>Raid State: <highlight>';
 		if ($this->raid->locked) {
 			$blob .= 'locked<end> ['.
-				$this->text->makeChatcmd('Unlock', '/tell <myname> raid unlock').
+				Text::makeChatcmd('Unlock', '/tell <myname> raid unlock').
 				"]\n";
 		} elseif ($this->raid->max_members > 0 && $numRaiders >= $this->raid->max_members) {
 			$blob .= 'full<end> ['.
-				$this->text->makeChatcmd('remove limit', '/tell <myname> raid limit off').
+				Text::makeChatcmd('remove limit', '/tell <myname> raid limit off').
 				"]\n";
 		} else {
 			$blob .= 'open<end> ['.
-				$this->text->makeChatcmd('lock', '/tell <myname> raid lock').
+				Text::makeChatcmd('lock', '/tell <myname> raid lock').
 				"]\n";
 		}
 		$blob .= "<tab>Description: <highlight>{$this->raid->description}<end>\n";
 		$blob .= '<tab>Raid announcement: <highlight>';
 		if ($this->raid->announce_interval === 0) {
 			$blob .= 'off<end> ['.
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					'enable',
 					'/tell <myname> raid announce '.
 					$this->raidAnnouncementInterval
@@ -352,7 +352,7 @@ class RaidController extends ModuleInstance {
 		} else {
 			$interval = Util::unixtimeToReadable($this->raid->announce_interval);
 			$blob .= "every {$interval}<end> [".
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					'disable',
 					'/tell <myname> raid announce off'
 				).
@@ -692,7 +692,7 @@ class RaidController extends ModuleInstance {
 			return;
 		}
 		$context->reply(
-			"<highlight>{$numKicked} " . $this->text->pluralize('player', $numKicked).
+			"<highlight>{$numKicked} " . Text::pluralize('player', $numKicked).
 			'<end> kicked, because they are not in the raid.'
 		);
 	}
@@ -750,7 +750,7 @@ class RaidController extends ModuleInstance {
 		foreach ($raids as $raid) {
 			$time = (new DateTimeImmutable())->setTimestamp($raid->started)->format('Y-m-d H:i:s');
 			$avgPoints = round($raid->points / $raid->raiders, 1);
-			$detailsCmd = $this->text->makeChatcmd(
+			$detailsCmd = Text::makeChatcmd(
 				'details',
 				"/tell <myname> raid history {$raid->raid_id}"
 			);
@@ -803,12 +803,12 @@ class RaidController extends ModuleInstance {
 		$blob = $this->getRaidSummary($raid);
 		$blob .= "\n<header2>Raiders and points<end>\n";
 		foreach ($raiders as $raider) {
-			$detailsCmd = $this->text->makeChatcmd(
+			$detailsCmd = Text::makeChatcmd(
 				$raider->username,
 				"/tell <myname> raid history {$raid->raid_id} {$raider->username}"
 			);
 			$main = $this->altsController->getMainOf($raider->username);
-			$blob .= $this->text->alignNumber($raider->delta, 7).
+			$blob .= Text::alignNumber($raider->delta, 7).
 				" - {$detailsCmd}";
 			if ($raider->username !== $main) {
 				$blob .= " (<highlight>{$main}<end>)";
@@ -877,7 +877,7 @@ class RaidController extends ModuleInstance {
 		foreach ($allLogs as $log) {
 			if ($log instanceof RaidPointsLog) {
 				$blob .= '<tab>' . Util::date($log->time) . '<tab>'.
-					$this->text->alignNumber(abs($log->delta), 5, $log->delta > 0 ? 'green' : 'red').
+					Text::alignNumber(abs($log->delta), 5, $log->delta > 0 ? 'green' : 'red').
 					' - '.
 					($log->individual ? '<highlight>' : '').
 					$log->reason.
@@ -1261,17 +1261,17 @@ class RaidController extends ModuleInstance {
 		$charNames = [];
 		foreach ($players as $name => $player) {
 			if ($player instanceof Player && isset($player->profession)) {
-				$addLink = $this->text->makeChatcmd('Add to raid', "/tell <myname> <symbol>raid add {$player->name}");
+				$addLink = Text::makeChatcmd('Add to raid', "/tell <myname> <symbol>raid add {$player->name}");
 				$profIcon = $player->profession->toIcon();
 				$blob .= "<tab>{$profIcon} {$player->name} - {$player->level}/{$player->ai_level} [{$addLink}]\n";
 				$charNames[] = $player->name;
 			} else {
-				$addLink = $this->text->makeChatcmd('Add to raid', "/tell <myname> <symbol>raid add {$name}");
+				$addLink = Text::makeChatcmd('Add to raid', "/tell <myname> <symbol>raid add {$name}");
 				$blob .= "<tab>{$name} [{$addLink}]\n";
 				$charNames[] = $name;
 			}
 		}
-		$addAllLink = $this->text->makeChatcmd(
+		$addAllLink = Text::makeChatcmd(
 			'Add all to the raid',
 			'/tell <myname> <symbol>raid add ' . implode(' ', $charNames)
 		);

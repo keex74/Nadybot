@@ -46,7 +46,7 @@ class CacheController extends ModuleInstance {
 	public function cacheCommand(CmdContext $context): void {
 		$blob = '';
 		foreach ($this->cacheManager->getGroups() as $group) {
-			$blob .= $this->text->makeChatcmd($group, "/tell <myname> cache browse {$group}") . "\n";
+			$blob .= Text::makeChatcmd($group, "/tell <myname> cache browse {$group}") . "\n";
 		}
 		$msg = $this->text->makeBlob('Cache Groups', $blob);
 		$context->reply($msg);
@@ -68,8 +68,8 @@ class CacheController extends ModuleInstance {
 				continue;
 			}
 			$blob .= "<highlight>{$file}<end>  " . Util::bytesConvert($fileInfo['size']) . ' - Last modified ' . Util::date($fileInfo['mtime']);
-			$blob .= '  [' . $this->text->makeChatcmd('View', "/tell <myname> cache view {$group} {$file}") . ']';
-			$blob .= '  [' . $this->text->makeChatcmd('Delete', "/tell <myname> cache rem {$group} {$file}") . "]\n";
+			$blob .= '  [' . Text::makeChatcmd('View', "/tell <myname> cache view {$group} {$file}") . ']';
+			$blob .= '  [' . Text::makeChatcmd('Delete', "/tell <myname> cache rem {$group} {$file}") . "]\n";
 		}
 		$msg = $this->text->makeBlob("Cache Group: {$group}", $blob);
 		$context->reply($msg);

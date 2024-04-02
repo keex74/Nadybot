@@ -1200,7 +1200,7 @@ class DiscordGatewayController extends ModuleInstance {
 					if (!isset($guild)) {
 						continue;
 					}
-					$joinLink = $this->text->makeChatcmd(
+					$joinLink = Text::makeChatcmd(
 						'request invite',
 						"/tell <myname> discord invite {$guild->id}"
 					);
@@ -1589,7 +1589,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		if (isset($event->user_count)) {
 			$blob .= "\n<tab>Attending: <highlight>{$event->user_count} ".
-			$this->text->pluralize('person', $event->user_count).
+			Text::pluralize('person', $event->user_count).
 			'<end>';
 		}
 		return $blob;
@@ -1803,7 +1803,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$joinLink = '';
 		$leaveLink = '';
 		if ($this->commandManager->couldRunCommand($context, "discord leave {$guild->id}")) {
-			$leaveLink = ' [' . $this->text->makeChatcmd(
+			$leaveLink = ' [' . Text::makeChatcmd(
 				'kick bot',
 				"/tell <myname> discord leave {$guild->id}"
 			) . ']';
@@ -1816,7 +1816,7 @@ class DiscordGatewayController extends ModuleInstance {
 			->exists();
 		$canRunJoin = $this->commandManager->couldRunCommand($context, "discord join {$guild->id}");
 		if ($canRunJoin && !$isLinked && isset($this->invites[$guild->id])) {
-			$joinLink = ' [' . $this->text->makeChatcmd(
+			$joinLink = ' [' . Text::makeChatcmd(
 				'request invite',
 				"/tell <myname> discord join {$guild->id}"
 			) . ']';
@@ -2288,7 +2288,7 @@ class DiscordGatewayController extends ModuleInstance {
 					$blob .= "for <highlight>{$charInvite->character}<end>";
 				} else {
 					$blob .= "code <highlight>{$invite->code}<end> [".
-						$this->text->makeChatcmd(
+						Text::makeChatcmd(
 							'join',
 							"/start https://discord.gg/{$invite->code}",
 						) . ']';
@@ -2315,7 +2315,7 @@ class DiscordGatewayController extends ModuleInstance {
 	/** @return string[] */
 	private function getInviteReply(DiscordChannelInvite $invite): array {
 		$guildName = $invite->guild->name ?? 'Discord server';
-		$joinLink = $this->text->makeChatcmd('this link', "/start https://discord.gg/{$invite->code}");
+		$joinLink = Text::makeChatcmd('this link', "/start https://discord.gg/{$invite->code}");
 		$blob = "<header2>Join Discord<end>\n\n".
 			"Use {$joinLink} to join " . htmlentities($guildName) . ', or use the '.
 			"invite code <highlight>{$invite->code}<end>\n\n".

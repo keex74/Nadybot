@@ -138,7 +138,7 @@ class RecipeController extends ModuleInstance {
 		}
 		$blob = "<header2>Recipes containing \"{$search}\"<end>\n";
 		foreach ($data as $row) {
-			$blob .= '<tab>' . $this->text->makeChatcmd($row->name, "/tell <myname> recipe {$row->id}") . "\n";
+			$blob .= '<tab>' . Text::makeChatcmd($row->name, "/tell <myname> recipe {$row->id}") . "\n";
 		}
 
 		$msg = $this->text->makeBlob("Recipes matching '{$search}' ({$count})", $blob);
@@ -216,8 +216,8 @@ class RecipeController extends ModuleInstance {
 			unset($ingredients[$step->result]);
 		}
 		foreach ($ingredients as $ingredient) {
-			$recipe .= $this->text->makeImage($ingredient->icon) . "\n";
-			$recipe .= $this->text->makeItem($ingredient->lowid, $ingredient->highid, $ingredient->ql, $ingredient->name) . "\n\n\n";
+			$recipe .= Text::makeImage($ingredient->icon) . "\n";
+			$recipe .= Text::makeItem($ingredient->lowid, $ingredient->highid, $ingredient->ql, $ingredient->name) . "\n\n\n";
 		}
 
 		$recipe .= "<pagebreak><yellow>------------------------------<end>\n";
@@ -231,15 +231,15 @@ class RecipeController extends ModuleInstance {
 			$target = $items[$step->target];
 			$result = $items[$step->result];
 			$recipe .= '<tab>'.
-				$this->text->makeItem($source->lowid, $source->highid, $source->ql, $this->text->makeImage($source->icon)).
+				Text::makeItem($source->lowid, $source->highid, $source->ql, Text::makeImage($source->icon)).
 				'<tab><img src=tdb://id:GFX_GUI_CONTROLCENTER_BIGARROW_RIGHT_STATE1><tab>'.
-				$this->text->makeItem($target->lowid, $target->highid, $target->ql, $this->text->makeImage($target->icon)).
+				Text::makeItem($target->lowid, $target->highid, $target->ql, Text::makeImage($target->icon)).
 				'<tab><img src=tdb://id:GFX_GUI_CONTROLCENTER_BIGARROW_RIGHT_STATE1><tab>'.
-				$this->text->makeItem($result->lowid, $result->highid, $result->ql, $this->text->makeImage($result->icon)).
+				Text::makeItem($result->lowid, $result->highid, $result->ql, Text::makeImage($result->icon)).
 				"\n";
 			$recipe .= "<tab>{$source->name} ".
 				"<highlight>+<end> {$target->name} <highlight>=<end> ".
-				$this->text->makeItem($result->lowid, $result->highid, $result->ql, $result->name).
+				Text::makeItem($result->lowid, $result->highid, $result->ql, $result->name).
 				"\n";
 			if ($step->skills) {
 				$recipe .= "<tab><yellow>Skills: {$step->skills}<end>\n";
@@ -260,7 +260,7 @@ class RecipeController extends ModuleInstance {
 		$id = (int)$arr[2];
 		$row = $this->itemsController->findById($id);
 		if ($row !== null) {
-			$output = $this->text->makeItem($row->lowid, $row->highid, $row->highql, $row->name);
+			$output = Text::makeItem($row->lowid, $row->highid, $row->highql, $row->name);
 		} else {
 			$output = "#L \"{$arr[1]}\" \"/tell <myname> itemid {$arr[2]}\"";
 		}

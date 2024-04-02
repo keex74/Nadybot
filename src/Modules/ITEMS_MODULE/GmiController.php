@@ -140,8 +140,8 @@ class GmiController extends ModuleInstance {
 			if ($item->highql !== $item->lowql) {
 				$useQL .= "-{$item->highql}";
 			}
-			$itemLink = $this->text->makeItem($item->lowid, $item->highid, $item->ql, $item->name);
-			$gmiLink = $this->text->makeChatcmd('GMI', "/tell <myname> gmi {$item->lowid}");
+			$itemLink = Text::makeItem($item->lowid, $item->highid, $item->ql, $item->name);
+			$gmiLink = Text::makeChatcmd('GMI', "/tell <myname> gmi {$item->lowid}");
 			$blob .= "<tab>[{$gmiLink}] {$itemLink} (QL {$useQL})\n";
 		}
 		if ($numMatches === 0) {
@@ -210,7 +210,7 @@ class GmiController extends ModuleInstance {
 				$numBuy,
 				$numSell
 			),
-			$item->getLink($ql, $this->text->makeImage($item->icon)) . "\n\n" . $buyers . "\n\n" . $sellers
+			$item->getLink($ql, Text::makeImage($item->icon)) . "\n\n" . $buyers . "\n\n" . $sellers
 		);
 	}
 
@@ -218,17 +218,17 @@ class GmiController extends ModuleInstance {
 		if ($item->lowql !== $item->highql) {
 			return sprintf(
 				'%sx QL %s for %s from %s  (ends in %s)',
-				$this->text->alignNumber($order->count, strlen((string)$highestAmount)),
-				$this->text->alignNumber($order->ql, 3),
-				$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
+				Text::alignNumber($order->count, strlen((string)$highestAmount)),
+				Text::alignNumber($order->ql, 3),
+				Text::alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 				$order->seller,
 				Util::unixtimeToReadable($order->expiration),
 			);
 		}
 		return sprintf(
 			'%sx for %s from %s  (ends in %s)',
-			$this->text->alignNumber($order->count, strlen((string)$highestAmount)),
-			$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
+			Text::alignNumber($order->count, strlen((string)$highestAmount)),
+			Text::alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 			$order->seller,
 			Util::unixtimeToReadable($order->expiration),
 		);
@@ -240,24 +240,24 @@ class GmiController extends ModuleInstance {
 			if (isset($ql) && ($order->minQl <= $ql) && ($order->maxQl >= $ql)) {
 				$highlight = 'green';
 			}
-			$ql = $this->text->alignNumber($order->minQl, 3, $highlight) . '-'.
-				$this->text->alignNumber($order->maxQl, 3, $highlight);
+			$ql = Text::alignNumber($order->minQl, 3, $highlight) . '-'.
+				Text::alignNumber($order->maxQl, 3, $highlight);
 			if ($order->minQl === $order->maxQl) {
-				$ql = '<black>000-<end>' . $this->text->alignNumber($order->maxQl, 3, $highlight);
+				$ql = '<black>000-<end>' . Text::alignNumber($order->maxQl, 3, $highlight);
 			}
 			return sprintf(
 				'%sx QL %s for %s from %s  (ends in %s)',
-				$this->text->alignNumber($order->count, strlen((string)$highestAmount)),
+				Text::alignNumber($order->count, strlen((string)$highestAmount)),
 				$ql,
-				$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
+				Text::alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 				$order->buyer,
 				Util::unixtimeToReadable($order->expiration),
 			);
 		}
 		return sprintf(
 			'%sx for %s from %s  (ends in %s)',
-			$this->text->alignNumber($order->count, strlen((string)$highestAmount)),
-			$this->text->alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
+			Text::alignNumber($order->count, strlen((string)$highestAmount)),
+			Text::alignNumber($order->price, strlen((string)$highestPrice), 'highlight', true),
 			$order->buyer,
 			Util::unixtimeToReadable($order->expiration),
 		);

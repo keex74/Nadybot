@@ -163,7 +163,7 @@ class RaidMemberController extends ModuleInstance {
 			if (isset($source) && strncmp($source, 'aopriv', 6) === 0) {
 				$msg .= ' [' . ((array)$this->text->makeBlob(
 					'admin',
-					$this->text->makeChatcmd("Add {$player} to the raid", "/tell <myname> raid add {$player}"),
+					Text::makeChatcmd("Add {$player} to the raid", "/tell <myname> raid add {$player}"),
 					'Admin controls'
 				))[0] . ']';
 			}
@@ -442,7 +442,7 @@ class RaidMemberController extends ModuleInstance {
 				$inactive++;
 			} else {
 				$line .= '<on>active<end> '.
-					'[' . $this->text->makeChatcmd(
+					'[' . Text::makeChatcmd(
 						'Kick',
 						"/tell <myname> raid kick {$player}"
 					) . ']';
@@ -491,18 +491,18 @@ class RaidMemberController extends ModuleInstance {
 				"{$pInfo->level}/{$pInfo->ai_level} ".
 				$pInfo->faction->inColor().
 				' ['.
-				$this->text->makeChatcmd('Raid Kick', "/tell <myname> raid kick {$name}").
+				Text::makeChatcmd('Raid Kick', "/tell <myname> raid kick {$name}").
 				']';
 			$lines []= $line;
 		}
 		if (count($activePlayers) === 0) {
 			return '<highlight>No<end> players in the raid';
 		}
-		$checkCmd = $this->text->makeChatcmd(
+		$checkCmd = Text::makeChatcmd(
 			'Check all raid members',
 			'/assist ' . implode(' \\n /assist ', array_keys($activePlayers))
 		);
-		$notInCmd = $this->text->makeChatcmd(
+		$notInCmd = Text::makeChatcmd(
 			'raid notin',
 			'/tell <myname> raid notin'
 		);

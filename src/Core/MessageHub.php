@@ -524,7 +524,7 @@ class MessageHub {
 			$aoSources = [Source::ORG, Source::PRIV, Source::PUB, Source::TELL];
 			$nickName = $this->nickController->getNickname($char->name);
 			$mainChar = $this->altsController->getMainOf($char->name);
-			$routedName = $this->text->renderPlaceholders(
+			$routedName = Text::renderPlaceholders(
 				$this->msgHubCtrl->routedSenderFormat,
 				[
 					'char' => $char->name,

@@ -178,7 +178,7 @@ class MessageHubController extends ModuleInstance {
 		$blob = '<header2>Choose mute duration<end>';
 		foreach ($durations as $durationInSecs) {
 			$timeString = Util::unixtimeToReadable($durationInSecs);
-			$command = $this->text->makeChatcmd(
+			$command = Text::makeChatcmd(
 				"{$timeString}",
 				"/tell <myname> route mute {$id} {$durationInSecs}s"
 			);
@@ -374,7 +374,7 @@ class MessageHubController extends ModuleInstance {
 				'<tab><i>'.
 				implode("\n<tab>", explode("\n", trim($description))).
 				"</i>\n".
-				'<tab>[' . $this->text->makeChatcmd('details', "/tell <myname> route list mod {$mod->name}") . ']';
+				'<tab>[' . Text::makeChatcmd('details', "/tell <myname> route list mod {$mod->name}") . ']';
 			$blobs []= $entry;
 		}
 		$blob = implode("\n\n", $blobs);
@@ -489,12 +489,12 @@ class MessageHubController extends ModuleInstance {
 			return strcmp($route1->getSource(), $route2->getSource());
 		});
 		foreach ($routes as $route) {
-			$delLink = $this->text->makeChatcmd('delete', '/tell <myname> route del ' . $route->getID());
+			$delLink = Text::makeChatcmd('delete', '/tell <myname> route del ' . $route->getID());
 			$disabledUntil = $route->getDisabled();
 			$isDisabled = isset($disabledUntil) && $disabledUntil > time();
-			$disableLink = $this->text->makeChatcmd('mute', '/tell <myname> route mute ' . $route->getID());
+			$disableLink = Text::makeChatcmd('mute', '/tell <myname> route mute ' . $route->getID());
 			if ($isDisabled) {
-				$disableLink = $this->text->makeChatcmd('unmute', '/tell <myname> route mute ' . $route->getID() . ' off');
+				$disableLink = Text::makeChatcmd('unmute', '/tell <myname> route mute ' . $route->getID() . ' off');
 			}
 			$list []="[{$delLink}] [{$disableLink}] " . $this->renderRoute($route);
 		}
@@ -540,7 +540,7 @@ class MessageHubController extends ModuleInstance {
 		foreach ($grouped as $receiver => $recRoutes) {
 			$result[$receiver] = [];
 			foreach ($recRoutes as $route) {
-				$delLink = $this->text->makeChatcmd('delete', '/tell <myname> route del ' . $route->getID());
+				$delLink = Text::makeChatcmd('delete', '/tell <myname> route del ' . $route->getID());
 				$arrow = '&lt;-';
 				if ($route->getTwoWay() && $this->messageHub->getReceiver($route->getSource()) !== null) {
 					$arrow .= '&gt;';
@@ -553,9 +553,9 @@ class MessageHubController extends ModuleInstance {
 				}
 				$disabledUntil = $route->getDisabled();
 				$isDisabled = isset($disabledUntil) && $disabledUntil > time();
-				$disableLink = $this->text->makeChatcmd('mute', '/tell <myname> route mute ' . $route->getID());
+				$disableLink = Text::makeChatcmd('mute', '/tell <myname> route mute ' . $route->getID());
 				if ($isDisabled) {
-					$disableLink = $this->text->makeChatcmd('unmute', '/tell <myname> route mute ' . $route->getID() . ' off');
+					$disableLink = Text::makeChatcmd('unmute', '/tell <myname> route mute ' . $route->getID() . ' off');
 				}
 				$result[$receiver][$routeName] ??= [];
 				$result[$receiver][$routeName] []= "<tab>{$arrow} [{$delLink}] [{$disableLink}] <highlight>{$routeName}<end> ".
@@ -581,8 +581,8 @@ class MessageHubController extends ModuleInstance {
 		if (!isset($all)) {
 			$blob .= "\n\n".
 				"<i>This view does not include system messages.\n".
-				'Use ' . $this->text->makeChatcmd('<symbol>route all', '/tell <myname> route all').
-				' or ' . $this->text->makeChatcmd('<symbol>route list', '/tell <myname> route list').
+				'Use ' . Text::makeChatcmd('<symbol>route all', '/tell <myname> route all').
+				' or ' . Text::makeChatcmd('<symbol>route list', '/tell <myname> route list').
 				' to see them.</i>';
 		}
 		$msg = 'Message routes ';
@@ -615,11 +615,11 @@ class MessageHubController extends ModuleInstance {
 				$title .= "<end> via <highlight>{$color->via}";
 				$id .= " via {$color->via}";
 			}
-			$remCmd = $this->text->makeChatcmd(
+			$remCmd = Text::makeChatcmd(
 				'clear',
 				"/tell <myname> route color tag rem {$id}"
 			);
-			$pickCmd = $this->text->makeChatcmd(
+			$pickCmd = Text::makeChatcmd(
 				'pick',
 				"/tell <myname> route color tag pick {$id}"
 			);
@@ -632,11 +632,11 @@ class MessageHubController extends ModuleInstance {
 				$part .= "&lt;unset&gt; [{$pickCmd}]\n";
 			}
 
-			$remCmd = $this->text->makeChatcmd(
+			$remCmd = Text::makeChatcmd(
 				'clear',
 				"/tell <myname> route color text rem {$id}"
 			);
-			$pickCmd = $this->text->makeChatcmd(
+			$pickCmd = Text::makeChatcmd(
 				'pick',
 				"/tell <myname> route color text pick {$id}"
 			);
@@ -841,7 +841,7 @@ class MessageHubController extends ModuleInstance {
 		$colorList = ColorSettingHandler::getExampleColors();
 		$blob = "<header2>Pick a {$type} color for {$name}<end>\n";
 		foreach ($colorList as $color => $colorName) {
-			$link = $this->text->makeChatcmd(
+			$link = Text::makeChatcmd(
 				'Pick this one',
 				"/tell <myname> route color {$type} set {$id} {$color}"
 			);
@@ -865,17 +865,17 @@ class MessageHubController extends ModuleInstance {
 		$blob = "<header2>Format definitions<end>\n";
 		$blobs = [];
 		foreach ($formats as $format) {
-			$remCmd = $this->text->makeChatcmd(
+			$remCmd = Text::makeChatcmd(
 				'clear',
 				"/tell <myname> route format rem {$format->hop}"
 			);
 			if ($format->render) {
-				$switchCmd = $this->text->makeChatcmd(
+				$switchCmd = Text::makeChatcmd(
 					'disable',
 					"/tell <myname> route format render {$format->hop} false"
 				);
 			} else {
-				$switchCmd = $this->text->makeChatcmd(
+				$switchCmd = Text::makeChatcmd(
 					'enable',
 					"/tell <myname> route format render {$format->hop} true"
 				);

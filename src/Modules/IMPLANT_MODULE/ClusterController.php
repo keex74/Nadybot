@@ -48,7 +48,7 @@ class ClusterController extends ModuleInstance {
 				continue;
 			}
 			$blob .= '<tab>'.
-				$this->text->makeChatcmd(
+				Text::makeChatcmd(
 					$cluster->LongName,
 					"/tell <myname> cluster {$cluster->LongName}"
 				).
@@ -81,7 +81,7 @@ class ClusterController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$implantDesignerLink = $this->text->makeChatcmd('implant designer', '/tell <myname> implantdesigner');
+		$implantDesignerLink = Text::makeChatcmd('implant designer', '/tell <myname> implantdesigner');
 		$blob = "Click 'Add' to add cluster to {$implantDesignerLink}.\n\n";
 		foreach ($data as $cluster) {
 			/** @var SlotClusterType[] */
@@ -95,7 +95,7 @@ class ClusterController extends ModuleInstance {
 			$blob .= "<pagebreak><header2>{$cluster->LongName}<end>:\n";
 
 			foreach ($results as $row) {
-				$impDesignerLink = $this->text->makeChatcmd(
+				$impDesignerLink = Text::makeChatcmd(
 					'add',
 					"/tell <myname> implantdesigner {$row->Slot} {$row->ClusterType} {$cluster->LongName}"
 				);

@@ -75,14 +75,14 @@ class BuddylistController extends ModuleInstance {
 		$blob .= "\n";
 		if ($orphanCount > 0) {
 			$blob .= "\nUnknown: {$orphanCount} [";
-			$blob .= $this->text->makeChatcmd(
+			$blob .= Text::makeChatcmd(
 				'remove orphans',
 				'/tell <myname> <symbol>buddylist clean'
 			) . ']';
 		}
 		if ($dupeCount > 0) {
 			$blob .= "\nDuplicates: {$dupeCount} [";
-			$blob .= $this->text->makeChatcmd(
+			$blob .= Text::makeChatcmd(
 				'remove duplicates',
 				'/tell <myname> <symbol>buddylist rebalance'
 			) . ']';

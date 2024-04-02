@@ -191,7 +191,7 @@ class WhoisController extends ModuleInstance {
 			return;
 		}
 		foreach ($players as $player) {
-			$link = $this->text->makeChatcmd($player->name, "/tell <myname> lookup {$player->name}");
+			$link = Text::makeChatcmd($player->name, "/tell <myname> lookup {$player->name}");
 			$blob .= "<tab>{$link} " . Util::date($player->dt) . "\n";
 		}
 		$msg = $this->text->makeBlob("Name History for {$charID} ({$count})", $blob);
@@ -220,7 +220,7 @@ class WhoisController extends ModuleInstance {
 			return;
 		}
 		foreach ($players as $player) {
-			$link = $this->text->makeChatcmd((string)$player->charid, "/tell <myname> lookup {$player->charid}");
+			$link = Text::makeChatcmd((string)$player->charid, "/tell <myname> lookup {$player->charid}");
 			$blob .= "<tab>{$link} " . Util::date($player->dt) . "\n";
 		}
 		$msg = $this->text->makeBlob("Character Ids for {$name} ({$count})", $blob);
@@ -362,13 +362,13 @@ class WhoisController extends ModuleInstance {
 	/** @return string|string[] */
 	private function playerToWhois(?Player $whois, string $name, bool $online): string|array {
 		$charID = $this->chatBot->getUid($name);
-		$lookupNameLink = $this->text->makeChatcmd('lookup', "/tell <myname> lookup {$name}");
-		$historyNameLink = $this->text->makeChatcmd('history', "/tell <myname> history {$name}");
-		$history1NameLink = $this->text->makeChatcmd('RK1', "/tell <myname> history {$name} 1");
-		$history2NameLink = $this->text->makeChatcmd('RK2', "/tell <myname> history {$name} 2");
+		$lookupNameLink = Text::makeChatcmd('lookup', "/tell <myname> lookup {$name}");
+		$historyNameLink = Text::makeChatcmd('history', "/tell <myname> history {$name}");
+		$history1NameLink = Text::makeChatcmd('RK1', "/tell <myname> history {$name} 1");
+		$history2NameLink = Text::makeChatcmd('RK2', "/tell <myname> history {$name} 2");
 		$lookupCharIdLink = null;
 		if ($charID !== null) {
-			$lookupCharIdLink = $this->text->makeChatcmd('lookup', "/tell <myname> lookup {$charID}");
+			$lookupCharIdLink = Text::makeChatcmd('lookup', "/tell <myname> lookup {$charID}");
 		}
 
 		if ($whois === null) {
@@ -392,8 +392,8 @@ class WhoisController extends ModuleInstance {
 			$blob .= "Nickname: <highlight>{$nick}<end>\n";
 		}
 		if (isset($whois->guild) && $whois->guild !== '') {
-			$orglistLink = $this->text->makeChatcmd('see members', "/tell <myname> orglist {$whois->guild_id}");
-			$orginfoLink = $this->text->makeChatcmd('info', "/tell <myname> whoisorg {$whois->guild_id}");
+			$orglistLink = Text::makeChatcmd('see members', "/tell <myname> orglist {$whois->guild_id}");
+			$orginfoLink = Text::makeChatcmd('info', "/tell <myname> whoisorg {$whois->guild_id}");
 			$blob .= "Org: <highlight>{$whois->guild}<end> (<highlight>{$whois->guild_id}<end>) [{$orginfoLink}] [{$orglistLink}]\n";
 			$blob .= "Org Rank: <highlight>{$whois->guild_rank}<end> (<highlight>{$whois->guild_rank_id}<end>)\n";
 		}
@@ -481,7 +481,7 @@ class WhoisController extends ModuleInstance {
 			$numComments = $this->commentController->countComments(null, $whois->name);
 			if ($numComments) {
 				$comText = ($numComments > 1) ? "{$numComments} Comments" : '1 Comment';
-				$blob = $this->text->makeChatcmd("Read {$comText}", "/tell <myname> comments get {$whois->name}").
+				$blob = Text::makeChatcmd("Read {$comText}", "/tell <myname> comments get {$whois->name}").
 					' if you have the necessary access level.';
 				$msg .= ' :: ' . ((array)$this->text->makeBlob($comText, $blob))[0];
 			}

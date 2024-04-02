@@ -159,7 +159,7 @@ class AlienBioController extends ModuleInstance {
 
 			$biotypeLink = $name;
 			if ($bioinfo !== '') {
-				$biotypeLink = $this->text->makeChatcmd($name, "/tell <myname> bioinfo {$bioinfo} {$clump->ql}");
+				$biotypeLink = Text::makeChatcmd($name, "/tell <myname> bioinfo {$bioinfo} {$clump->ql}");
 			}
 			$blob .= "<header2>QL {$clump->ql} clump<end>\n".
 				"<tab>{$biotypeLink} (QL {$clump->ql})\n\n";
@@ -202,7 +202,7 @@ class AlienBioController extends ModuleInstance {
 	public function getTypeBlob(array $types): string {
 		$blob = '';
 		foreach ($types as $type) {
-			$blob .= '<tab>' . $this->text->makeChatcmd((string)$type, "/tell <myname> bioinfo {$type}") . "\n";
+			$blob .= '<tab>' . Text::makeChatcmd((string)$type, "/tell <myname> bioinfo {$type}") . "\n";
 		}
 		return $blob;
 	}
@@ -277,7 +277,7 @@ class AlienBioController extends ModuleInstance {
 		$blob = $item . "\n\n";
 		$blob .= "<highlight>Upgrades Ofab armor for:<end>\n";
 		foreach ($data as $row) {
-			$blob .= $this->text->makeChatcmd($row->profession->value, "/tell <myname> ofabarmor {$row->profession->short()}") . "\n";
+			$blob .= Text::makeChatcmd($row->profession->value, "/tell <myname> ofabarmor {$row->profession->short()}") . "\n";
 		}
 
 		return ((array)$this->text->makeBlob("{$name} (QL {$ql})", $blob))[0];
@@ -302,7 +302,7 @@ class AlienBioController extends ModuleInstance {
 		$blob = $item . "\n\n";
 		$blob .= "<highlight>Upgrades Ofab weapons:<end>\n";
 		foreach ($data as $row) {
-			$blob .= $this->text->makeChatcmd("Ofab {$row->name} Mk 1", "/tell <myname> ofabweapons {$row->name}") . "\n";
+			$blob .= Text::makeChatcmd("Ofab {$row->name} Mk 1", "/tell <myname> ofabweapons {$row->name}") . "\n";
 		}
 
 		return ((array)$this->text->makeBlob("{$name} (QL {$ql})", $blob))[0];

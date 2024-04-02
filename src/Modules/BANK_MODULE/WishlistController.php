@@ -250,14 +250,14 @@ class WishlistController extends ModuleInstance {
 				if (isset($wish->from)) {
 					$line .= " (from {$wish->from})";
 				}
-				$delLink = $this->text->makeChatcmd('del', "/tell <myname> wish rem {$wish->id}");
+				$delLink = Text::makeChatcmd('del', "/tell <myname> wish rem {$wish->id}");
 				$line .= " [{$delLink}]";
 				if ($wish->fulfilled || $wish->isExpired()) {
 					$line .= '<end>';
 				}
 				$lines []= $line;
 				foreach ($wish->fulfilments as $fulfilment) {
-					$delLink = $this->text->makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
+					$delLink = Text::makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
 					$lines []= "<tab><tab><grey>{$fulfilment->amount} given by {$fulfilment->fulfilled_by} on ".
 						Util::date($fulfilment->fulfilled_on).
 						" [{$delLink}]<end>";
@@ -495,7 +495,7 @@ class WishlistController extends ModuleInstance {
 		);
 		$context->reply(
 			"Removed <highlight>{$numDeleted} ".
-			$this->text->pluralize('wish', $numDeleted) . '<end> '.
+			Text::pluralize('wish', $numDeleted) . '<end> '.
 			'from your wishlist.'
 		);
 	}
@@ -514,7 +514,7 @@ class WishlistController extends ModuleInstance {
 		);
 		$context->reply(
 			"Removed <highlight>{$numDeleted} fulfilled ".
-			$this->text->pluralize('wish', $numDeleted) . '<end> '.
+			Text::pluralize('wish', $numDeleted) . '<end> '.
 			'from your wishlist.'
 		);
 	}
@@ -826,13 +826,13 @@ class WishlistController extends ModuleInstance {
 				if (isset($wish->expires_on)) {
 					$line .= ' (<i>expires in ' . Util::unixtimeToReadable($wish->expires_on - time(), false) . '</i>)';
 				}
-				$do1Link = $this->text->makeChatcmd('give 1', "/tell <myname> wish fulfil 1x {$wish->id}");
+				$do1Link = Text::makeChatcmd('give 1', "/tell <myname> wish fulfil 1x {$wish->id}");
 				$doAllLink = null;
 				if ($wish->getRemaining() > 1) {
-					$doAllLink = $this->text->makeChatcmd('give all', "/tell <myname> wish fulfil {$wish->id}");
+					$doAllLink = Text::makeChatcmd('give all', "/tell <myname> wish fulfil {$wish->id}");
 				}
 				if (isset($wish->from) && in_array($wish->from, $allChars)) {
-					$denyLink = $this->text->makeChatcmd('deny', "/tell <myname> wish deny {$wish->id}");
+					$denyLink = Text::makeChatcmd('deny', "/tell <myname> wish deny {$wish->id}");
 					$line .= " [{$do1Link}]";
 					if (isset($doAllLink)) {
 						$line .= " [{$doAllLink}]";
@@ -843,7 +843,7 @@ class WishlistController extends ModuleInstance {
 				foreach ($wish->fulfilments as $fulfilment) {
 					$delLink = null;
 					if (in_array($fulfilment->fulfilled_by, $allChars)) {
-						$delLink = $this->text->makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
+						$delLink = Text::makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
 					}
 					$line = "<tab><tab><grey>{$fulfilment->amount} given by {$fulfilment->fulfilled_by} on ".
 						Util::date($fulfilment->fulfilled_on);

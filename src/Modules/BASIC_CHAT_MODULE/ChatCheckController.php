@@ -46,7 +46,7 @@ class ChatCheckController extends ModuleInstance {
 			$content .= " \\n /assist {$name}";
 		}
 
-		$list = $this->text->makeChatcmd('Check Players', "/text Assisting All: {$content}");
+		$list = Text::makeChatcmd('Check Players', "/text Assisting All: {$content}");
 		$msg = $this->text->makeBlob('Check Players In Vicinity', $list);
 		$context->reply($msg);
 	}

@@ -49,7 +49,7 @@ class WhompahController extends ModuleInstance {
 
 		$blob = "<header2>All known cities with Whom-Pahs<end>\n";
 		foreach ($data as $row) {
-			$cityLink = $this->text->makeChatcmd($row->short_name, "/tell <myname> whompah {$row->short_name}");
+			$cityLink = Text::makeChatcmd($row->short_name, "/tell <myname> whompah {$row->short_name}");
 			$blob .= "<tab>{$row->city_name} ({$cityLink})\n";
 		}
 		$blob .= "\nWritten By Tyrence (RK2)\nDatabase from a Bebot module written by POD13";

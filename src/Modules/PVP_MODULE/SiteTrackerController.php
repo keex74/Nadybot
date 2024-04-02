@@ -176,8 +176,8 @@ class SiteTrackerController extends ModuleInstance {
 		if (!$this->msgHub->hasRouteFor($channel)) {
 			$privCmd = "<symbol>route add {$channel} -> aopriv";
 			$orgCmd = "<symbol>route add {$channel} -> aoorg";
-			$privLink = $this->text->makeChatcmd('do it', "/tell <myname> {$privCmd}");
-			$orgLink = $this->text->makeChatcmd('do it', "/tell <myname> {$orgCmd}");
+			$privLink = Text::makeChatcmd('do it', "/tell <myname> {$privCmd}");
+			$orgLink = Text::makeChatcmd('do it', "/tell <myname> {$orgCmd}");
 
 			$blob = "To be able to see the events that your tracker generates,\n".
 				"you need to create a route from <highlight>{$channel}<end> to where you'd\n".
@@ -313,7 +313,7 @@ class SiteTrackerController extends ModuleInstance {
 			"of patterns, separated by space.\n".
 			"Unless you specify the events you want to receive, you\n".
 			"will receive <i>all</i> events for the matching tower sites.\n".
-			'See ' . $this->text->makeChatcmd(
+			'See ' . Text::makeChatcmd(
 				'<symbol>nw track events',
 				'/tell <myname> <symbol>nw track events'
 			) . " for a list of events to use in '<highlight><symbol>nw track add<end>'.\n\n".
@@ -355,11 +355,11 @@ class SiteTrackerController extends ModuleInstance {
 
 	private function renderTracker(TrackerEntry $tracker): string {
 		$expression = Safe::pregReplace('/\s+'.implode('\s+', array_map('preg_quote', $tracker->events)).'$/', '', $tracker->expression);
-		$showSitesLink = $this->text->makeChatcmd(
+		$showSitesLink = Text::makeChatcmd(
 			'show',
 			"/tell <myname> <symbol>nw track show {$tracker->id}"
 		);
-		$deleteLink = $this->text->makeChatcmd(
+		$deleteLink = Text::makeChatcmd(
 			'delete',
 			"/tell <myname> <symbol>nw track rm {$tracker->id}"
 		);
@@ -375,8 +375,8 @@ class SiteTrackerController extends ModuleInstance {
 		} else {
 			$receivers = $this->msgHub->getReceiversFor($tracker->getChannelName());
 			if (count($receivers) > 0) {
-				$block .= "\n<tab>Routed to: " . $this->text->enumerate(
-					...$this->text->arraySprintf('<highlight>%s<end>', ...$receivers)
+				$block .= "\n<tab>Routed to: " . Text::enumerate(
+					...Text::arraySprintf('<highlight>%s<end>', ...$receivers)
 				);
 			}
 		}

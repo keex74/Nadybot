@@ -19,7 +19,7 @@ class ArrayOfTextSettingHandler extends SettingHandler {
 		$msg .= "<highlight>/tell <myname> settings save {$this->row->name} <i>text</i><end>\n\n";
 		$msg .= "To set an empty value:\n\n";
 		$msg .= "<highlight>/tell <myname> settings save {$this->row->name} ---<end> [".
-			$this->text->makeChatcmd('clear', "/tell <myname> settings save {$this->row->name} ---").
+			Text::makeChatcmd('clear', "/tell <myname> settings save {$this->row->name} ---").
 			"]\n\n";
 		return $msg;
 	}
@@ -41,8 +41,8 @@ class ArrayOfTextSettingHandler extends SettingHandler {
 			static fn (string $str): string => htmlspecialchars($str),
 			explode('|', $this->row->value ?? '<empty>')
 		);
-		return $this->text->enumerate(
-			...$this->text->arraySprintf('<highlight>%s<end>', ...$values)
+		return Text::enumerate(
+			...Text::arraySprintf('<highlight>%s<end>', ...$values)
 		);
 	}
 }

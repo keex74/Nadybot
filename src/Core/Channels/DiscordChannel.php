@@ -44,9 +44,6 @@ class DiscordChannel implements MessageReceiver {
 	#[NCA\Inject]
 	private SettingManager $settingManager;
 
-	#[NCA\Inject]
-	private Text $text;
-
 	public function __construct(string $channel, string $id) {
 		$this->channel = $channel;
 		$this->id = $id;
@@ -70,7 +67,7 @@ class DiscordChannel implements MessageReceiver {
 			$msg = $baseEvent->message;
 			$renderPath = $baseEvent->renderPath;
 			if ($baseEvent->type === Online::TYPE) {
-				$msg = $this->text->removePopups($msg);
+				$msg = Text::removePopups($msg);
 			}
 		} else {
 			$msg = $event->getData();

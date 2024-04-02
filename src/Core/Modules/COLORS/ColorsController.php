@@ -103,7 +103,7 @@ class ColorsController extends ModuleInstance {
 		$themes = $this->getThemeList();
 		$blobs = [];
 		foreach ($themes as $theme) {
-			$link = '[' . $this->text->makeChatcmd(
+			$link = '[' . Text::makeChatcmd(
 				'apply',
 				"/tell <myname> theme apply {$theme->name}"
 			) . ']';
@@ -127,7 +127,7 @@ class ColorsController extends ModuleInstance {
 		$themes = $this->getThemeList();
 		$blobs = [];
 		foreach ($themes as $theme) {
-			$link = $this->text->makeChatcmd(
+			$link = Text::makeChatcmd(
 				'apply',
 				"/tell <myname> theme apply {$theme->name}"
 			);

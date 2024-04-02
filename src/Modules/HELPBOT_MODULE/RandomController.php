@@ -80,8 +80,8 @@ class RandomController extends ModuleInstance {
 			$list []= $elem;
 		}
 		$msg = 'Randomized order: <highlight>' . implode('<end> -&gt; <highlight>', $list) . '<end>';
-		$blob = $this->text->makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
-			$this->text->makeChatcmd('Send to raid chat', "/g raid {$msg}");
+		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
+			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 		$context->reply($this->text->blobWrap(
 			$msg . ' [',
 			$this->text->makeBlob('announce', $blob, 'Announce result'),
@@ -119,8 +119,8 @@ class RandomController extends ModuleInstance {
 		}
 		[$rollNumber, $result] = $this->roll($context->char->name, $options);
 		$msg = "The roll is <highlight>{$result}<end> between {$min} and {$max}. To verify do /tell <myname> verify {$rollNumber}";
-		$blob = $this->text->makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
-			$this->text->makeChatcmd('Send to raid chat', "/g raid {$msg}");
+		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
+			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 
 		$context->reply($this->text->blobWrap(
 			$msg . ' [',
@@ -170,8 +170,8 @@ class RandomController extends ModuleInstance {
 			$msg = "The winners are {$winners} out of the possible options ".
 				$this->joinOptions($options, 'highlight') . ". To verify do /tell <myname> verify {$rollNumber}";
 		}
-		$blob = $this->text->makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
-			$this->text->makeChatcmd('Send to raid chat', "/g raid {$msg}");
+		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
+			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 
 		$context->reply($this->text->blobWrap(
 			$msg . ' [',
@@ -204,8 +204,8 @@ class RandomController extends ModuleInstance {
 		[$rollNumber, $result] = $this->roll($context->char->name, $options);
 		$msg = "The roll is <highlight>{$result}<end> out of the possible options ".
 			$this->joinOptions($options, 'highlight') . ". To verify do /tell <myname> verify {$rollNumber}";
-		$blob = $this->text->makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
-			$this->text->makeChatcmd('Send to raid chat', "/g raid {$msg}");
+		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
+			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 
 		$context->reply($this->text->blobWrap(
 			$msg . ' [',

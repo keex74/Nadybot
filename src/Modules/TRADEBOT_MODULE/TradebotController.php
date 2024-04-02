@@ -309,11 +309,11 @@ class TradebotController extends ModuleInstance {
 				}
 				$blob .= "<tab>[{$color->channel}]: <highlight>#{$color->color}<end><tab>".
 					"<font color='#{$color->color}'>[Example Tag]</font> ".
-					'[' . $this->text->makeChatcmd(
+					'[' . Text::makeChatcmd(
 						'remove',
 						"/tell <myname> tradecolor rem {$color->id}"
 					) . '] '.
-					'[' . $this->text->makeChatcmd(
+					'[' . Text::makeChatcmd(
 						'change',
 						"/tell <myname> tradecolor pick {$tradebot} {$color->channel}"
 					) . "]\n";
@@ -482,7 +482,7 @@ class TradebotController extends ModuleInstance {
 			return $message;
 		}
 		$comText = ($numComments > 1) ? "{$numComments} Comments" : '1 Comment';
-		$blob = $this->text->makeChatcmd("Read {$comText}", "/tell <myname> comments get {$match[1]}").
+		$blob = Text::makeChatcmd("Read {$comText}", "/tell <myname> comments get {$match[1]}").
 			' if you have the necessary access level.';
 		$message .= ' [' . ((array)$this->text->makeBlob($comText, $blob))[0] . ']';
 		return $message;

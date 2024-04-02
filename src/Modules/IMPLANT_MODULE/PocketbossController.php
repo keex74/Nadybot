@@ -60,7 +60,7 @@ class PocketbossController extends ModuleInstance {
 		} else {
 			$blob = '';
 			foreach ($data as $row) {
-				$pbLink = $this->text->makeChatcmd($row->pb, "/tell <myname> pocketboss {$row->pb}");
+				$pbLink = Text::makeChatcmd($row->pb, "/tell <myname> pocketboss {$row->pb}");
 				$blob .= $pbLink . "\n";
 			}
 			$msg = $this->text->makeBlob("Search results for {$search} ({$numrows})", $blob);
@@ -85,7 +85,7 @@ class PocketbossController extends ModuleInstance {
 			} else {
 				$name = "{$symb->line} {$symb->slot} Symbiant, {$symb->type} Unit Aban";
 			}
-			$symbs .= $this->text->makeItem($symb->itemid, $symb->itemid, $symb->ql, $name) . " ({$symb->ql})\n";
+			$symbs .= Text::makeItem($symb->itemid, $symb->itemid, $symb->ql, $name) . " ({$symb->ql})\n";
 		}
 
 		$blob = "Location: <highlight>{$symb->pb_location}, {$symb->bp_location}<end>\n";
@@ -323,7 +323,7 @@ class PocketbossController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$implantDesignerLink = $this->text->makeChatcmd('implant designer', '/tell <myname> implantdesigner');
+		$implantDesignerLink = Text::makeChatcmd('implant designer', '/tell <myname> implantdesigner');
 		$blob = "Click '[add]' to add symbiant to {$implantDesignerLink}.\n\n";
 		foreach ($data as $row) {
 			if (in_array($row->line, ['Alpha', 'Beta'])) {
@@ -331,13 +331,13 @@ class PocketbossController extends ModuleInstance {
 			} else {
 				$name = "{$row->line} {$row->slot} Symbiant, {$row->type} Unit Aban";
 			}
-			$blob .= '<pagebreak>' . $this->text->makeItem($row->itemid, $row->itemid, $row->ql, $name)." ({$row->ql})";
+			$blob .= '<pagebreak>' . Text::makeItem($row->itemid, $row->itemid, $row->ql, $name)." ({$row->ql})";
 			if (isset($impDesignSlot)) {
-				$impDesignerAddLink = $this->text->makeChatcmd('add', "/tell <myname> implantdesigner {$impDesignSlot} symb {$name}");
+				$impDesignerAddLink = Text::makeChatcmd('add', "/tell <myname> implantdesigner {$impDesignSlot} symb {$name}");
 				$blob .= " [{$impDesignerAddLink}]";
 			}
 			$blob .= "\n";
-			$blob .= 'Found on ' . $this->text->makeChatcmd($row->pb, "/tell <myname> pb {$row->pb}");
+			$blob .= 'Found on ' . Text::makeChatcmd($row->pb, "/tell <myname> pb {$row->pb}");
 			$blob .= "\n\n";
 		}
 		$msg = $this->text->makeBlob("Symbiant Search Results ({$numrows})", $blob);

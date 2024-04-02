@@ -576,7 +576,7 @@ class BanController extends ModuleInstance {
 	}
 
 	public function renderBannedOrg(BannedOrg $ban): string {
-		$unbanLink = $this->text->makeChatcmd('remove', "/tell <myname> orgban rem {$ban->org_id}");
+		$unbanLink = Text::makeChatcmd('remove', "/tell <myname> orgban rem {$ban->org_id}");
 		$blob = '<header2>' . ($ban->org_name ?? $ban->org_id) . "<end>\n".
 			"<tab>Banned by: <highlight>{$ban->banned_by}<end> [{$unbanLink}]\n".
 			'<tab>Ban starts: <highlight>' . Util::date($ban->start) . "<end>\n";
@@ -645,7 +645,7 @@ class BanController extends ModuleInstance {
 			$banCmd = "/tell <myname> orgban add %d {$duration} reason {$reason}";
 		}
 		foreach ($orgs as $org) {
-			$addLink = $this->text->makeChatcmd('ban', sprintf($banCmd, $org->id));
+			$addLink = Text::makeChatcmd('ban', sprintf($banCmd, $org->id));
 			$blob .= $org->faction->inColor($org->name) . " ({$org->id}) - {$org->num_members} members [{$addLink}]\n\n";
 		}
 		return $blob;

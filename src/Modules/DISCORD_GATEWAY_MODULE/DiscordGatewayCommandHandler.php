@@ -229,10 +229,10 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 			"If you haven't requested this link, then <red>reject<end> it!\n".
 			"\n".
 			'['.
-				$this->text->makeChatcmd('Accept', "/tell <myname> extauth accept {$uid}").
+				Text::makeChatcmd('Accept', "/tell <myname> extauth accept {$uid}").
 			']    '.
 			'['.
-				$this->text->makeChatcmd('Reject', "/tell <myname> extauth reject {$uid}").
+				Text::makeChatcmd('Reject', "/tell <myname> extauth reject {$uid}").
 			']';
 		$msg = $this->text->makeBlob("Request to link your account with {$context->char->name}", $blob);
 		$msg = $this->text->blobWrap('You have received a ', $msg, '.');

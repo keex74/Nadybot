@@ -147,8 +147,8 @@ class DiscordSlashCommandController extends ModuleInstance {
 		$cmds = $this->db->table(self::DB_SLASH_TABLE)
 			->orderBy('cmd')
 			->pluckStrings('cmd');
-		$lines = $cmds->map(function (string $cmd): string {
-			$delCommand = $this->text->makeChatcmd(
+		$lines = $cmds->map(static function (string $cmd): string {
+			$delCommand = Text::makeChatcmd(
 				'remove',
 				"/tell <myname> discord slash rem {$cmd}",
 			);
@@ -200,8 +200,8 @@ class DiscordSlashCommandController extends ModuleInstance {
 			if ($illegalCommands->count() !== 1) {
 				$msg = "The following commands don't exist or aren't enabled: %s";
 			}
-			$errors = $this->text->arraySprintf('<highlight>%s<end>', ...$illegalCommands->toArray());
-			$context->reply(sprintf($msg, $this->text->enumerate(...$errors)));
+			$errors = Text::arraySprintf('<highlight>%s<end>', ...$illegalCommands->toArray());
+			$context->reply(sprintf($msg, Text::enumerate(...$errors)));
 			return;
 		}
 		if ($newCommands->isEmpty()) {
@@ -314,9 +314,9 @@ class DiscordSlashCommandController extends ModuleInstance {
 			->filter(static function (CmdCfg $cmd) use ($exposedCmds): bool {
 				return !in_array($cmd->cmd, $exposedCmds);
 			})->groupBy('module')
-			->map(function (Collection $cmds, string $module): string {
-				$lines = $cmds->sortBy('cmd')->map(function (CmdCfg $cmd): string {
-					$addLink = $this->text->makeChatcmd(
+			->map(static function (Collection $cmds, string $module): string {
+				$lines = $cmds->sortBy('cmd')->map(static function (CmdCfg $cmd): string {
+					$addLink = Text::makeChatcmd(
 						'add',
 						"/tell <myname> discord slash add {$cmd->cmd}"
 					);

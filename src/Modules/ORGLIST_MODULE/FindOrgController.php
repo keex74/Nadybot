@@ -153,12 +153,12 @@ class FindOrgController extends ModuleInstance {
 			return strcasecmp($a->name, $b->name);
 		});
 		foreach ($orgs as $org) {
-			$whoisorg = $this->text->makeChatcmd('Whoisorg', "/tell <myname> whoisorg {$org->id}");
-			$orglist = $this->text->makeChatcmd('Orglist', "/tell <myname> orglist {$org->id}");
-			$orgmembers = $this->text->makeChatcmd('Orgmembers', "/tell <myname> orgmembers {$org->id}");
+			$whoisorg = Text::makeChatcmd('Whoisorg', "/tell <myname> whoisorg {$org->id}");
+			$orglist = Text::makeChatcmd('Orglist', "/tell <myname> orglist {$org->id}");
+			$orgmembers = Text::makeChatcmd('Orgmembers', "/tell <myname> orgmembers {$org->id}");
 			$blob .= "<tab>{$org->faction->inColor($org->name)} ({$org->id}) - ".
 				"<highlight>{$org->num_members}<end> ".
-				$this->text->pluralize('member', $org->num_members).
+				Text::pluralize('member', $org->num_members).
 				", {$org->governing_form->name} [{$orglist}] [{$whoisorg}] [{$orgmembers}]\n";
 		}
 		return $blob;

@@ -200,9 +200,9 @@ class GreetController extends ModuleInstance {
 		$lines = $this->db->table('fun')
 			->where('type', self::TYPE_CUSTOM)
 			->asObj(Fun::class)
-			->map(function (Fun $entry) use ($context): string {
+			->map(static function (Fun $entry) use ($context): string {
 				assert(isset($entry->id));
-				$delLink = $this->text->makeChatcmd(
+				$delLink = Text::makeChatcmd(
 					'remove',
 					'/tell <myname> ' . $context->getCommand() . ' rem ' . $entry->id
 				);

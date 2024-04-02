@@ -143,7 +143,7 @@ class NotesController extends ModuleInstance {
 			"private channel.\n".
 			'To change the format in which the bot sends reminders, '.
 			'you can use the '.
-			$this->text->makeChatcmd('!reminderformat', '/tell <myname> reminderformat').
+			Text::makeChatcmd('!reminderformat', '/tell <myname> reminderformat').
 			' command.</i>';
 		$msg = $this->text->makeBlob("Reminders for {$context->char->name} ({$count})", $blob);
 		$context->reply($msg);
@@ -356,7 +356,7 @@ class NotesController extends ModuleInstance {
 			"You can choose between one of the following formats what this tell\n".
 			"should look like:\n\n";
 		foreach ($formats as $format) {
-			$useThisLinks = $this->text->makeChatcmd(
+			$useThisLinks = Text::makeChatcmd(
 				'use this',
 				"/tell <myname> reminderformat {$format}"
 			);
@@ -385,8 +385,8 @@ class NotesController extends ModuleInstance {
 		$format = strtolower($format);
 		$formats = static::VALID_FORMATS;
 		if (!in_array($format, $formats, true)) {
-			$formats = $this->text->arraySprintf('<highlight>%s<end>', ...$formats);
-			$formatString = $this->text->enumerate(...$formats);
+			$formats = Text::arraySprintf('<highlight>%s<end>', ...$formats);
+			$formatString = Text::enumerate(...$formats);
 			$context->reply("Valid options are {$formatString}.");
 			return;
 		}
@@ -419,9 +419,9 @@ class NotesController extends ModuleInstance {
 		}
 		$blob = "<header2>Notes<end>\n".
 			"<tab>You have <highlight>{$count} ".
-			$this->text->pluralize('note', $count).
+			Text::pluralize('note', $count).
 			'<end> ['.
-			$this->text->makeChatcmd('show', '/tell <myname> notes').
+			Text::makeChatcmd('show', '/tell <myname> notes').
 			']';
 		return $blob;
 	}
@@ -468,7 +468,7 @@ class NotesController extends ModuleInstance {
 				$blob .= "\n<pagebreak><header2>{$note->added_by}<end>\n";
 				$current = $note->added_by;
 			}
-			$deleteLink = $this->text->makeChatcmd('remove', "/tell <myname> notes rem {$note->id}");
+			$deleteLink = Text::makeChatcmd('remove', "/tell <myname> notes rem {$note->id}");
 
 			$reminderLinks = $this->renderReminderLinks($note, $format);
 			if ($format === 0) {
@@ -492,15 +492,15 @@ class NotesController extends ModuleInstance {
 		];
 		$labels = $texts[$format];
 		$links = [];
-		$remindOffLink  = $this->text->makeChatcmd(
+		$remindOffLink  = Text::makeChatcmd(
 			$labels[Note::REMIND_NONE],
 			"/tell <myname> reminders set off {$note->id}"
 		);
-		$remindSelfLink = $this->text->makeChatcmd(
+		$remindSelfLink = Text::makeChatcmd(
 			$labels[Note::REMIND_SELF],
 			"/tell <myname> reminders set self {$note->id}"
 		);
-		$remindAllLink  = $this->text->makeChatcmd(
+		$remindAllLink  = Text::makeChatcmd(
 			$labels[Note::REMIND_ALL],
 			"/tell <myname> reminders set all {$note->id}"
 		);

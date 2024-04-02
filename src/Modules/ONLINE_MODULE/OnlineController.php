@@ -276,7 +276,7 @@ class OnlineController extends ModuleInstance {
 		$masks = $masks->sortBy('mask');
 		$blobs = new Collection();
 		foreach ($masks as $mask) {
-			$delLink = $this->text->makeChatcmd('remove', "/tell <myname> online hide del {$mask->id}");
+			$delLink = Text::makeChatcmd('remove', "/tell <myname> online hide del {$mask->id}");
 			$dateAdded = $mask->created_on->format('d-M-Y');
 			$blob = "<tab><highlight>{$mask->mask}<end> ".
 				"(added by {$mask->created_by} on {$dateAdded})".
@@ -437,7 +437,7 @@ class OnlineController extends ModuleInstance {
 
 			$playerName = $player->name;
 			if ($player->online) {
-				$playerName = $this->text->makeChatcmd($player->name, "/tell {$player->name}");
+				$playerName = Text::makeChatcmd($player->name, "/tell {$player->name}");
 			}
 			if ($player->profession === null) {
 				$blob .= "<tab>({$playerName})\n";
@@ -996,7 +996,7 @@ class OnlineController extends ModuleInstance {
 					$list->mains []= $player->pmain;
 					$list->countMains++;
 					if (isset($player->nick)) {
-						$displayNick = $this->text->renderPlaceholders(
+						$displayNick = Text::renderPlaceholders(
 							$this->nickController->nickFormat,
 							['nick' => $player->nick, 'main' => $player->pmain]
 						);

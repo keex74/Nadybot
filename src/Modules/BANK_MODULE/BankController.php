@@ -76,7 +76,7 @@ class BankController extends ModuleInstance {
 		}
 		$blob = "<header2>Available characters<end>\n";
 		foreach ($characters as $character) {
-			$characterLink = $this->text->makeChatcmd($character, "/tell <myname> bank browse {$character}");
+			$characterLink = Text::makeChatcmd($character, "/tell <myname> bank browse {$character}");
 			$blob .= "<tab>{$characterLink}\n";
 		}
 
@@ -107,7 +107,7 @@ class BankController extends ModuleInstance {
 		$blob = "<header2>Containers on {$name}<end>\n";
 		foreach ($data as $container => $items) {
 			$firstItem = $items->firstOrFail();
-			$container_link = $this->text->makeChatcmd($container, "/tell <myname> bank browse {$name} {$firstItem->container_id}");
+			$container_link = Text::makeChatcmd($container, "/tell <myname> bank browse {$name} {$firstItem->container_id}");
 			$blob .= "<tab>{$container_link} (" . $items->count() . " items)\n";
 		}
 
@@ -137,11 +137,11 @@ class BankController extends ModuleInstance {
 		$blob = '<header2>Items in ' . $data[0]->container . "<end>\n";
 		foreach ($data as $row) {
 			$item = new RaffleItem();
-			$itemLink = $this->text->makeItem($row->lowid, $row->highid, $row->ql, $row->name);
+			$itemLink = Text::makeItem($row->lowid, $row->highid, $row->ql, $row->name);
 			$item->fromString($itemLink);
 			$itemLink = $item->toString();
 			$compactItemLink = str_replace("'", '', $itemLink);
-			$askLink = $this->text->makeChatcmd('ask', "/tell <myname> wish from {$name} {$compactItemLink} from {$data[0]->container}");
+			$askLink = Text::makeChatcmd('ask', "/tell <myname> wish from {$name} {$compactItemLink} from {$data[0]->container}");
 			$blob .= "<tab>{$itemLink} [{$askLink}]\n";
 		}
 
@@ -188,12 +188,12 @@ class BankController extends ModuleInstance {
 			return;
 		}
 		foreach ($foundItems as $item) {
-			$itemLink = $this->text->makeItem($item->lowid, $item->highid, $item->ql, $item->name);
+			$itemLink = Text::makeItem($item->lowid, $item->highid, $item->ql, $item->name);
 			$item2 = new RaffleItem();
 			$item2->fromString($itemLink);
 			$itemLink = $item2->toString();
 			$compactItemLink = str_replace("'", '', $itemLink);
-			$askLink = $this->text->makeChatcmd('ask', "/tell <myname> wish from {$item->player} {$compactItemLink} from {$item->container}");
+			$askLink = Text::makeChatcmd('ask', "/tell <myname> wish from {$item->player} {$compactItemLink} from {$item->container}");
 			$blob .= "{$itemLink} in <highlight>{$item->player} &gt; {$item->container}<end> [{$askLink}]\n";
 		}
 

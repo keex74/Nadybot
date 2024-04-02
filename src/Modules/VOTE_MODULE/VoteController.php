@@ -206,7 +206,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 		foreach ($topics as $topic) {
-			$line = '<tab>' . $this->text->makeChatcmd(
+			$line = '<tab>' . Text::makeChatcmd(
 				$topic->question,
 				"/tell <myname> poll show {$topic->id}"
 			);
@@ -365,7 +365,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 
 		if (!$topic->allow_other_answers && !in_array($answer, $topic->answers)) {
 			$msg = 'You have to pick one of the options '.
-				$this->text->enumerate(...$this->text->arraySprintf("'%s'", ...$topic->answers)) . '. '.
+				Text::enumerate(...Text::arraySprintf("'%s'", ...$topic->answers)) . '. '.
 				'Custom answers are not allowed for this poll.';
 			$context->reply($msg);
 			return;
@@ -504,17 +504,17 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			} else {
 				$val = (int)round(100 * ($votes / $totalresults), 0);
 			}
-			$blob .= '<tab>' . $this->text->alignNumber($val, 3) . '% ';
+			$blob .= '<tab>' . Text::alignNumber($val, 3) . '% ';
 
 			if ($timeleft > 0) {
-				$blob .= $this->text->makeChatcmd((string)$answer, "/tell <myname> vote {$topic->id} {$answer}") . " (Votes: {$votes})\n";
+				$blob .= Text::makeChatcmd((string)$answer, "/tell <myname> vote {$topic->id} {$answer}") . " (Votes: {$votes})\n";
 			} else {
 				$blob .= "<highlight>{$answer}<end> (Votes: {$votes})\n";
 			}
 		}
 
 		if ($timeleft > 0) {
-			$blob .= "\n" .	$this->text->makeChatcmd(
+			$blob .= "\n" .	Text::makeChatcmd(
 				'Remove yourself from this poll',
 				"/tell <myname> vote remove {$topic->id}"
 			) . "\n";
@@ -531,9 +531,9 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			$blob .="\nAs the creator of this poll, you can:\n";
 		}
 		if ($sender === null || $sender === $topic->author) {
-			$blob .='<tab>' . $this->text->makeChatcmd('Delete the poll completely', "/tell <myname> poll delete {$topic->id}") . "\n";
+			$blob .='<tab>' . Text::makeChatcmd('Delete the poll completely', "/tell <myname> poll delete {$topic->id}") . "\n";
 			if ($timeleft > 0) {
-				$blob .='<tab>' . $this->text->makeChatcmd('End the poll early', "/tell <myname> poll end {$topic->id}");
+				$blob .='<tab>' . Text::makeChatcmd('End the poll early', "/tell <myname> poll end {$topic->id}");
 			}
 		}
 
@@ -559,7 +559,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		}
 		$lines = [];
 		foreach ($topics as $topic) {
-			$lines []= "<tab>{$topic->question} [" . $this->text->makeChatcmd(
+			$lines []= "<tab>{$topic->question} [" . Text::makeChatcmd(
 				'show',
 				"/tell <myname> poll show {$topic->id}"
 			) . ']';

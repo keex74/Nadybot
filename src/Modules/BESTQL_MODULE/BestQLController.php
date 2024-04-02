@@ -160,11 +160,11 @@ class BestQLController extends ModuleInstance {
 			} elseif ($oldValue !== $value) {
 				$msg .= sprintf(
 					'<tab>QL %s has stat <highlight>%d<end>.',
-					$this->text->alignNumber($searchedQL, 3, 'highlight'),
+					Text::alignNumber($searchedQL, 3, 'highlight'),
 					$value
 				);
 				if ($pastedItem) {
-					$msg .= ' ' . $this->text->makeItem($pastedItem->lowID, $pastedItem->highID, $searchedQL, $pastedItem->name);
+					$msg .= ' ' . Text::makeItem($pastedItem->lowID, $pastedItem->highID, $searchedQL, $pastedItem->name);
 				}
 				$msg .= "\n";
 				$numFoundItems++;

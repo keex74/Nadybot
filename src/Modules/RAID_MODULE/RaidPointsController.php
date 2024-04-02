@@ -408,7 +408,7 @@ class RaidPointsController extends ModuleInstance {
 		$blob = '<header2>Top Raiders<end>';
 		$maxDigits = strlen((string)$topRaiders[0]->points);
 		foreach ($topRaiders as $raider) {
-			$blob .= "\n<tab>" . $this->text->alignNumber($raider->points, $maxDigits) . "    {$raider->username}";
+			$blob .= "\n<tab>" . Text::alignNumber($raider->points, $maxDigits) . "    {$raider->username}";
 		}
 		$context->reply(
 			$this->text->makeBlob('Top raiders (' . count($topRaiders) . ')', $blob)
@@ -439,7 +439,7 @@ class RaidPointsController extends ModuleInstance {
 		if ($showUsername === false) {
 			$blob .= "\n\n<i>Only showing the points of {$context->char->name}. To include all the alts ".
 				'in the list, use '.
-				$this->text->makeChatcmd('/tell <myname> points log all', '/tell <myname> points log all').
+				Text::makeChatcmd('/tell <myname> points log all', '/tell <myname> points log all').
 				'.</i>';
 		}
 		$msg = $this->text->makeBlob('Your raid points log', $blob, null, $header);
@@ -487,7 +487,7 @@ class RaidPointsController extends ModuleInstance {
 		if (!isset($all)) {
 			$blob .= "\n\n<i>Only showing the points of {$char}. To include all the alts ".
 				'in the list, use '.
-				$this->text->makeChatcmd("/tell <myname> {$context->message} all", "/tell <myname> {$context->message} all").
+				Text::makeChatcmd("/tell <myname> {$context->message} all", "/tell <myname> {$context->message} all").
 				'.</i>';
 		}
 		$msg = $this->text->makeBlob("{$char}'s raid points log", $blob, null, $header);
@@ -512,7 +512,7 @@ class RaidPointsController extends ModuleInstance {
 			}
 			$row = "{$time}  |  ".
 				(($log->delta > 0) ? '+' : '-').
-				$this->text->alignNumber(abs($log->delta), 4, $log->delta > 0 ? 'green' : 'red').
+				Text::alignNumber(abs($log->delta), 4, $log->delta > 0 ? 'green' : 'red').
 				"  |  {$log->reason} ({$log->changed_by})";
 			if ($showUsername) {
 				$row .= " on {$log->username}";
@@ -694,8 +694,8 @@ class RaidPointsController extends ModuleInstance {
 		}
 		$blob = '';
 		foreach ($rewards as $reward) {
-			$remCmd = $this->text->makeChatcmd('remove', "/tell <myname> reward rem {$reward->id}");
-			$giveCmd = $this->text->makeChatcmd('give', "/tell <myname> raid reward {$reward->name}");
+			$remCmd = Text::makeChatcmd('remove', "/tell <myname> reward rem {$reward->id}");
+			$giveCmd = Text::makeChatcmd('give', "/tell <myname> raid reward {$reward->name}");
 			$blob .= "<header2>{$reward->name}<end>\n".
 				"<tab>Points: <highlight>{$reward->points}<end> [{$giveCmd}]\n".
 				"<tab>Log: <highlight>{$reward->reason}<end>\n".
@@ -850,8 +850,8 @@ class RaidPointsController extends ModuleInstance {
 		}
 		if ($raid !== null) {
 			$blob .= "\n<tab>" . $raid->getAnnounceMessage().
-				'[' . $this->text->makeChatcmd('join bot', '/tell <myname> join') . '] '.
-				'[' . $this->text->makeChatcmd('join raid', '/tell <myname> raid join') . ']';
+				'[' . Text::makeChatcmd('join bot', '/tell <myname> join') . '] '.
+				'[' . Text::makeChatcmd('join raid', '/tell <myname> raid join') . ']';
 		}
 		return $blob;
 	}

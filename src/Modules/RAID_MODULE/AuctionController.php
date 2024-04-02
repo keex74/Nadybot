@@ -514,7 +514,7 @@ class AuctionController extends ModuleInstance {
 		return sprintf(
 			'%s     %s     %s',
 			DateTimeImmutable::createFromFormat('U', (string)$item->end)->format('Y-m-d H:i:s'),
-			($item->cost > 0) ? $this->text->alignNumber($item->cost, 5, null, true) : '      -',
+			($item->cost > 0) ? Text::alignNumber($item->cost, 5, null, true) : '      -',
 			'<highlight>' . ($item->winner ?? 'nobody') . '<end> won '.
 			Safe::pregReplace('|"(itemref://\d+/\d+/\d+)"|', '$1', $item->item)
 		);
@@ -654,8 +654,8 @@ class AuctionController extends ModuleInstance {
 		if (!empty($this->bidPresets)) {
 			$info .= "\n\nBid points: ";
 			$links = array_map(
-				function (string $amount): string {
-					return '[' . $this->text->makeChatcmd($amount, "/tell <myname> bid {$amount}") . ']';
+				static function (string $amount): string {
+					return '[' . Text::makeChatcmd($amount, "/tell <myname> bid {$amount}") . ']';
 				},
 				$this->bidPresets,
 			);
@@ -728,7 +728,7 @@ class AuctionController extends ModuleInstance {
 	)]
 	public function announceAuctionWinner(AuctionEndEvent $event): void {
 		if ($event->auction->top_bidder === null) {
-			$msg = $this->text->renderPlaceholders(
+			$msg = Text::renderPlaceholders(
 				$this->unauctionedItemMessage,
 				[
 					'item' => $event->auction->item->item,

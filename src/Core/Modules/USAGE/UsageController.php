@@ -110,7 +110,7 @@ class UsageController extends ModuleInstance {
 		if ($count > 0) {
 			$blob = '';
 			foreach ($data as $row) {
-				$blob .= $this->text->alignNumber($row->count, 3) . " <highlight>{$row->command}<end>\n";
+				$blob .= Text::alignNumber($row->count, 3) . " <highlight>{$row->command}<end>\n";
 			}
 
 			$msg = $this->text->makeBlob("Usage for {$character} - {$timeString} ({$count})", $blob);
@@ -155,7 +155,7 @@ class UsageController extends ModuleInstance {
 		if ($count > 0) {
 			$blob = '';
 			foreach ($data as $row) {
-				$blob .= $this->text->alignNumber($row->count, 3) . " <highlight>{$row->sender}<end>\n";
+				$blob .= Text::alignNumber($row->count, 3) . " <highlight>{$row->sender}<end>\n";
 			}
 
 			$msg = $this->text->makeBlob("Usage for {$cmd} - {$timeString} ({$count})", $blob);
@@ -225,8 +225,8 @@ class UsageController extends ModuleInstance {
 
 		$blob .= "<header2>{$limit} Most Used Commands<end>\n";
 		foreach ($data as $row) {
-			$commandLink = $this->text->makeChatcmd($row->command, "/tell <myname> usage cmd {$row->command}");
-			$blob .= '<tab>' . $this->text->alignNumber($row->count, 3).
+			$commandLink = Text::makeChatcmd($row->command, "/tell <myname> usage cmd {$row->command}");
+			$blob .= '<tab>' . Text::alignNumber($row->count, 3).
 				" {$commandLink}\n";
 		}
 
@@ -244,8 +244,8 @@ class UsageController extends ModuleInstance {
 
 		$blob .= "\n<header2>{$limit} Most Active Users<end>\n";
 		foreach ($data as $row) {
-			$senderLink = $this->text->makeChatcmd($row->sender, "/tell <myname> usage player {$row->sender}");
-			$blob .= '<tab>' . $this->text->alignNumber($row->count, 3).
+			$senderLink = Text::makeChatcmd($row->sender, "/tell <myname> usage player {$row->sender}");
+			$blob .= '<tab>' . Text::alignNumber($row->count, 3).
 				" {$senderLink}\n";
 		}
 

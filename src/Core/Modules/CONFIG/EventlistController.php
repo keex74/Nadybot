@@ -51,8 +51,8 @@ class EventlistController extends ModuleInstance {
 		$blob = '';
 		$lastType = '';
 		foreach ($data as $row) {
-			$on = $this->text->makeChatcmd('ON', "/tell <myname> config event {$row->type} {$row->file} enable all");
-			$off = $this->text->makeChatcmd('OFF', "/tell <myname> config event {$row->type} {$row->file} disable all");
+			$on = Text::makeChatcmd('ON', "/tell <myname> config event {$row->type} {$row->file} enable all");
+			$off = Text::makeChatcmd('OFF', "/tell <myname> config event {$row->type} {$row->file} disable all");
 
 			if ($row->status === 1) {
 				$status = '<on>Enabled<end>';

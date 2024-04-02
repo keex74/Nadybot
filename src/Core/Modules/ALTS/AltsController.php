@@ -467,9 +467,9 @@ class AltsController extends ModuleInstance {
 			"to add you as their alt.\n\n";
 		$blob .= '<tab>Do you agree to this: ';
 		$blob .= '['.
-			$this->text->makeChatcmd('yes', "/tell <myname> altvalidate {$altInfo->main}").
+			Text::makeChatcmd('yes', "/tell <myname> altvalidate {$altInfo->main}").
 			'] ['.
-			$this->text->makeChatcmd('no', "/tell <myname> altdecline {$altInfo->main}").
+			Text::makeChatcmd('no', "/tell <myname> altdecline {$altInfo->main}").
 			']';
 		$msg = "{$altInfo->main} requested to add you as their alt :: ".
 			((array)$this->text->makeBlob('decide', $blob, "Decide if you are {$altInfo->main}'s alt"))[0];
@@ -485,9 +485,9 @@ class AltsController extends ModuleInstance {
 			"<header2>Choose what to do<end>\n";
 		foreach ($alts as $alt) {
 			$blob .= '<tab> ['.
-				$this->text->makeChatcmd('confirm', "/tell <myname> altvalidate {$alt}").
+				Text::makeChatcmd('confirm', "/tell <myname> altvalidate {$alt}").
 				'] ['.
-				$this->text->makeChatcmd('decline', "/tell <myname> altdecline {$alt}").
+				Text::makeChatcmd('decline', "/tell <myname> altdecline {$alt}").
 				"] {$alt}\n";
 		}
 		$msg = 'You have <highlight>' . count($alts) . '<end> unanswered '.
@@ -634,7 +634,7 @@ class AltsController extends ModuleInstance {
 		}
 		$altsCommand = $altsCmdText;
 		if (count($altInfo->getAllAlts()) > 1) {
-			$altsCommand = $this->text->makeChatcmd($altsCmdText, '/tell <myname> alts');
+			$altsCommand = Text::makeChatcmd($altsCmdText, '/tell <myname> alts');
 		}
 		$blob = "<header2>Account<end>\n".
 			"<tab>Your main is <highlight>{$altInfo->main}<end>\n".
@@ -656,7 +656,7 @@ class AltsController extends ModuleInstance {
 		if (!$altInfo->hasUnvalidatedAlts()) {
 			return null;
 		}
-		$altsLink = $this->text->makeChatcmd('see more', '/tell <myname> alts');
+		$altsLink = Text::makeChatcmd('see more', '/tell <myname> alts');
 		$blob = "<header2>Unvalidated Alts [{$altsLink}]<end>";
 		foreach ($altInfo->getAllAlts() as $alt) {
 			if (!$altInfo->isValidated($alt)) {

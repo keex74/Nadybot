@@ -71,9 +71,9 @@ class AXPController extends ModuleInstance {
 		$blob = "<u>AI Lvl | Lvl Req |          AXP  |  Rank         </u>\n";
 		for ($aiRank = 0; $aiRank < count($this->aiRanks); $aiRank++) {
 			$rankInfo = $this->aiRanks[$aiRank];
-			$blob .= $this->text->alignNumber($aiRank+1, 2).
-				'     |     ' . $this->text->alignNumber($rankInfo[1], 3).
-				'  |  ' . $this->text->alignNumber($rankInfo[0], 7, 'highlight', true).
+			$blob .= Text::alignNumber($aiRank+1, 2).
+				'     |     ' . Text::alignNumber($rankInfo[1], 3).
+				'  |  ' . Text::alignNumber($rankInfo[0], 7, 'highlight', true).
 				'  |  ' . $rankInfo[2] . "\n";
 		}
 

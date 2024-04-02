@@ -353,7 +353,7 @@ class GuildController extends ModuleInstance {
 			}
 			$prevToon = $member->main;
 			$numRecentCount++;
-			$alts = $this->text->makeChatcmd('alts', "/tell <myname> alts {$member->main}");
+			$alts = Text::makeChatcmd('alts', "/tell <myname> alts {$member->main}");
 			$logged = $member->logged_off??time();
 			$lastToon = $member->name;
 
@@ -527,14 +527,14 @@ class GuildController extends ModuleInstance {
 			}
 		}
 
-		$statsFunc = function (Collection $players, string $key) use ($members): string {
+		$statsFunc = static function (Collection $players, string $key) use ($members): string {
 			$count = $players->count();
-			$percentage = $this->text->alignNumber(
+			$percentage = Text::alignNumber(
 				(int)round($count * 100 / $members->count(), 0),
 				3
 			);
 			return "\n<tab>{$percentage} % <highlight>{$key}<end>: {$count} ".
-				$this->text->pluralize('member', $count).
+				Text::pluralize('member', $count).
 				', level ' . $players->min('level') . ' / <highlight>'.
 				round($players->avg('level'), 0) . '<end> / '.
 				$players->max('level');
@@ -652,7 +652,7 @@ class GuildController extends ModuleInstance {
 
 	public function getLogonMessageForPlayer(?Player $whois, string $player): string {
 		$tokens = $this->getTokensForLogonLogoff($player, $whois, null);
-		$logonMessage = $this->text->renderPlaceholders($this->orgLogonMessage, $tokens);
+		$logonMessage = Text::renderPlaceholders($this->orgLogonMessage, $tokens);
 		$logonMessage = Safe::pregReplace(
 			'/&lt;([a-z]+)&gt;/',
 			'<$1>',
@@ -711,7 +711,7 @@ class GuildController extends ModuleInstance {
 		$whois = $this->playerManager->byName($player);
 
 		$tokens = $this->getTokensForLogonLogoff($player, $whois, $altInfo);
-		$logoffMessage = $this->text->renderPlaceholders($this->orgLogoffMessage, $tokens);
+		$logoffMessage = Text::renderPlaceholders($this->orgLogoffMessage, $tokens);
 		$logoffMessage = Safe::pregReplace(
 			'/&lt;([a-z]+)&gt;/',
 			'<$1>',

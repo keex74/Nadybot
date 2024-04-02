@@ -441,7 +441,7 @@ class WorldBossController extends ModuleInstance {
 			$numUpdates = $this->loadTimersFromAPI();
 			$context->reply(
 				"Timer data successfully loaded from the API. {$numUpdates} ".
-				$this->text->pluralize('timer', $numUpdates) . ' updated.'
+				Text::pluralize('timer', $numUpdates) . ' updated.'
 			);
 		} catch (UserException $e) {
 			$context->reply($e->getMessage());
@@ -515,7 +515,7 @@ class WorldBossController extends ModuleInstance {
 		if (isset($coords) && !$startpage) {
 			$pf = Playfield::tryFrom($coords[2]);
 			if (isset($pf) && $pf !== Playfield::Unknown) {
-				$wpLink = $this->text->makeChatcmd(
+				$wpLink = Text::makeChatcmd(
 					$pf->long(),
 					"/waypoint {$coords[0]} {$coords[1]} {$coords[2]}"
 				);
@@ -523,9 +523,9 @@ class WorldBossController extends ModuleInstance {
 				$aou = self::BOSS_DATA[$timer->mob_name][self::AOU] ?? null;
 				if (isset($aou)) {
 					$blob .= "\nMore info: [".
-						$this->text->makeChatcmd('guide', "/tell <myname> aou {$aou}").
+						Text::makeChatcmd('guide', "/tell <myname> aou {$aou}").
 						'] ['.
-						$this->text->makeChatcmd('see AO-Universe', "/start https://www.ao-universe.com/guides/{$aou}").
+						Text::makeChatcmd('see AO-Universe', "/start https://www.ao-universe.com/guides/{$aou}").
 						']';
 				}
 				$mobName = ((array)$this->text->makeBlob(
@@ -1156,7 +1156,7 @@ class WorldBossController extends ModuleInstance {
 			$this->logger->notice('{boss} pre-spawn check success', ['boss' => $timer->mob_name]);
 			$tokens['next-spawn'] = Util::unixtimeToReadable($timer->next_spawn-time());
 			$tokens['c-next-spawn'] = '<highlight>' . $tokens['next-spawn'] . '<end>';
-			$msg = $this->text->renderPlaceholders($this->willSpawnText, $tokens);
+			$msg = Text::renderPlaceholders($this->willSpawnText, $tokens);
 			$this->announceBigBossEvent($timer->mob_name, $msg, 1);
 			return true;
 		}
@@ -1174,13 +1174,13 @@ class WorldBossController extends ModuleInstance {
 				);
 				return false;
 			} elseif ($showSpawn === static::SPAWN_SHOULD && !$manual) {
-				$msg = $this->text->renderPlaceholders($this->shouldSpawnText, $tokens);
+				$msg = Text::renderPlaceholders($this->shouldSpawnText, $tokens);
 			} else {
 				if (isset($timer->next_killable) && $timer->next_killable > time()) {
 					$tokens['immortal'] = Util::unixtimeToReadable($timer->next_killable-time());
 					$tokens['c-immortal'] = '<highlight>' . $tokens['immortal'] . '<end>';
 				}
-				$msg = $this->text->renderPlaceholders($this->hasSpawnedText, $tokens);
+				$msg = Text::renderPlaceholders($this->hasSpawnedText, $tokens);
 
 				$msg .= $this->getBossWP($timer);
 			}
@@ -1201,9 +1201,9 @@ class WorldBossController extends ModuleInstance {
 				$this->logger->info('SPAWN_EVENT for vulnerable skipped, not manual', ['timer' => (array)$timer]);
 				return false;
 			} elseif ($showSpawn === static::SPAWN_SHOULD && !$this->lastSpawnPrecise[$timer->mob_name]) {
-				$msg = $this->text->renderPlaceholders($this->shouldVulnerableText, $tokens);
+				$msg = Text::renderPlaceholders($this->shouldVulnerableText, $tokens);
 			} else {
-				$msg = $this->text->renderPlaceholders($this->isVulnerableText, $tokens);
+				$msg = Text::renderPlaceholders($this->isVulnerableText, $tokens);
 			}
 			$this->announceBigBossEvent($timer->mob_name, $msg, 3);
 			return true;
@@ -1222,7 +1222,7 @@ class WorldBossController extends ModuleInstance {
 			return '';
 		}
 		$msg = '';
-		$wpLink = $this->text->makeChatcmd(
+		$wpLink = Text::makeChatcmd(
 			$pf->long(),
 			"/waypoint {$coords[0]} {$coords[1]} {$coords[2]}"
 		);
@@ -1230,9 +1230,9 @@ class WorldBossController extends ModuleInstance {
 		$aou = self::BOSS_DATA[$timer->mob_name][self::AOU] ?? null;
 		if (isset($aou)) {
 			$blob .= "\nMore info: [".
-				$this->text->makeChatcmd('guide', "/tell <myname> aou {$aou}").
+				Text::makeChatcmd('guide', "/tell <myname> aou {$aou}").
 				'] ['.
-				$this->text->makeChatcmd('see AO-Universe', "/start https://www.ao-universe.com/guides/{$aou}").
+				Text::makeChatcmd('see AO-Universe', "/start https://www.ao-universe.com/guides/{$aou}").
 				']';
 		}
 		$popup = ((array)$this->text->makeBlob(

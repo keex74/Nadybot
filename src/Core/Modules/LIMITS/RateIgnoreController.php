@@ -50,7 +50,7 @@ class RateIgnoreController extends ModuleInstance {
 		}
 		$blob = '';
 		foreach ($list as $entry) {
-			$remove = $this->text->makeChatcmd('Remove', "/tell <myname> rateignore remove {$entry->name}");
+			$remove = Text::makeChatcmd('Remove', "/tell <myname> rateignore remove {$entry->name}");
 			$date = Util::date($entry->added_dt);
 			$blob .= "<highlight>{$entry->name}<end> [added by {$entry->added_by}] {$date} {$remove}\n";
 		}

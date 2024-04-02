@@ -137,7 +137,7 @@ class AOUController extends ModuleInstance {
 		}
 		$title = $content->getElementsByTagName('name')->item(0)->nodeValue;
 
-		$blob = $this->text->makeChatcmd('Guide on AO-Universe', "/start https://www.ao-universe.com/main.php?site=knowledge&id={$guideId}") . "\n\n";
+		$blob = Text::makeChatcmd('Guide on AO-Universe', "/start https://www.ao-universe.com/main.php?site=knowledge&id={$guideId}") . "\n\n";
 
 		$blob .= 'Updated: <highlight>' . $content->getElementsByTagName('update')->item(0)->nodeValue . "<end>\n";
 		$blob .= 'Profession: <highlight>' . $content->getElementsByTagName('class')->item(0)->nodeValue . "<end>\n";
@@ -147,7 +147,7 @@ class AOUController extends ModuleInstance {
 
 		$blob .= $this->processInput($content->getElementsByTagName('text')->item(0)->nodeValue);
 
-		$blob .= "\n\n<i>Powered by " . $this->text->makeChatcmd('AO-Universe', '/start https://www.ao-universe.com') . '</i>';
+		$blob .= "\n\n<i>Powered by " . Text::makeChatcmd('AO-Universe', '/start https://www.ao-universe.com') . '</i>';
 
 		$msg = $this->text->makeBlob($title, $blob);
 		return $msg;
@@ -221,7 +221,7 @@ class AOUController extends ModuleInstance {
 				// to only include guides that contain the keywords in the category, name, or description
 				if ($searchGuideText || $this->striposarray($category . ' ' . $guideObj->name . ' ' . $guideObj->description, $searchTerms)) {
 					$count++;
-					$tempBlob .= '  ' . $this->text->makeChatcmd("{$guideObj->name}", "/tell <myname> aou {$guideObj->id}") . ' - ' . $guideObj->description . "\n";
+					$tempBlob .= '  ' . Text::makeChatcmd("{$guideObj->name}", "/tell <myname> aou {$guideObj->id}") . ' - ' . $guideObj->description . "\n";
 					$found = true;
 				}
 			}
@@ -233,7 +233,7 @@ class AOUController extends ModuleInstance {
 			}
 		}
 
-		$blob .= "\n<i>Powered by " . $this->text->makeChatcmd('AO-Universe.com', '/start https://www.ao-universe.com') . '</i>';
+		$blob .= "\n<i>Powered by " . Text::makeChatcmd('AO-Universe.com', '/start https://www.ao-universe.com') . '</i>';
 
 		if ($count > 0) {
 			if ($searchGuideText) {
@@ -304,7 +304,7 @@ class AOUController extends ModuleInstance {
 			$wp[$name] = $value;
 		}
 
-		return $this->text->makeChatcmd($label . " ({$wp['x']}x{$wp['y']})", "/waypoint {$wp['x']} {$wp['y']} {$wp['pf']}");
+		return Text::makeChatcmd($label . " ({$wp['x']}x{$wp['y']})", "/waypoint {$wp['x']} {$wp['y']} {$wp['pf']}");
 	}
 
 	/** @param string[] $arr */
@@ -313,9 +313,9 @@ class AOUController extends ModuleInstance {
 		$label = $arr[3];
 
 		if (count($idArray = Safe::pregMatch('/pid=(\\d+)/', $url))) {
-			return $this->text->makeChatcmd($label, '/tell <myname> aou ' . $idArray[1]);
+			return Text::makeChatcmd($label, '/tell <myname> aou ' . $idArray[1]);
 		}
-		return $this->text->makeChatcmd($label, "/start {$url}");
+		return Text::makeChatcmd($label, "/start {$url}");
 	}
 
 	private function processInput(string $input): string {
@@ -366,11 +366,11 @@ class AOUController extends ModuleInstance {
 	private function generateItemMarkup(string $type, AODBEntry $obj): string {
 		$output = '';
 		if ($type === 'item' || $type === 'itemicon') {
-			$output .= $this->text->makeImage($obj->icon);
+			$output .= Text::makeImage($obj->icon);
 		}
 
 		if ($type === 'item' || $type === 'itemname') {
-			$output .= $this->text->makeItem($obj->lowid, $obj->highid, $obj->highql, $obj->name);
+			$output .= Text::makeItem($obj->lowid, $obj->highid, $obj->highql, $obj->name);
 		}
 
 		return $output;

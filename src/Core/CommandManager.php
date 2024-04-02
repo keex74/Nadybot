@@ -1018,7 +1018,7 @@ class CommandManager implements MessageEmitter {
 		if ($showSyntax === '0' && !$ignorePrefs) {
 			return '';
 		}
-		return "\n\n<i>See " . $this->text->makeChatcmd('<symbol>help syntax', '/tell <myname> help syntax').
+		return "\n\n<i>See " . Text::makeChatcmd('<symbol>help syntax', '/tell <myname> help syntax').
 			' for an explanation of the command syntax</i>';
 	}
 
