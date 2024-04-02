@@ -14,8 +14,8 @@ class DiscordMessageOut {
 
 	/** @var ?DiscordActionRowComponent[] */
 	public ?array $components = null;
-	public ?object $allowed_mentions = null;
-	public ?object $message_reference = null;
+	public ?DiscordAllowedMentions $allowed_mentions = null;
+	public ?DiscordMessageReference $message_reference = null;
 	public ?int $flags = null;
 
 	public function __construct(public string $content) {

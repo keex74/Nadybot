@@ -5,6 +5,9 @@ namespace Nadybot\Core\Modules\DISCORD;
 class DiscordActionRowComponent extends DiscordComponent {
 	public int $type = 1;
 
-	/** @var \Nadybot\Core\Modules\DISCORD\DiscordComponent[] */
-	public array $components = [];
+	/** @param DiscordComponent[] $components the actual components */
+	public function __construct(
+		public array $components=[],
+	) {
+	}
 }

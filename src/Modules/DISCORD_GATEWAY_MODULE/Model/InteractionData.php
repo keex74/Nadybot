@@ -2,7 +2,9 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model;
 
+use Nadybot\Core\Attributes\CastToStdClass;
 use Nadybot\Core\Modules\DISCORD\{ReducedStringableTrait, SelectOptionValue};
+use stdClass;
 use Stringable;
 
 class InteractionData implements Stringable {
@@ -21,7 +23,7 @@ class InteractionData implements Stringable {
 	 * @param string                   $id             the ID of the invoked command
 	 * @param string                   $name           the name of the invoked command
 	 * @param int                      $type           the type of the invoked command
-	 * @param ?object                  $resolved       converted users + roles + channels
+	 * @param ?stdClass                $resolved       converted users + roles + channels
 	 *                                                 + attachments
 	 * @param ?InteractionDataOption[] $options        the params + values from the user
 	 * @param ?string                  $guild_id       the id of the guild the command
@@ -31,20 +33,20 @@ class InteractionData implements Stringable {
 	 * @param ?SelectOptionValue[]     $values         the values the user selected
 	 * @param ?string                  $target_id      id the of user or message targeted
 	 *                                                 by a user or message command
-	 * @param ?object[]                $components     the values submitted by the user
+	 * @param ?stdClass[]              $components     the values submitted by the user
 	 */
 	public function __construct(
 		public string $id,
 		public string $name,
 		public int $type,
-		public ?object $resolved=null,
+		#[CastToStdClass] public ?stdClass $resolved=null,
 		public ?array $options=null,
 		public ?string $guild_id=null,
 		public ?string $custom_id=null,
 		public ?int $component_type=null,
 		public ?array $values=null,
 		public ?string $target_id=null,
-		public ?array $components=null,
+		#[CastToStdClass] public ?array $components=null,
 	) {
 	}
 

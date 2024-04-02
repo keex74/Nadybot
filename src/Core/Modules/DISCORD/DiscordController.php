@@ -188,13 +188,13 @@ class DiscordController extends ModuleInstance {
 		$guild = $this->discordGatewayController->getChannelGuild($this->discordNotifyChannel);
 		foreach ($text as $page) {
 			$message = $this->formatMessage($page, $guild);
-			$message->allowed_mentions = (object)[
-				'parse' => ['users'],
-			];
+			$message->allowed_mentions = new DiscordAllowedMentions(
+				parse: [DiscordAllowedMentionType::Users],
+			);
 			if (!$allowGroupMentions) {
-				$message->allowed_mentions->parse []= ['roles'];
-				$message->allowed_mentions->parse []= ['here'];
-				$message->allowed_mentions->parse []= ['everyone'];
+				$message->allowed_mentions->parse []= DiscordAllowedMentionType::Roles;
+				$message->allowed_mentions->parse []= DiscordAllowedMentionType::Here;
+				$message->allowed_mentions->parse []= DiscordAllowedMentionType::Everyone;
 			}
 			foreach ($message->split() as $msgPart) {
 				// @todo Bad design, possibly distorting order, because unshifting

@@ -3,6 +3,7 @@
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
 use function Amp\async;
+use Nadybot\Core\Modules\DISCORD\DiscordMessageReference;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\DiscordChannel as ChannelsDiscordChannel,
@@ -83,10 +84,10 @@ class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 					?? null
 			);
 			if (isset($this->message)) {
-				$messageObj->message_reference = (object)[
-					'message_id' => $this->message->id,
-					'channel_id' => $this->channelId,
-				];
+				$messageObj->message_reference = new DiscordMessageReference(
+					message_id: $this->message->id,
+					channel_id: $this->channelId,
+				);
 			}
 			foreach ($messageObj->split() as $msgPart) {
 				async($this->discordAPIClient->queueToChannel(...), $this->channelId, $msgPart->toJSON());

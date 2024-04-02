@@ -12,7 +12,7 @@ class Emoji implements Stringable {
 		public string $id,
 		public string $name,
 		public ?array $roles,
-		public ?object $user,
+		public ?DiscordUser $user,
 		public ?bool $require_colors,
 		public ?bool $managed,
 		public ?bool $animated,
