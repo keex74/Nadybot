@@ -379,9 +379,9 @@ class TradebotController extends ModuleInstance {
 		$oldValue = $this->getTagColor($tradeBot(), $tag);
 		if (isset($oldValue) && $oldValue->channel === $colorDef->channel) {
 			$colorDef->id = $oldValue->id;
-			$this->db->update(self::DB_TABLE, 'id', $colorDef);
+			$this->db->update($colorDef);
 		} else {
-			$colorDef->id = $this->db->insert(self::DB_TABLE, $colorDef);
+			$colorDef->id = $this->db->insert($colorDef);
 		}
 		$context->reply(
 			"Color for <highlight>{$tradeBot} &gt; [{$tag}]<end> set to ".

@@ -2,14 +2,14 @@
 
 namespace Nadybot\Modules\NANO_MODULE;
 
-use Nadybot\Core\Attributes\DB\{MapRead, Shared, Table};
+use Nadybot\Core\Attributes\DB\{MapRead, PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'nanos', shared: Shared::Yes)]
 class Nano extends DBRow {
 	/** @param string[] $professions */
 	public function __construct(
-		public int $nano_id,
+		#[PK] public int $nano_id,
 		public int $ql,
 		public string $nano_name,
 		public string $school,

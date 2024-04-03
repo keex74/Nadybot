@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
-use Nadybot\Core\Attributes\DB\Table;
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
-#[Table(name: 'research')]
+#[Table(name: 'research', shared: Shared::Yes)]
 class Research extends DBRow {
 	public function __construct(
-		public int $level,
+		#[PK] public int $level,
 		public int $sk,
 		public int $levelcap,
 	) {

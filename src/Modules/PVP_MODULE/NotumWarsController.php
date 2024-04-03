@@ -485,7 +485,7 @@ class NotumWarsController extends ModuleInstance {
 					$attack->addLookups($player);
 				}
 				$attInfo = DBTowerAttack::fromTowerAttack($attack);
-				$this->db->insert(self::DB_ATTACKS, $attInfo, null);
+				$this->db->insert($attInfo);
 			}
 
 			$this->attacks = [];
@@ -535,7 +535,7 @@ class NotumWarsController extends ModuleInstance {
 
 			/** @psalm-suppress InternalMethod */
 			foreach ($outcomes as $outcome) {
-				$this->db->insert(self::DB_OUTCOMES, DBOutcome::fromTowerOutcome($outcome), null);
+				$this->db->insert(DBOutcome::fromTowerOutcome($outcome));
 				$this->outcomes []= $outcome;
 			}
 			$this->outcomes = $this->db->table(self::DB_OUTCOMES)
@@ -611,7 +611,7 @@ class NotumWarsController extends ModuleInstance {
 	#[NCA\Event('tower-outcome', 'Update tower outcomes from the API')]
 	public function updateTowerOutcomeInfoFromFeed(Event\TowerOutcomeEvent $event): void {
 		$dbOutcome = DBOutcome::fromTowerOutcome($event->outcome);
-		$this->db->insert(self::DB_OUTCOMES, $dbOutcome);
+		$this->db->insert($dbOutcome);
 		$this->outcomes = (new Collection([$event->outcome, ...$this->outcomes]))
 			->where('timestamp', '>=', time() - 3_600)
 			->toArray();
@@ -636,7 +636,7 @@ class NotumWarsController extends ModuleInstance {
 			$attack->ql ??= $site->ql;
 		}
 		$attInfo = DBTowerAttack::fromTowerAttack($attack);
-		$this->db->insert(self::DB_ATTACKS, $attInfo);
+		$this->db->insert($attInfo);
 		$infoEvent = new Event\TowerAttackInfoEvent($attack, $site);
 		$this->eventManager->fireEvent($infoEvent);
 		if (isset($player)) {
@@ -649,9 +649,8 @@ class NotumWarsController extends ModuleInstance {
 			$attack->addLookups($player);
 			$attInfo = DBTowerAttack::fromTowerAttack($attack);
 			$this->db->update(
-				self::DB_ATTACKS,
+				$attInfo,
 				['playfield_id', 'site_id', 'timestamp', 'def_org', 'att_name'],
-				$attInfo
 			);
 		});
 	}

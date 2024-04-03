@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\ALIEN_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\{DBRow, Profession};
 
 #[Table(name: 'leprocs', shared: Shared::Yes)]
 class LEProc extends DBRow {
 	public function __construct(
-		public int $id,
+		#[PK] public int $id,
 		public Profession $profession,
 		public string $name,
 		public string $research_name,

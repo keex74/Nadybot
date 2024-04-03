@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'implant_requirements', shared: Shared::Yes)]
 class LadderRequirements extends DBRow {
 	public function __construct(
-		public int $ql,
+		#[PK] public int $ql,
 		public int $treatment,
 		public int $ability,
 		public int $abilityShiny,

@@ -2,15 +2,15 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
-use Nadybot\Core\Attributes\DB\Table;
+use Nadybot\Core\Attributes\DB\{PK, Table};
 use Nadybot\Core\DBRow;
 
-#[Table(name: 'world_boss_timers')]
+#[Table(name: 'worldboss_timers')]
 class WorldBossTimer extends DBRow {
 	public int $time_submitted;
 
 	public function __construct(
-		public string $mob_name,
+		#[PK] public string $mob_name,
 		public int $spawn,
 		public int $killable,
 		public string $submitter_name,

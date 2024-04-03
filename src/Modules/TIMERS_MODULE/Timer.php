@@ -4,9 +4,9 @@ namespace Nadybot\Modules\TIMERS_MODULE;
 
 use function Safe\json_decode;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'timer')]
+#[DB\Table(name: 'timers')]
 class Timer extends DBRow {
 	public int $settime;
 
@@ -28,9 +28,9 @@ class Timer extends DBRow {
 		public string $callback='timercontroller.timerCallback',
 		public ?string $mode=null,
 		public ?string $data=null,
-		public ?int $id=null,
-		#[NCA\DB\MapRead([self::class, 'decodeAlerts'])] #[NCA\DB\MapWrite('json_encode')] public array $alerts=[],
-		#[NCA\DB\Ignore] public ?string $origin=null,
+		#[DB\AutoInc] public ?int $id=null,
+		#[DB\MapRead([self::class, 'decodeAlerts'])] #[DB\MapWrite('json_encode')] public array $alerts=[],
+		#[DB\Ignore] public ?string $origin=null,
 		?int $settime=null,
 	) {
 		$this->settime = $settime ?? time();

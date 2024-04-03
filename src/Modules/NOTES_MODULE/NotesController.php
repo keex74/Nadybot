@@ -160,7 +160,7 @@ class NotesController extends ModuleInstance {
 			reminder: $reminder,
 		);
 
-		return $this->db->insert('notes', $note);
+		return $this->db->insert($note);
 	}
 
 	/** Add a new note to your list */

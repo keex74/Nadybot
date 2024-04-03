@@ -85,9 +85,9 @@ class RecipeController extends ModuleInstance {
 				continue;
 			}
 			if (isset($recipes[$args[1]])) {
-				$this->db->update('recipes', 'id', $recipe);
+				$this->db->update($recipe);
 			} else {
-				$this->db->insert('recipes', $recipe, null);
+				$this->db->insert($recipe);
 			}
 		}
 	}

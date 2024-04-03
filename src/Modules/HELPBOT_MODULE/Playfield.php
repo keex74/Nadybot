@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'playfield', shared: Shared::Yes)]
@@ -15,7 +15,7 @@ class Playfield extends DBRow {
 	];
 
 	public function __construct(
-		public int $id,
+		#[PK] public int $id,
 		public string $long_name,
 		public string $short_name,
 	) {

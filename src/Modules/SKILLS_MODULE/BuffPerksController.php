@@ -562,11 +562,11 @@ class BuffPerksController extends ModuleInstance {
 			$resInserts = [];
 			$buffInserts = [];
 			foreach ($perkInfo as $perk) {
-				$perk->id = $this->db->insert('perk', $perk);
+				$perk->id = $this->db->insert($perk);
 
 				foreach ($perk->levels as $level) {
 					$level->perk_id = $perk->id;
-					$level->id = $this->db->insert('perk_level', $level);
+					$level->id = $this->db->insert($level);
 
 					foreach ($level->professions as $profession) {
 						$profInserts []= [
@@ -585,7 +585,7 @@ class BuffPerksController extends ModuleInstance {
 
 					if ($level->action) {
 						$level->action->perk_level_id = $level->id;
-						$this->db->insert('perk_level_actions', $level->action);
+						$this->db->insert($level->action);
 					}
 
 					foreach ($level->buffs as $skillId => $amount) {

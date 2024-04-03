@@ -241,7 +241,7 @@ class GreetController extends ModuleInstance {
 			type: self::TYPE_CUSTOM,
 			content: $greeting,
 		);
-		$id = $this->db->insert('fun', $fun);
+		$id = $this->db->insert($fun);
 		$context->reply("New greeting added as <highlight>#{$id}<end>.");
 	}
 

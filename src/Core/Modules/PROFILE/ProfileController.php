@@ -470,7 +470,7 @@ class ProfileController extends ModuleInstance {
 			foreach ($set->mappings as $mapping) {
 				$map = new CmdPermSetMapping(...get_object_vars($mapping));
 				$map->permission_set = $set->name;
-				$map->id = $this->db->insert(CommandManager::DB_TABLE_MAPPING, $map);
+				$map->id = $this->db->insert($map);
 				$reply->reply(
 					"Mapped <highlight>{$map->source}<end> ".
 					"to <highlight>{$map->permission_set}<end> ".

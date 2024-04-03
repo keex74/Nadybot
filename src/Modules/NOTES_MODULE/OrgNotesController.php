@@ -84,7 +84,7 @@ class OrgNotesController extends ModuleInstance {
 			uuid: Util::createUUID(),
 			note: $text,
 		);
-		$note->id = $this->db->insert(self::DB_TABLE, $note);
+		$note->id = $this->db->insert($note);
 
 		$event = SyncOrgNoteEvent::fromOrgNote($note);
 		$event->forceSync = $forceSync;
@@ -197,9 +197,9 @@ class OrgNotesController extends ModuleInstance {
 			->pluckInts('id')
 			->first();
 		if (isset($note->id)) {
-			$this->db->update(self::DB_TABLE, 'id', $note);
+			$this->db->update($note);
 		} else {
-			$this->db->insert(self::DB_TABLE, $note);
+			$this->db->insert($note);
 		}
 	}
 

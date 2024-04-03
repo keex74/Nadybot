@@ -15,7 +15,7 @@ class BannedOrg extends DBRow {
 	 * @param ?int   $end       If this is a temporary ban, this is the UNIX timestamp when the ban will end
 	 */
 	public function __construct(
-		public int $org_id,
+		#[NCA\DB\PK] public int $org_id,
 		#[NCA\DB\Ignore] public string $org_name,
 		public string $banned_by,
 		public int $start,

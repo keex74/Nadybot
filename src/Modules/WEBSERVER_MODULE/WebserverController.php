@@ -290,7 +290,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 			return null;
 		}
 		$key->last_sequence_nr = (int)$sequence;
-		$this->db->update(ApiController::DB_TABLE, 'id', $key);
+		$this->db->update($key);
 		return $key->character;
 	}
 

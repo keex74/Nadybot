@@ -4,7 +4,7 @@ namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
-#[NCA\DB\Table(name: 'cmd_cfg')]
+#[NCA\DB\Table(name: 'cmdcfg')]
 class CmdCfg extends DBRow {
 	/**
 	 * @var array<string,CmdPermission>
@@ -19,7 +19,7 @@ class CmdCfg extends DBRow {
 		#[NCA\JSON\Ignore] public string $module,
 		#[NCA\JSON\Ignore] public string $cmdevent,
 		#[NCA\JSON\Ignore] public string $file,
-		public string $cmd,
+		#[NCA\DB\PK] public string $cmd,
 		public string $description='none',
 		#[NCA\JSON\Ignore] public int $verify=0,
 		#[NCA\JSON\Ignore] public string $dependson='none',

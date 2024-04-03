@@ -120,7 +120,7 @@ class PermissionSetMappingController extends ModuleInstance {
 			symbol: $this->settingManager->getString('symbol') ?? '!',
 		);
 		try {
-			$map->id = $this->db->insert(CommandManager::DB_TABLE_MAPPING, $map);
+			$map->id = $this->db->insert($map);
 		} catch (SQLException) {
 			$context->reply('There was an error saving your mapping into the database.');
 			return;
@@ -350,7 +350,7 @@ class PermissionSetMappingController extends ModuleInstance {
 			return;
 		}
 		$callback($set);
-		$this->db->update(CommandManager::DB_TABLE_MAPPING, 'id', $set);
+		$this->db->update($set);
 		$this->cmdManager->loadPermsetMappings();
 		$context->reply("Setting changed for <highlight>{$source}<end>.");
 	}

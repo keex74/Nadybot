@@ -10,7 +10,6 @@ use Nadybot\Core\{
 	DBSchema\RouteModifier,
 	DBSchema\RouteModifierArgument,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
 	SettingManager,
@@ -39,7 +38,7 @@ class MoveSettingsToRoutes implements SchemaMigration {
 			destination: Source::ORG,
 			two_way: $unfiltered,
 		);
-		$route->id = $db->insert(MessageHub::DB_TABLE_ROUTES, $route);
+		$route->id = $db->insert($route);
 		$this->addCommandFilter($db, $relayCommands, $route->id);
 		if ($unfiltered) {
 			return;
@@ -49,7 +48,7 @@ class MoveSettingsToRoutes implements SchemaMigration {
 			destination: Source::PRIV . "({$this->config->main->character})",
 			two_way: false,
 		);
-		$route->id = $db->insert(MessageHub::DB_TABLE_ROUTES, $route);
+		$route->id = $db->insert($route);
 		$this->addCommandFilter($db, $relayCommands, $route->id);
 
 		if (isset($ignoreSenders) && strlen($ignoreSenders->value??'') > 0) {
@@ -77,7 +76,7 @@ class MoveSettingsToRoutes implements SchemaMigration {
 			modifier: 'if-not-command',
 			route_id: $routeId,
 		);
-		$mod->id = $db->insert(MessageHub::DB_TABLE_ROUTE_MODIFIER, $mod);
+		$mod->id = $db->insert($mod);
 	}
 
 	protected function ignoreSenders(DB $db, int $routeId, string ...$senders): void {
@@ -86,7 +85,7 @@ class MoveSettingsToRoutes implements SchemaMigration {
 				modifier: 'if-not-by',
 				route_id: $routeId,
 			);
-			$mod->id = $db->insert(MessageHub::DB_TABLE_ROUTE_MODIFIER, $mod);
+			$mod->id = $db->insert($mod);
 
 			$arg = new RouteModifierArgument(
 				name: 'sender',
@@ -94,7 +93,7 @@ class MoveSettingsToRoutes implements SchemaMigration {
 				route_modifier_id: $mod->id,
 			);
 
-			$mod->id = $db->insert(MessageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT, $arg);
+			$arg->id = $db->insert($arg);
 		}
 	}
 
@@ -103,22 +102,18 @@ class MoveSettingsToRoutes implements SchemaMigration {
 			modifier: 'if-matches',
 			route_id: $routeId,
 		);
-		$mod->id = $db->insert(MessageHub::DB_TABLE_ROUTE_MODIFIER, $mod);
+		$mod->id = $db->insert($mod);
 
-		$arg = new RouteModifierArgument(
+		$db->insert(new RouteModifierArgument(
 			name: 'text',
 			value: $filter,
 			route_modifier_id: $mod->id,
-		);
+		));
 
-		$mod->id = $db->insert(MessageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT, $arg);
-
-		$arg = new RouteModifierArgument(
+		$db->insert(new RouteModifierArgument(
 			name: 'regexp',
 			value: 'true',
 			route_modifier_id: $mod->id,
-		);
-
-		$mod->id = $db->insert(MessageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT, $arg);
+		));
 	}
 }

@@ -2,15 +2,15 @@
 
 namespace Nadybot\Modules\WHOIS_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'name_history', shared: Shared::Yes)]
 class NameHistory extends DBRow {
 	public function __construct(
-		public int $charid,
-		public string $name,
-		public int $dimension,
+		#[PK] public int $charid,
+		#[PK] public string $name,
+		#[PK] public int $dimension,
 		public int $dt,
 	) {
 	}

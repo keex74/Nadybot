@@ -12,7 +12,6 @@ use Nadybot\Core\{
 	DBSchema\RouteModifierArgument,
 	DBSchema\Setting,
 	EventManager,
-	MessageHub,
 	Modules\CONFIG\ConfigController,
 	Routing\Source,
 	SchemaMigration,
@@ -32,9 +31,6 @@ class MigrateToRelayTable implements SchemaMigration {
 	protected string $prefix = '';
 	#[NCA\Inject]
 	private RelayController $relayController;
-
-	#[NCA\Inject]
-	private MessageHub $messageHub;
 
 	#[NCA\Inject]
 	private SettingManager $settingManager;
@@ -76,22 +72,20 @@ class MigrateToRelayTable implements SchemaMigration {
 	}
 
 	protected function addMod(DB $db, int $routeId, string $modifier): int {
-		$mod = new RouteModifier(
+		return $db->insert(new RouteModifier(
 			route_id: $routeId,
 			modifier: $modifier,
-		);
-		return $db->insert($this->messageHub::DB_TABLE_ROUTE_MODIFIER, $mod);
+		));
 	}
 
 	/** @param array<string,mixed> $kv */
 	protected function addArgs(DB $db, int $modId, array $kv): void {
 		foreach ($kv as $name => $value) {
-			$arg = new RouteModifierArgument(
+			$db->insert(new RouteModifierArgument(
 				route_modifier_id: $modId,
 				name: $name,
 				value: (string)$value,
-			);
-			$db->insert($this->messageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT, $arg);
+			));
 		}
 	}
 
@@ -114,7 +108,7 @@ class MigrateToRelayTable implements SchemaMigration {
 		$relay = new RelayConfig(
 			name: $relayBot->value ?? 'Relay',
 		);
-		$relay->id = $db->insert($this->relayController::DB_TABLE, $relay);
+		$relay->id = $db->insert($relay);
 		$transportArgs = [];
 		switch ((int)$relayType->value) {
 			case 1:
@@ -133,20 +127,18 @@ class MigrateToRelayTable implements SchemaMigration {
 			layer: $transportLayer,
 			relay_id: $relay->id,
 		);
-		$transport->id = $db->insert($this->relayController::DB_TABLE_LAYER, $transport);
+		$transport->id = $db->insert($transport);
 		foreach ($transportArgs as $key => $value) {
-			$transportArg = new RelayLayerArgument(
+			$db->insert(new RelayLayerArgument(
 				name: $key,
 				value: (string)$value,
 				layer_id: $transport->id,
-			);
-			$db->insert($this->relayController::DB_TABLE_ARGUMENT, $transportArg);
+			));
 		}
-		$protocol = new RelayLayer(
+		$db->insert(new RelayLayer(
 			relay_id: $relay->id,
 			layer: ($this->prefix === 'a') ? 'agcr' : 'grcv2',
-		);
-		$db->insert($this->relayController::DB_TABLE_LAYER, $protocol);
+		));
 		return $relay;
 	}
 
@@ -157,24 +149,24 @@ class MigrateToRelayTable implements SchemaMigration {
 			source: Source::RELAY . "({$relay->name})",
 			destination: Source::ORG,
 		);
-		$routeInOrg = $db->insert($this->messageHub::DB_TABLE_ROUTES, $route);
+		$routeInOrg = $db->insert($route);
 		$route = new Route(
 			source: Source::ORG,
 			destination: Source::RELAY . "({$relay->name})",
 		);
-		$routesOut []= $db->insert($this->messageHub::DB_TABLE_ROUTES, $route);
+		$routesOut []= $db->insert($route);
 
 		if (isset($guestRelay) && (int)$guestRelay->value) {
 			$route = new Route(
 				source: Source::RELAY . "({$relay->name})",
 				destination: Source::PRIV . "({$this->config->main->character})",
 			);
-			$routeInPriv = $db->insert($this->messageHub::DB_TABLE_ROUTES, $route);
+			$routeInPriv = $db->insert($route);
 			$route = new Route(
 				source: Source::PRIV . "({$this->config->main->character})",
 				destination: Source::RELAY . "({$relay->name})",
 			);
-			$routesOut []= $db->insert($this->messageHub::DB_TABLE_ROUTES, $route);
+			$routesOut []= $db->insert($route);
 		}
 		$relayWhen = $this->getSetting($db, 'relay_symbol_method');
 		$relaySymbol = $this->getSetting($db, 'relaysymbol');

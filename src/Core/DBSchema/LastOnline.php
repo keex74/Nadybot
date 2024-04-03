@@ -14,7 +14,7 @@ class LastOnline extends DBRow {
 	 * @param string $main name of the main character
 	 */
 	public function __construct(
-		public int $uid,
+		#[NCA\DB\PK] public int $uid,
 		public string $name,
 		public int $dt,
 		#[NCA\DB\Ignore] public string $main,

@@ -685,7 +685,7 @@ class ImportController extends ModuleInstance {
 					announce_interval: $raid->raidAnnounceInterval ?? $this->settingManager->getInt('raid_announcement_interval') ?? 0,
 					locked: $raid->raidLocked ?? false,
 				);
-				$raidId = $this->db->insert(RaidController::DB_TABLE, $entry, 'raid_id');
+				$raidId = $this->db->insert($entry);
 				$historyEntry = new RaidLog(
 					description: $entry->description,
 					seconds_per_point: $entry->seconds_per_point,
@@ -705,7 +705,7 @@ class ImportController extends ModuleInstance {
 						joined: $raider->joinTime ?? time(),
 						left: $raider->leaveTime ?? time(),
 					);
-					$this->db->insert(RaidMemberController::DB_TABLE, $raiderEntry, null);
+					$this->db->insert($raiderEntry);
 				}
 				foreach ($history as $state) {
 					$historyEntry->time = $state->time;
@@ -721,10 +721,10 @@ class ImportController extends ModuleInstance {
 					if (isset($state->raidSecondsPerPoint)) {
 						$historyEntry->seconds_per_point = $state->raidSecondsPerPoint;
 					}
-					$this->db->insert(RaidController::DB_TABLE_LOG, $historyEntry, null);
+					$this->db->insert($historyEntry);
 				}
 				if (!count($history)) {
-					$this->db->insert(RaidController::DB_TABLE_LOG, $historyEntry, null);
+					$this->db->insert($historyEntry);
 				}
 			}
 		} catch (Throwable $e) {
@@ -753,7 +753,7 @@ class ImportController extends ModuleInstance {
 					username: $name,
 					points: $point->raidPoints,
 				);
-				$this->db->insert(RaidPointsController::DB_TABLE, $entry, null);
+				$this->db->insert($entry);
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -925,9 +925,9 @@ class ImportController extends ModuleInstance {
 				/** @psalm-suppress RiskyTruthyFalsyComparison */
 				$entry->user_managed = isset($oldEntry) ? $oldEntry->user_managed : !($category->systemEntry ?? false);
 				if (isset($oldEntry)) {
-					$this->db->update('<table:comment_categories>', 'name', $entry);
+					$this->db->update($entry);
 				} else {
-					$this->db->insert('<table:comment_categories>', $entry, null);
+					$this->db->insert($entry);
 				}
 			}
 		} catch (Throwable $e) {
@@ -969,9 +969,9 @@ class ImportController extends ModuleInstance {
 						min_al_write: 'admin',
 						user_managed: true,
 					);
-					$this->db->insert('<table:comment_categories>', $cat, null);
+					$this->db->insert($cat);
 				}
-				$this->db->insert('<table:comments>', $entry);
+				$this->db->insert($entry);
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);

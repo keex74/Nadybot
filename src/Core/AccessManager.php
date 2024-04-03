@@ -328,6 +328,6 @@ class AccessManager {
 			$revLook = array_flip(self::$ACCESS_LEVELS);
 			$audit->value = $audit->value . ' (' . $revLook[(int)$audit->value] . ')';
 		}
-		$this->db->insert(static::DB_TABLE, $audit);
+		$this->db->insert($audit);
 	}
 }

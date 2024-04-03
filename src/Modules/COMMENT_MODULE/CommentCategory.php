@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\COMMENT_MODULE;
 
-use Nadybot\Core\Attributes\DB\Table;
+use Nadybot\Core\Attributes\DB\{PK, Table};
 use Nadybot\Core\DBRow;
 
-#[Table(name: 'comment_categories')]
+#[Table(name: '<table:comment_categories>')]
 class CommentCategory extends DBRow {
 	/** Unix timestamp when the category was created */
 	public int $created_at;
@@ -20,7 +20,7 @@ class CommentCategory extends DBRow {
 	 */
 	public function __construct(
 		?int $created_at=null,
-		public string $name='unknown',
+		#[PK] public string $name='unknown',
 		public string $created_by='Unknown',
 		public string $min_al_read='all',
 		public string $min_al_write='all',

@@ -2,9 +2,9 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'perk_level', shared: NCA\DB\Shared::Yes)]
+#[DB\Table(name: 'perk_level', shared: DB\Shared::Yes)]
 class PerkLevel extends DBRow {
 	/**
 	 * @param int                   $perk_id          The internal ID of the perk line
@@ -21,14 +21,14 @@ class PerkLevel extends DBRow {
 		public int $perk_id,
 		public int $perk_level,
 		public int $required_level,
-		public ?int $id=null,
+		#[DB\AutoInc] public ?int $id=null,
 		public ?int $aoid=null,
-		#[NCA\DB\Ignore] public array $professions=[],
-		#[NCA\DB\Ignore] public array $buffs=[],
-		#[NCA\DB\Ignore] public array $perk_buffs=[],
-		#[NCA\DB\Ignore] public array $resistances=[],
-		#[NCA\DB\Ignore] public array $perk_resistances=[],
-		#[NCA\DB\Ignore] public ?PerkLevelAction $action=null,
+		#[DB\Ignore] public array $professions=[],
+		#[DB\Ignore] public array $buffs=[],
+		#[DB\Ignore] public array $perk_buffs=[],
+		#[DB\Ignore] public array $resistances=[],
+		#[DB\Ignore] public array $perk_resistances=[],
+		#[DB\Ignore] public ?PerkLevelAction $action=null,
 	) {
 	}
 }

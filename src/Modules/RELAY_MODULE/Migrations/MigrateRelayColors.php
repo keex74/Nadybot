@@ -8,7 +8,6 @@ use Nadybot\Core\{
 	DB,
 	DBSchema\RouteHopColor,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	Safe,
 	SchemaMigration,
@@ -66,13 +65,12 @@ class MigrateRelayColors implements SchemaMigration {
 	}
 
 	protected function saveColor(DB $db, string $hop, ?string $where, ?string $tag, string $text): void {
-		$spec = new RouteHopColor(
+		$db->insert(new RouteHopColor(
 			hop: $hop,
 			where: $where,
 			tag_color: $tag,
 			text_color: $text,
-		);
-		$db->insert(MessageHub::DB_TABLE_COLORS, $spec);
+		));
 	}
 
 	protected function migrateAllianceRelayModuleColors(DB $db): void {

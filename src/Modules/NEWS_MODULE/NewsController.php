@@ -459,7 +459,7 @@ class NewsController extends ModuleInstance {
 		if (!isset($decoded->news)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		if ($this->db->insert('news', $decoded)) {
+		if ($this->db->insert($decoded)) {
 			$event = new SyncNewsEvent(
 				time: $decoded->time,
 				name: $decoded->name,
@@ -506,7 +506,7 @@ class NewsController extends ModuleInstance {
 				$result->{$attr} = $value;
 			}
 		}
-		if (!$this->db->update('news', 'id', $decoded)) {
+		if (!$this->db->update($decoded)) {
 			$event = new SyncNewsEvent(
 				time: $decoded->time,
 				name: $decoded->name,

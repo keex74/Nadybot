@@ -232,11 +232,11 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			return;
 		}
 		if (isset($alEntry)) {
-			$this->db->update(self::DB_TABLE, 'access_level', $rankMapping);
+			$this->db->update($rankMapping, 'access_level');
 		} elseif (isset($rankEntry)) {
-			$this->db->update(self::DB_TABLE, 'min_rank', $rankMapping);
+			$this->db->update($rankMapping, 'min_rank');
 		} else {
-			$this->db->insert(self::DB_TABLE, $rankMapping, null);
+			$this->db->insert($rankMapping);
 		}
 		$sendto->reply("Every <highlight>{$rankName}<end> or higher will now be mapped to <highlight>{$alName}<end>.");
 	}

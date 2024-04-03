@@ -457,7 +457,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			status: self::STATUS_CREATED,
 		);
 
-		$topic->id = $this->db->insert(self::DB_POLLS, $topic);
+		$topic->id = $this->db->insert($topic);
 		$this->polls[$topic->id] = $topic;
 		$msg = "Poll <highlight>{$topic->id}<end> has been created.";
 

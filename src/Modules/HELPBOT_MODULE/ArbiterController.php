@@ -160,7 +160,7 @@ class ArbiterController extends ModuleInstance {
 					start: $arbStart,
 					end: $arbEnd,
 				);
-				$this->db->insert(static::DB_TABLE, $arb);
+				$this->db->insert($arb);
 			}
 		} catch (Exception $e) {
 			$this->db->rollback();

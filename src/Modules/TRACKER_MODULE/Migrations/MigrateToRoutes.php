@@ -78,7 +78,7 @@ class MigrateToRoutes implements SchemaMigration {
 			source: $this->trackerController->getChannelName(),
 			destination: Source::DISCORD_PRIV . "({$channel->name})",
 		);
-		$route->id = $db->insert(MessageHub::DB_TABLE_ROUTES, $route);
+		$route->id = $db->insert($route);
 		try {
 			$msgRoute = $this->messageHub->createMessageRoute($route);
 			$this->messageHub->addRoute($msgRoute);

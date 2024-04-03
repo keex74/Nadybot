@@ -2,12 +2,14 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
+use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
 	Attributes\JSON,
 	DBRow,
 	Faction,
 	Profession,
+	Registry,
 };
 
 /**
@@ -17,6 +19,12 @@ use Nadybot\Core\{
  */
 #[Table(name: 'players', shared: Shared::Yes)]
 class Player extends DBRow {
+	/**
+	 * In which dimension (RK server) is this character?
+	 * 4 for test, 5 for RK5, 6 for RK19
+	 */
+	#[PK] public int $dimension;
+
 	/**
 	 * @param int         $charid        The character ID as used by Anarchy Online
 	 * @param string      $name          The character's name as it appears in the game
@@ -43,8 +51,8 @@ class Player extends DBRow {
 	 */
 	final public function __construct(
 		public int $charid,
-		public string $name,
-		public ?int $dimension=null,
+		#[PK] public string $name,
+		?int $dimension=null,
 		#[JSON\Name('first_name')] public string $firstname='',
 		#[JSON\Name('last_name')] public string $lastname='',
 		public ?int $level=null,
@@ -65,6 +73,7 @@ class Player extends DBRow {
 		#[JSON\Ignore] public string $source='',
 		public ?int $last_update=null,
 	) {
+		$this->dimension = $dimension ?? Registry::getInstance(BotConfig::class)->main->dimension;
 	}
 
 	public function getPronoun(): string {

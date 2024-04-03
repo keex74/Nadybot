@@ -2,15 +2,15 @@
 
 namespace Nadybot\Modules\WHATLOCKS_MODULE;
 
-use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\Attributes\DB;
+use Nadybot\Core\DBRow;
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
-#[NCA\DB\Table(name: 'what_logs', shared: NCA\DB\Shared::Yes)]
-class WhatLocks extends AODBEntry {
-	public int $item_id;
-	public int $skill_id;
+#[DB\Table(name: 'what_locks', shared: DB\Shared::Yes)]
+class WhatLocks extends DBRow {
+	#[DB\PK] public int $item_id;
+	#[DB\PK] public int $skill_id;
 	public int $duration;
 
-	#[NCA\DB\Ignore]
-	public ?AODBEntry $item = null;
+	#[DB\Ignore] public ?AODBEntry $item = null;
 }

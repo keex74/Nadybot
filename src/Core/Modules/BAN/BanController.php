@@ -672,7 +672,7 @@ class BanController extends ModuleInstance {
 			reason: $reason,
 			org_name: "org #{$orgId}",
 		);
-		$this->db->insert(self::DB_TABLE_BANNED_ORGS, $ban, null);
+		$this->db->insert($ban);
 		return $this->addOrgToBanlist($ban);
 	}
 

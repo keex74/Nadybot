@@ -404,18 +404,18 @@ class RelayController extends ModuleInstance {
 			$transactionActive = true;
 		}
 		try {
-			$relayConf->id = $this->db->insert(static::DB_TABLE, $relayConf);
+			$relayConf->id = $this->db->insert($relayConf);
 			foreach ($relayConf->layers as $layer) {
 				$layer->relay_id = $relayConf->id;
-				$layer->id = $this->db->insert(static::DB_TABLE_LAYER, $layer);
+				$layer->id = $this->db->insert($layer);
 				foreach ($layer->arguments as $argument) {
 					$argument->layer_id = $layer->id;
-					$argument->id = $this->db->insert(static::DB_TABLE_ARGUMENT, $argument);
+					$argument->id = $this->db->insert($argument);
 				}
 			}
 			foreach ($relayConf->events as $event) {
 				$event->relay_id = $relayConf->id;
-				$event->id = $this->db->insert(static::DB_TABLE_EVENT, $event);
+				$event->id = $this->db->insert($event);
 			}
 		} catch (Throwable $e) {
 			if ($transactionActive) {
@@ -805,7 +805,7 @@ class RelayController extends ModuleInstance {
 				incoming: stripos($dir, 'I') !== false,
 				outgoing: stripos($dir, 'O') !== false,
 			);
-			$event->id = $this->db->insert(static::DB_TABLE_EVENT, $event, 'id');
+			$event->id = $this->db->insert($event);
 			$relay->addEvent($event);
 		}
 		$this->relays[$relay->name]->setEvents($relay->events);
@@ -1098,7 +1098,7 @@ class RelayController extends ModuleInstance {
 
 			foreach ($events as $event) {
 				$event->relay_id = $relay->id;
-				$event->id = $this->db->insert(static::DB_TABLE_EVENT, $event, 'id');
+				$event->id = $this->db->insert($event);
 				$relay->addEvent($event);
 			}
 			$this->relays[$relay->name]->setEvents($relay->events);
@@ -1344,10 +1344,10 @@ class RelayController extends ModuleInstance {
 				$this->db->table(static::DB_TABLE_EVENT)->delete($event->id);
 				$relay->deleteEvent($eventName);
 			} else {
-				$this->db->update(static::DB_TABLE_EVENT, 'id', $event);
+				$this->db->update($event);
 			}
 		} else {
-			$event->id = $this->db->insert(static::DB_TABLE_EVENT, $event, 'id');
+			$event->id = $this->db->insert($event);
 			$relay->addEvent($event);
 		}
 		$this->relays[$relay->name]->setEvents($relay->events);

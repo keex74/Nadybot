@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use Nadybot\Core\Attributes\DB\Table;
+use Nadybot\Core\Attributes\DB\{PK, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'raid_rank')]
 class RaidRank extends DBRow {
 	public function __construct(
-		public string $name,
+		#[PK] public string $name,
 		public int $rank,
 	) {
 	}

@@ -1806,7 +1806,7 @@ class DiscordGatewayController extends ModuleInstance {
 			confirmed: time(),
 			created: time(),
 		);
-		$this->db->insert(DiscordGatewayCommandHandler::DB_TABLE, $mapping);
+		$this->db->insert($mapping);
 		$this->logger->notice('The Discord user {userId} is now linked to {aoChar}', [
 			'userId' => $mapping->discord_id,
 			'aoChar' => $mapping->name,
@@ -1996,12 +1996,12 @@ class DiscordGatewayController extends ModuleInstance {
 						version: $stats[9]??time(),
 						guild_id: $guild->id,
 					);
-					$this->db->insert(self::EMOJI_TABLE, $dbEmoji);
+					$this->db->insert($dbEmoji);
 				} else {
 					$oldDBEmoji->registered = time();
 					$oldDBEmoji->emoji_id = $registeredEmoji->id;
 					$oldDBEmoji->version = $stats[9]??time();
-					$this->db->update(self::EMOJI_TABLE, 'id', $oldDBEmoji);
+					$this->db->update($oldDBEmoji);
 				}
 			}
 		} catch (DiscordException $e) {

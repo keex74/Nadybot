@@ -275,12 +275,11 @@ class ColorsController extends ModuleInstance {
 			$colorDef = new RouteHopColor(hop: 'system');
 		}
 		$colorDef->text_color = $color;
-		$table = $this->msgHub::DB_TABLE_COLORS;
 		try {
 			if (isset($colorDef->id)) {
-				$success = $this->db->update($table, 'id', $colorDef) > 0;
+				$success = $this->db->update($colorDef) > 0;
 			} else {
-				$colorDef->id = $this->db->insert($table, $colorDef);
+				$colorDef->id = $this->db->insert($colorDef);
 				$success = $colorDef->id > 0;
 			}
 			$this->msgHub->loadTagColor();

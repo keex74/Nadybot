@@ -765,7 +765,7 @@ class ConfigApiController extends ModuleInstance {
 			}
 			$map = $decoded->toPermSetMapping();
 			try {
-				$map->id = $this->db->insert(CommandManager::DB_TABLE_MAPPING, $map);
+				$map->id = $this->db->insert($map);
 			} catch (SQLException $e) {
 				return new Response(
 					HttpStatus::INTERNAL_SERVER_ERROR,
@@ -815,7 +815,7 @@ class ConfigApiController extends ModuleInstance {
 			$map = $decoded->toPermSetMapping();
 			$map->id = $old->id;
 			try {
-				$map->id = $this->db->update(CommandManager::DB_TABLE_MAPPING, 'id', $map);
+				$map->id = $this->db->update($map);
 			} catch (SQLException $e) {
 				return new Response(
 					HttpStatus::INTERNAL_SERVER_ERROR,

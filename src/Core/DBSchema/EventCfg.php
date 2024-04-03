@@ -7,9 +7,9 @@ use Nadybot\Core\{Attributes as NCA, DBRow};
 #[NCA\DB\Table(name: 'eventcfg')]
 class EventCfg extends DBRow {
 	public function __construct(
-		public string $module,
-		public string $type,
-		public string $file,
+		#[NCA\DB\PK] public string $module,
+		#[NCA\DB\PK] public string $type,
+		#[NCA\DB\PK] public string $file,
 		public string $description,
 		public int $verify=0,
 		public int $status=0,

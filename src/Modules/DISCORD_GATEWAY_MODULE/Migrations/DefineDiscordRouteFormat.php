@@ -16,13 +16,13 @@ class DefineDiscordRouteFormat implements SchemaMigration {
 			render: false,
 			format: 'DISCORD',
 		);
-		$db->insert(Source::DB_TABLE, $rhf);
+		$db->insert($rhf);
 
 		$rhc = new RouteHopColor(
 			hop: 'discord',
 			tag_color: 'C3C3C3',
 		);
-		$db->insert(MessageHub::DB_TABLE_COLORS, $rhc);
+		$db->insert($rhc);
 
 		$route = [
 			'source' => 'discord(*)',

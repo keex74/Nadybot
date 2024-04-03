@@ -16,6 +16,7 @@ use Illuminate\Database\{
 	Schema\Blueprint,
 };
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Nadybot\Core\Attributes\Migration as AttributesMigration;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -65,9 +66,6 @@ class DB {
 
 	#[NCA\Inject]
 	private SettingManager $settingManager;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private BotConfig $config;
@@ -420,11 +418,16 @@ class DB {
 		return $sql;
 	}
 
-	/** Insert a DBRow $row into the database table $table */
-	public function insert(string $table, DBRow $row, ?string $sequence=''): int {
+	/** Insert a DBRow $row into the database */
+	public function insert(DBRow $row, ?string $table=null): int {
+		$table ??= $row::getTable();
+		if (!isset($table)) {
+			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): $table missing');
+		}
 		$refClass = new ReflectionClass($row);
 		$props = $refClass->getProperties(ReflectionProperty::IS_PUBLIC);
 		$data = [];
+		$sequence = null;
 		foreach ($props as $prop) {
 			$colName = $prop->name;
 			if (count($colProp = $prop->getAttributes(NCA\DB\ColName::class))) {
@@ -434,6 +437,7 @@ class DB {
 				continue;
 			}
 			if (count($prop->getAttributes(NCA\DB\AutoInc::class))) {
+				$sequence = $colName;
 				continue;
 			}
 			if (!$prop->isInitialized($row)) {
@@ -460,17 +464,21 @@ class DB {
 	/**
 	 * Update a DBRow $row in the database table $table, using property $key in the where
 	 *
-	 * @param string          $table Name of the database table
-	 * @param string|string[] $key   Name of the primary key or array of the primary keys
-	 * @param DBRow           $row   The data to update
+	 * @param DBRow                $row The data to update
+	 * @param null|string|string[] $key Name of the primary key or array of the primary keys
 	 *
 	 * @return int Number of updates records
 	 */
-	public function update(string $table, string|array $key, DBRow $row): int {
+	public function update(DBRow $row, null|string|array $key=null): int {
+		$table = $row->getTable();
+		if ($table === null) {
+			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): unable to derive a table to update');
+		}
 		$refClass = new ReflectionClass($row);
 		$props = $refClass->getProperties(ReflectionProperty::IS_PUBLIC);
 		$updates = [];
 		$propNames = [];
+		$pks = [];
 		foreach ($props as $prop) {
 			if (count($prop->getAttributes(NCA\DB\Ignore::class))) {
 				continue;
@@ -481,6 +489,11 @@ class DB {
 			$colName = $prop->name;
 			if (count($colNameProp = $prop->getAttributes(NCA\DB\ColName::class))) {
 				$colName = $colNameProp[0]->newInstance()->col;
+			}
+			if (count($prop->getAttributes(NCA\DB\AutoInc::class))) {
+				$pks []= $colName;
+			} elseif (count($prop->getAttributes(NCA\DB\PK::class))) {
+				$pks []= $colName;
 			}
 			$propNames[$colName] = $prop->name;
 			$updates[$colName] = $prop->getValue($row);
@@ -495,6 +508,7 @@ class DB {
 			}
 		}
 		$query = $this->table($table);
+		$key ??= $pks;
 		foreach ((array)$key as $k) {
 			$query->where($k, $row->{$propNames[$k]});
 		}

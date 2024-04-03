@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
 use DateTimeInterface;
-use Nadybot\Core\Attributes\DB\Table;
+use Nadybot\Core\Attributes\DB\{AutoInc, Table};
 use Nadybot\Core\DBRow;
 use Safe\DateTimeImmutable;
 
@@ -15,7 +15,7 @@ class ApiKey extends DBRow {
 		public string $character,
 		public string $token,
 		public string $pubkey,
-		public ?int $id=null,
+		#[AutoInc] public ?int $id=null,
 		public int $last_sequence_nr=0,
 		?DateTimeInterface $created=null,
 	) {

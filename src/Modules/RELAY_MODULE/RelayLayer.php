@@ -14,7 +14,7 @@ class RelayLayer extends DBRow {
 	 */
 	public function __construct(
 		public string $layer,
-		#[NCA\JSON\Ignore] public ?int $id=null,
+		#[NCA\JSON\Ignore] #[NCA\DB\AutoInc] public ?int $id=null,
 		#[NCA\JSON\Ignore] public ?int $relay_id=null,
 		#[NCA\DB\Ignore] public array $arguments=[],
 	) {

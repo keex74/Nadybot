@@ -140,16 +140,17 @@ class RaidBlockController extends ModuleInstance {
 			$duration = $duration->toSecs();
 			$expiration = time() + $duration;
 		}
-		$block = new RaidBlock();
-		$block->blocked_by = $context->char->name;
-		$block->blocked_from = $blockFrom;
-		$block->expiration = $expiration??null;
-		$block->player = $character;
-		$block->reason = $reason;
-		$block->time = time();
+		$block = new RaidBlock(
+			blocked_by: $context->char->name,
+			blocked_from: $blockFrom,
+			expiration: $expiration??null,
+			player: $character,
+			reason: $reason,
+			time: time(),
+		);
 		$this->blocks[$character] ??= [];
 		$this->blocks[$character][$blockFrom] = $block;
-		$this->db->insert(self::DB_TABLE, $block, null);
+		$this->db->insert($block);
 		$msg = "<highlight>{$character}<end> is now blocked from <highlight>".
 			$this->blockToString($blockFrom) . '<end> ';
 		if (is_int($duration) && $duration > 0) {

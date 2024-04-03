@@ -328,7 +328,7 @@ class OnlineController extends ModuleInstance {
 			mask: $mask,
 			created_by: $context->char->name,
 		);
-		$this->db->insert(self::DB_TABLE_HIDE, $hidden);
+		$this->db->insert($hidden);
 		$context->reply("<highlight>{$mask}<end> added to the online hidden mask list.");
 	}
 

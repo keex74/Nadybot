@@ -7,7 +7,7 @@ use Nadybot\Core\{Attributes as NCA, DBRow, SettingMode};
 #[NCA\DB\Table(name: 'settings')]
 class Setting extends DBRow {
 	public function __construct(
-		public string $name,
+		#[NCA\DB\PK] public string $name,
 		public SettingMode $mode,
 		public ?string $module=null,
 		public ?string $type=null,

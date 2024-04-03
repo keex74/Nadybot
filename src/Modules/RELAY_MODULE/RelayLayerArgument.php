@@ -4,12 +4,10 @@ namespace Nadybot\Modules\RELAY_MODULE;
 
 use function Safe\{json_encode, preg_match};
 
-use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\Attributes\JSON;
-
+use Nadybot\Core\Attributes\{DB, JSON};
 use Nadybot\Core\DBRow;
 
-#[Table(name: 'relay_layer_argument')]
+#[DB\Table(name: 'relay_layer_argument')]
 class RelayLayerArgument extends DBRow {
 	/**
 	 * @param string $name     The name of the argument
@@ -20,7 +18,7 @@ class RelayLayerArgument extends DBRow {
 	public function __construct(
 		public string $name,
 		public string $value,
-		#[JSON\Ignore] public ?int $id=null,
+		#[JSON\Ignore] #[DB\AutoInc] public ?int $id=null,
 		#[JSON\Ignore] public ?int $layer_id=null,
 	) {
 	}

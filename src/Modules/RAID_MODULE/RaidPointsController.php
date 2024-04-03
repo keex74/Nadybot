@@ -740,7 +740,7 @@ class RaidPointsController extends ModuleInstance {
 			$context->reply('The name of the log entry is too long. Maximum is 100 characters.');
 			return;
 		}
-		$this->db->insert(self::DB_TABLE_REWARD, $reward);
+		$this->db->insert($reward);
 		$context->reply("New reward <highlight>{$reward->name}<end> created.");
 	}
 
@@ -796,7 +796,7 @@ class RaidPointsController extends ModuleInstance {
 			$context->reply('The name of the log entry is too long. Maximum is 100 characters.');
 			return;
 		}
-		$this->db->update(self::DB_TABLE_REWARD, 'id', $reward);
+		$this->db->update($reward);
 		$context->reply("Reward <highlight>{$reward->name}<end> changed.");
 	}
 

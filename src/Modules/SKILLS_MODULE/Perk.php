@@ -17,7 +17,7 @@ class Perk extends DBRow {
 		public string $name,
 		public string $expansion='sl',
 		public ?string $description=null,
-		public ?int $id=null,
+		#[NCA\DB\AutoInc] public ?int $id=null,
 		#[NCA\DB\Ignore] public array $levels=[],
 	) {
 	}

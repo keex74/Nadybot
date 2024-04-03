@@ -2,14 +2,14 @@
 
 namespace Nadybot\Modules\RECIPE_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'recipes', shared: Shared::Yes)]
 class Recipe extends DBRow {
 	/** @param int $date Last modification of the recipe */
 	public function __construct(
-		public int $id,
+		#[PK] public int $id,
 		public string $name,
 		public string $author,
 		public string $recipe,

@@ -753,7 +753,7 @@ class LootController extends ModuleInstance {
 				$this->residual[$resnum] = $item;
 				$resnum++;
 				$lootHistory->winner = null;
-				$this->db->insert(self::DB_TABLE, $lootHistory);
+				$this->db->insert($lootHistory);
 			} else {
 				/** @psalm-var non-empty-array<string, bool> */
 				$users = $item->users;
@@ -763,7 +763,7 @@ class LootController extends ModuleInstance {
 					$winners = (array)array_rand($users, $arrolnum);
 					foreach ($winners as $winner) {
 						$lootHistory->winner = $winner;
-						$this->db->insert(self::DB_TABLE, $lootHistory);
+						$this->db->insert($lootHistory);
 					}
 					$item->users = [];
 					$list .= implode(
@@ -785,7 +785,7 @@ class LootController extends ModuleInstance {
 				} else {
 					$winner = array_rand($users, 1);
 					$lootHistory->winner = $winner;
-					$this->db->insert(self::DB_TABLE, $lootHistory);
+					$this->db->insert($lootHistory);
 					$list .= "<green>{$winner}<end>";
 				}
 				$list .= "\n\n";

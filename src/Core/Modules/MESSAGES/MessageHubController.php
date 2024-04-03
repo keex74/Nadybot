@@ -276,19 +276,13 @@ class MessageHubController extends ModuleInstance {
 
 		/** @var null|RouteModifier[] $modifiers */
 		try {
-			$route->id = $this->db->insert($this->messageHub::DB_TABLE_ROUTES, $route);
+			$route->id = $this->db->insert($route);
 			foreach ($modifiers??[] as $modifier) {
 				$modifier->route_id = $route->id;
-				$modifier->id = $this->db->insert(
-					$this->messageHub::DB_TABLE_ROUTE_MODIFIER,
-					$modifier
-				);
+				$modifier->id = $this->db->insert($modifier);
 				foreach ($modifier->arguments as $argument) {
 					$argument->route_modifier_id = $modifier->id;
-					$argument->id = $this->db->insert(
-						$this->messageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT,
-						$argument
-					);
+					$argument->id = $this->db->insert($argument);
 				}
 				$route->modifiers []= $modifier;
 			}
@@ -709,7 +703,7 @@ class MessageHubController extends ModuleInstance {
 		}
 		if (isset($color->{$otherAttr})) {
 			$color->{$attr} = null;
-			$this->db->update($this->messageHub::DB_TABLE_COLORS, 'id', $color);
+			$this->db->update($color);
 			$context->reply(
 				ucfirst($type) . ' color definition for '.
 				"<highlight>{$name}<end> deleted."
@@ -784,11 +778,10 @@ class MessageHubController extends ModuleInstance {
 		} else {
 			$colorDef->tag_color = $color;
 		}
-		$table = $this->messageHub::DB_TABLE_COLORS;
 		if (isset($colorDef->id)) {
-			$this->db->update($table, 'id', $colorDef);
+			$this->db->update($colorDef);
 		} else {
-			$colorDef->id = $this->db->insert($table, $colorDef);
+			$colorDef->id = $this->db->insert($colorDef);
 			$this->messageHub->loadTagColor();
 		}
 		$context->reply(
@@ -1001,9 +994,9 @@ class MessageHubController extends ModuleInstance {
 		}
 		$format->render = $state;
 		if ($update) {
-			$this->db->update(Source::DB_TABLE, 'id', $format);
+			$this->db->update($format);
 		} else {
-			$format->id = $this->db->insert(Source::DB_TABLE, $format);
+			$format->id = $this->db->insert($format);
 			$this->messageHub->loadTagFormat();
 		}
 	}
@@ -1023,9 +1016,9 @@ class MessageHubController extends ModuleInstance {
 		}
 		$spec->format = $format;
 		if ($update) {
-			$this->db->update(Source::DB_TABLE, 'id', $spec);
+			$this->db->update($spec);
 		} else {
-			$spec->id = $this->db->insert(Source::DB_TABLE, $spec);
+			$spec->id = $this->db->insert($spec);
 			$this->messageHub->loadTagFormat();
 		}
 	}

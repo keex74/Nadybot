@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\DISC_MODULE;
 
-use Nadybot\Core\Attributes\DB\Table;
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
-#[Table(name: 'discs')]
+#[Table(name: 'discs', shared: Shared::Yes)]
 class Disc extends DBRow {
 	public function __construct(
-		public int $disc_id,
+		#[PK] public int $disc_id,
 		public int $crystal_id,
 		public int $crystal_ql,
 		public int $disc_ql,

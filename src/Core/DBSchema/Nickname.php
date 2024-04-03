@@ -2,13 +2,13 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
-#[Table(name: 'migrations', shared: Shared::No)]
+#[Table(name: 'nickname', shared: Shared::Yes)]
 class Nickname extends DBRow {
 	public function __construct(
-		public string $main,
+		#[PK] public string $main,
 		public string $nick,
 	) {
 	}

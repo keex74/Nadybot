@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'Cluster', shared: Shared::Yes)]
 class Cluster extends DBRow {
 	public function __construct(
-		public int $ClusterID,
+		#[PK] public int $ClusterID,
 		public int $EffectTypeID,
 		public string $LongName,
 		public string $OfficialName,

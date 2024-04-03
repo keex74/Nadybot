@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Nadybot\Modules\LOOT_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\Attributes\DB;
+use Nadybot\Core\DBRow;
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
-#[NCA\DB\Table(name: 'raid_loot')]
+#[DB\Table(name: 'raid_loot', shared: DB\Shared::Yes)]
 class RaidLoot extends DBRow {
 	public function __construct(
-		public int $id,
+		#[DB\PK] public int $id,
 		public string $raid,
 		public string $category,
 		public int $ql,
@@ -18,7 +19,7 @@ class RaidLoot extends DBRow {
 		public string $comment,
 		public int $multiloot,
 		public ?int $aoid=null,
-		#[NCA\DB\Ignore] public ?AODBEntry $item=null,
+		#[DB\Ignore] public ?AODBEntry $item=null,
 	) {
 	}
 }

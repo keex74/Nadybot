@@ -449,7 +449,7 @@ class WishlistController extends ModuleInstance {
 			item: $item,
 			amount: isset($amount) ? $amount() : 1,
 		);
-		$entry->id = $this->db->insert(self::DB_TABLE, $entry);
+		$entry->id = $this->db->insert($entry);
 		$context->reply("Item added to your wishlist as #{$entry->id}.");
 		if (!in_array($entry->from, $fromChars)) {
 			$this->buddylistManager->addName($character(), 'wishlist');
@@ -477,7 +477,7 @@ class WishlistController extends ModuleInstance {
 			amount: isset($amount) ? $amount() : 1,
 			expires_on: isset($expireDuration) ? time() + $expireDuration : null,
 		);
-		$entry->id = $this->db->insert(self::DB_TABLE, $entry);
+		$entry->id = $this->db->insert($entry);
 		$context->reply("Item added to your wishlist as #{$entry->id}.");
 	}
 
@@ -671,7 +671,7 @@ class WishlistController extends ModuleInstance {
 		$oldFrom = $this->getActiveFroms();
 		$this->db->awaitBeginTransaction();
 		try {
-			$fulfilment->id = $this->db->insert(self::DB_TABLE_FULFILMENT, $fulfilment);
+			$fulfilment->id = $this->db->insert($fulfilment);
 			if ($numFulfilled + $fulfilment->amount >= $entry->amount) {
 				$this->db->table(self::DB_TABLE)
 					->where('id', $entry->id)

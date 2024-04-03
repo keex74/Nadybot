@@ -648,11 +648,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$context->reply($msg);
 			return;
 		}
-		$tOrg = new TrackingOrg(
+		$this->db->insert(new TrackingOrg(
 			org_id: $orgId,
 			added_by: $context->char->name,
-		);
-		$this->db->insert(static::DB_ORG, $tOrg, null);
+		));
 		$context->reply("Adding {$org->faction->inColor($org->name)} to the tracker.");
 		try {
 			$guild = $this->guildManager->byId($orgId, $this->config->main->dimension, true);

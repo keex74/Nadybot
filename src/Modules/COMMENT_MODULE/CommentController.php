@@ -151,7 +151,7 @@ class CommentController extends ModuleInstance {
 				$exists = $this->db->table('<table:comment_categories>')
 					->where('name', $cat->name)->exists();
 				if (!$exists) {
-					$this->db->insert('<table:comment_categories>', $cat, null);
+					$this->db->insert($cat);
 				}
 			}
 			$this->logger->notice('Copying comments from {old_table} to {new_table}.', [
@@ -167,7 +167,7 @@ class CommentController extends ModuleInstance {
 					->exists();
 				if (!$exists) {
 					unset($comment->id);
-					$this->db->insert('<table:comments>', $comment);
+					$this->db->insert($comment);
 				}
 			}
 		} catch (SQLException $e) {
@@ -192,7 +192,7 @@ class CommentController extends ModuleInstance {
 
 	/** Create a new category */
 	public function saveCategory(CommentCategory $category): int {
-		return $this->db->insert('<table:comment_categories>', $category, null);
+		return $this->db->insert($category);
 	}
 
 	/**
@@ -339,7 +339,7 @@ class CommentController extends ModuleInstance {
 		}
 		$cat->min_al_read = $alForReading;
 		$cat->min_al_write = $alForWriting;
-		$this->db->update('<table:comment_categories>', 'name', $cat);
+		$this->db->update($cat);
 		$context->reply("Access levels for category <highlight>{$category}<end> successfully changes.");
 	}
 
@@ -411,7 +411,7 @@ class CommentController extends ModuleInstance {
 			return $cooldown;
 		}
 
-		$this->db->insert('<table:comments>', $comment);
+		$this->db->insert($comment);
 		return 0;
 	}
 

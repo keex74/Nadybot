@@ -497,10 +497,10 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			$this->db->table(Source::DB_TABLE)
 				->whereIn('id', $formatIds)
 				->delete();
-			$this->db->insert($this->msgHub::DB_TABLE_COLORS, $rhc);
-			$this->db->insert(Source::DB_TABLE, $rhf);
+			$this->db->insert($rhc);
+			$this->db->insert($rhf);
 			foreach ($routes as $route) {
-				$route->id = $this->db->insert($this->msgHub::DB_TABLE_ROUTES, $route);
+				$route->id = $this->db->insert($route);
 				$msgRoutes []= $this->msgHub->createMessageRoute($route);
 			}
 		} catch (Exception $e) {
@@ -1018,7 +1018,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			}
 			$entry->expires = time() + $secDuration;
 		}
-		$entry->id = $this->db->insert(self::DB_TABLE, $entry);
+		$entry->id = $this->db->insert($entry);
 		$this->reloadFilters();
 		$context->reply('Filter ' . $this->getFilterDescr($entry) . ' added.');
 	}
@@ -1076,7 +1076,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			$entry->sender_name = $name();
 			$entry->sender_uid = $uid;
 		}
-		$this->db->insert(self::DB_TABLE, $entry);
+		$this->db->insert($entry);
 		$this->reloadFilters();
 		$context->reply('Filter ' . $this->getFilterDescr($entry) . ' added.');
 	}
@@ -1104,7 +1104,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			return;
 		}
 		$entry->channel = strtolower($channel());
-		$this->db->insert(self::DB_TABLE, $entry);
+		$this->db->insert($entry);
 		$this->reloadFilters();
 		$context->reply('Filter ' . $this->getFilterDescr($entry) . ' added.');
 	}

@@ -2,19 +2,17 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'perk_level_resistances', shared: NCA\DB\Shared::Yes)]
+#[DB\Table(name: 'perk_level_resistances', shared: DB\Shared::Yes)]
 class PerkLevelResistance extends DBRow {
-	#[NCA\DB\Ignore]
-	public int $perk_level;
+	#[DB\Ignore] public int $perk_level;
 
-	#[NCA\DB\Ignore]
-	public ?string $nanoline=null;
+	#[DB\Ignore] public ?string $nanoline=null;
 
 	public function __construct(
-		public int $perk_level_id,
-		public int $strain_id,
+		#[DB\PK] public int $perk_level_id,
+		#[DB\PK] public int $strain_id,
 		public int $amount,
 	) {
 	}

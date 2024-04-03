@@ -4,7 +4,7 @@ namespace Nadybot\Modules\PVP_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, Faction, Playfield, Profession, SchemaMigration};
-use Nadybot\Modules\PVP_MODULE\{DBOutcome, DBTowerAttack, NotumWarsController};
+use Nadybot\Modules\PVP_MODULE\{DBOutcome, DBTowerAttack};
 use Psr\Log\LoggerInterface;
 use stdClass;
 
@@ -28,7 +28,7 @@ class ImportExistingAttacksAndVictories implements SchemaMigration {
 					/** @var object{time:int,playfield_id:int,x_coords:int,y_coords:int,site_number:int,att_guild_name:?string,att_faction:?string,att_player:string,att_level:?int,att_ai_level:?int,att_profession:?string,def_guild_name:string,def_faction:string} $old */
 					$processed++;
 					try {
-						$attack = new DBTowerAttack(
+						$db->insert(new DBTowerAttack(
 							timestamp: $old->time,
 							playfield: Playfield::from($old->playfield_id),
 							location_x: $old->x_coords,
@@ -43,8 +43,7 @@ class ImportExistingAttacksAndVictories implements SchemaMigration {
 							att_profession: Profession::tryFrom($old->att_profession??''),
 							def_org: $old->def_guild_name,
 							def_faction: Faction::from($old->def_faction),
-						);
-						$db->insert(NotumWarsController::DB_ATTACKS, $attack, null);
+						));
 					} catch (\Throwable $e) {
 						// Ignore incomplete data for now
 					}
@@ -66,7 +65,7 @@ class ImportExistingAttacksAndVictories implements SchemaMigration {
 					/** @var object{time:int,win_guild_name:?string,win_faction:?string,lose_guild_name:string,lose_faction:?string,playfield_id:int,site_number:int} $old */
 					$processed++;
 					try {
-						$outcome = new DBOutcome(
+						$db->insert(new DBOutcome(
 							timestamp: $old->time,
 							attacker_org: $old->win_guild_name,
 							attacker_faction: Faction::tryFrom($old->win_faction??''),
@@ -74,8 +73,7 @@ class ImportExistingAttacksAndVictories implements SchemaMigration {
 							losing_faction: Faction::tryFrom($old->lose_faction??'') ?? Faction::Unknown,
 							playfield: Playfield::from($old->playfield_id),
 							site_id: $old->site_number,
-						);
-						$db->insert(NotumWarsController::DB_OUTCOMES, $outcome, null);
+						));
 					} catch (\Throwable $e) {
 						// Ignore incomplete data for now
 					}

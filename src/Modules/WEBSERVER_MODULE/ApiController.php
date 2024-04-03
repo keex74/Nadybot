@@ -164,7 +164,7 @@ class ApiController extends ModuleInstance {
 		do {
 			$apiKey->token = bin2hex(random_bytes(4));
 			try {
-				$apiKey->id = $this->db->insert(static::DB_TABLE, $apiKey);
+				$apiKey->id = $this->db->insert($apiKey);
 			} catch (Throwable $e) {
 				// Ignore and retry
 			}
@@ -238,7 +238,7 @@ class ApiController extends ModuleInstance {
 			return;
 		}
 		$key->last_sequence_nr = 0;
-		$this->db->update(static::DB_TABLE, 'id', $key);
+		$this->db->update($key);
 		$context->reply("API token <highlight>{$token}<end> reset.");
 	}
 

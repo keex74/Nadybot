@@ -7,7 +7,7 @@ use Nadybot\Core\{Attributes as NCA, DBRow, Playfield, Text};
 #[NCA\DB\Table(name: 'whereis', shared: NCA\DB\Shared::Yes)]
 class Whereis extends DBRow {
 	public function __construct(
-		public int $id,
+		#[NCA\DB\PK] public int $id,
 		public string $name,
 		public string $answer,
 		public ?string $keywords,

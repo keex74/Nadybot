@@ -14,7 +14,7 @@ class BanEntry extends DBRow {
 	 * @param ?int    $banend Unix timestamp when the ban ends, or null/0 if never
 	 */
 	public function __construct(
-		public int $charid,
+		#[NCA\DB\PK] public int $charid,
 		#[NCA\DB\Ignore] public string $name,
 		public ?string $admin=null,
 		public ?int $time=null,

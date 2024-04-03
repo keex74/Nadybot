@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\ITEMS_MODULE;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'buffs', shared: Shared::Yes)]
 class Buff extends DBRow {
 	public function __construct(
-		public int $id,
+		#[PK] public int $id,
 		public int $nano_id,
 		public ?int $disc_id,
 		public ?int $use_id,

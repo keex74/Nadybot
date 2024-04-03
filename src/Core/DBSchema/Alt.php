@@ -2,13 +2,13 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\Attributes\DB\{Shared, Table};
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'alts', shared: Shared::Yes)]
 class Alt extends DBRow {
 	public function __construct(
-		public string $alt,
+		#[PK] public string $alt,
 		public string $main,
 		public ?bool $validated_by_main=false,
 		public ?bool $validated_by_alt=false,

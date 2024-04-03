@@ -167,9 +167,9 @@ class SiteTrackerController extends ModuleInstance {
 	): void {
 		$entry = $this->parseExpression($expression);
 		$entry->created_by = $context->char->name;
-		$entry->id = $this->db->insert(self::DB_TRACKER, $entry);
+		$entry->id = $this->db->insert($entry);
 		$this->msgHub->registerMessageEmitter($entry);
-		$this->trackers [$entry->id] = $entry;
+		$this->trackers[$entry->id] = $entry;
 		$numMatches = $this->countMatches($entry);
 		$channel = $entry->getChannelName();
 		$details = '';

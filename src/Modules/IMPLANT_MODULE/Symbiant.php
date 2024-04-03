@@ -7,7 +7,7 @@ use Nadybot\Core\{Attributes as NCA, DBRow};
 #[NCA\DB\Table(name: 'Symbiant', shared: NCA\DB\Shared::Yes)]
 class Symbiant extends DBRow {
 	public function __construct(
-		public int $ID,
+		#[NCA\DB\PK] public int $ID,
 		public string $Name,
 		public int $QL,
 		public int $SlotID,

@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\HIGHNET_MODULE\Migrations;
 
 use Nadybot\Core\DBSchema\{RouteHopColor, RouteHopFormat};
-use Nadybot\Core\Routing\Source;
 use Nadybot\Core\{Attributes as NCA, Config\BotConfig, DB, MessageHub, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
@@ -30,18 +29,16 @@ class InitializeRouting implements SchemaMigration {
 			$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
 		}
 
-		$rhf = new RouteHopFormat(
+		$db->insert(new RouteHopFormat(
 			hop: 'highnet',
 			render: true,
 			format: '@%s',
-		);
-		$db->insert(Source::DB_TABLE, $rhf);
+		));
 
-		$rhc = new RouteHopColor(
+		$db->insert(new RouteHopColor(
 			hop: 'highnet',
 			tag_color: '00EFFF',
 			text_color: '00BFFF',
-		);
-		$db->insert(MessageHub::DB_TABLE_COLORS, $rhc);
+		));
 	}
 }

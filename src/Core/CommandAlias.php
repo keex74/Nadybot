@@ -50,11 +50,11 @@ class CommandAlias {
 			$this->logger->info('Updating {alias}', ['alias' => $entry]);
 			// do not update an alias that a user created
 			if (isset($row->module) && strlen($row->module) > 0) {
-				$this->db->update(self::DB_TABLE, 'alias', $entry);
+				$this->db->update($entry, 'alias');
 			}
 		} else {
 			$this->logger->info('Registering {alias}', ['alias' => $entry]);
-			$this->db->insert(self::DB_TABLE, $entry, null);
+			$this->db->insert($entry);
 		}
 	}
 

@@ -2,9 +2,9 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'raid_member')]
+#[DB\Table(name: 'raid_member')]
 class RaidMember extends DBRow {
 	/** UNIX Timestamp when they joined the raid */
 	public int $joined;
@@ -19,12 +19,12 @@ class RaidMember extends DBRow {
 	 * @param ?int   $joined           UNIX Timestamp when they joined the raid
 	 */
 	public function __construct(
-		public int $raid_id,
-		public string $player,
+		#[DB\PK] public int $raid_id,
+		#[DB\PK] public string $player,
 		public ?int $left=null,
-		#[NCA\DB\Ignore] public int $points=0,
-		#[NCA\DB\Ignore] public int $pointsRewarded=0,
-		#[NCA\DB\Ignore] public int $pointsIndividual=0,
+		#[DB\Ignore] public int $points=0,
+		#[DB\Ignore] public int $pointsRewarded=0,
+		#[DB\Ignore] public int $pointsIndividual=0,
 		?int $joined=null,
 	) {
 		$this->joined = $joined ?? time();

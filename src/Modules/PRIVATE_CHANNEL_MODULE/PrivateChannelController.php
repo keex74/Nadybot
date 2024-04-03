@@ -644,7 +644,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				added_by: $context->char->name,
 				autoinv: $onOrOff,
 			);
-			$this->db->insert(self::DB_TABLE, $memberObj);
+			$this->db->insert($memberObj);
 			$this->members[$context->char->name] = $memberObj;
 			$msg = 'You have been added as a member of this bot. '.
 				'Use <highlight><symbol>autoinvite<end> to control '.
@@ -894,7 +894,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			added_by: $context->char->name,
 			autoinv: $autoInvite ? 1 : 0,
 		);
-		$this->db->insert(self::DB_TABLE, $memberObj);
+		$this->db->insert($memberObj);
 		$this->members[$context->char->name] = $memberObj;
 		$msg = 'You have been added as a member of this bot. '.
 			'Use <highlight><symbol>autoinvite<end> to control your '.
@@ -1525,7 +1525,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			added_by: $sender,
 			autoinv: $autoInvite ? 1 : 0,
 		);
-		$this->db->insert(self::DB_TABLE, $memberObj, null);
+		$this->db->insert($memberObj);
 		$this->members[$name] = $memberObj;
 		$event = new MemberAddEvent(sender: $name);
 		$this->eventManager->fireEvent($event);
