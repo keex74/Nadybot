@@ -125,6 +125,9 @@ class NadyNative implements RelayProtocolInterface {
 			);
 			return null;
 		}
+		if (!is_array($data)) {
+			return null;
+		}
 		$mapper = new ObjectMapperUsingReflection();
 		$data['type'] ??= RoutableEvent::TYPE_MESSAGE;
 		switch ($data['type']) {
@@ -140,7 +143,7 @@ class NadyNative implements RelayProtocolInterface {
 				}
 				return null;
 		}
-		$event = new RoutableEvent(type: $data->type);
+		$event = new RoutableEvent(type: $data['type']);
 		foreach (($data['path']??[]) as $hop) {
 			$source = new Source(
 				$hop['type'],
@@ -167,11 +170,12 @@ class NadyNative implements RelayProtocolInterface {
 			&& $this->syncOnline
 		) {
 			$event->data = $mapper->hydrateObject(Online::class, $eventData);
-			$this->logger->debug('Received online event for {relay}', [
+			$this->logger->debug('Received online event for {relay}: {event}', [
 				'relay' => $this->relay->getName(),
 				'event' => $event,
 			]);
 			$this->handleOnlineEvent($message->sender, $event);
+			return $event;
 		}
 		if ($event->type === RoutableEvent::TYPE_EVENT
 			&& is_array($eventData)
@@ -185,7 +189,7 @@ class NadyNative implements RelayProtocolInterface {
 			return null;
 		}
 		$event->data = json_decode(json_encode($eventData), false, 10, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
-		$this->logger->debug('Received routable event for {relay}', [
+		$this->logger->debug('Received routable event for {relay}: {event}', [
 			'relay' => $this->relay->getName(),
 			'event' => $event,
 		]);
