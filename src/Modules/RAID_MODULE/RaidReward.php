@@ -4,6 +4,7 @@ namespace Nadybot\Modules\RAID_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'raid_reward')]
 class RaidReward extends DBRow {
 	/**
 	 * @param string $name   The primary name how to address this reward

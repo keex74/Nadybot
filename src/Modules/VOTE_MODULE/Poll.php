@@ -4,6 +4,7 @@ namespace Nadybot\Modules\VOTE_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'polls')]
 class Poll extends DBRow {
 	/** @param string[] $answers */
 	public function __construct(

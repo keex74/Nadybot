@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'raid_block')]
 class RaidBlock extends DBRow {
 	public string $player;
 	public string $blocked_from;

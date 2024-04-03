@@ -4,6 +4,7 @@ namespace Nadybot\Modules\WHEREIS_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow, Playfield, Text};
 
+#[NCA\DB\Table(name: 'whereis', shared: NCA\DB\Shared::Yes)]
 class Whereis extends DBRow {
 	public function __construct(
 		public int $id,

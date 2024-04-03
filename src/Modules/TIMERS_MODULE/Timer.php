@@ -6,6 +6,7 @@ use function Safe\json_decode;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'timer')]
 class Timer extends DBRow {
 	public int $settime;
 

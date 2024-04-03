@@ -4,6 +4,7 @@ namespace Nadybot\Modules\SKILLS_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'perk_level', shared: NCA\DB\Shared::Yes)]
 class PerkLevel extends DBRow {
 	/**
 	 * @param int                   $perk_id          The internal ID of the perk line

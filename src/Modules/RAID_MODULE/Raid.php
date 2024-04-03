@@ -4,6 +4,7 @@ namespace Nadybot\Modules\RAID_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'raid')]
 class Raid extends DBRow {
 	/** UNIX timestamp when this raid/raid part was started */
 	public int $started;

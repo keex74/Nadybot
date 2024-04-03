@@ -4,6 +4,7 @@ namespace Nadybot\Modules\RELAY_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'relay_layer')]
 class RelayLayer extends DBRow {
 	/**
 	 * @param string               $layer     Which relay stack layer does this represent?

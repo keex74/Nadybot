@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'weapon_attributes', shared: Shared::Yes)]
 class WeaponAttribute extends DBRow {
 	public function __construct(
 		public int $id,

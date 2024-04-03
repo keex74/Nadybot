@@ -3,10 +3,12 @@
 namespace Nadybot\Modules\TRACKER_MODULE;
 
 use DateTimeInterface;
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 use Nadybot\Modules\ORGLIST_MODULE\Organization;
 use Safe\DateTimeImmutable;
 
+#[Table(name: 'tracking_org')]
 class TrackingOrg extends DBRow {
 	public DateTimeInterface $added_dt;
 

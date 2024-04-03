@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'raid_points_log')]
 class RaidPointsLog extends DBRow {
 	/**
 	 * @param string $username   Name of the main character for this log entry

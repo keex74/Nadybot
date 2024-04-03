@@ -5,6 +5,7 @@ namespace Nadybot\Modules\RECIPE_MODULE;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 use Nadybot\Modules\ITEMS_MODULE\AODBItem;
 
+#[NCA\DB\Table(name: 'ingredient', shared: NCA\DB\Shared::Yes)]
 class Ingredient extends DBRow {
 	/**
 	 * @param string    $name          Name of the ingredient. Usually the same as in the AODB

@@ -3,10 +3,13 @@
 namespace Nadybot\Modules\RELAY_MODULE;
 
 use function Safe\{json_encode, preg_match};
+
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\Attributes\JSON;
 
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'relay_layer_argument')]
 class RelayLayerArgument extends DBRow {
 	/**
 	 * @param string $name     The name of the argument

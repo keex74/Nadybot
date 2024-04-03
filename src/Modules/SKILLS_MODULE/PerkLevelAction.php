@@ -5,6 +5,7 @@ namespace Nadybot\Modules\SKILLS_MODULE;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
+#[NCA\DB\Table(name: 'perk_level_actions', shared: NCA\DB\Shared::Yes)]
 class PerkLevelAction extends DBRow {
 	public function __construct(
 		#[NCA\DB\Ignore] public ?int $perk_level,

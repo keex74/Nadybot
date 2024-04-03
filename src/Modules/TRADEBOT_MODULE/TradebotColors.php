@@ -4,6 +4,7 @@ namespace Nadybot\Modules\TRADEBOT_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'tradebot_colors_piggyonebs60')]
 class TradebotColors extends DBRow {
 	/**
 	 * @param string $tradebot Name of the tradebnot (Darknet/Lightnet)

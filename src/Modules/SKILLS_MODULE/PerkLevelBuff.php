@@ -5,6 +5,7 @@ namespace Nadybot\Modules\SKILLS_MODULE;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 use Nadybot\Modules\ITEMS_MODULE\Skill;
 
+#[NCA\DB\Table(name: 'perk_level_buffs', shared: NCA\DB\Shared::Yes)]
 class PerkLevelBuff extends DBRow {
 	#[NCA\DB\Ignore]
 	public ?Skill $skill=null;

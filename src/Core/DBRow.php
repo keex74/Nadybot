@@ -2,6 +2,8 @@
 
 namespace Nadybot\Core;
 
+use Nadybot\Core\Attributes\DB\Table;
+use ReflectionClass;
 use Stringable;
 
 class DBRow implements Stringable {
@@ -25,5 +27,14 @@ class DBRow implements Stringable {
 			'line' => $trace2['line'] ?? 'unknown',
 		]);
 		return null;
+	}
+
+	public static function getTable(): ?string {
+		$refClass = new ReflectionClass(static::class);
+		$tableDefs = $refClass->getAttributes(Table::class);
+		if (!count($tableDefs)) {
+			return null;
+		}
+		return $tableDefs[0]->newInstance()->getName();
 	}
 }

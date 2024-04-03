@@ -4,6 +4,7 @@ namespace Nadybot\Modules\SKILLS_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'perk_level_resistances', shared: NCA\DB\Shared::Yes)]
 class PerkLevelResistance extends DBRow {
 	#[NCA\DB\Ignore]
 	public int $perk_level;
