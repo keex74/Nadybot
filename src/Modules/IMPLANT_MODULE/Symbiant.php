@@ -4,6 +4,7 @@ namespace Nadybot\Modules\IMPLANT_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'Symbiant', shared: NCA\DB\Shared::Yes)]
 class Symbiant extends DBRow {
 	public function __construct(
 		public int $ID,

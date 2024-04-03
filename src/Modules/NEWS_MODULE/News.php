@@ -4,6 +4,7 @@ namespace Nadybot\Modules\NEWS_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, Util};
 
+#[NCA\DB\Table(name: 'news', shared: NCA\DB\Shared::Yes)]
 class News extends NewNews {
 	public string $uuid;
 

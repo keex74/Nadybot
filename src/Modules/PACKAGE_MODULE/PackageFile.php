@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\PACKAGE_MODULE;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'package_files')]
 class PackageFile extends DBRow {
 	/**
 	 * @param string $module  From which module/package is that file

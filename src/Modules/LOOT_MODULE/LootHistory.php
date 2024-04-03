@@ -4,6 +4,7 @@ namespace Nadybot\Modules\LOOT_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'loot_history')]
 class LootHistory extends DBRow {
 	/**
 	 * @param int      $roll      The n-th roll on this bot

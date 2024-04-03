@@ -4,6 +4,7 @@ namespace Nadybot\Modules\NOTES_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'news_confirmed', shared: NCA\DB\Shared::Yes)]
 class Link extends DBRow {
 	public int $dt;
 

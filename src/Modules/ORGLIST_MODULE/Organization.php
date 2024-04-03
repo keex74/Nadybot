@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\ORGLIST_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\{DBRow, Faction, Government};
 
+#[Table(name: 'organizations', shared: Shared::Yes)]
 class Organization extends DBRow {
 	public function __construct(
 		public int $id,

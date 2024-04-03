@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'pocketboss', shared: Shared::Yes)]
 class Pocketboss extends DBRow {
 	public function __construct(
 		public int $id,

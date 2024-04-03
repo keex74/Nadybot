@@ -7,6 +7,7 @@ namespace Nadybot\Modules\LOOT_MODULE;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
+#[NCA\DB\Table(name: 'raid_loot')]
 class RaidLoot extends DBRow {
 	public function __construct(
 		public int $id,

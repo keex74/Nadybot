@@ -11,6 +11,7 @@ use Safe\DateTimeImmutable;
  *
  * @package Nadybot\Modules\ONLINE_MODULE
  */
+#[NCA\DB\Table(name: 'online_hide')]
 class OnlineHide extends DBRow {
 	/** Time and date when this mask was created */
 	public DateTimeInterface $created_on;

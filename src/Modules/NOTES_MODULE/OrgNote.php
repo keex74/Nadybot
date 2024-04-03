@@ -4,6 +4,7 @@ namespace Nadybot\Modules\NOTES_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'org_notes', shared: NCA\DB\Shared::Yes)]
 class OrgNote extends DBRow {
 	public int $added_on;
 

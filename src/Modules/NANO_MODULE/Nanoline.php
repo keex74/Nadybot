@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\NANO_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'nano_lines', shared: Shared::Yes)]
 class Nanoline extends DBRow {
 	public function __construct(
 		public int $strain_id,
