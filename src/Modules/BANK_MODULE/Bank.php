@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\BANK_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'bank', shared: Shared::Yes)]
 class Bank extends DBRow {
 	public function __construct(
 		public ?string $name,

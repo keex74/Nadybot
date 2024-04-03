@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\EVENTS_MODULE;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[Table(name: 'events')]
 class EventModel extends DBRow {
 	public function __construct(
 		public int $time_submitted,

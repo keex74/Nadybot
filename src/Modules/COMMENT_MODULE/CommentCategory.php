@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\COMMENT_MODULE;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'comment_categories')]
 class CommentCategory extends DBRow {
 	/** Unix timestamp when the category was created */
 	public int $created_at;

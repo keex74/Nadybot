@@ -5,6 +5,7 @@ namespace Nadybot\Modules\BANK_MODULE;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'wishlist', shared: NCA\DB\Shared::Yes)]
 class Wish extends DBRow {
 	public int $created_on;
 

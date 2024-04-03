@@ -4,6 +4,7 @@ namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'discord_emoji')]
 class DBEmoji extends DBRow {
 	public function __construct(
 		public string $name,

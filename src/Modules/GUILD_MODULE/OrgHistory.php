@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\GUILD_MODULE;
 
+use Nadybot\Core\Attributes\DB\{AutoInc, Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'org_history', shared: Shared::Yes)]
 class OrgHistory extends DBRow {
 	/**
 	 * @param int     $id           Internal ID of this history entry
@@ -14,7 +16,7 @@ class OrgHistory extends DBRow {
 	 * @param ?int    $time         Timestamp when the action happened
 	 */
 	public function __construct(
-		public int $id,
+		#[AutoInc] public int $id,
 		public ?string $actor,
 		public ?string $actee,
 		public ?string $action,

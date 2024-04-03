@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'playfield', shared: Shared::Yes)]
 class Playfield extends DBRow {
 	/** @var array<string,string|int|null> */
 	public const EXAMPLE_TOKENS = [

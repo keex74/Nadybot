@@ -4,6 +4,7 @@ namespace Nadybot\Modules\BANK_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'wishlist_fulfilment', shared: NCA\DB\Shared::Yes)]
 class WishFulfilment extends DBRow {
 	public int $fulfilled_on;
 

@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\DISC_MODULE;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'discs')]
 class Disc extends DBRow {
 	public function __construct(
 		public int $disc_id,

@@ -4,6 +4,7 @@ namespace Nadybot\Modules\HIGHNET_MODULE;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'highnet_filter')]
 class FilterEntry extends DBRow {
 	public function __construct(
 		public string $creator,

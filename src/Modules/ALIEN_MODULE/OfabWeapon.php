@@ -2,8 +2,10 @@
 
 namespace Nadybot\Modules\ALIEN_MODULE;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'ofabweapons', shared: Shared::Yes)]
 class OfabWeapon extends DBRow {
 	public function __construct(
 		public int $type=0,
