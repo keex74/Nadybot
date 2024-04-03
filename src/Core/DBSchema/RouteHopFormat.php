@@ -4,6 +4,7 @@ namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'route_hop_format')]
 class RouteHopFormat extends DBRow {
 	/**
 	 * @param string  $hop    The hop mask (discord, *, aopriv, ...)

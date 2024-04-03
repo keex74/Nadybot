@@ -4,6 +4,7 @@ namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'route_modifier')]
 class RouteModifier extends DBRow {
 	/**
 	 * @param string                  $modifier  The name of the modifier

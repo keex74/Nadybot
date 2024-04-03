@@ -2,8 +2,9 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\DBRow;
+use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'cmd_permission_set')]
 class CmdPermissionSet extends DBRow {
 	public function __construct(
 		public string $name,

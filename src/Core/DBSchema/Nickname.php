@@ -2,8 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'migrations', shared: Shared::No)]
 class Nickname extends DBRow {
 	public function __construct(
 		public string $main,

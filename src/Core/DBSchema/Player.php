@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\DBSchema;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\{
 	Attributes\JSON,
 	DBRow,
@@ -14,6 +15,7 @@ use Nadybot\Core\{
  *
  * @package Nadybot\Core\DBSchema
  */
+#[Table(name: 'players', shared: Shared::Yes)]
 class Player extends DBRow {
 	/**
 	 * @param int         $charid        The character ID as used by Anarchy Online

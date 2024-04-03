@@ -4,6 +4,7 @@ namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'cmd_cfg')]
 class CmdCfg extends DBRow {
 	/**
 	 * @var array<string,CmdPermission>

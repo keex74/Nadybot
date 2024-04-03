@@ -2,9 +2,11 @@
 
 namespace Nadybot\Core\DBSchema;
 
+use Nadybot\Core\Attributes\DB\Table;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 use Safe\DateTimeImmutable;
 
+#[Table(name: 'audit')]
 class Audit extends DBRow {
 	/**
 	 * @param string            $actor  The person doing something

@@ -2,8 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
+#[Table(name: 'alts', shared: Shared::Yes)]
 class Alt extends DBRow {
 	public function __construct(
 		public string $alt,

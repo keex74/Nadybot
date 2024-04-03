@@ -2,13 +2,16 @@
 
 namespace Nadybot\Core\DBSchema;
 
+use Nadybot\Core\Attributes\DB\Shared;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'last_online', shared: Shared::Yes)]
 class LastOnline extends DBRow {
 	/**
 	 * @param int    $uid  uid of the character
 	 * @param string $name name of the character
 	 * @param int    $dt   Timestamp when $name was last online
+	 * @param string $main name of the main character
 	 */
 	public function __construct(
 		public int $uid,

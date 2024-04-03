@@ -2,8 +2,9 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\DBRow;
+use Nadybot\Core\{Attributes as NCA, DBRow};
 
+#[NCA\DB\Table(name: 'members')]
 class Member extends DBRow {
 	public int $joined;
 
