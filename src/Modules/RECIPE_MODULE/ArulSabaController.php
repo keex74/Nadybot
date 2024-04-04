@@ -335,12 +335,12 @@ class ArulSabaController extends ModuleInstance {
 
 		$blob .= "<pagebreak><header2>Balancing the blueprint<end>\n".
 			$this->renderStep($adjuster, $bPrint, $bbPrint, [self::ME => '*3', self::EE => '*3.2']);
-		$liqSilver         = AODBItem::fromEntry($this->itemsController->findByName('Liquid Silver', $ingot->ql));
-		$silFilWire        = AODBItem::fromEntry($this->itemsController->findByName('Silver Filigree Wire', $ingot->ql));
-		$silNaCircWire     = AODBItem::fromEntry($this->itemsController->findByName('Silver Nano Circuitry Filigree Wire', $ingot->ql));
-		$nanoSensor        = AODBItem::fromEntry($this->itemsController->findById(150_923));
-		$intNanoSensor     = AODBItem::fromEntry($this->itemsController->findById(150_926));
-		$circuitry         = AODBItem::fromEntry($this->itemsController->findByName('Bracelet Circuitry', $ingot->ql));
+		$liqSilver         = $this->itemsController->findByName('Liquid Silver', $ingot->ql);
+		$silFilWire        = $this->itemsController->findByName('Silver Filigree Wire', $ingot->ql);
+		$silNaCircWire     = $this->itemsController->findByName('Silver Nano Circuitry Filigree Wire', $ingot->ql);
+		$nanoSensor        = $this->itemsController->findById(150_923);
+		$intNanoSensor     = $this->itemsController->findById(150_926);
+		$circuitry         = $this->itemsController->findByName('Bracelet Circuitry', $ingot->ql);
 		if (!isset($liqSilver)
 			|| !isset($silFilWire)
 			|| !isset($silNaCircWire)
@@ -351,12 +351,12 @@ class ArulSabaController extends ModuleInstance {
 			$context->reply('Your item database is missing some key items to illustrate the process.');
 			return;
 		}
-		$liqSilver->ql     = $ingot->ql;
-		$silFilWire->ql    = $liqSilver->ql;
-		$silNaCircWire->ql = $silFilWire->ql;
-		$nanoSensor->ql    = min(250, $junk->ql);
-		$intNanoSensor->ql = $nanoSensor->ql;
-		$circuitry->ql     = $silNaCircWire->ql;
+		$liqSilver->setQL($ingot->getQL());
+		$silFilWire->setQL($liqSilver->getQL());
+		$silNaCircWire->setQL($silFilWire->getQL());
+		$nanoSensor = $nanoSensor->atQL(min(250, $junk->getQL()));
+		$intNanoSensor = $intNanoSensor->atQL($nanoSensor->getQL());
+		$circuitry->setQL($silNaCircWire->getQL());
 
 		$blob .= "\n<pagebreak><header2>Bracelet circuitry ({$reqGems}x)<end>\n".
 			$this->renderStep($furnace, $ingot, $liqSilver, [self::ME => '*3']).
@@ -404,12 +404,12 @@ class ArulSabaController extends ModuleInstance {
 			$resultName = "Bracelet of Arul Saba ({$prefix} {$arul->name} - ".
 				($i + 1) . "/{$reqGems} - ".
 				ucfirst($side) . ')';
-			$result = AODBItem::fromEntry($this->itemsController->findByName($resultName));
+			$result = $this->itemsController->findByName($resultName);
 			if (!isset($result)) {
 				$context->reply("Unable to find the item {$resultName} in your bot's item database.");
 				return;
 			}
-			$result->ql = $result->lowql;
+			$result = $result->atQL($result->getLowQL());
 
 			/** @psalm-suppress InvalidArrayOffset */
 			$blob .= $this->renderStep($gem, $target, $result, [self::ME => $gemGrades[$i][2], self::EE => $gemGrades[$i][3]]);
@@ -437,7 +437,7 @@ class ArulSabaController extends ModuleInstance {
 			$ql = (string)($ing->ql ?? '');
 			if (isset($ing->item)) {
 				$item = $ing->item;
-				$link = Text::makeItem($item->lowid, $item->highid, $ing->ql ?? $item->lowql, $item->name);
+				$link = $item->getLink(ql: $ing->ql ?? $item->lowql);
 				if ($item->lowql === $item->highql) {
 					$ql = '';
 				}
@@ -476,10 +476,9 @@ class ArulSabaController extends ModuleInstance {
 		if (!isset($ing->aoid)) {
 			return $ing;
 		}
-		$ing->item = AODBItem::fromEntry($this->itemsController->findById($ing->aoid));
-		if (isset($ing->item)) {
-			$ql ??= $ing->item->lowql;
-			$ing->item->ql = $ql;
+		$item = $this->itemsController->findById($ing->aoid);
+		if (isset($item)) {
+			$ing->item = $item->atQL($ql ?? $item->getLowQL());
 		}
 		return $ing;
 	}
@@ -489,13 +488,13 @@ class ArulSabaController extends ModuleInstance {
 		$showImages = $this->arulsabaShowImages;
 		$sLink = $source->getLink();
 		$sIcon = Text::makeImage($source->icon);
-		$sIconLink = $source->getLink(name: $sIcon);
+		$sIconLink = $source->getLink(text: $sIcon);
 		$dLink = $dest->getLink();
 		$dIcon = Text::makeImage($dest->icon);
-		$dIconLink = $dest->getLink(name: $dIcon);
+		$dIconLink = $dest->getLink(text: $dIcon);
 		$rLink = $result->getLink();
 		$rIcon = Text::makeImage($result->icon);
-		$rIconLink = $result->getLink(name: $rIcon);
+		$rIconLink = $result->getLink(text: $rIcon);
 
 		$line = '';
 

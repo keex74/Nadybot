@@ -11,6 +11,8 @@ use DOMDocument;
 use DOMElement;
 use Exception;
 use Nadybot\Core\{
+	AOIcon,
+	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
 	Config\BotConfig,
@@ -20,7 +22,6 @@ use Nadybot\Core\{
 	Text,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
-	AODBEntry,
 	ItemsController,
 };
 
@@ -363,14 +364,14 @@ class AOUController extends ModuleInstance {
 		return $tag;
 	}
 
-	private function generateItemMarkup(string $type, AODBEntry $obj): string {
+	private function generateItemMarkup(string $type, AOItemSpec&AOIcon $obj): string {
 		$output = '';
 		if ($type === 'item' || $type === 'itemicon') {
-			$output .= Text::makeImage($obj->icon);
+			$output .= $obj->getIcon();
 		}
 
 		if ($type === 'item' || $type === 'itemname') {
-			$output .= Text::makeItem($obj->lowid, $obj->highid, $obj->highql, $obj->name);
+			$output .= $obj->getLink($obj->getHighQL());
 		}
 
 		return $output;

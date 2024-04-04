@@ -3,9 +3,9 @@
 namespace Nadybot\Core\ParamClass;
 
 use InvalidArgumentException;
-use Nadybot\Core\Safe;
+use Nadybot\Core\{AOItem, Safe};
 
-class PItem extends Base {
+class PItem extends Base implements AOItem {
 	public int $lowID;
 	public int $highID;
 	public int $ql;
@@ -30,5 +30,46 @@ class PItem extends Base {
 
 	public function __toString(): string {
 		return $this->value;
+	}
+
+	public function getLowID(): int {
+		return $this->lowID;
+	}
+
+	public function getHighID(): int {
+		return $this->highID;
+	}
+
+	public function getLowQL(): int {
+		return $this->ql;
+	}
+
+	public function getHighQL(): int {
+		return $this->ql;
+	}
+
+	public function getName(): string {
+		return $this->name;
+	}
+
+	public function getLink(?int $ql=null, ?string $text=null): string {
+		$ql ??= $this->getQL();
+		$text ??= $this->getName();
+		return "<a href='itemref://{$this->getLowID()}/{$this->getHighID()}/{$ql}'>{$text}</a>";
+	}
+
+	public function atQL(int $ql): static {
+		$new = clone $this;
+		$new->ql = $ql;
+		return $new;
+	}
+
+	public function getQL(): int {
+		return $this->ql;
+	}
+
+	public function setQL(int $ql): self {
+		$this->ql = $ql;
+		return $this;
 	}
 }

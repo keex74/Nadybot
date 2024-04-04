@@ -91,7 +91,7 @@ class ItemsController extends ModuleInstance {
 	#[NCA\HandlesCommand('itemid')]
 	#[NCA\Help\Example('<symbol>itemid 244718', 'Show Burden of Competence')]
 	public function itemIdCommand(CmdContext $context, int $id): void {
-		$row = ItemSearchResult::fromItem($this->findById($id));
+		$row = $this->findById($id);
 		if ($row === null) {
 			$msg = "No item found with id <highlight>{$id}<end>.";
 			$context->reply($msg);
@@ -137,10 +137,11 @@ class ItemsController extends ModuleInstance {
 				$blob .= "{$key}: <highlight>" . (is_bool($value) ? ($value ? 'yes' : 'no') : ($value??'<empty>')) . "<end>\n";
 			}
 		}
-		$row->ql = $row->highql;
+		$ql = $row->highql;
 		if ($row->lowid === $id) {
-			$row->ql = $row->lowql;
+			$ql = $row->lowql;
 		}
+		$row = ItemSearchResult::fromItem($row->atQL($ql));
 		$blob .= "\n" . $this->formatSearchResults([$row], null, true);
 		$msg = $this->text->blobWrap(
 			'Details about item ID ',
@@ -227,8 +228,8 @@ class ItemsController extends ModuleInstance {
 		}
 		$blob = "<header2><u>Low ID    Low QL    High ID    High QL    Name                                         </u><end>\n";
 		foreach ($items as $item) {
-			$itemLinkLow = Text::makeItem($item->lowid, $item->highid, $item->lowql, (string)$item->lowid);
-			$itemLinkHigh = Text::makeItem($item->lowid, $item->highid, $item->highql, (string)$item->highid);
+			$itemLinkLow = $item->getLink(ql: $item->lowql, text: (string)$item->lowid);
+			$itemLinkHigh = $item->getLink(ql: $item->highql, text: (string)$item->highid);
 			$blob .= str_replace((string)$item->lowid, $itemLinkLow, Text::alignNumber($item->lowid, 6)).
 				'       ' . Text::alignNumber($item->lowql, 3).
 				'     ' . (($item->highid === $item->lowid) ? '        ' : str_replace((string)$item->highid, $itemLinkHigh, Text::alignNumber($item->highid, 6))).
@@ -309,6 +310,7 @@ class ItemsController extends ModuleInstance {
 			->addSelect('n.name AS group_name')
 			->addSelect('foo.icon')
 			->addSelect('foo.in_game')
+			->addSelect('foo.slot')
 			->addSelect('g.group_id')
 			->addSelect('foo.flags')
 			->selectRaw($query->colFunc('COALESCE', ['a1.lowid', 'a2.lowid', 'foo.lowid'], 'lowid')->getValue())
@@ -316,6 +318,7 @@ class ItemsController extends ModuleInstance {
 			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.highql', 'foo.highql'], 'ql')->getValue())
 			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.lowql', 'foo.lowql'], 'lowql')->getValue())
 			->selectRaw($query->colFunc('COALESCE', ['a1.highql', 'a2.highql', 'foo.highql'], 'highql')->getValue());
+		echo("\n\n\n" . $query->toSql() . "\n\n\n");
 		$data = $query->asObj(ItemSearchResult::class);
 		$data = $data->filter(static function (ItemSearchResult $item): bool {
 			static $found = [];
@@ -485,7 +488,7 @@ class ItemsController extends ModuleInstance {
 			}
 			$oldGroup = $row->group_id ?? null;
 			if (!isset($row->group_id)) {
-				$list .= Text::makeItem($row->lowid, $row->highid, $row->ql, $row->name);
+				$list .= $row->getLink();
 				if (!$row->in_game) {
 					$list .= ' <red>(!)<end>';
 				}
@@ -511,11 +514,11 @@ class ItemsController extends ModuleInstance {
 					}
 					unset($nameMatches);
 				}
-				$item = Text::makeItem($row->lowid, $row->highid, $row->ql, (string)$row->ql);
+				$item = $row->getLink(text: (string)$row->ql);
 				if ($ql === $row->ql) {
 					$list .= "<yellow>[<end>{$item}<yellow>]<end>";
 				} elseif (isset($ql) && $ql > $row->lowql && $ql < $row->highql && $ql < $row->ql) {
-					$list .= '<yellow>[<end>' . Text::makeItem($row->lowid, $row->highid, $ql, (string)$ql) . '<yellow>]<end>';
+					$list .= '<yellow>[<end>' . $row->getLink(ql: $ql, text: (string)$ql) . '<yellow>]<end>';
 					$list .= ", {$item}";
 				} elseif (
 					isset($ql)
@@ -524,7 +527,7 @@ class ItemsController extends ModuleInstance {
 					&& $data[$itemNum+1]->lowql > $ql
 				) {
 					$list .= $item;
-					$list .= ', <yellow>[<end>' . Text::makeItem($row->lowid, $row->highid, $ql, (string)$ql) . '<yellow>]<end>';
+					$list .= ', <yellow>[<end>' . $row->getLink(ql: $ql, text: (string)$ql) . '<yellow>]<end>';
 				} else {
 					$list .= $item;
 				}
@@ -570,6 +573,15 @@ class ItemsController extends ModuleInstance {
 		return true;
 	}
 
+	/**
+	 * @template T of null|int
+	 *
+	 * @param T $ql
+	 *
+	 * @return null|AODBEntry|AODBItem
+	 *
+	 * @psalm-return (T is null ? null|AODBEntry : null|AODBItem)
+	 */
 	public function findByName(string $name, ?int $ql=null): ?AODBEntry {
 		$query = $this->db->table('aodb')
 			->where('name', $name)
@@ -577,6 +589,8 @@ class ItemsController extends ModuleInstance {
 			->orderByDesc('highid');
 		if ($ql !== null) {
 			$query->where('lowql', '<=', $ql)->where('highql', '>=', $ql);
+			$query->select(['aodb.*', "{$ql} as ql"]);
+			return $query->asObj(AODBItem::class)->first();
 		}
 		return $query->asObj(AODBEntry::class)->first();
 	}
@@ -591,7 +605,7 @@ class ItemsController extends ModuleInstance {
 			return null;
 		}
 		$ql ??= $row->highql;
-		return Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
+		return $row->getLink(ql: $ql);
 	}
 
 	public function getItemAndIcon(string $name, ?int $ql=null): string {
@@ -610,8 +624,7 @@ class ItemsController extends ModuleInstance {
 			return $name;
 		}
 		$ql ??= $row->highql;
-		return Text::makeImage($row->icon) . "\n" .
-			Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
+		return $row->getIcon() . "\n" . $row->getLink(ql: $ql);
 	}
 
 	/**
@@ -743,10 +756,7 @@ class ItemsController extends ModuleInstance {
 			});
 		$result = new Collection();
 		foreach ($items as $item) {
-			$new = new ItemWithBuffs();
-			foreach (get_object_vars($item) as $key => $value) {
-				$new->{$key} = $value;
-			}
+			$new = ItemWithBuffs::fromEntry($item);
 			$new->buffs = $buffs->get($new->lowid, []);
 			if ($new->lowid !== $new->highid) {
 				$new->buffs = array_merge($new->buffs, $buffs->get($new->highid, []));

@@ -620,7 +620,7 @@ class SkillsController extends ModuleInstance {
 		$rechargeTime = Util::interpolate($row->lowql, $row->highql, $lowAttributes->recharge_time, $highAttributes->recharge_time, $ql);
 		$rechargeTime /= 100;
 		$attackTime /= 100;
-		$itemLink = Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
+		$itemLink = $row->getLink(ql: $ql);
 
 		$blob = '';
 
@@ -741,7 +741,7 @@ class SkillsController extends ModuleInstance {
 		$blob = "<header2>Weapons matching {$search}<end>\n";
 		foreach ($data as $item) {
 			$useQL = $ql ?? $item->ql;
-			$itemLink = Text::makeItem($item->lowid, $item->highid, $useQL, $item->name);
+			$itemLink = $item->getLink(ql: $useQL);
 			$statsLink = Text::makeChatcmd('stats', "/tell <myname> weapon {$item->lowid} {$useQL}");
 			$blob .= "<tab>[{$statsLink}] {$itemLink} (QL {$useQL})\n";
 		}

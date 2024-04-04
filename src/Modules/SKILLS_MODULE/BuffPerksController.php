@@ -190,21 +190,12 @@ class BuffPerksController extends ModuleInstance {
 					"Resist {$res->nanoline->name} <highlight>+{$res->amount}%<end>\n";
 			}
 			if (isset($level->action, $level->action->aodb)) {
+				$aodb = $level->action->aodb;
 				$blob .= '<tab>Add Action: '.
-					Text::makeItem(
-						$level->action->aodb->lowid,
-						$level->action->aodb->highid,
-						$level->action->aodb->lowql,
-						$level->action->aodb->name
-					).
+					$aodb->getLink(ql: $aodb->getLowQL()).
 					($level->action->scaling ? ' (<highlight>scaling<end>)' : '').
 					"\n<tab>".
-					Text::makeItem(
-						$level->action->aodb->lowid,
-						$level->action->aodb->highid,
-						$level->action->aodb->lowql,
-						Text::makeImage($level->action->aodb->icon)
-					).
+					$aodb->getLink(ql: $aodb->getLowQL(), text: $aodb->getIcon()).
 					"\n";
 			}
 		}

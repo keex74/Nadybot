@@ -205,7 +205,7 @@ class SymbiantController extends ModuleInstance {
 						} elseif (count($matches = Safe::pregMatch("/\b(Alpha|Beta)$/", $symb->Name)) === 2) {
 							$name = $matches[1];
 						}
-						return Text::makeItem($symb->ID, $symb->ID, $symb->QL, $name);
+						return $symb->getLink(text: $name);
 					},
 					$symbs
 				);

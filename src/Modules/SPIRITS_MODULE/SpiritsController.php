@@ -248,7 +248,7 @@ class SpiritsController extends ModuleInstance {
 				->first();
 			if ($dbSpirit) {
 				$msg .= Text::makeImage($dbSpirit->icon) . ' ';
-				$msg .= Text::makeItem($dbSpirit->lowid, $dbSpirit->highid, $dbSpirit->highql, $dbSpirit->name) . "\n";
+				$msg .= $dbSpirit->getLink(ql: $dbSpirit->highql) . "\n";
 				$msg .= "Minimum Level={$spirit->level}   Slot={$spirit->spot}   Agility/Sense Needed={$spirit->agility}\n\n";
 			}
 		}

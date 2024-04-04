@@ -188,11 +188,7 @@ class RecipeController extends ModuleInstance {
 
 	private function parseJSONFile(int $id, string $fileName): Recipe {
 		try {
-			$data = json_decode(
-				$this->fs->read($this->path . $fileName),
-				false,
-				\JSON_THROW_ON_ERROR
-			);
+			$data = json_decode($this->fs->read($this->path . $fileName), false);
 		} catch (JsonException $e) {
 			throw new UserException("Could not read '{$fileName}': invalid JSON");
 		}
@@ -200,7 +196,7 @@ class RecipeController extends ModuleInstance {
 		/** @var array<string,AODBItem> */
 		$items = [];
 		foreach ($data->items as $item) {
-			$dbItem = AODBItem::fromEntry($this->itemsController->findById($item->item_id));
+			$dbItem = $this->itemsController->findById($item->item_id)?->atQL($item->ql);
 			if ($dbItem === null) {
 				throw new UserException("Could not find item '{$item->item_id}'");
 			}
@@ -216,8 +212,8 @@ class RecipeController extends ModuleInstance {
 			unset($ingredients[$step->result]);
 		}
 		foreach ($ingredients as $ingredient) {
-			$recipe .= Text::makeImage($ingredient->icon) . "\n";
-			$recipe .= Text::makeItem($ingredient->lowid, $ingredient->highid, $ingredient->ql, $ingredient->name) . "\n\n\n";
+			$recipe .= $ingredient->getIcon() . "\n";
+			$recipe .= $ingredient->getLink() . "\n\n\n";
 		}
 
 		$recipe .= "<pagebreak><yellow>------------------------------<end>\n";
@@ -231,16 +227,15 @@ class RecipeController extends ModuleInstance {
 			$target = $items[$step->target];
 			$result = $items[$step->result];
 			$recipe .= '<tab>'.
-				Text::makeItem($source->lowid, $source->highid, $source->ql, Text::makeImage($source->icon)).
+				$source->getLink(text: $source->getIcon()).
 				'<tab><img src=tdb://id:GFX_GUI_CONTROLCENTER_BIGARROW_RIGHT_STATE1><tab>'.
-				Text::makeItem($target->lowid, $target->highid, $target->ql, Text::makeImage($target->icon)).
+				$target->getLink(text: $target->getIcon()).
 				'<tab><img src=tdb://id:GFX_GUI_CONTROLCENTER_BIGARROW_RIGHT_STATE1><tab>'.
-				Text::makeItem($result->lowid, $result->highid, $result->ql, Text::makeImage($result->icon)).
+				$result->getLink(text: $result->getIcon()).
 				"\n";
 			$recipe .= "<tab>{$source->name} ".
 				"<highlight>+<end> {$target->name} <highlight>=<end> ".
-				Text::makeItem($result->lowid, $result->highid, $result->ql, $result->name).
-				"\n";
+				$result->getLink() . "\n";
 			if ($step->skills) {
 				$recipe .= "<tab><yellow>Skills: {$step->skills}<end>\n";
 			}
@@ -260,7 +255,7 @@ class RecipeController extends ModuleInstance {
 		$id = (int)$arr[2];
 		$row = $this->itemsController->findById($id);
 		if ($row !== null) {
-			$output = Text::makeItem($row->lowid, $row->highid, $row->highql, $row->name);
+			$output = $row->getLink(ql: $row->highql);
 		} else {
 			$output = "#L \"{$arr[1]}\" \"/tell <myname> itemid {$arr[2]}\"";
 		}

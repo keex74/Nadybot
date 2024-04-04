@@ -136,8 +136,9 @@ class BankController extends ModuleInstance {
 		}
 		$blob = '<header2>Items in ' . $data[0]->container . "<end>\n";
 		foreach ($data as $row) {
+			/** @var Bank $row */
 			$item = new RaffleItem();
-			$itemLink = Text::makeItem($row->lowid, $row->highid, $row->ql, $row->name);
+			$itemLink = $row->getLink();
 			$item->fromString($itemLink);
 			$itemLink = $item->toString();
 			$compactItemLink = str_replace("'", '', $itemLink);
@@ -188,7 +189,8 @@ class BankController extends ModuleInstance {
 			return;
 		}
 		foreach ($foundItems as $item) {
-			$itemLink = Text::makeItem($item->lowid, $item->highid, $item->ql, $item->name);
+			/** @var Bank $item */
+			$itemLink = $item->getLink();
 			$item2 = new RaffleItem();
 			$item2->fromString($itemLink);
 			$itemLink = $item2->toString();

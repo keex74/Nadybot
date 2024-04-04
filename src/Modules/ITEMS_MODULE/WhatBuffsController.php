@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
+	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
 	CommandManager,
@@ -571,8 +572,8 @@ class WhatBuffsController extends ModuleInstance {
 		return $skills;
 	}
 
-	public function showItemLink(AODBEntry $item, int $ql): string {
-		return Text::makeItem($item->lowid, $item->highid, $ql, $item->name);
+	public function showItemLink(AOItemSpec $item, int $ql): string {
+		return $item->getLink($ql);
 	}
 
 	/**
@@ -648,7 +649,7 @@ class WhatBuffsController extends ModuleInstance {
 			if ($item->amount > $item->low_amount) {
 				$blob .= " ({$item->low_amount} - {$item->amount})";
 				if ($this->commandManager->cmdEnabled('bestql')) {
-					$link = Text::makeItem($item->lowid, $item->highid, 0, $item->name);
+					$link = $item->getLink(ql: 0);
 					$blob .= ' ' . Text::makeChatcmd(
 						'Breakpoints',
 						"/tell <myname> bestql {$item->lowql} {$item->low_amount} ".

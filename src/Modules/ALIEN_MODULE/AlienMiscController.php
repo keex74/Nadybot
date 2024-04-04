@@ -248,7 +248,7 @@ class AlienMiscController extends ModuleInstance {
 				}
 				$blob .= "<end>\n";
 			}
-			$blob .= '<tab>' . Text::makeItem($row->lowid, $row->highid, $ql, $row->name);
+			$blob .= '<tab>' . $row->getLink(ql: $ql);
 
 			if ($row->upgrade === 0 || $row->upgrade === 3) {
 				$blob .= "  (<highlight>{$vp}<end> VP)";

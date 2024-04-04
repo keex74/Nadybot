@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes\HandlesCommand;
 use Nadybot\Core\ParamClass\PItem;
 use Nadybot\Core\{
+	AOIcon,
+	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
 	ModuleInstance,
@@ -49,15 +51,15 @@ class GmiController extends ModuleInstance {
 	 *
 	 * @throws UserException on any  error
 	 */
-	public function getPricesFromGmi(AODBEntry $item): GmiResult {
+	public function getPricesFromGmi(AOItemSpec $item): GmiResult {
 		try {
 			$httpClient = $this->builder->build();
 
 			$response = $httpClient->request(
-				new Request(rtrim($this->gmiApi, '/') . "/aoid/{$item->lowid}")
+				new Request(rtrim($this->gmiApi, '/') . "/aoid/{$item->getLowID()}")
 			);
 			if ($response->getStatus() === 404) {
-				throw new UserException("{$item->name} is not tradeable on GMI.");
+				throw new UserException("{$item->getName()} is not tradeable on GMI.");
 			}
 			if ($response->getStatus() !== 200) {
 				throw new UserException(
@@ -140,7 +142,7 @@ class GmiController extends ModuleInstance {
 			if ($item->highql !== $item->lowql) {
 				$useQL .= "-{$item->highql}";
 			}
-			$itemLink = Text::makeItem($item->lowid, $item->highid, $item->ql, $item->name);
+			$itemLink = $item->getLink();
 			$gmiLink = Text::makeChatcmd('GMI', "/tell <myname> gmi {$item->lowid}");
 			$blob .= "<tab>[{$gmiLink}] {$itemLink} (QL {$useQL})\n";
 		}
@@ -168,7 +170,7 @@ class GmiController extends ModuleInstance {
 	}
 
 	/** @return string[] */
-	protected function renderGmiResult(GmiResult $gmi, AODBEntry $item, ?int $ql=null): array {
+	protected function renderGmiResult(GmiResult $gmi, AOItemSpec&AOIcon $item, ?int $ql=null): array {
 		if (!count($gmi->buyOrders) && !count($gmi->sellOrders)) {
 			return ['There are no orders on GMI.'];
 		}
@@ -206,16 +208,16 @@ class GmiController extends ModuleInstance {
 		return (array)$this->text->makeBlob(
 			sprintf(
 				'GMI orders for %s (%d buy, %d sell)',
-				$item->name,
+				$item->getName(),
 				$numBuy,
 				$numSell
 			),
-			$item->getLink($ql, Text::makeImage($item->icon)) . "\n\n" . $buyers . "\n\n" . $sellers
+			$item->getLink($ql, $item->getIcon()) . "\n\n" . $buyers . "\n\n" . $sellers
 		);
 	}
 
-	protected function renderSellOrder(GmiSellOrder $order, AODBEntry $item, int $highestAmount, int $highestPrice): string {
-		if ($item->lowql !== $item->highql) {
+	protected function renderSellOrder(GmiSellOrder $order, AOItemSpec $item, int $highestAmount, int $highestPrice): string {
+		if ($item->getLowQL() !== $item->getHighQL()) {
 			return sprintf(
 				'%sx QL %s for %s from %s  (ends in %s)',
 				Text::alignNumber($order->count, strlen((string)$highestAmount)),
@@ -234,8 +236,8 @@ class GmiController extends ModuleInstance {
 		);
 	}
 
-	protected function renderBuyOrder(GmiBuyOrder $order, AODBEntry $item, ?int $ql, int $highestAmount, int $highestPrice): string {
-		if ($item->lowql !== $item->highql) {
+	protected function renderBuyOrder(GmiBuyOrder $order, AOItemSpec $item, ?int $ql, int $highestAmount, int $highestPrice): string {
+		if ($item->getLowQL() !== $item->getHighQL()) {
 			$highlight = null;
 			if (isset($ql) && ($order->minQl <= $ql) && ($order->maxQl >= $ql)) {
 				$highlight = 'green';

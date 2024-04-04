@@ -92,8 +92,8 @@ class DiscController extends ModuleInstance {
 	}
 
 	public function discCommand(CmdContext $context, Disc $disc): void {
-		$discLink = Text::makeItem($disc->disc_id, $disc->disc_id, $disc->disc_ql, $disc->disc_name);
-		$nanoLink = Text::makeItem($disc->crystal_id, $disc->crystal_id, $disc->crystal_ql, $disc->crystal_name);
+		$discLink = $disc->getLink();
+		$nanoLink = $disc->getCrystalLink();
 		$nanoDetails = $this->getNanoDetails($disc);
 		if (!isset($nanoDetails)) {
 			$context->reply("Cannot find the nano details for {$disc->disc_name}.");

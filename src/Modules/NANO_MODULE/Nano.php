@@ -35,6 +35,15 @@ class Nano extends DBRow {
 	) {
 	}
 
+	public function getCrystalLink(?string $text=null): ?string {
+		if (!isset($this->crystal_id)) {
+			return null;
+		}
+		$ql = $this->ql;
+		$text ??= $this->crystal_name ?? 'Crystal';
+		return "<a href='itemref://{$this->crystal_id}/{$this->crystal_id}/{$ql}'>{$text}</a>";
+	}
+
 	/** @return string[] */
 	public static function parseProfessions(string $professions): array {
 		return explode(':', $professions);

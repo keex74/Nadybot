@@ -164,7 +164,7 @@ class BestQLController extends ModuleInstance {
 					$value
 				);
 				if ($pastedItem) {
-					$msg .= ' ' . Text::makeItem($pastedItem->lowID, $pastedItem->highID, $searchedQL, $pastedItem->name);
+					$msg .= ' ' . $pastedItem->getLink(ql: $searchedQL);
 				}
 				$msg .= "\n";
 				$numFoundItems++;

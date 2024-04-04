@@ -2,21 +2,46 @@
 
 namespace Nadybot\Modules\ITEMS_MODULE;
 
-class AODBItem extends AODBEntry {
-	public int $ql;
+use Nadybot\Core\AOItem;
 
-	public static function fromEntry(?AODBEntry $entry=null): ?self {
-		if (!isset($entry)) {
-			return null;
-		}
-		$item = new self();
-		foreach (get_class_vars(AODBEntry::class) as $key => $ignore) {
-			$item->{$key} = $entry->{$key};
-		}
-		return $item;
+class AODBItem extends AODBEntry implements AOItem {
+	public function __construct(
+		public int $ql,
+		int $lowid,
+		int $highid,
+		int $lowql,
+		int $highql,
+		string $name,
+		int $icon,
+		int $slot,
+		int $flags,
+		bool $in_game,
+		bool $froob_friendly=false,
+	) {
+		parent::__construct(
+			lowid: $lowid,
+			highid: $highid,
+			lowql: $lowql,
+			highql: $highql,
+			name: $name,
+			icon: $icon,
+			slot: $slot,
+			flags: $flags,
+			in_game: $in_game,
+			froob_friendly: $froob_friendly,
+		);
 	}
 
-	public function getLink(?int $ql=null, ?string $name=null): string {
-		return parent::getLink($ql??$this->ql, $name);
+	public function getQL(): int {
+		return $this->ql;
+	}
+
+	public function setQL(int $ql): static {
+		$this->ql = $ql;
+		return $this;
+	}
+
+	public function getLink(?int $ql=null, ?string $text=null): string {
+		return parent::getLink($ql??$this->getQL(), $text);
 	}
 }

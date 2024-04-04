@@ -791,14 +791,14 @@ class LootListsController extends ModuleInstance {
 			}
 			if (isset($row->item)) {
 				if ($showLootPics) {
-					$name = "<img src=rdb://{$row->item->icon}>";
+					$name = $row->item->getIcon();
 				} else {
 					$name = $row->name;
 					if (count($actions)) {
 						$blob .= '[' . implode('] [', $actions) . '] - ';
 					}
 				}
-				$blob .= Text::makeItem($row->item->lowid, $row->item->highid, $row->ql, $name);
+				$blob .= $row->item->getLink(text: $name);
 			} else {
 				if (count($actions)) {
 					$blob .= '[' . implode('] [', $actions) . '] - ';
