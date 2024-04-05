@@ -23,6 +23,7 @@ use Nadybot\Core\{
 	Nadybot,
 };
 use Nadybot\Modules\EVENTS_MODULE\EventModel;
+use Nadybot\Modules\EXPORT_MODULE\Schema\{AltChar, AltMain, Auction, Character};
 use Nadybot\Modules\NOTES_MODULE\{OrgNote, OrgNotesController};
 use Nadybot\Modules\{
 	CITY_MODULE\CloakController,
@@ -156,45 +157,41 @@ class ExportController extends ModuleInstance {
 	}
 
 	protected function toChar(?string $name, ?int $uid=null): Character {
-		$char = new Character();
-		if (isset($name)) {
-			$char->name = $name;
-		}
 		$id = $uid;
 		if (!isset($id) && isset($name)) {
 			$id = $this->chatBot->getUid($name);
 		}
-		if (is_int($id)) {
-			$char->id = $id;
-		}
-		return $char;
+		return new Character(
+			name: $name,
+			id: is_int($id) ? $id : null,
+		);
 	}
 
-	/** @return stdClass[] */
+	/** @return AltMain[] */
 	protected function exportAlts(): array {
 		$alts = $this->db->table('alts')->asObj(Alt::class);
 
-		/** @var array<string,stdClass[]> */
+		/** @var array<string,AltChar[]> */
 		$data = [];
 		foreach ($alts as $alt) {
 			if ($alt->main === $alt->alt) {
 				continue;
 			}
 			$data[$alt->main] ??= [];
-			$data[$alt->main] []= $this->toClass([
-				'alt' => $this->toChar($alt->alt),
-				'validatedByMain' => $alt->validated_by_main ?? true,
-				'validatedByAlt' => $alt->validated_by_alt ?? true,
-			]);
+			$data[$alt->main] []= new AltChar(
+				alt: $this->toChar($alt->alt),
+				validatedByMain: $alt->validated_by_main ?? true,
+				validatedByAlt: $alt->validated_by_alt ?? true,
+			);
 		}
 
-		/** @var stdClass[] */
+		/** @var AltMain[] */
 		$result = [];
 		foreach ($data as $main => $altInfo) {
-			$result []= $this->toClass([
-				'main' => $this->toChar($main),
-				'alts' => $altInfo,
-			]);
+			$result []= new AltMain(
+				main: $this->toChar($main),
+				alts: $altInfo,
+			);
 		}
 
 		return $result;
@@ -564,7 +561,7 @@ class ExportController extends ModuleInstance {
 		return array_values($result);
 	}
 
-	/** @return stdClass[] */
+	/** @return Auction[] */
 	protected function exportAuctions(): array {
 		/** @var DBAuction[] */
 		$auctions = $this->db->table(AuctionController::DB_TABLE)
@@ -573,12 +570,12 @@ class ExportController extends ModuleInstance {
 			->toArray();
 		$result = [];
 		foreach ($auctions as $auction) {
-			$auctionObj = (object)[
-				'item' => $auction->item,
-				'startedBy' => $this->toChar($auction->auctioneer),
-				'timeEnd' => $auction->end,
-				'reimbursed' => $auction->reimbursed,
-			];
+			$auctionObj = new Auction(
+				item: $auction->item,
+				startedBy: $this->toChar($auction->auctioneer),
+				timeEnd: $auction->end,
+				reimbursed: $auction->reimbursed,
+			);
 			if (isset($auction->winner)) {
 				$auctionObj->winner = $this->toChar($auction->winner);
 			}
@@ -588,7 +585,7 @@ class ExportController extends ModuleInstance {
 			$result []= $auctionObj;
 		}
 
-		/** @var stdClass[] $result */
+		/** @var Auction[] $result */
 		return $result;
 	}
 
