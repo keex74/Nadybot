@@ -175,7 +175,7 @@ class ImplantDesignerController extends ModuleInstance {
 	#[NCA\HandlesCommand('implantdesigner')]
 	#[NCA\Help\Group('implantdesigner')]
 	public function implantdesignerSlotCommand(CmdContext $context, PImplantSlot $slot): void {
-		$slot = $slot();
+		$slot = $slot()->designSlotName();
 
 		$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 		$blob .= ']<tab>[';
@@ -286,20 +286,20 @@ class ImplantDesignerController extends ModuleInstance {
 					->asObj(AbilityAmount::class)->toArray();
 
 				$slotObj->symb = $symb;
-				$msg = "<highlight>{$slot}(symb)<end> has been set to <highlight>{$symb->name}<end>.";
+				$msg = "<highlight>{$slot->longName()}(symb)<end> has been set to <highlight>{$symb->name}<end>.";
 			}
 		} else {
 			if (strtolower($cluster) == 'clear') {
 				if ($slotObj->{$grade} === null) {
-					$msg = "There is no cluster in <highlight>{$slot}({$grade})<end>.";
+					$msg = "There is no cluster in <highlight>{$slot->longName()}({$grade})<end>.";
 				} else {
 					unset($slotObj->{$grade});
-					$msg = "<highlight>{$slot}({$grade})<end> has been cleared.";
+					$msg = "<highlight>{$slot->longName()}({$grade})<end> has been cleared.";
 				}
 			} else {
 				unset($slotObj->{$grade});
 				$slotObj->{$grade} = $cluster;
-				$msg = "<highlight>{$slot}({$grade})<end> has been set to <highlight>{$cluster}<end>.";
+				$msg = "<highlight>{$slot->longName()}({$grade})<end> has been set to <highlight>{$cluster}<end>.";
 			}
 		}
 
@@ -332,7 +332,7 @@ class ImplantDesignerController extends ModuleInstance {
 		$slotObj->ql = $ql;
 		$this->saveDesign($context->char->name, '@', $design);
 
-		$msg = "<highlight>{$slot}<end> has been set to QL <highlight>{$ql}<end>.";
+		$msg = "<highlight>{$slot->longName()}<end> has been set to QL <highlight>{$ql}<end>.";
 
 		$context->reply($msg);
 
@@ -356,7 +356,7 @@ class ImplantDesignerController extends ModuleInstance {
 		unset($design->{$slot});
 		$this->saveDesign($context->char->name, '@', $design);
 
-		$msg = "<highlight>{$slot}<end> has been cleared.";
+		$msg = "<highlight>{$slot->longName()}<end> has been cleared.";
 
 		$context->reply($msg);
 
@@ -389,19 +389,19 @@ class ImplantDesignerController extends ModuleInstance {
 		} else {
 			$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 			$blob .= ']<tab>[';
-			$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
+			$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot->designSlotName()} clear");
 			$blob .= "]\n\n\n";
-			$blob .= Text::makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
+			$blob .= Text::makeChatcmd($slot->longName(), "/tell <myname> implantdesigner {$slot->designSlotName()}");
 			if ($slotObj instanceof stdClass) {
 				$blob .= $this->getImplantSummary($slotObj) . "\n";
 			}
-			$blob .= "Which ability do you want to require for {$slot}?\n\n";
+			$blob .= "Which ability do you want to require for {$slot->longName()}?\n\n";
 			$abilities = $this->db->table('Ability')->select('Name')
 				->pluckStrings('Name')->toArray();
 			foreach ($abilities as $ability) {
-				$blob .= Text::makeChatcmd($ability, "/tell <myname> implantdesigner {$slot} require {$ability}") . "\n";
+				$blob .= Text::makeChatcmd($ability, "/tell <myname> implantdesigner {$slot->designSlotName()} require {$ability}") . "\n";
 			}
-			$msg = $this->text->makeBlob("Implant Designer Require Ability ({$slot})", $blob);
+			$msg = $this->text->makeBlob("Implant Designer Require Ability ({$slot->longName()})", $blob);
 		}
 
 		$context->reply($msg);
@@ -432,13 +432,13 @@ class ImplantDesignerController extends ModuleInstance {
 		} else {
 			$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
 			$blob .= ']<tab>[';
-			$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot} clear");
+			$blob .= Text::makeChatcmd('Clear this slot', "/tell <myname> implantdesigner {$slot->designSlotName()} clear");
 			$blob .= "]\n\n\n";
-			$blob .= Text::makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
+			$blob .= Text::makeChatcmd($slot->longName(), "/tell <myname> implantdesigner {$slot->designSlotName()}");
 			if ($slotObj instanceof stdClass) {
 				$blob .= $this->getImplantSummary($slotObj) . "\n";
 			}
-			$blob .= "Combinations for <highlight>{$slot}<end> that will require {$ability}:\n";
+			$blob .= "Combinations for <highlight>{$slot->longName()}<end> that will require {$ability}:\n";
 			$query = $this->db
 				->table('ImplantMatrix AS i')
 				->join('Cluster AS c1', 'i.ShiningID', 'c1.ClusterID')
@@ -483,7 +483,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 				/** @var string[] */
 				$results = array_map(static function ($item) use ($slot) {
-					return empty($item[1]) ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot} {$item[0]} {$item[1]}");
+					return empty($item[1]) ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot->designSlotName()} {$item[0]} {$item[1]}");
 				}, $results);
 				if ($results[0] != $primary) {
 					$blob .= "\n" . $results[0] . "\n";
@@ -494,7 +494,7 @@ class ImplantDesignerController extends ModuleInstance {
 				}
 			}
 			$count = count($data);
-			$msg = $this->text->makeBlob("Implant Designer Require {$ability} ({$slot}) ({$count})", $blob);
+			$msg = $this->text->makeBlob("Implant Designer Require {$ability} ({$slot->longName()}) ({$count})", $blob);
 		}
 
 		$context->reply($msg);

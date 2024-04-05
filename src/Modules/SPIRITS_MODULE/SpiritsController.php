@@ -55,8 +55,8 @@ class SpiritsController extends ModuleInstance {
 	public function spiritsRangeAndSlotCommand(CmdContext $context, PNumRange $qlRange, PImplantSlot $slot): void {
 		$lowQL = $qlRange->low;
 		$highQL = $qlRange->high;
-		$slot = ucfirst($slot());
-		$title = "{$slot} Spirits QL {$lowQL} to {$highQL}";
+		$slot = $slot();
+		$title = "{$slot->longName()} Spirits QL {$lowQL} to {$highQL}";
 		if ($lowQL < 1 or $highQL > 300 or $lowQL >= $highQL) {
 			$msg = 'Invalid Ql range specified.';
 			$context->reply($msg);
@@ -65,14 +65,14 @@ class SpiritsController extends ModuleInstance {
 
 		/** @var Spirit[] */
 		$data = $this->db->table('spiritsdb')
-			->where('spot', $slot)
+			->where('spot', $slot->designSlotName())
 			->where('ql', '>=', $lowQL)
 			->where('ql', '<=', $highQL)
 			->orderBy('ql')
 			->asObj(Spirit::class)
 			->toArray();
 		if (empty($data)) {
-			$context->reply("No {$slot} spirits found in ql {$lowQL} to {$highQL}.");
+			$context->reply("No {$slot->longName()} spirits found in ql {$lowQL} to {$highQL}.");
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
@@ -92,18 +92,18 @@ class SpiritsController extends ModuleInstance {
 	#[NCA\Help\Example('<symbol>spirits feet grave')]
 	public function spiritsCommandSlotAndType(CmdContext $context, PImplantSlot $slot, PNonNumber $name): void {
 		$name = ucwords(strtolower($name()));
-		$slot = ucfirst($slot());
-		$title = "Spirits Database for {$name} {$slot}";
+		$slot = $slot();
+		$title = "Spirits Database for {$name} {$slot->longName()}";
 
 		/** @var Spirit[] */
 		$data = $this->db->table('spiritsdb')
 			->whereIlike('name', "%{$name}%")
-			->where('spot', $slot)
+			->where('spot', $slot->designSlotName())
 			->orderBy('level')
 			->asObj(Spirit::class)
 			->toArray();
 		if (empty($data)) {
-			$context->reply("No {$slot} implants found matching '<highlight>{$name}<end>'.");
+			$context->reply("No {$slot->longName()} implants found matching '<highlight>{$name}<end>'.");
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
@@ -177,8 +177,8 @@ class SpiritsController extends ModuleInstance {
 	#[NCA\HandlesCommand('spirits')]
 	#[NCA\Help\Example('<symbol>spirits 210 chest')]
 	public function spiritsQlAndTypeCommand(CmdContext $context, int $ql, PImplantSlot $slot): void {
-		$slot = ucfirst($slot());
-		$title = "{$slot} Spirits QL {$ql}";
+		$slot = $slot();
+		$title = "{$slot->longName()} Spirits QL {$ql}";
 		if ($ql < 1 or $ql > 300) {
 			$msg = 'Invalid Ql specified.';
 			$context->reply($msg);
@@ -187,12 +187,12 @@ class SpiritsController extends ModuleInstance {
 
 		/** @var Spirit[] */
 		$data = $this->db->table('spiritsdb')
-			->where('spot', $slot)
+			->where('spot', $slot->designSlotName())
 			->where('ql', $ql)
 			->asObj(Spirit::class)
 			->toArray();
 		if (empty($data)) {
-			$context->reply("No {$slot} spirits found in ql {$ql}.");
+			$context->reply("No {$slot->longName()} spirits found in ql {$ql}.");
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
@@ -207,7 +207,7 @@ class SpiritsController extends ModuleInstance {
 		$name = ucwords(strtolower($search()));
 		$title = "Spirits Database for {$name}";
 		if (PImplantSlot::matches($name)) {
-			$name = (new PImplantSlot($name))();
+			$name = (new PImplantSlot($name))()->designSlotName();
 		}
 
 		/** @var Spirit[] */

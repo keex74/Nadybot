@@ -6,6 +6,7 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	ImplantSlot,
 	ModuleInstance,
 	Profession,
 	QueryBuilder,
@@ -80,8 +81,8 @@ class PremadeImplantController extends ModuleInstance {
 	}
 
 	/** @return PremadeSearchResult[] */
-	public function searchBySlot(string $slot): array {
-		$query = $this->getBaseQuery()->where('i.ShortName', $slot);
+	public function searchBySlot(ImplantSlot $slot): array {
+		$query = $this->getBaseQuery()->where('i.ShortName', $slot->designSlotName());
 		return $query->asObj(PremadeSearchResult::class)->toArray();
 	}
 

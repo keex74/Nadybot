@@ -2,30 +2,34 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
+use Nadybot\Core\ImplantSlot;
 use Nadybot\Core\ParamClass\Base;
 
 class PImplantSlot extends Base {
-	protected static string $regExp = 'head|eyes?|ear|rarm|chest|larm|rwrist|waist|lwrist|rhand|legs?|lhand|feet|foot|brain|body';
-	protected string $value;
-
-	/** @var array<string,string> */
-	private array $aliases = [
-		'eyes' => 'eye',
-		'foot' => 'feet',
-		'brain' => 'head',
-		'body' => 'chest',
-		'leg' => 'legs',
-	];
+	protected static string $regExp = 'eyes?|ocular'.
+		'|head|brain'.
+		'|ear'.
+		'|right arm|rarm'.
+		'|body|chest'.
+		'|left arm|larm'.
+		'|right wrist|rwrist'.
+		'|waist'.
+		'|left wrist|lwrist'.
+		'|right hand|rhand'.
+		'|legs|leg|thigh'.
+		'|left hand|lhand'.
+		'|foot|feet';
+	protected ImplantSlot $value;
 
 	public function __construct(string $value) {
-		$this->value = strtolower($this->aliases[strtolower($value)]??$value);
+		$this->value = ImplantSlot::byName($value);
 	}
 
-	public function __invoke(): string {
+	public function __invoke(): ImplantSlot {
 		return $this->value;
 	}
 
 	public function __toString(): string {
-		return $this->value;
+		return $this->value->designSlotName();
 	}
 }
