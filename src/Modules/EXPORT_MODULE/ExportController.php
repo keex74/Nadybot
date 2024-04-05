@@ -23,7 +23,7 @@ use Nadybot\Core\{
 	Nadybot,
 };
 use Nadybot\Modules\EVENTS_MODULE\EventModel;
-use Nadybot\Modules\EXPORT_MODULE\Schema\{AltChar, AltMain, Auction, Character};
+use Nadybot\Modules\EXPORT_MODULE\Schema\{AltChar, AltMain, Auction, Ban, Character, CloakEntry};
 use Nadybot\Modules\NOTES_MODULE\{OrgNote, OrgNotesController};
 use Nadybot\Modules\{
 	CITY_MODULE\CloakController,
@@ -300,18 +300,18 @@ class ExportController extends ModuleInstance {
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Ban[] */
 	protected function exportBanlist(): array {
 		return $this->db->table(BanController::DB_TABLE)
 			->asObj(BanEntry::class)
-			->map(function (BanEntry $banEntry): stdClass {
+			->map(function (BanEntry $banEntry): Ban {
 				$name = $this->chatBot->getName($banEntry->charid);
-				$ban = $this->toClass([
-					'character' => $this->toChar($name, $banEntry->charid),
-					'bannedBy' => $this->toChar($banEntry->admin),
-					'banReason' => $banEntry->reason,
-					'banStart' => $banEntry->time,
-				]);
+				$ban = new Ban(
+					character: $this->toChar($name, $banEntry->charid),
+					bannedBy: $this->toChar($banEntry->admin),
+					banReason: $banEntry->reason,
+					banStart: $banEntry->time,
+				);
 				if (isset($banEntry->banend) && $banEntry->banend > 0) {
 					$ban->banEnd = $banEntry->banend;
 				}
@@ -319,17 +319,17 @@ class ExportController extends ModuleInstance {
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return CloakEntry[] */
 	protected function exportCloak(): array {
 		return $this->db->table(CloakController::DB_TABLE)
 			->asObj(OrgCity::class)
-			->map(function (OrgCity $cloakEntry): stdClass {
-				return $this->toClass([
-					'character' => $this->toChar(rtrim($cloakEntry->player, '*')),
-					'manualEntry' => str_ends_with($cloakEntry->player, '*'),
-					'cloakOn' => ($cloakEntry->action === 'on'),
-					'time' => $cloakEntry->time,
-				]);
+			->map(function (OrgCity $cloakEntry): CloakEntry {
+				return new CloakEntry(
+					character: $this->toChar(rtrim($cloakEntry->player, '*')),
+					manualEntry: str_ends_with($cloakEntry->player, '*'),
+					cloakOn: ($cloakEntry->action === 'on'),
+					time: $cloakEntry->time,
+				);
 			})->toArray();
 	}
 
