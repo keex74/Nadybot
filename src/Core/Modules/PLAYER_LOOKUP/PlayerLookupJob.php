@@ -2,9 +2,9 @@
 
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
-use function Amp\Future\await;
-use function Amp\{async, delay};
+use function Amp\{delay};
 
+use Amp\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -17,9 +17,6 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 
 class PlayerLookupJob {
-	/** @var Collection<MissingAlt> */
-	public Collection $toUpdate;
-
 	protected int $numActiveThreads = 0;
 
 	#[NCA\Logger]
@@ -68,78 +65,58 @@ class PlayerLookupJob {
 		return $result;
 	}
 
-	/**
-	 * Start the lookup job and call the callback when done
-	 *
-	 * @psalm-param callable(mixed...) $callback
-	 */
-	public function run(callable $callback, mixed ...$args): void {
+	/** Start the lookup job */
+	public function run(): void {
 		$numJobs = $this->playerManager->lookupJobs;
 		if ($numJobs === 0) {
-			$callback(...$args);
 			return;
 		}
-		$this->toUpdate = $this->getMissingAlts()
+
+		/** @var Collection<MissingAlt|Player> */
+		$toUpdate = $this->getMissingAlts()
 			->concat($this->getOudatedCharacters());
-		if ($this->toUpdate->isEmpty()) {
+		if ($toUpdate->isEmpty()) {
 			$this->logger->info('No outdate player information found.');
-			$callback(...$args);
 			return;
 		}
-		$this->logger->info($this->toUpdate->count() . ' missing / outdated characters found.');
-		async(function () use ($numJobs, $callback, $args): void {
-			$threads = [];
-			for ($i = 0; $i < $numJobs; $i++) {
-				$this->numActiveThreads++;
-				$this->logger->info('Spawning lookup thread #' . $this->numActiveThreads);
-				$threads []= async($this->startThread(...), $i+1);
-			}
-			await($threads);
-			$this->logger->info('All threads done, stopping lookup.');
-			$callback(...$args);
-		})->catch(Nadybot::asyncErrorHandler(...));
+		$this->logger->info('{num_outdated}  missing / outdated characters found.', [
+			'num_outdated' => $toUpdate->count(),
+		]);
+		Pipeline::fromIterable($toUpdate)
+			->concurrent($numJobs)
+			->forEach($this->lookupInfo(...));
 	}
 
-	private function startThread(int $threadNum): void {
-		while ($todo = $this->toUpdate->shift()) {
-			/** @var Player $todo */
-			$this->logger->debug('[Thread #{thread_num}] Looking up {character}', [
-				'thread_num' => $threadNum,
-				'character' => $todo->name,
-			]);
-			try {
-				$uid = $this->chatBot->getUid($todo->name);
-				if (!isset($uid)) {
-					$this->logger->debug('[Thread #{thread_num}] Character {character} is inactive, not updating.', [
-						'thread_num' => $threadNum,
-						'character' => $todo->name,
-					]);
-					continue;
-				}
-				$start = microtime(true);
-				$player = $this->playerManager->byName($todo->name, $todo->dimension, true);
-				$duration = round((microtime(true) - $start) * 1_000, 1);
-				$this->logger->debug(
-					'[Thread #{thread_num}] PORK lookup for {character} done after {duration}s: {result}',
-					[
-						'thread_num' => $threadNum,
-						'character' => $todo->name,
-						'result' => isset($player) ? 'data updated' : 'no data found',
-						'duration' => $duration,
-					]
-				);
-				delay(0.5);
-			} catch (Throwable $e) {
-				$this->logger->error('[Thread #{thread_num}] Exception looking up {character}: {error}', [
-					'thread_num' => $threadNum,
-					'character' => $todo->name,
-					'error' => $e->getMessage(),
-					'Exception' => $e,
-				]);
-			}
-		}
-		$this->logger->debug('[Thread #{thread_num}] Queue empty, stopping thread.', [
-			'thread_num' => $threadNum,
+	private function lookupInfo(MissingAlt|Player $todo): void {
+		$this->logger->info('Looking up {character}', [
+			'character' => $todo->name,
 		]);
+		try {
+			$uid = $this->chatBot->getUid($todo->name);
+			if (!isset($uid)) {
+				$this->logger->debug('Character {character} is inactive, not updating.', [
+					'character' => $todo->name,
+				]);
+				return;
+			}
+			$start = microtime(true);
+			$player = $this->playerManager->byName($todo->name, $todo->dimension, true);
+			$duration = round((microtime(true) - $start) * 1_000, 1);
+			$this->logger->debug(
+				'PORK lookup for {character} done after {duration}s: {result}',
+				[
+					'character' => $todo->name,
+					'result' => isset($player) ? 'data updated' : 'no data found',
+					'duration' => $duration,
+				]
+			);
+			delay(0.5);
+		} catch (Throwable $e) {
+			$this->logger->error('Exception looking up {character}: {error}', [
+				'character' => $todo->name,
+				'error' => $e->getMessage(),
+				'Exception' => $e,
+			]);
+		}
 	}
 }

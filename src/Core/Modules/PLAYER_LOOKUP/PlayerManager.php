@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
-use function Amp\delay;
+use function Amp\{async, delay};
 use function Safe\{json_decode, parse_url, preg_match};
 
 use Amp\File\{FileCache};
@@ -97,12 +97,15 @@ class PlayerManager extends ModuleInstance {
 		}
 		$this->playerLookupJob = new PlayerLookupJob();
 		Registry::injectDependencies($this->playerLookupJob);
-		$this->playerLookupJob->run(function () {
-			$this->playerLookupJob = null;
-			$this->db->table('players')
-				->where('last_update', '<', time() - 5*static::CACHE_GRACE_TIME)
-				->delete();
-		});
+		async($this->playerLookupJob->run(...))
+			->catch(Nadybot::asyncErrorHandler(...))
+			->finally(function (): void {
+				$this->playerLookupJob?->run();
+				$this->playerLookupJob = null;
+				$this->db->table('players')
+					->where('last_update', '<', time() - 5*static::CACHE_GRACE_TIME)
+					->delete();
+			});
 	}
 
 	public function byName(string $name, ?int $dimension=null, bool $forceUpdate=false): ?Player {
