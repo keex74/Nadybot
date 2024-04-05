@@ -745,68 +745,136 @@ id,pb,pb_location,bp_mob,bp_lvl,bp_location,type,slot,line,ql,itemid
 744,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Feet,Intelligent,300,236057
 745,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,Feet,Intelligent,300,235833
 746,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,Feet,Intelligent,300,236284
-747,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Ocular,Alpha,300,278945
-748,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Ocular,Alpha,300,278958
-749,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Ocular,Alpha,300,278971
-750,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Ocular,Alpha,300,278984
-751,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Ocular,Alpha,300,278997
-752,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Brain,Alpha,300,278944
-753,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Brain,Alpha,300,278957
-754,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Brain,Alpha,300,278970
-755,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Brain,Alpha,300,278983
-756,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Brain,Alpha,300,278996
-757,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Ear,Alpha,300,278946
-758,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Ear,Alpha,300,278959
-759,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Ear,Alpha,300,278972
-760,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Ear,Alpha,300,278985
-761,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Ear,Alpha,300,278998
-762,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Left Arm",Alpha,300,278948
-763,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Left Arm",Alpha,300,278961
-764,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Left Arm",Alpha,300,278974
-765,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Left Arm",Alpha,300,278987
-766,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Left Arm",Alpha,300,279000
-767,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Chest,Alpha,300,278947
-768,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Chest,Alpha,300,278960
-769,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Chest,Alpha,300,278973
-770,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Chest,Alpha,300,278986
-771,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Chest,Alpha,300,278999
-772,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Right Arm",Alpha,300,278951
-773,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Right Arm",Alpha,300,278964
-774,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Right Arm",Alpha,300,278977
-775,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Right Arm",Alpha,300,278990
-776,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Right Arm",Alpha,300,279003
-777,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Left Wrist",Alpha,300,278950
-778,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Left Wrist",Alpha,300,278963
-779,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Left Wrist",Alpha,300,278976
-780,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Left Wrist",Alpha,300,278989
-781,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Left Wrist",Alpha,300,279002
-782,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Waist,Alpha,300,278954
-783,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Waist,Alpha,300,278967
-784,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Waist,Alpha,300,278980
-785,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Waist,Alpha,300,278993
-786,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Waist,Alpha,300,279006
-787,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Right Wrist",Alpha,300,278953
-788,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Right Wrist",Alpha,300,278966
-789,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Right Wrist",Alpha,300,278979
-790,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Right Wrist",Alpha,300,278992
-791,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Right Wrist",Alpha,300,279005
-792,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Left Hand",Alpha,300,278949
-793,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Left Hand",Alpha,300,278962
-794,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Left Hand",Alpha,300,278975
-795,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Left Hand",Alpha,300,278988
-796,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Left Hand",Alpha,300,279001
-797,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Thigh,Alpha,300,278955
-798,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Thigh,Alpha,300,278968
-799,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Thigh,Alpha,300,278981
-800,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Thigh,Alpha,300,278994
-801,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Thigh,Alpha,300,279007
-802,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Right Hand",Alpha,300,278952
-803,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Right Hand",Alpha,300,278965
-804,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Right Hand",Alpha,300,278978
-805,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Right Hand",Alpha,300,278991
-806,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Right Hand",Alpha,300,279004
-807,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Feet,Alpha,300,278956
-808,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Feet,Alpha,300,278969
-809,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Feet,Alpha,300,278982
-810,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Feet,Alpha,300,278995
-811,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Feet,Alpha,300,279008
+747,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Right Hand",Excited,250,236454
+748,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Left Hand",Effective,240,236486
+749,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Thigh,Excited,250,236471
+750,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Feet,Excited,250,236503
+751,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Waist,Vital,260,236418
+752,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Feet,Cognizant,270,236504
+753,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Left Arm",Cognizant,270,236383
+754,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Right Wrist",Cognizant,270,236400
+755,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Chest,Alert,280,236365
+756,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Left Hand",Alert,280,236488
+757,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Right Wrist",Conscious,290,236401
+758,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Left Wrist",Conscious,290,236436
+759,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Chest,Vital,260,235473
+760,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,"Left Arm",Conscious,290,235491
+761,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Waist,Conscious,290,235526
+762,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Thigh,Alert,280,235577
+763,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Thigh,Conscious,290,235578
+764,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Feet,Conscious,290,235613
+765,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,"Right Hand",Alert,280,235561
+766,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Chest,Conscious,290,235474
+767,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Ear,Cognizant,270,236330
+768,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Right Arm",Cognizant,270,236348
+769,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,Thigh,Conscious,290,236472
+770,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Brain,Cognizant,270,235865
+771,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Ear,Cognizant,270,235882
+772,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Right Arm",Vital,260,235898
+773,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Right Arm",Conscious,290,235900
+774,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Arm",Alert,280,235934
+775,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Waist,Conscious,290,235968
+776,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Wrist",Persisting,220,235983
+777,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Wrist",Excited,250,235984
+778,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Right Hand",Conscious,290,236004
+779,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Thigh,Cognizant,270,236021
+780,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Thigh,Conscious,290,236022
+781,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Hand",Persisting,220,236036
+782,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Hand",Effective,240,236037
+783,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Hand",Alert,280,236038
+784,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Hand",Conscious,290,236039
+785,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,"Right Wrist",Alert,280,235727
+786,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,"Right Wrist",Conscious,290,235728
+787,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,"Left Wrist",Conscious,290,235762
+788,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,Thigh,Cognizant,270,235797
+789,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,"Left Hand",Conscious,290,235814
+790,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,Feet,Cognizant,270,235831
+791,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,"Right Arm",Conscious,290,236123
+792,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,Chest,Conscious,290,236142
+793,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,"Left Arm",Vital,260,236161
+794,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,Feet,Conscious,290,235832
+795,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Ocular,Conscious,290,219138
+796,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,Brain,Conscious,290,235421
+797,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,"Left Wrist",Conscious,290,235543
+798,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Left Arm",Effective,240,236380
+799,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Ear,Excited,250,235881
+800,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Feet,Effective,240,236053
+801,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Right Arm",Excited,250,235897
+802,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Right Arm",Alert,280,235899
+803,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Waist,Alert,280,235967
+804,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,Chest,Conscious,290,235917
+805,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Right Wrist",Conscious,290,235951
+806,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,"Right Hand",Conscious,290,235780
+807,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,Waist,Conscious,290,235745
+808,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,Feet,Cognizant,270,236281
+809,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,"Left Arm",Conscious,290,236163
+810,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Support,Thigh,Conscious,290,236251
+811,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Artillery,"Right Wrist",Cognizant,270,235508
+812,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Control,"Left Hand",Excited,250,236487
+813,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Extermination,"Left Arm",Excited,250,235932
+814,"The Night Heart",Pandemonion,Zodiac,300,Pandemonium,Infantry,Brain,Conscious,290,235645
+815,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Ocular,Alpha,300,278945
+816,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Ocular,Alpha,300,278958
+817,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Ocular,Alpha,300,278971
+818,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Ocular,Alpha,300,278984
+819,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Ocular,Alpha,300,278997
+820,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Brain,Alpha,300,278944
+821,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Brain,Alpha,300,278957
+822,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Brain,Alpha,300,278970
+823,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Brain,Alpha,300,278983
+824,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Brain,Alpha,300,278996
+825,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Ear,Alpha,300,278946
+826,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Ear,Alpha,300,278959
+827,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Ear,Alpha,300,278972
+828,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Ear,Alpha,300,278985
+829,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Ear,Alpha,300,278998
+830,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Left Arm",Alpha,300,278948
+831,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Left Arm",Alpha,300,278961
+832,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Left Arm",Alpha,300,278974
+833,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Left Arm",Alpha,300,278987
+834,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Left Arm",Alpha,300,279000
+835,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Chest,Alpha,300,278947
+836,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Chest,Alpha,300,278960
+837,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Chest,Alpha,300,278973
+838,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Chest,Alpha,300,278986
+839,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Chest,Alpha,300,278999
+840,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Right Arm",Alpha,300,278951
+841,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Right Arm",Alpha,300,278964
+842,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Right Arm",Alpha,300,278977
+843,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Right Arm",Alpha,300,278990
+844,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Right Arm",Alpha,300,279003
+845,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Left Wrist",Alpha,300,278950
+846,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Left Wrist",Alpha,300,278963
+847,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Left Wrist",Alpha,300,278976
+848,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Left Wrist",Alpha,300,278989
+849,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Left Wrist",Alpha,300,279002
+850,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Waist,Alpha,300,278954
+851,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Waist,Alpha,300,278967
+852,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Waist,Alpha,300,278980
+853,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Waist,Alpha,300,278993
+854,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Waist,Alpha,300,279006
+855,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Right Wrist",Alpha,300,278953
+856,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Right Wrist",Alpha,300,278966
+857,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Right Wrist",Alpha,300,278979
+858,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Right Wrist",Alpha,300,278992
+859,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Right Wrist",Alpha,300,279005
+860,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Left Hand",Alpha,300,278949
+861,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Left Hand",Alpha,300,278962
+862,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Left Hand",Alpha,300,278975
+863,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Left Hand",Alpha,300,278988
+864,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Left Hand",Alpha,300,279001
+865,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Thigh,Alpha,300,278955
+866,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Thigh,Alpha,300,278968
+867,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Thigh,Alpha,300,278981
+868,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Thigh,Alpha,300,278994
+869,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Thigh,Alpha,300,279007
+870,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,"Right Hand",Alpha,300,278952
+871,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,"Right Hand",Alpha,300,278965
+872,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,"Right Hand",Alpha,300,278978
+873,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,"Right Hand",Alpha,300,278991
+874,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,"Right Hand",Alpha,300,279004
+875,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Artillery,Feet,Alpha,300,278956
+876,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Control,Feet,Alpha,300,278969
+877,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Extermination,Feet,Alpha,300,278982
+878,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Infantry,Feet,Alpha,300,278995
+879,"Intelligent+Beta combine",Anywhere,"TNH+LoX boss",300,Anywhere,Support,Feet,Alpha,300,279008

@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use function Safe\preg_match;
 use Illuminate\Support\Collection;
 
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	ImplantSlot,
 	ModuleInstance,
 	ParamClass\PWord,
 	Text,
@@ -97,6 +97,9 @@ class PocketbossController extends ModuleInstance {
 
 	/** @return Pocketboss[] */
 	public function pbSearchResults(string $search): array {
+		if ($search === 'tnh') {
+			$search = 'The Night Heart';
+		}
 		$row = $this->db->table('pocketboss')
 			->whereIlike('pb', $search)
 			->orderBy('pb')
@@ -202,106 +205,42 @@ class PocketbossController extends ModuleInstance {
 			->pluckStrings('line')->toArray();
 
 		for ($i = 0; $i < $paramCount; $i++) {
-			switch (strtolower($args[$i])) {
-				case 'eye':
-				case 'ocular':
-					$impDesignSlot = 'eye';
-					$slot = 'Ocular';
-					break;
-				case 'brain':
-				case 'head':
-					$impDesignSlot = 'head';
-					$slot = 'Brain';
-					break;
-				case 'ear':
-					$impDesignSlot = 'ear';
-					$slot = 'Ear';
-					break;
-				case 'rarm':
-					$impDesignSlot = 'rarm';
-					$slot = 'Right Arm';
-					break;
-				case 'chest':
-					$impDesignSlot = 'chest';
-					$slot = 'Chest';
-					break;
-				case 'larm':
-					$impDesignSlot = 'larm';
-					$slot = 'Left Arm';
-					break;
-				case 'rwrist':
-					$impDesignSlot = 'rwrist';
-					$slot = 'Right Wrist';
-					break;
-				case 'waist':
-					$impDesignSlot = 'waist';
-					$slot = 'Waist';
-					break;
-				case 'lwrist':
-					$impDesignSlot = 'lwrist';
-					$slot = 'Left Wrist';
-					break;
-				case 'rhand':
-					$impDesignSlot = 'rhand';
-					$slot = 'Right Hand';
-					break;
-				case 'leg':
-				case 'legs':
-				case 'thigh':
-					$impDesignSlot = 'legs';
-					$slot = 'Thigh';
-					break;
-				case 'lhand':
-					$impDesignSlot = 'lhand';
-					$slot = 'Left Hand';
-					break;
-				case 'feet':
-					$impDesignSlot = 'feet';
-					$slot = 'Feet';
-					break;
-				default:
-					// check if it's a line
-					foreach ($lines as $l) {
-						if (strtolower($l) === strtolower($args[$i])) {
-							$line = $l;
-							break 2;
-						}
-					}
-
-					// check if it's a type
-					if (preg_match('/^art/i', $args[$i])) {
-						$symbtype = 'Artillery';
-						break;
-					} elseif (preg_match('/^sup/i', $args[$i])) {
-						$symbtype = 'Support';
-						break;
-					} elseif (preg_match('/^inf/i', $args[$i])) {
-						$symbtype = 'Infantry';
-						break;
-					} elseif (preg_match('/^ext/i', $args[$i])) {
-						$symbtype = 'Extermination';
-						break;
-					} elseif (preg_match('/^control/i', $args[$i])) {
-						$symbtype = 'Control';
-						break;
-					}
-
-					// check if it's a line, but be less strict this time
-					$matchingLines = array_filter(
-						$lines,
-						static function (string $line) use ($args, $i): bool {
-							return strncasecmp($line, $args[$i], strlen($args[$i])) === 0;
-						}
-					);
-					if (count($matchingLines) === 1) {
-						$line = array_shift($matchingLines);
-						break;
-					}
-					$context->reply(
-						"I cannot find any symbiant line, location or type '<highlight>{$args[$i]}<end>'."
-					);
-					return;
+			try {
+				$impSlot = ImplantSlot::byName($args[$i]);
+				$impDesignSlot = $impSlot->designSlotName();
+				$slot = $impSlot->longName();
+				continue;
+			} catch (\Throwable) {
 			}
+			// check if it's a line
+			foreach ($lines as $l) {
+				if (strtolower($l) === strtolower($args[$i])) {
+					$line = $l;
+					continue 2;
+				}
+			}
+
+			try {
+				$symbtype = SymbiantType::byName($args[$i])->name;
+				continue;
+			} catch (\Throwable) {
+			}
+
+			// check if it's a line, but be less strict this time
+			$matchingLines = array_filter(
+				$lines,
+				static function (string $line) use ($args, $i): bool {
+					return strncasecmp($line, $args[$i], strlen($args[$i])) === 0;
+				}
+			);
+			if (count($matchingLines) === 1) {
+				$line = array_shift($matchingLines);
+				break;
+			}
+			$context->reply(
+				"I cannot find any symbiant line, location or type '<highlight>{$args[$i]}<end>'."
+			);
+			return;
 		}
 
 		$query = $this->db->table('pocketboss')
