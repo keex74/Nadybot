@@ -5,7 +5,10 @@ namespace Nadybot\Modules\EXPORT_MODULE;
 use function Safe\{json_decode, json_encode, preg_match};
 
 use Amp\File\{FilesystemException};
+use Closure;
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection, UnableToHydrateObject};
 use Exception;
+use Nadybot\Core\DBSchema\{Admin, BanEntry, Member};
 use Nadybot\Core\{
 	AccessManager,
 	AdminManager,
@@ -23,36 +26,33 @@ use Nadybot\Core\{
 	SettingManager,
 	Util,
 };
-use Nadybot\Modules\NOTES_MODULE\OrgNotesController;
+use Nadybot\Modules\CITY_MODULE\OrgCity;
+use Nadybot\Modules\EVENTS_MODULE\EventModel;
+use Nadybot\Modules\EXPORT_MODULE\Schema\{AltChar, AltMain};
+use Nadybot\Modules\GUILD_MODULE\OrgMember;
+use Nadybot\Modules\NEWS_MODULE\{News, NewsConfirmed};
+use Nadybot\Modules\NOTES_MODULE\{Link, OrgNote};
+use Nadybot\Modules\QUOTE_MODULE\Quote;
+use Nadybot\Modules\RAFFLE_MODULE\RaffleBonus;
+use Nadybot\Modules\RAID_MODULE\{DBAuction, RaidBlock, RaidPointsLog, RaidRank};
+use Nadybot\Modules\TRACKER_MODULE\{TrackedUser, Tracking};
+use Nadybot\Modules\VOTE_MODULE\{Poll, Vote};
 use Nadybot\Modules\{
-	CITY_MODULE\CloakController,
 	COMMENT_MODULE\Comment,
 	COMMENT_MODULE\CommentCategory,
 	COMMENT_MODULE\CommentController,
-	GUILD_MODULE\GuildController,
 	MASSMSG_MODULE\MassMsgController,
 	NOTES_MODULE\Note,
-	PRIVATE_CHANNEL_MODULE\PrivateChannelController,
-	RAFFLE_MODULE\RaffleController,
-	RAID_MODULE\AuctionController,
 	RAID_MODULE\Raid,
-	RAID_MODULE\RaidBlockController,
-	RAID_MODULE\RaidController,
 	RAID_MODULE\RaidLog,
 	RAID_MODULE\RaidMember,
-	RAID_MODULE\RaidMemberController,
 	RAID_MODULE\RaidPoints,
-	RAID_MODULE\RaidPointsController,
 	RAID_MODULE\RaidRankController,
 	TIMERS_MODULE\Alert,
 	TIMERS_MODULE\Timer,
-	TIMERS_MODULE\TimerController,
-	TRACKER_MODULE\TrackerController,
 	VOTE_MODULE\VoteController,
 };
 use Psr\Log\LoggerInterface;
-use stdClass;
-use Swaggest\JsonSchema\Schema;
 use Throwable;
 
 /**
@@ -99,9 +99,6 @@ class ImportController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private RaidRankController $raidRankController;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private BotConfig $config;
@@ -155,7 +152,7 @@ class ImportController extends ModuleInstance {
 			}
 			try {
 				$rankMapping[$rank] = $this->accessManager->getAccessLevel($rankMapping[$rank]);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$context->reply("<highlight>{$rankMapping[$rank]}<end> is not a valid access level");
 				return;
 			}
@@ -173,15 +170,15 @@ class ImportController extends ModuleInstance {
 		$context->reply('The import finished successfully.');
 	}
 
-	/** @param stdClass[] $auctions */
+	/** @param Schema\Auction[] $auctions */
 	public function importAuctions(array $auctions): void {
 		$this->logger->notice('Importing ' . count($auctions) . ' auction(s)');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all auctions');
-			$this->db->table(AuctionController::DB_TABLE)->truncate();
+			$this->db->table(DBAuction::getTable())->truncate();
 			foreach ($auctions as $auction) {
-				$this->db->table(AuctionController::DB_TABLE)
+				$this->db->table(DBAuction::getTable())
 					->insert([
 						'raid_id' => $auction->raidId ?? null,
 						'item' => $auction->item,
@@ -202,27 +199,27 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All auctions imported');
 	}
 
-	/** @param stdClass[] $banlist */
+	/** @param Schema\Ban[] $banlist */
 	public function importBanlist(array $banlist): void {
 		$numImported = 0;
 		$this->logger->notice('Importing ' . count($banlist) . ' ban(s)');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all bans');
-			$this->db->table(BanController::DB_TABLE)->truncate();
+			$this->db->table(BanEntry::getTable())->truncate();
 			foreach ($banlist as $ban) {
+				/** @psalm-suppress PossiblyNullArgument */
 				$id = $ban->character->id ?? $this->chatBot->getUid($ban->character->name);
 				if (!isset($id)) {
 					continue;
 				}
-				$this->db->table(BanController::DB_TABLE)
-				->insert([
-					'charid' => $id,
-					'admin' => ($this->characterToName($ban->bannedBy ?? null)) ?? $this->config->main->character,
-					'time' => $ban->banStart ?? time(),
-					'reason' => $ban->banReason ?? 'None given',
-					'banend' => $ban->banEnd ?? 0,
-				]);
+				$this->db->insert(new BanEntry(
+					charid: $id,
+					admin: ($this->characterToName($ban->bannedBy ?? null)) ?? $this->config->main->character,
+					time: $ban->banStart ?? time(),
+					reason: $ban->banReason ?? 'None given',
+					banend: $ban->banEnd ?? 0,
+				));
 				$numImported++;
 			}
 		} catch (Throwable $e) {
@@ -241,20 +238,19 @@ class ImportController extends ModuleInstance {
 		]);
 	}
 
-	/** @param stdClass[] $cloakActions */
+	/** @param Schema\CloakEntry[] $cloakActions */
 	public function importCloak(array $cloakActions): void {
 		$this->logger->notice('Importing ' . count($cloakActions) . ' cloak action(s)');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all cloak actions');
-			$this->db->table(CloakController::DB_TABLE)->truncate();
+			$this->db->table(OrgCity::getTable())->truncate();
 			foreach ($cloakActions as $action) {
-				$this->db->table(CloakController::DB_TABLE)
-					->insert([
-						'time' => $action->time ?? null,
-						'action' => $action->cloakOn ? 'on' : 'off',
-						'player' => ($this->characterToName($action->character??null)) ?? $this->config->main->character,
-					]);
+				$this->db->insert(new OrgCity(
+					time: $action->time,
+					action: $action->cloakOn ? 'on' : 'off',
+					player: ($this->characterToName($action->character??null)) ?? $this->config->main->character,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -266,21 +262,20 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All cloak actions imported');
 	}
 
-	/** @param stdClass[] $links */
+	/** @param Schema\Link[] $links */
 	public function importLinks(array $links): void {
 		$this->logger->notice('Importing ' . count($links) . ' links');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all links');
-			$this->db->table('links')->truncate();
+			$this->db->table(Link::getTable())->truncate();
 			foreach ($links as $link) {
-				$this->db->table('links')
-					->insert([
-						'name' => ($this->characterToName($link->createdBy??null)) ?? $this->config->main->character,
-						'website' => $link->url,
-						'comments' => $link->description ?? '',
-						'dt' => $link->creationTime ?? null,
-					]);
+				$this->db->insert(new Link(
+					name: ($this->characterToName($link->createdBy??null)) ?? $this->config->main->character,
+					website: $link->url,
+					comments: $link->description ?? '',
+					dt: $link->creationTime ?? null,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -293,7 +288,7 @@ class ImportController extends ModuleInstance {
 	}
 
 	/**
-	 * @param stdClass[]           $members
+	 * @param Schema\Member[]      $members
 	 * @param array<string,string> $rankMap
 	 */
 	public function importMembers(array $members, array $rankMap=[]): void {
@@ -302,11 +297,12 @@ class ImportController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all members');
-			$this->db->table(PrivateChannelController::DB_TABLE)->truncate();
-			$this->db->table(GuildController::DB_TABLE)->truncate();
-			$this->db->table(AdminManager::DB_TABLE)->truncate();
-			$this->db->table(RaidRankController::DB_TABLE)->truncate();
+			$this->db->table(Member::getTable())->truncate();
+			$this->db->table(OrgMember::getTable())->truncate();
+			$this->db->table(Admin::getTable())->truncate();
+			$this->db->table(RaidRank::getTable())->truncate();
 			foreach ($members as $member) {
+				/** @psalm-suppress PossiblyNullArgument */
 				$id = $member->character->id ?? $this->chatBot->getUid($member->character->name);
 
 				/** @var ?string */
@@ -323,33 +319,29 @@ class ImportController extends ModuleInstance {
 				if (in_array($newRank, ['member', 'mod', 'admin', 'superadmin'], true)
 					|| preg_match('/^raid_(leader|admin)_[123]$/', $newRank)
 				) {
-					$this->db->table(PrivateChannelController::DB_TABLE)
-						->insert([
-							'name' => $name,
-							'autoinv' => $member->autoInvite ?? false,
-							'joined' => $member->joinedTime ?? time(),
-						]);
+					$this->db->insert(new Member(
+						name: $name,
+						autoinv: (int)($member->autoInvite ?? false),
+						joined: $member->joinedTime ?? time(),
+					));
 				}
 				if (in_array($newRank, ['mod', 'admin', 'superadmin'], true)) {
 					$adminLevel = ($newRank === 'mod') ? 3 : 4;
-					$this->db->table(AdminManager::DB_TABLE)
-						->insert([
-							'name' => $name,
-							'adminlevel' => $adminLevel,
-						]);
+					$this->db->insert(new Admin(
+						name: $name,
+						adminlevel: $adminLevel,
+					));
 					$this->adminManager->admins[$name] = ['level' => $adminLevel];
 				} elseif (count($matches = Safe::pregMatch('/^raid_leader_([123])/', $newRank))) {
-					$this->db->table(RaidRankController::DB_TABLE)
-						->insert([
-							'name' => $name,
-							'rank' => (int)$matches[1] + 3,
-						]);
+					$this->db->insert(new Raidrank(
+						name: $name,
+						rank: (int)$matches[1] + 3,
+					));
 				} elseif (count($matches = Safe::pregMatch('/^raid_admin_([123])/', $newRank))) {
-					$this->db->table(RaidRankController::DB_TABLE)
-						->insert([
-							'name' => $name,
-							'rank' => (int)$matches[1] + 6,
-						]);
+					$this->db->insert(new Raidrank(
+						name: $name,
+						rank: (int)$matches[1] + 6,
+					));
 				} elseif (in_array($newRank, ['rl', 'all'])) {
 					// Nothing, we just ignore that
 				}
@@ -382,30 +374,29 @@ class ImportController extends ModuleInstance {
 		]);
 	}
 
-	/** @param stdClass[] $events */
+	/** @param Schema\Event[] $events */
 	public function importEvents(array $events): void {
 		$this->logger->notice('Importing ' . count($events) . ' events');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all events');
-			$this->db->table('events')->truncate();
+			$this->db->table(EventModel::getTable())->truncate();
 			foreach ($events as $event) {
 				$attendees = [];
 				foreach ($event->attendees??[] as $attendee) {
-					$name = $this->characterToName($attendee??null);
+					$name = $this->characterToName($attendee);
 					if (isset($name)) {
 						$attendees []= $name;
 					}
 				}
-				$this->db->table('events')
-				->insert([
-					'time_submitted' => $event->creationTime ?? time(),
-					'submitter_name' => ($this->characterToName($event->createdBy ?? null)) ?? $this->config->main->character,
-					'event_name' => $event->name,
-					'event_date' => $event->startTime ?? null,
-					'event_desc' => $event->description ?? null,
-					'event_attendees' => implode(',', $attendees),
-				]);
+				$this->db->insert(new EventModel(
+					time_submitted: $event->creationTime ?? time(),
+					submitter_name: ($this->characterToName($event->createdBy ?? null)) ?? $this->config->main->character,
+					event_name: $event->name,
+					event_date: $event->startTime ?? null,
+					event_desc: $event->description ?? null,
+					event_attendees: implode(',', $attendees),
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -417,35 +408,33 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All events imported');
 	}
 
-	/** @param stdClass[] $news */
+	/** @param Schema\News[] $news */
 	public function importNews(array $news): void {
 		$this->logger->notice('Importing ' . count($news) . ' news');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all news');
-			$this->db->table('news_confirmed')->truncate();
-			$this->db->table('news')->truncate();
+			$this->db->table(NewsConfirmed::getTable())->truncate();
+			$this->db->table(News::getTable())->truncate();
 			foreach ($news as $item) {
-				$newsId = $this->db->table('news')
-				->insertGetId([
-					'time' => $item->addedTime ?? time(),
-					'uuid' => $item->uuid ?? Util::createUUID(),
-					'name' => ($this->characterToName($item->author ?? null)) ?? $this->config->main->character,
-					'news' => $item->news,
-					'sticky' => $item->pinned ?? false,
-					'deleted' => $item->deleted ?? false,
-				]);
+				$newsId = $this->db->insert(new News(
+					time: $item->addedTime ?? time(),
+					uuid: $item->uuid ?? Util::createUUID(),
+					name: ($this->characterToName($item->author ?? null)) ?? $this->config->main->character,
+					news: $item->news,
+					sticky: $item->pinned ?? false,
+					deleted: $item->deleted ?? false,
+				));
 				foreach ($item->confirmedBy??[] as $confirmation) {
 					$name = $this->characterToName($confirmation->character??null);
 					if (!isset($name)) {
 						continue;
 					}
-					$this->db->table('news_confirmed')
-						->insert([
-							'id' => $newsId,
-							'player' => $name,
-							'time' => $confirmation->confirmationTime ?? time(),
-						]);
+					$this->db->insert(new NewsConfirmed(
+						id: $newsId,
+						player: $name,
+						time: $confirmation->confirmationTime ?? time(),
+					));
 				}
 			}
 		} catch (Throwable $e) {
@@ -458,13 +447,13 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All news imported');
 	}
 
-	/** @param stdClass[] $notes */
+	/** @param Schema\Note[] $notes */
 	public function importNotes(array $notes): void {
 		$this->logger->notice('Importing ' . count($notes) . ' notes');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all notes');
-			$this->db->table('notes')->truncate();
+			$this->db->table(Note::getTable())->truncate();
 			foreach ($notes as $note) {
 				$owner = $this->characterToName($note->owner??null);
 				if (!isset($owner)) {
@@ -476,14 +465,13 @@ class ImportController extends ModuleInstance {
 					: (($reminder === 'author')
 						? Note::REMIND_SELF
 						: Note::REMIND_NONE);
-				$this->db->table('notes')
-				->insert([
-					'owner' => $owner,
-					'added_by' => ($this->characterToName($note->author ?? null)) ?? $owner,
-					'note' => $note->text,
-					'dt' => $note->creationTime ?? null,
-					'reminder' => $reminderInt,
-				]);
+				$this->db->insert(new Note(
+					owner: $owner,
+					added_by: ($this->characterToName($note->author ?? null)) ?? $owner,
+					note: $note->text,
+					dt: $note->creationTime ?? null,
+					reminder: $reminderInt,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -495,25 +483,24 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All notes imported');
 	}
 
-	/** @param stdClass[] $notes */
+	/** @param Schema\OrgNote[] $notes */
 	public function importOrgNotes(array $notes): void {
 		$this->logger->notice('Importing ' . count($notes) . ' org notes');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all org notes');
-			$this->db->table(OrgNotesController::DB_TABLE)->truncate();
+			$this->db->table(OrgNote::getTable())->truncate();
 			foreach ($notes as $note) {
-				$owner = $this->characterToName($note->owner??null);
+				$owner = $this->characterToName($note->author);
 				if (!isset($owner)) {
 					continue;
 				}
-				$this->db->table(OrgNotesController::DB_TABLE)
-				->insert([
-					'added_by' => ($this->characterToName($note->author ?? null)) ?? $owner,
-					'note' => $note->text,
-					'added_on' => $note->creationTime ?? null,
-					'uuid' => $note->uuid ?? Util::createUUID(),
-				]);
+				$this->db->insert(new OrgNote(
+					added_by: $owner,
+					note: $note->text,
+					added_on: $note->creationTime ?? null,
+					uuid: $note->uuid ?? Util::createUUID(),
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -525,40 +512,38 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All org notes imported');
 	}
 
-	/** @param stdClass[] $polls */
+	/** @param Schema\Poll[] $polls */
 	public function importPolls(array $polls): void {
 		$this->logger->notice('Importing ' . count($polls) . ' polls');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all polls');
-			$this->db->table(VoteController::DB_VOTES)->truncate();
-			$this->db->table(VoteController::DB_POLLS)->truncate();
+			$this->db->table(Vote::getTable())->truncate();
+			$this->db->table(Poll::getTable())->truncate();
 			foreach ($polls as $poll) {
-				$pollId = $this->db->table(VoteController::DB_POLLS)
-					->insertGetId([
-						'author' => ($this->characterToName($poll->author??null)) ?? $this->config->main->character,
-						'question' => $poll->question,
-						'possible_answers' => json_encode(
-							array_map(
-								static function (stdClass $answer): string {
-									return $answer->answer;
-								},
-								$poll->answers??[]
-							),
+				$pollId = $this->db->insert(new Poll(
+					author: ($this->characterToName($poll->author)) ?? $this->config->main->character,
+					question: $poll->question,
+					possible_answers: json_encode(
+						array_map(
+							static function (Schema\Answer $answer): string {
+								return $answer->answer;
+							},
+							$poll->answers??[]
 						),
-						'started' => $poll->startTime ?? time(),
-						'duration' => ($poll->endTime ?? time()) - ($poll->startTime ?? time()),
-						'status' => VoteController::STATUS_STARTED,
-					]);
+					),
+					started: $poll->startTime ?? time(),
+					duration: ($poll->endTime ?? time()) - ($poll->startTime ?? time()),
+					status: VoteController::STATUS_STARTED,
+				));
 				foreach ($poll->answers??[] as $answer) {
 					foreach ($answer->votes??[] as $vote) {
-						$this->db->table(VoteController::DB_VOTES)
-							->insert([
-								'poll_id' => $pollId,
-								'author' => ($this->characterToName($vote->character??null)) ?? 'Unknown',
-								'answer' => $answer->answer,
-								'time' => $vote->voteTime ?? time(),
-							]);
+						$this->db->insert(new Vote(
+							poll_id: $pollId,
+							author: ($this->characterToName($vote->character??null)) ?? 'Unknown',
+							answer: $answer->answer,
+							time: $vote->voteTime ?? time(),
+						));
 					}
 				}
 			}
@@ -572,20 +557,19 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All polls imported');
 	}
 
-	/** @param stdClass[] $quotes */
+	/** @param Schema\Quote[] $quotes */
 	public function importQuotes(array $quotes): void {
 		$this->logger->notice('Importing ' . count($quotes) . ' quotes');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all quotes');
-			$this->db->table('quote')->truncate();
+			$this->db->table(Quote::getTable())->truncate();
 			foreach ($quotes as $quote) {
-				$this->db->table('quote')
-					->insert([
-						'poster' => ($this->characterToName($quote->contributor??null)) ?? $this->config->main->character,
-						'dt' => $quote->time??time(),
-						'msg' => $quote->quote,
-					]);
+				$this->db->insert(new Quote(
+					poster: ($this->characterToName($quote->contributor)) ?? $this->config->main->character,
+					dt: $quote->time??time(),
+					msg: $quote->quote,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -597,23 +581,22 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All quotes imported');
 	}
 
-	/** @param stdClass[] $bonuses */
+	/** @param Schema\RaffleBonus[] $bonuses */
 	public function importRaffleBonus(array $bonuses): void {
 		$this->logger->notice('Importing ' . count($bonuses) . ' raffle bonuses');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raffle bonuses');
-			$this->db->table(RaffleController::DB_TABLE)->truncate();
+			$this->db->table(RaffleBonus::getTable())->truncate();
 			foreach ($bonuses as $bonus) {
 				$name = $this->characterToName($bonus->character??null);
 				if (!isset($name)) {
 					continue;
 				}
-				$this->db->table(RaffleController::DB_TABLE)
-					->insert([
-						'name' => $name,
-						'bonus' => $bonus->raffleBonus,
-					]);
+				$this->db->insert(new RaffleBonus(
+					name: $name,
+					bonus: (int)floor($bonus->raffleBonus),
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -625,27 +608,26 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raffle bonuses imported');
 	}
 
-	/** @param stdClass[] $blocks */
+	/** @param Schema\RaidBlock[] $blocks */
 	public function importRaidBlocks(array $blocks): void {
 		$this->logger->notice('Importing ' . count($blocks) . ' raid blocks');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raid blocks');
-			$this->db->table(RaidBlockController::DB_TABLE)->truncate();
+			$this->db->table(RaidBlock::getTable())->truncate();
 			foreach ($blocks as $block) {
-				$name = $this->characterToName($block->character??null);
+				$name = $this->characterToName($block->character);
 				if (!isset($name)) {
 					continue;
 				}
-				$this->db->table(RaidBlockController::DB_TABLE)
-					->insert([
-						'player' => $name,
-						'blocked_from' => $block->blockedFrom,
-						'blocked_by' => ($this->characterToName($block->blockedBy??null)) ?? $this->config->main->character,
-						'reason' => $block->blockedReason ?? 'No reason given',
-						'time' => $block->blockStart ?? time(),
-						'expiration' => $block->blockEnd ?? null,
-					]);
+				$this->db->insert(new RaidBlock(
+					player: $name,
+					blocked_from: $block->blockedFrom->value,
+					blocked_by: ($this->characterToName($block->blockedBy)) ?? $this->config->main->character,
+					reason: $block->blockedReason ?? 'No reason given',
+					time: $block->blockStart ?? time(),
+					expiration: $block->blockEnd,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -657,24 +639,27 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raid blocks imported');
 	}
 
-	/** @param stdClass[] $raids */
+	/** @param Schema\Raid[] $raids */
 	public function importRaids(array $raids): void {
 		$this->logger->notice('Importing ' . count($raids) . ' raids');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raids');
-			$this->db->table(RaidController::DB_TABLE)->truncate();
-			$this->db->table(RaidController::DB_TABLE_LOG)->truncate();
-			$this->db->table(RaidMemberController::DB_TABLE)->truncate();
+			$this->db->table(Raid::getTable())->truncate();
+			$this->db->table(RaidLog::getTable())->truncate();
+			$this->db->table(RaidMember::getTable())->truncate();
 			foreach ($raids as $raid) {
 				$history = $raid->history ?? [];
 				usort(
 					$history,
-					static function (stdClass $o1, stdClass $o2): int {
+					static function (Schema\RaidState $o1, Schema\RaidState $o2): int {
 						return $o1->time <=> $o2->time;
 					}
 				);
-				$lastEntry = end($history);
+				$lastEntry = null;
+				if (count($history) > 0) {
+					$lastEntry = $history[count($history)-1] ?? null;
+				}
 				$entry = new Raid(
 					started: $raid->time ?? time(),
 					started_by: $this->config->main->character,
@@ -708,7 +693,7 @@ class ImportController extends ModuleInstance {
 					$this->db->insert($raiderEntry);
 				}
 				foreach ($history as $state) {
-					$historyEntry->time = $state->time;
+					$historyEntry->time = $state->time ?? time();
 					if (isset($state->raidDescription)) {
 						$historyEntry->description = $state->raidDescription;
 					}
@@ -737,23 +722,22 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raids imported');
 	}
 
-	/** @param stdClass[] $points */
+	/** @param Schema\RaidPointEntry[] $points */
 	public function importRaidPoints(array $points): void {
 		$this->logger->notice('Importing ' . count($points) . ' raid points');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raid points');
-			$this->db->table(RaidPointsController::DB_TABLE)->truncate();
+			$this->db->table(RaidPoints::getTable())->truncate();
 			foreach ($points as $point) {
 				$name = $this->characterToName($point->character??null);
 				if (!isset($name)) {
 					continue;
 				}
-				$entry = new RaidPoints(
+				$this->db->insert(new RaidPoints(
 					username: $name,
-					points: $point->raidPoints,
-				);
-				$this->db->insert($entry);
+					points: (int)floor($point->raidPoints),
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -765,29 +749,28 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raid points imported');
 	}
 
-	/** @param stdClass[] $points */
+	/** @param Schema\RaidPointLog[] $points */
 	public function importRaidPointsLog(array $points): void {
 		$this->logger->notice('Importing ' . count($points) . ' raid point logs');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raid point logs');
-			$this->db->table(RaidPointsController::DB_TABLE_LOG)->truncate();
+			$this->db->table(RaidPointsLog::getTable())->truncate();
 			foreach ($points as $point) {
 				$name = $this->characterToName($point->character??null);
-				if (!isset($name) || $point->raidPoints === 0) {
+				if (!isset($name) || (int)floor($point->raidPoints) === 0) {
 					continue;
 				}
-				$this->db->table(RaidPointsController::DB_TABLE_LOG)
-					->insert([
-						'username' => $name,
-						'delta' => $point->raidPoints,
-						'time' => $point->time ?? time(),
-						'changed_by' => ($this->characterToName($point->givenBy ??null)) ?? $this->config->main->character,
-						'individual' => $point->givenIndividually ?? true,
-						'raid_id' => $point->raidId ?? null,
-						'reason' => $point->reason ?? 'Raid participation',
-						'ticker' => $point->givenByTick ?? false,
-					]);
+				$this->db->insert(new RaidPointsLog(
+					username: $name,
+					delta: (int)floor($point->raidPoints),
+					time: $point->time ?? time(),
+					changed_by: ($this->characterToName($point->givenBy)) ?? $this->config->main->character,
+					individual: $point->givenIndividually ?? true,
+					raid_id: $point->raidId ?? null,
+					reason: $point->reason ?? 'Raid participation',
+					ticker: $point->givenByTick ?? false,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -799,18 +782,17 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raid point logs imported');
 	}
 
-	/** @param stdClass[] $timers */
+	/** @param Schema\Timer[] $timers */
 	public function importTimers(array $timers): void {
-		$table = TimerController::DB_TABLE;
 		$this->logger->notice('Importing ' . count($timers) . ' timers');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all timers');
-			$this->db->table($table)->truncate();
+			$this->db->table(Timer::getTable())->truncate();
 			$timerNum = 1;
 			foreach ($timers as $timer) {
 				$owner = $this->characterToName($timer->createdBy??null);
-				$data = (isset($timer->repeatInterval) && is_int($timer->repeatInterval) && $timer->repeatInterval > 0)
+				$data = isset($timer->repeatInterval)
 					? (string)$timer->repeatInterval
 					: null;
 				$entry = new Timer(
@@ -821,6 +803,7 @@ class ImportController extends ModuleInstance {
 					endtime: $timer->endTime,
 					callback: isset($data) ? 'timercontroller.repeatingTimerCallback' : 'timercontroller.timerCallback',
 					alerts: [],
+					settime: $timer->startTime ?? time(),
 				);
 				foreach ($timer->alerts??[] as $alert) {
 					$alertEntry = new Alert();
@@ -831,20 +814,10 @@ class ImportController extends ModuleInstance {
 				if (!count($entry->alerts)) {
 					$alertEntry = new Alert();
 					$alertEntry->message = "Timer <highlight>{$entry->name}<end> has gone off.";
-					$alertEntry->time = $timer->endtime;
+					$alertEntry->time = $timer->endTime;
 					$entry->alerts []= $alertEntry;
 				}
-				$this->db->table($table)
-					->insert([
-						'name' => $entry->name,
-						'owner' => $entry->owner,
-						'mode' => $entry->mode,
-						'endtime' => $entry->endtime,
-						'settime' => $timer->startTime ?? time(),
-						'callback' => $entry->callback,
-						'data' => $entry->data,
-						'alerts' => json_encode($entry->alerts),
-					]);
+				$this->db->insert($entry);
 				$timerNum++;
 			}
 		} catch (Throwable $e) {
@@ -857,36 +830,35 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All timers imported');
 	}
 
-	/** @param stdClass[] $trackedUsers */
+	/** @param TrackedUser[] $trackedUsers */
 	public function importTrackedCharacters(array $trackedUsers): void {
 		$this->logger->notice('Importing ' . count($trackedUsers) . ' tracked users');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all tracked users');
-			$this->db->table(TrackerController::DB_TABLE)->truncate();
+			$this->db->table(TrackedUser::getTable())->truncate();
+			$this->db->table(Tracking::getTable())->truncate();
 			foreach ($trackedUsers as $trackedUser) {
 				$name = $this->characterToName($trackedUser->character??null);
 				if (!isset($name)) {
 					continue;
 				}
 				$id = $trackedUser->character->id ?? $this->chatBot->getUid($name);
-				if ($id === false) {
+				if ($id === null) {
 					continue;
 				}
-				$this->db->table(TrackerController::DB_TABLE)
-					->insert([
-						'uid' => $id,
-						'name' => $name,
-						'added_by' => ($this->characterToName($trackedUser->addedBy??null)) ?? $this->config->main->character,
-						'added_dt' => $trackedUser->addedTime ?? time(),
-					]);
+				$this->db->insert(new TrackedUser(
+					uid: $id,
+					name: $name,
+					added_by: ($this->characterToName($trackedUser->addedBy??null)) ?? $this->config->main->character,
+					added_dt: $trackedUser->addedTime ?? time(),
+				));
 				foreach ($trackedUser->events??[] as $event) {
-					$this->db->table(TrackerController::DB_TRACKING)
-						->insert([
-							'uid' => $id,
-							'dt' => $event->time,
-							'event' => $event->event,
-						]);
+					$this->db->insert(new Tracking(
+						uid: $id,
+						dt: $event->time,
+						event: $event->event,
+					));
 				}
 			}
 		} catch (Throwable $e) {
@@ -900,15 +872,15 @@ class ImportController extends ModuleInstance {
 	}
 
 	/**
-	 * @param stdClass[]           $categories
-	 * @param array<string,string> $rankMap
+	 * @param Schema\CommentCategory[] $categories
+	 * @param array<string,string>     $rankMap
 	 */
 	public function importCommentCategories(array $categories, array $rankMap): void {
 		$this->logger->notice('Importing ' . count($categories) . ' comment categories');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all user-managed comment categories');
-			$this->db->table('<table:comment_categories>')
+			$this->db->table(CommentCategory::getTable())
 				->where('user_managed', true)
 				->delete();
 			foreach ($categories as $category) {
@@ -918,11 +890,10 @@ class ImportController extends ModuleInstance {
 					name: $category->name,
 					created_by: $createdBy ?? $this->config->main->character,
 					created_at: $category->createdAt ?? time(),
-					min_al_read: $this->getMappedRank($rankMap, $category->minRankToRead) ?? 'mod',
-					min_al_write: $this->getMappedRank($rankMap, $category->minRankToWrite) ?? 'admin',
+					min_al_read: $this->getMappedRank($rankMap, $category->minRankToRead ?? 'mod') ?? 'mod',
+					min_al_write: $this->getMappedRank($rankMap, $category->minRankToWrite ?? 'admin') ?? 'admin',
 				);
 
-				/** @psalm-suppress RiskyTruthyFalsyComparison */
 				$entry->user_managed = isset($oldEntry) ? $oldEntry->user_managed : !($category->systemEntry ?? false);
 				if (isset($oldEntry)) {
 					$this->db->update($entry);
@@ -940,13 +911,13 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All comment categories imported');
 	}
 
-	/** @param stdClass[] $comments */
+	/** @param Schema\Comment[] $comments */
 	public function importComments(array $comments): void {
 		$this->logger->notice('Importing ' . count($comments) . ' comment(s)');
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all comments');
-			$this->db->table('<table:comments>')->truncate();
+			$this->db->table(Comment::getTable())->truncate();
 			foreach ($comments as $comment) {
 				$name = $this->characterToName($comment->targetCharacter);
 				if (!isset($name)) {
@@ -983,30 +954,30 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All comments imported');
 	}
 
-	/** @return array<string,callable> */
+	/** @return array<string,Closure> */
 	protected function getImportMapping(): array {
 		return [
-			'members'           => [$this, 'importMembers'],
-			'alts'              => [$this, 'importAlts'],
-			'auctions'          => [$this, 'importAuctions'],
-			'banlist'           => [$this, 'importBanlist'],
-			'cityCloak'         => [$this, 'importCloak'],
-			'commentCategories' => [$this, 'importCommentCategories'],
-			'comments'          => [$this, 'importComments'],
-			'events'            => [$this, 'importEvents'],
-			'links'             => [$this, 'importLinks'],
-			'news'              => [$this, 'importNews'],
-			'notes'             => [$this, 'importNotes'],
-			'orgNotes'          => [$this, 'importOrgNotes'],
-			'polls'             => [$this, 'importPolls'],
-			'quotes'            => [$this, 'importQuotes'],
-			'raffleBonus'       => [$this, 'importRaffleBonus'],
-			'raidBlocks'        => [$this, 'importRaidBlocks'],
-			'raids'             => [$this, 'importRaids'],
-			'raidPoints'        => [$this, 'importRaidPoints'],
-			'raidPointsLog'     => [$this, 'importRaidPointsLog'],
-			'timers'            => [$this, 'importTimers'],
-			'trackedCharacters' => [$this, 'importTrackedCharacters'],
+			'members'           => $this->importMembers(...),
+			'alts'              => $this->importAlts(...),
+			'auctions'          => $this->importAuctions(...),
+			'banlist'           => $this->importBanlist(...),
+			'cityCloak'         => $this->importCloak(...),
+			'commentCategories' => $this->importCommentCategories(...),
+			'comments'          => $this->importComments(...),
+			'events'            => $this->importEvents(...),
+			'links'             => $this->importLinks(...),
+			'news'              => $this->importNews(...),
+			'notes'             => $this->importNotes(...),
+			'orgNotes'          => $this->importOrgNotes(...),
+			'polls'             => $this->importPolls(...),
+			'quotes'            => $this->importQuotes(...),
+			'raffleBonus'       => $this->importRaffleBonus(...),
+			'raidBlocks'        => $this->importRaidBlocks(...),
+			'raids'             => $this->importRaids(...),
+			'raidPoints'        => $this->importRaidPoints(...),
+			'raidPointsLog'     => $this->importRaidPointsLog(...),
+			'timers'            => $this->importTimers(...),
+			'trackedCharacters' => $this->importTrackedCharacters(...),
 		];
 	}
 
@@ -1047,8 +1018,8 @@ class ImportController extends ModuleInstance {
 		return array_keys($ranks);
 	}
 
-	protected function characterToName(?stdClass $char): ?string {
-		if (!isset($char)) {
+	protected function characterToName(?Schema\Character $char): ?string {
+		if (!isset($char) || !isset($char->id)) {
 			return null;
 		}
 		$name = $char->name ?? $this->chatBot->getName($char->id);
@@ -1060,7 +1031,7 @@ class ImportController extends ModuleInstance {
 		return $name;
 	}
 
-	/** @param stdClass[] $alts */
+	/** @param AltMain[] $alts */
 	protected function importAlts(array $alts): void {
 		$this->logger->notice('Importing alts for ' . count($alts) . ' character(s)');
 		$numImported = 0;
@@ -1089,7 +1060,7 @@ class ImportController extends ModuleInstance {
 		]);
 	}
 
-	protected function importAlt(string $mainName, stdClass $alt): int {
+	protected function importAlt(string $mainName, AltChar $alt): int {
 		$altName = $this->characterToName($alt->alt);
 		if (!isset($altName)) {
 			return 0;
@@ -1110,32 +1081,19 @@ class ImportController extends ModuleInstance {
 		return $mapping[$rank] ?? null;
 	}
 
-	/** @param string[] $channels */
+	/** @param Schema\Channel[] $channels */
 	protected function channelsToMode(array $channels): string {
-		$modes = [
-			'org' => 'guild',
-			'tell' => 'msg',
-			'priv' => 'priv',
-			'discord' => 'discord',
-			'irc' => 'irc',
-		];
-		$result = [];
-		foreach ($channels as $channel) {
-			if (isset($modes[$channel])) {
-				$result []= $modes[$channel];
-			}
-		}
-		return implode(',', $result);
+		return implode(',', array_map(static fn (Schema\Channel $channel) => $channel->toNadybot(), $channels));
 	}
 
-	private function loadAndParseExportFile(string $fileName, CmdContext $sendto): ?stdClass {
+	private function loadAndParseExportFile(string $fileName, CmdContext $sendto): ?Schema\Export {
 		if (!$this->fs->exists($fileName)) {
 			$sendto->reply("No export file <highlight>{$fileName}<end> found.");
 			return null;
 		}
 		$this->logger->notice('Decoding the JSON data');
 		try {
-			$import = json_decode($this->fs->read($fileName));
+			$import = json_decode($this->fs->read($fileName), true);
 		} catch (FilesystemException $e) {
 			$sendto->reply("Error reading <highlight>{$fileName}<end>: ".
 				$e->getMessage() . '.');
@@ -1144,20 +1102,23 @@ class ImportController extends ModuleInstance {
 			$sendto->reply("Error decoding <highlight>{$fileName}<end>.");
 			return null;
 		}
-		if (!($import instanceof stdClass)) {
+		if (!is_array($import)) {
 			$sendto->reply("The file <highlight>{$fileName}<end> is not a valid export file.");
 			return null;
 		}
 		$this->logger->notice('Loading schema data');
-		$schema = Schema::import('https://hodorraid.org/export-schema.json');
-		$this->logger->notice('Validating import data against the schema');
 		$sendto->reply('Validating the import data. This could take a while.');
+		$mapper = new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		);
 		try {
-			$schema->in($import);
-		} catch (Exception $e) {
+			$data = $mapper->hydrateObject(Schema\Export::class, $import);
+		} catch (UnableToHydrateObject $e) {
 			$sendto->reply('The import data is not valid: <highlight>' . $e->getMessage() . '<end>.');
 			return null;
 		}
-		return $import;
+		return $data;
 	}
 }

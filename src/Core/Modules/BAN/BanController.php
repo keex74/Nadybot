@@ -71,9 +71,6 @@ use Throwable;
 	)
 ]
 class BanController extends ModuleInstance {
-	public const DB_TABLE = 'banlist_<myname>';
-	public const DB_TABLE_BANNED_ORGS = 'banned_orgs_<myname>';
-
 	/** Always ban all alts, not just 1 char */
 	#[NCA\Setting\Boolean]
 	public bool $banAllAlts = false;
@@ -122,15 +119,6 @@ class BanController extends ModuleInstance {
 	 * @var array<int,BannedOrg>
 	 */
 	private $orgbanlist = [];
-
-	#[NCA\Setup]
-	public function setup(): void {
-		if ($this->db->schema()->hasTable('players')) {
-			$this->uploadBanlist();
-		}
-
-		$this->uploadOrgBanlist();
-	}
 
 	#[NCA\Event(
 		name: ConnectEvent::EVENT_MASK,
@@ -277,7 +265,7 @@ class BanController extends ModuleInstance {
 			$banlist = array_filter(
 				$banlist,
 				static function (BanEntry $entry) use ($search): bool {
-					return fnmatch($search, $entry->name, \FNM_CASEFOLD);
+					return isset($entry->name) && fnmatch($search, $entry->name, \FNM_CASEFOLD);
 				}
 			);
 		}
@@ -292,6 +280,9 @@ class BanController extends ModuleInstance {
 		}
 		$bans = [];
 		foreach ($banlist as $ban) {
+			if (!isset($ban->name)) {
+				continue;
+			}
 			$blob = "<header2>{$ban->name}<end>\n";
 			if (isset($ban->time)) {
 				$blob .= '<tab>Date: <highlight>' . Util::date($ban->time) . "<end>\n";
@@ -398,7 +389,7 @@ class BanController extends ModuleInstance {
 		defaultStatus: 1
 	)]
 	public function checkTempBan(Event $eventObj): void {
-		$numRows = $this->db->table(self::DB_TABLE)
+		$numRows = $this->db->table(BanEntry::getTable())
 			->whereNotNull('banend')
 			->where('banend', '!=', 0)
 			->where('banend', '<', time())
@@ -408,7 +399,7 @@ class BanController extends ModuleInstance {
 			$this->uploadBanlist();
 		}
 
-		$numRows = $this->db->table(self::DB_TABLE_BANNED_ORGS)
+		$numRows = $this->db->table(BannedOrg::getTable())
 			->whereNotNull('end')
 			->where('end', '<', time())
 			->delete();
@@ -441,15 +432,13 @@ class BanController extends ModuleInstance {
 			$banEnd = time() + $length;
 		}
 
-		$inserted = $this->db->table(self::DB_TABLE)
-			->insert([
-				'charid' => $charId,
-				'admin' => $sender,
-				'time' => time(),
-				'reason' => $reason,
-				'banend' => $banEnd,
-			]);
-
+		$inserted = $this->db->insert(new BanEntry(
+			charid: $charId,
+			admin: $sender,
+			time: time(),
+			reason: $reason,
+			banend: $banEnd,
+		));
 		$this->uploadBanlist();
 
 		$charName = $this->chatBot->getName($charId);
@@ -464,12 +453,12 @@ class BanController extends ModuleInstance {
 		);
 		$this->accessManager->addAudit($audit);
 
-		return $inserted;
+		return $inserted === 1;
 	}
 
 	/** Remove $charId from the banlist */
 	public function remove(int $charId): bool {
-		$deleted = $this->db->table(self::DB_TABLE)
+		$deleted = $this->db->table(BanEntry::getTable())
 			->where('charid', $charId)
 			->delete();
 
@@ -485,14 +474,14 @@ class BanController extends ModuleInstance {
 	public function uploadBanlist(): void {
 		$this->banlist = [];
 
-		$bans = $this->db->table(self::DB_TABLE)
+		$bans = $this->db->table(BanEntry::getTable())
 			->orderBy('time')
 			->asObj(BanEntry::class);
 
 		$bannedUids = $bans->pluck('charid')->toArray();
 
 		/** @var Collection<int,NameHistory> */
-		$names = $this->db->table('banlist_<myname>', 'bl')
+		$names = $this->db->table(BanEntry::getTable(), 'bl')
 			->join('name_history AS nh', 'bl.charid', 'nh.charid')
 			->where('nh.dimension', $this->db->getDim())
 			->orderBy('nh.dt')
@@ -515,7 +504,7 @@ class BanController extends ModuleInstance {
 
 	/** Sync the org-banlist from the database */
 	public function uploadOrgBanlist(): void {
-		$this->db->table(self::DB_TABLE_BANNED_ORGS)
+		$this->db->table(BannedOrg::getTable())
 			->asObj(BannedOrg::class)
 			->each(function (BannedOrg $ban): void {
 				$this->addOrgToBanlist($ban);
@@ -690,7 +679,7 @@ class BanController extends ModuleInstance {
 			return;
 		}
 		$ban = $this->orgbanlist[$orgId];
-		$this->db->table(self::DB_TABLE_BANNED_ORGS)
+		$this->db->table(BannedOrg::getTable())
 			->where('org_id', $orgId)
 			->delete();
 		$context->reply("Removed <highlight>{$ban->org_name}<end> from the banlist.");

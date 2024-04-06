@@ -1386,6 +1386,9 @@ class Nadybot {
 		if ($uid === 0) {
 			return null;
 		}
+		if (!isset($this->aoClient)) {
+			debug_print_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+		}
 		return $this->aoClient->lookupCharacter($uid, $cacheOnly);
 	}
 

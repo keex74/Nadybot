@@ -5,9 +5,9 @@ namespace Nadybot\Modules\EXPORT_MODULE;
 use function Safe\{json_decode, json_encode};
 
 use Amp\File\{FilesystemException};
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection, UnableToSerializeObject};
 use Nadybot\Core\{
 	AccessManager,
-	AdminManager,
 	Attributes as NCA,
 	CmdContext,
 	Config\BotConfig,
@@ -18,52 +18,37 @@ use Nadybot\Core\{
 	DBSchema\Member,
 	Filesystem,
 	ModuleInstance,
-	Modules\BAN\BanController,
 	Modules\PREFERENCES\Preferences,
 	Nadybot,
 };
 use Nadybot\Modules\EVENTS_MODULE\EventModel;
-use Nadybot\Modules\EXPORT_MODULE\Schema\{AltChar, AltMain, Auction, Ban, Character, CloakEntry};
-use Nadybot\Modules\NOTES_MODULE\{OrgNote, OrgNotesController};
+use Nadybot\Modules\NOTES_MODULE\{OrgNote};
 use Nadybot\Modules\{
-	CITY_MODULE\CloakController,
 	CITY_MODULE\OrgCity,
 	COMMENT_MODULE\Comment,
 	COMMENT_MODULE\CommentCategory,
-	GUILD_MODULE\GuildController,
 	GUILD_MODULE\OrgMember,
 	MASSMSG_MODULE\MassMsgController,
 	NEWS_MODULE\News,
 	NEWS_MODULE\NewsConfirmed,
 	NOTES_MODULE\Link,
 	NOTES_MODULE\Note,
-	PRIVATE_CHANNEL_MODULE\PrivateChannelController,
 	QUOTE_MODULE\Quote,
 	RAFFLE_MODULE\RaffleBonus,
-	RAFFLE_MODULE\RaffleController,
-	RAID_MODULE\AuctionController,
 	RAID_MODULE\DBAuction,
 	RAID_MODULE\RaidBlock,
-	RAID_MODULE\RaidBlockController,
-	RAID_MODULE\RaidController,
 	RAID_MODULE\RaidLog,
 	RAID_MODULE\RaidMember,
-	RAID_MODULE\RaidMemberController,
 	RAID_MODULE\RaidPoints,
-	RAID_MODULE\RaidPointsController,
 	RAID_MODULE\RaidPointsLog,
 	RAID_MODULE\RaidRank,
-	RAID_MODULE\RaidRankController,
 	TIMERS_MODULE\TimerController,
 	TRACKER_MODULE\TrackedUser,
-	TRACKER_MODULE\TrackerController,
 	TRACKER_MODULE\Tracking,
 	VOTE_MODULE\Poll,
 	VOTE_MODULE\Vote,
-	VOTE_MODULE\VoteController,
 };
 use Safe\Exceptions\JsonException;
-use stdClass;
 
 /**
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
@@ -119,31 +104,40 @@ class ExportController extends ModuleInstance {
 			$this->fs->createDirectory("{$dataPath}/export", 0700);
 		}
 		$context->reply('Starting export...');
-		$exports = new stdClass();
-		$exports->alts = $this->exportAlts();
-		$exports->auctions = $this->exportAuctions();
-		$exports->banlist = $this->exportBanlist();
-		$exports->cityCloak = $this->exportCloak();
-		$exports->commentCategories = $this->exportCommentCategories();
-		$exports->comments = $this->exportComments();
-		$exports->events = $this->exportEvents();
-		$exports->links = $this->exportLinks();
-		$exports->members = $this->exportMembers();
-		$exports->news = $this->exportNews();
-		$exports->notes = $this->exportNotes();
-		$exports->orgNotes = $this->exportOrgNotes();
-		$exports->polls = $this->exportPolls();
-		$exports->quotes = $this->exportQuotes();
-		$exports->raffleBonus = $this->exportRaffleBonus();
-		$exports->raidBlocks = $this->exportRaidBlocks();
-		$exports->raids = $this->exportRaidLogs();
-		$exports->raidPoints = $this->exportRaidPoints();
-		$exports->raidPointsLog = $this->exportRaidPointsLog();
-		$exports->timers = $this->exportTimers();
-		$exports->trackedCharacters = $this->exportTrackedCharacters();
+		$exports = new Schema\Export(
+			alts: $this->exportAlts(),
+			auctions: $this->exportAuctions(),
+			banlist: $this->exportBanlist(),
+			cityCloak: $this->exportCloak(),
+			commentCategories: $this->exportCommentCategories(),
+			comments: $this->exportComments(),
+			events: $this->exportEvents(),
+			links: $this->exportLinks(),
+			members: $this->exportMembers(),
+			news: $this->exportNews(),
+			notes: $this->exportNotes(),
+			orgNotes: $this->exportOrgNotes(),
+			polls: $this->exportPolls(),
+			quotes: $this->exportQuotes(),
+			raffleBonus: $this->exportRaffleBonus(),
+			raidBlocks: $this->exportRaidBlocks(),
+			raids: $this->exportRaidLogs(),
+			raidPoints: $this->exportRaidPoints(),
+			raidPointsLog: $this->exportRaidPointsLog(),
+			timers: $this->exportTimers(),
+			trackedCharacters: $this->exportTrackedCharacters(),
+		);
+		$mapper = new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		);
 		try {
-			$output = json_encode($exports, \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES);
-		} catch (JsonException $e) {
+			$output = json_encode(
+				self::stripNull($mapper->serializeObject($exports)),
+				\JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES
+			);
+		} catch (JsonException | UnableToSerializeObject $e) {
 			$context->reply('There was an error exporting the data: ' . $e->getMessage());
 			return;
 		}
@@ -156,39 +150,39 @@ class ExportController extends ModuleInstance {
 		$context->reply("The export was successfully saved in {$fileName}.");
 	}
 
-	protected function toChar(?string $name, ?int $uid=null): Character {
+	protected function toChar(?string $name, ?int $uid=null): Schema\Character {
 		$id = $uid;
 		if (!isset($id) && isset($name)) {
 			$id = $this->chatBot->getUid($name);
 		}
-		return new Character(
+		return new Schema\Character(
 			name: $name,
 			id: is_int($id) ? $id : null,
 		);
 	}
 
-	/** @return AltMain[] */
+	/** @return Schema\AltMain[] */
 	protected function exportAlts(): array {
 		$alts = $this->db->table('alts')->asObj(Alt::class);
 
-		/** @var array<string,AltChar[]> */
+		/** @var array<string,Schema\AltChar[]> */
 		$data = [];
 		foreach ($alts as $alt) {
 			if ($alt->main === $alt->alt) {
 				continue;
 			}
 			$data[$alt->main] ??= [];
-			$data[$alt->main] []= new AltChar(
+			$data[$alt->main] []= new Schema\AltChar(
 				alt: $this->toChar($alt->alt),
 				validatedByMain: $alt->validated_by_main ?? true,
 				validatedByAlt: $alt->validated_by_alt ?? true,
 			);
 		}
 
-		/** @var AltMain[] */
+		/** @var Schema\AltMain[] */
 		$result = [];
 		foreach ($data as $main => $altInfo) {
-			$result []= new AltMain(
+			$result []= new Schema\AltMain(
 				main: $this->toChar($main),
 				alts: $altInfo,
 			);
@@ -197,75 +191,80 @@ class ExportController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Member[] */
 	protected function exportMembers(): array {
 		$exported = [];
 
-		/** @var stdClass[] */
+		/** @var Schema\Member[] */
 		$result = [];
 
 		/** @var Member[] */
-		$members = $this->db->table(PrivateChannelController::DB_TABLE)
+		$members = $this->db->table(Member::getTable())
 			->asObj(Member::class);
 		foreach ($members as $member) {
-			$result []= $this->toClass([
-				'character' => $this->toChar($member->name),
-				'autoInvite' => (bool)$member->autoinv,
-				'joinedTime' => $member->joined,
-			]);
+			$result []= new Schema\Member(
+				rank: 'member',
+				character: $this->toChar($member->name),
+				autoInvite: (bool)$member->autoinv,
+				joinedTime: $member->joined,
+			);
 			$exported[$member->name] = true;
 		}
 
 		/** @var RaidRank[] */
-		$members = $this->db->table(RaidRankController::DB_TABLE)
+		$members = $this->db->table(RaidRank::getTable())
 			->asObj(RaidRank::class);
 		foreach ($members as $member) {
 			if (isset($exported[$member->name])) {
 				continue;
 			}
-			$result []= $this->toClass([
-				'character' => $this->toChar($member->name),
-			]);
+			$result []= new Schema\Member(
+				character: $this->toChar($member->name),
+				rank: 'member',
+			);
 			$exported[$member->name] = true;
 		}
-		$members = $this->db->table(GuildController::DB_TABLE)
+		$members = $this->db->table(OrgMember::getTable())
 			->where('mode', '!=', 'del')
 			->asObj(OrgMember::class);
 		foreach ($members as $member) {
 			if (isset($exported[$member->name])) {
 				continue;
 			}
-			$result []= $this->toClass([
-				'character' => $this->toChar($member->name),
-				'autoInvite' => false,
-			]);
+			$result []= new Schema\Member(
+				rank: 'member',
+				character: $this->toChar($member->name),
+				autoInvite: false,
+			);
 			$exported[$member->name] = true;
 		}
 
 		/** @var Admin[] */
-		$members = $this->db->table(AdminManager::DB_TABLE)
+		$members = $this->db->table(Admin::getTable())
 			->asObj(Admin::class);
 		foreach ($members as $member) {
 			if (isset($exported[$member->name])) {
 				continue;
 			}
-			$result []= $this->toClass([
-				'character' => $this->toChar($member->name),
-				'autoInvite' => false,
-			]);
+			$result []= new Schema\Member(
+				rank: 'member',
+				character: $this->toChar($member->name),
+				autoInvite: false,
+			);
 			$exported[$member->name] = true;
 		}
 		foreach ($this->config->general->superAdmins as $superAdmin) {
 			if (!isset($exported[$superAdmin])) {
-				$result []= $this->toClass([
-					'character' => $this->toChar($superAdmin),
-					'autoInvite' => false,
-					'rank' => 'superadmin',
-				]);
+				$result []= new Schema\Member(
+					character: $this->toChar($superAdmin),
+					autoInvite: false,
+					rank: 'superadmin',
+				);
 			}
 		}
 		foreach ($result as &$datum) {
-			$datum->rank ??= $this->accessManager->getSingleAccessLevel($datum->character->name);
+			assert(isset($datum->character->name));
+			$datum->rank = $this->accessManager->getSingleAccessLevel($datum->character->name);
 			$logonMessage = $this->preferences->get($datum->character->name, 'logon_msg');
 			$logoffMessage = $this->preferences->get($datum->character->name, 'logoff_msg');
 			$massMessages = $this->preferences->get($datum->character->name, MassMsgController::PREF_MSGS);
@@ -286,27 +285,27 @@ class ExportController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Quote[] */
 	protected function exportQuotes(): array {
 		return $this->db->table('quote')
 			->orderBy('id')
 			->asObj(Quote::class)
-			->map(function (Quote $quote): stdClass {
-				return $this->toClass([
-					'quote' => $quote->msg,
-					'time' => $quote->dt,
-					'contributor' => $this->toChar($quote->poster),
-				]);
+			->map(function (Quote $quote): Schema\Quote {
+				return new Schema\Quote(
+					quote: $quote->msg,
+					time: $quote->dt,
+					contributor: $this->toChar($quote->poster),
+				);
 			})->toArray();
 	}
 
-	/** @return Ban[] */
+	/** @return Schema\Ban[] */
 	protected function exportBanlist(): array {
-		return $this->db->table(BanController::DB_TABLE)
+		return $this->db->table(BanEntry::getTable())
 			->asObj(BanEntry::class)
-			->map(function (BanEntry $banEntry): Ban {
+			->map(function (BanEntry $banEntry): Schema\Ban {
 				$name = $this->chatBot->getName($banEntry->charid);
-				$ban = new Ban(
+				$ban = new Schema\Ban(
 					character: $this->toChar($name, $banEntry->charid),
 					bannedBy: $this->toChar($banEntry->admin),
 					banReason: $banEntry->reason,
@@ -319,12 +318,12 @@ class ExportController extends ModuleInstance {
 			})->toArray();
 	}
 
-	/** @return CloakEntry[] */
+	/** @return Schema\CloakEntry[] */
 	protected function exportCloak(): array {
-		return $this->db->table(CloakController::DB_TABLE)
+		return $this->db->table(OrgCity::getTable())
 			->asObj(OrgCity::class)
-			->map(function (OrgCity $cloakEntry): CloakEntry {
-				return new CloakEntry(
+			->map(function (OrgCity $cloakEntry): Schema\CloakEntry {
+				return new Schema\CloakEntry(
 					character: $this->toChar(rtrim($cloakEntry->player, '*')),
 					manualEntry: str_ends_with($cloakEntry->player, '*'),
 					cloakOn: ($cloakEntry->action === 'on'),
@@ -333,77 +332,74 @@ class ExportController extends ModuleInstance {
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Poll[] */
 	protected function exportPolls(): array {
-		return $this->db->table(VoteController::DB_POLLS)
+		return $this->db->table(Poll::getTable())
 			->asObj(Poll::class)
-			->map(function (Poll $poll): stdClass {
-				$export = $this->toClass([
-					'author' => $this->toChar($poll->author),
-					'question' => $poll->question,
-					'answers' => [],
-					'startTime' => $poll->started,
-					'endTime' => $poll->started + $poll->duration,
-				]);
+			->map(function (Poll $poll): Schema\Poll {
+				$export = new Schema\Poll(
+					author: $this->toChar($poll->author),
+					question: $poll->question,
+					answers: [],
+					startTime: $poll->started,
+					endTime: $poll->started + $poll->duration,
+				);
 				$answers = [];
 				foreach (json_decode($poll->possible_answers, false) as $answer) {
-					$answers[$answer] ??= $this->toClass([
-						'answer' => $answer,
-						'votes' => [],
-					]);
+					$answers[$answer] ??= new Schema\Answer(
+						answer: $answer,
+						votes: [],
+					);
 				}
 
 				/** @var Vote[] */
-				$votes = $this->db->table(VoteController::DB_VOTES)
+				$votes = $this->db->table(Vote::getTable())
 					->where('poll_id', $poll->id)
 					->asObj(Vote::class);
 				foreach ($votes as $vote) {
 					if (!isset($vote->answer)) {
 						continue;
 					}
-					$answers[$vote->answer] ??= $this->toClass([
-						'answer' => $vote->answer,
-						'votes' => [],
-					]);
-					$answer = $this->toClass([
-						'character' => $this->toChar($vote->author),
-					]);
-					if (isset($vote->time)) {
-						$answer->voteTime = $vote->time;
-					}
-					$answers[$vote->answer]->votes []= $answer;
+					$answers[$vote->answer] ??= new Schema\Answer(
+						answer: $vote->answer,
+						votes: [],
+					);
+					$answers[$vote->answer]->votes []= new Schema\Vote(
+						character: $this->toChar($vote->author),
+						voteTime: $vote->time,
+					);
 				}
 				$export->answers = array_values($answers);
 				return $export;
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\RaffleBonus[] */
 	protected function exportRaffleBonus(): array {
-		return $this->db->table(RaffleController::DB_TABLE)
+		return $this->db->table(RaffleBonus::getTable())
 			->orderBy('name')
 			->asObj(RaffleBonus::class)
-			->map(function (RaffleBonus $bonus): stdClass {
-				return $this->toClass([
-					'character' => $this->toChar($bonus->name),
-					'raffleBonus' => $bonus->bonus,
-				]);
+			->map(function (RaffleBonus $bonus): Schema\RaffleBonus {
+				return new Schema\RaffleBonus(
+					character: $this->toChar($bonus->name),
+					raffleBonus: $bonus->bonus,
+				);
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\RaidBlock[] */
 	protected function exportRaidBlocks(): array {
-		return $this->db->table(RaidBlockController::DB_TABLE)
+		return $this->db->table(RaidBlock::getTable())
 			->orderBy('player')
 			->asObj(RaidBlock::class)
-			->map(function (RaidBlock $block): stdClass {
-				$entry = $this->toClass([
-					'character' => $this->toChar($block->player),
-					'blockedFrom' => $block->blocked_from,
-					'blockedBy' => $this->toChar($block->blocked_by),
-					'blockedReason' => $block->reason,
-					'blockStart' => $block->time,
-				]);
+			->map(function (RaidBlock $block): Schema\RaidBlock {
+				$entry = new Schema\RaidBlock(
+					character: $this->toChar($block->player),
+					blockedFrom: Schema\RaidBlockType::from($block->blocked_from),
+					blockedBy: $this->toChar($block->blocked_by),
+					blockedReason: $block->reason,
+					blockStart: $block->time,
+				);
 				if (isset($block->expiration)) {
 					$entry->blockEnd = $block->expiration;
 				}
@@ -415,47 +411,47 @@ class ExportController extends ModuleInstance {
 		return ($value === $nullvalue) ? null : $value;
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Raid[] */
 	protected function exportRaidLogs(): array {
 		/** @var RaidLog[] */
-		$data = $this->db->table(RaidController::DB_TABLE_LOG)
+		$data = $this->db->table(RaidLog::getTable())
 			->orderBy('raid_id')
 			->asObj(RaidLog::class)
 			->toArray();
 
-		/** @var stdClass[] */
+		/** @var array<string,Schema\Raid> */
 		$raids = [];
 		foreach ($data as $raid) {
-			$raids[$raid->raid_id] ??= $this->toClass([
-				'raidId' => $raid->raid_id,
-				'time' => $raid->time,
-				'raidDescription' => $raid->description,
-				'raidLocked' => $raid->locked,
-				'raidAnnounceInterval' => $raid->announce_interval,
-				'raiders' => [],
-				'history' => [],
-			]);
+			$raids[$raid->raid_id] ??= new Schema\Raid(
+				raidId: $raid->raid_id,
+				time: $raid->time,
+				raidDescription: $raid->description,
+				raidLocked: $raid->locked,
+				raidAnnounceInterval: $raid->announce_interval,
+				raiders: [],
+				history: [],
+			);
 			if ($raid->seconds_per_point > 0) {
 				$raids[$raid->raid_id]->raidSecondsPerPoint = $raid->seconds_per_point;
 			}
-			$raids[$raid->raid_id]->history[] = $this->toClass([
-				'time' => $raid->time,
-				'raidDescription' => $raid->description,
-				'raidLocked' => $raid->locked,
-				'raidAnnounceInterval' => $raid->announce_interval,
-				'raidSecondsPerPoint' => $this->nullIf($raid->seconds_per_point),
-			]);
+			$raids[$raid->raid_id]->history[] = new Schema\RaidState(
+				time: $raid->time,
+				raidDescription: $raid->description,
+				raidLocked: $raid->locked,
+				raidAnnounceInterval: $raid->announce_interval,
+				raidSecondsPerPoint: $this->nullIf($raid->seconds_per_point),
+			);
 		}
 
 		/** @var RaidMember[] */
-		$data = $this->db->table(RaidMemberController::DB_TABLE)
+		$data = $this->db->table(RaidMember::getTable())
 			->asObj(RaidMember::class)
 			->toArray();
 		foreach ($data as $raidMember) {
-			$raider = $this->toClass([
-				'character' => $this->toChar($raidMember->player),
-				'joinTime' => $raidMember->joined,
-			]);
+			$raider = new Schema\Raider(
+				character: $this->toChar($raidMember->player),
+				joinTime: $raidMember->joined,
+			);
 			if (isset($raidMember->left)) {
 				$raider->leaveTime = $raidMember->left;
 			}
@@ -464,35 +460,35 @@ class ExportController extends ModuleInstance {
 		return array_values($raids);
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\RaidPointEntry[] */
 	protected function exportRaidPoints(): array {
-		return $this->db->table(RaidPointsController::DB_TABLE)
+		return $this->db->table(RaidPoints::getTable())
 			->orderBy('username')
 			->asObj(RaidPoints::class)
-			->map(function (RaidPoints $datum): stdClass {
-				return $this->toClass([
-					'character' => $this->toChar($datum->username),
-					'raidPoints' => $datum->points,
-				]);
+			->map(function (RaidPoints $datum): Schema\RaidPointEntry {
+				return new Schema\RaidPointEntry(
+					character: $this->toChar($datum->username),
+					raidPoints: (float)$datum->points,
+				);
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\RaidPointLog[] */
 	protected function exportRaidPointsLog(): array {
-		return $this->db->table(RaidPointsController::DB_TABLE_LOG)
+		return $this->db->table(RaidPointsLog::getTable())
 			->orderBy('time')
 			->orderBy('username')
 			->asObj(RaidPointsLog::class)
-			->map(function (RaidPointsLog $datum): stdClass {
-				$raidLog = $this->toClass([
-					'character' => $this->toChar($datum->username),
-					'raidPoints' => (float)$datum->delta,
-					'time' => $datum->time,
-					'givenBy' => $this->toChar($datum->changed_by),
-					'reason' => $datum->reason,
-					'givenByTick' => $datum->ticker,
-					'givenIndividually' => $datum->individual,
-				]);
+			->map(function (RaidPointsLog $datum): Schema\RaidPointLog {
+				$raidLog = new Schema\RaidPointLog(
+					character: $this->toChar($datum->username),
+					raidPoints: (float)$datum->delta,
+					time: $datum->time,
+					givenBy: $this->toChar($datum->changed_by),
+					reason: $datum->reason,
+					givenByTick: $datum->ticker,
+					givenIndividually: $datum->individual,
+				);
 				if (isset($datum->raid_id)) {
 					$raidLog->raidId = $datum->raid_id;
 				}
@@ -500,52 +496,53 @@ class ExportController extends ModuleInstance {
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Timer[] */
 	protected function exportTimers(): array {
 		$timers = $this->timerController->getAllTimers();
 		$result = [];
 		foreach ($timers as $timer) {
-			$data = $this->toClass([
-				'startTime' => $timer->settime,
-				'timerName' => $timer->name,
-				'endTime' => $timer->endtime,
-				'createdBy' => $this->toChar($timer->owner),
-				'channels' => array_diff(explode(',', str_replace(['guild', 'both', 'msg'], ['org', 'priv,org', 'tell'], $timer->mode??'')), ['']),
-				'alerts' => [],
-			]);
+			$channels = array_diff(explode(',', str_replace(['guild', 'both', 'msg'], ['org', 'priv,org', 'tell'], $timer->mode??'')), ['']);
+			$data = new Schema\Timer(
+				startTime: $timer->settime,
+				timerName: $timer->name,
+				endTime: $timer->endtime ?? $timer->settime,
+				createdBy: $this->toChar($timer->owner),
+				channels: array_map(Schema\Channel::fromNadybot(...), $channels),
+				alerts: [],
+			);
 			if (isset($timer->data) && (int)$timer->data > 0) {
 				$data->repeatInterval = (int)$timer->data;
 			}
 			foreach ($timer->alerts as $alert) {
-				$data->alerts []= $this->toClass([
-					'time' => $alert->time,
-					'message' => $alert->message,
-				]);
+				$data->alerts []= new Schema\Alert(
+					time: $alert->time,
+					message: $alert->message,
+				);
 			}
 			$result []= $data;
 		}
 		return $result;
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\TrackedCharacter[] */
 	protected function exportTrackedCharacters(): array {
 		/** @var TrackedUser[] */
-		$users = $this->db->table(TrackerController::DB_TABLE)
+		$users = $this->db->table(TrackedUser::getTable())
 			->orderBy('added_dt')
 			->asObj(TrackedUser::class)
 			->toArray();
 		$result = [];
 		foreach ($users as $user) {
-			$result[$user->uid] = $this->toClass([
-				'character' => $this->toChar($user->name, $user->uid),
-				'addedTime' => $user->added_dt,
-				'addedBy' => $this->toChar($user->added_by),
-				'events' => [],
-			]);
+			$result[$user->uid] = new Schema\TrackedCharacter(
+				character: $this->toChar($user->name, $user->uid),
+				addedTime: $user->added_dt,
+				addedBy: $this->toChar($user->added_by),
+				events: [],
+			);
 		}
 
 		/** @var Tracking[] */
-		$events = $this->db->table(TrackerController::DB_TRACKING)
+		$events = $this->db->table(Tracking::getTable())
 			->orderBy('dt')
 			->asObj(Tracking::class)
 			->toArray();
@@ -553,24 +550,26 @@ class ExportController extends ModuleInstance {
 			if (!isset($result[$event->uid])) {
 				continue;
 			}
-			$result[$event->uid]->events []= $this->toClass([
-				'time' => $event->dt,
-				'event' => $event->event,
-			]);
+			$result[$event->uid]->events []= new Schema\TrackerEvent(
+				time: $event->dt,
+				event: $event->event,
+			);
 		}
 		return array_values($result);
 	}
 
-	/** @return Auction[] */
+	/** @return Schema\Auction[] */
 	protected function exportAuctions(): array {
 		/** @var DBAuction[] */
-		$auctions = $this->db->table(AuctionController::DB_TABLE)
+		$auctions = $this->db->table(DBAuction::getTable())
 			->orderBy('id')
 			->asObj(DBAuction::class)
 			->toArray();
+
+		/** @var Schema\Auction[] $result */
 		$result = [];
 		foreach ($auctions as $auction) {
-			$auctionObj = new Auction(
+			$auctionObj = new Schema\Auction(
 				item: $auction->item,
 				startedBy: $this->toChar($auction->auctioneer),
 				timeEnd: $auction->end,
@@ -585,24 +584,23 @@ class ExportController extends ModuleInstance {
 			$result []= $auctionObj;
 		}
 
-		/** @var Auction[] $result */
 		return $result;
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\News[] */
 	protected function exportNews(): array {
 		return $this->db->table('news')
 			->asObj(News::class)
-			->map(function (News $topic): stdClass {
-				$data = $this->toClass([
-					'author' => $this->toChar($topic->name),
-					'uuid' => $topic->uuid,
-					'addedTime' => $topic->time,
-					'news' => $topic->news,
-					'pinned' => $topic->sticky,
-					'deleted' => $topic->deleted,
-					'confirmedBy' => [],
-				]);
+			->map(function (News $topic): Schema\News {
+				$data = new Schema\News(
+					author: $this->toChar($topic->name),
+					uuid: $topic->uuid,
+					addedTime: $topic->time,
+					news: $topic->news,
+					pinned: $topic->sticky,
+					deleted: $topic->deleted,
+					confirmedBy: [],
+				);
 
 				/** @var NewsConfirmed[] */
 				$confirmations = $this->db->table('news_confirmed')
@@ -610,26 +608,26 @@ class ExportController extends ModuleInstance {
 					->asObj(NewsConfirmed::class)
 					->toArray();
 				foreach ($confirmations as $confirmation) {
-					$data->confirmedBy []= (object)[
-						'character' => $this->toChar($confirmation->player),
-						'confirmationTime' => $confirmation->time,
-					];
+					$data->confirmedBy []= new Schema\NewsConfirmation(
+						character: $this->toChar($confirmation->player),
+						confirmationTime: $confirmation->time,
+					);
 				}
 				return $data;
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Note[] */
 	protected function exportNotes(): array {
 		return $this->db->table('notes')
 			->asObj(Note::class)
-			->map(function (Note $note): stdClass {
-				$data = $this->toClass([
-					'owner' => $this->toChar($note->owner),
-					'author' => $this->toChar($note->added_by),
-					'creationTime' => $note->dt,
-					'text' => $note->note,
-				]);
+			->map(function (Note $note): Schema\Note {
+				$data = new Schema\Note(
+					owner: $this->toChar($note->owner),
+					author: $this->toChar($note->added_by),
+					creationTime: $note->dt,
+					text: $note->note,
+				);
 				if ($note->reminder === Note::REMIND_ALL) {
 					$data->remind = 'all';
 				} elseif ($note->reminder === Note::REMIND_SELF) {
@@ -639,96 +637,98 @@ class ExportController extends ModuleInstance {
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\OrgNote[] */
 	protected function exportOrgNotes(): array {
-		return $this->db->table(OrgNotesController::DB_TABLE)
+		return $this->db->table(OrgNote::getTable())
 			->asObj(OrgNote::class)
-			->map(function (OrgNote $note): stdClass {
-				return $this->toClass([
-					'author' => $this->toChar($note->added_by),
-					'creationTime' => $note->added_on,
-					'text' => $note->note,
-					'uuid' => $note->uuid,
-				]);
+			->map(function (OrgNote $note): Schema\OrgNote {
+				return new Schema\OrgNote(
+					author: $this->toChar($note->added_by),
+					creationTime: $note->added_on,
+					text: $note->note,
+					uuid: $note->uuid,
+				);
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Event[] */
 	protected function exportEvents(): array {
 		return $this->db->table('events')
 			->asObj(EventModel::class)
-			->map(function (EventModel $event): stdClass {
+			->map(function (EventModel $event): Schema\Event {
 				$attendees = array_values(array_diff(explode(',', $event->event_attendees ?? ''), ['']));
 
-				$data = $this->toClass([
-					'createdBy' => $this->toChar($event->submitter_name),
-					'creationTime' => $event->time_submitted,
-					'name' => $event->event_name,
-					'attendees' => [],
-				]);
-				if (isset($event->event_date)) {
-					$data->startTime = $event->event_date;
-				}
-				if (isset($event->event_desc)) {
-					$data->description = $event->event_desc;
-				}
-				foreach ($attendees as $attendee) {
-					$data->attendees []= $this->toChar($attendee);
-				}
+				$data = new Schema\Event(
+					createdBy: $this->toChar($event->submitter_name),
+					creationTime: $event->time_submitted,
+					name: $event->event_name,
+					startTime: $event->event_date,
+					description: $event->event_desc,
+					attendees: array_map($this->toChar(...), $attendees),
+				);
 
 				return $data;
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Link[] */
 	protected function exportLinks(): array {
 		return $this->db->table('links')
 			->asObj(Link::class)
-			->map(function (Link $link): stdClass {
-				return $this->toClass([
-					'createdBy' => $this->toChar($link->name),
-					'creationTime' => $link->dt,
-					'url' => $link->website,
-					'description' => $link->comments,
-				]);
+			->map(function (Link $link): Schema\Link {
+				return new Schema\Link(
+					createdBy: $this->toChar($link->name),
+					creationTime: $link->dt,
+					url: $link->website,
+					description: $link->comments,
+				);
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\CommentCategory[] */
 	protected function exportCommentCategories(): array {
 		return $this->db->table('<table:comment_categories>')
 			->asObj(CommentCategory::class)
-			->map(function (CommentCategory $category): stdClass {
-				return $this->toClass([
-					'name' => $category->name,
-					'createdBy' => $this->toChar($category->created_by),
-					'createdAt' => $category->created_at,
-					'minRankToRead' => $category->min_al_read,
-					'minRankToWrite' => $category->min_al_write,
-					'systemEntry' => !$category->user_managed,
-				]);
+			->map(function (CommentCategory $category): Schema\CommentCategory {
+				return new Schema\CommentCategory(
+					name: $category->name,
+					createdBy: $this->toChar($category->created_by),
+					createdAt: $category->created_at,
+					minRankToRead: $category->min_al_read,
+					minRankToWrite: $category->min_al_write,
+					systemEntry: !$category->user_managed,
+				);
 			})->toArray();
 	}
 
-	/** @return stdClass[] */
+	/** @return Schema\Comment[] */
 	protected function exportComments(): array {
 		return $this->db->table('<table:comments>')
 			->asObj(Comment::class)
-			->map(function (Comment $comment): stdClass {
-				return $this->toClass([
-					'comment' => $comment->comment,
-					'targetCharacter' => $this->toChar($comment->character),
-					'createdBy' => $this->toChar($comment->created_by),
-					'createdAt' => $comment->created_at,
-					'category' => $comment->category,
-				]);
+			->map(function (Comment $comment): Schema\Comment {
+				return new Schema\Comment(
+					comment: $comment->comment,
+					targetCharacter: $this->toChar($comment->character),
+					createdBy: $this->toChar($comment->created_by),
+					createdAt: $comment->created_at,
+					category: $comment->category,
+				);
 			})->toArray();
 	}
 
-	/** @param array<array-key,mixed> $data */
-	private function toClass(array $data): stdClass {
-		/** @var stdClass */
-		$result = (object)$data;
-		return $result;
+	/**
+	 * @param array<string,mixed> $data
+	 *
+	 * @return array<string,mixed>
+	 */
+	private static function stripNull(array $data): array {
+		foreach ($data as $key => $value) {
+			if (is_null($value)) {
+				unset($data[$key]);
+			} elseif (is_array($value)) {
+				$data[$key] = self::stripNull($value);
+			}
+		}
+		return $data;
 	}
 }

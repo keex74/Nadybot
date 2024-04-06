@@ -270,7 +270,7 @@ class GuildController extends ModuleInstance {
 		$alts = $altInfo->getAllAlts();
 
 		/** @var Collection<OrgMember> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(OrgMember::getTable())
 			->whereIn('name', $alts)
 			->where('mode', '!=', 'del')
 			->orderByDesc('logged_off')

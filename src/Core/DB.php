@@ -420,7 +420,7 @@ class DB {
 
 	/** Insert a DBRow $row into the database */
 	public function insert(DBRow $row, ?string $table=null): int {
-		$table ??= $row::getTable();
+		$table ??= $row::tryGetTable();
 		if (!isset($table)) {
 			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): $table missing');
 		}
@@ -470,7 +470,7 @@ class DB {
 	 * @return int Number of updates records
 	 */
 	public function update(DBRow $row, null|string|array $key=null): int {
-		$table = $row->getTable();
+		$table = $row->tryGetTable();
 		if ($table === null) {
 			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): unable to derive a table to update');
 		}

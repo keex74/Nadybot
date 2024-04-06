@@ -16,6 +16,9 @@ class Table {
 	}
 
 	public function getName(): string {
-		return $this->shared === Shared::Yes ? $this->name : "{$this->name}_<myname>";
+		if ($this->shared === Shared::Yes || str_starts_with($this->name, '<')) {
+			return $this->name;
+		}
+		return "{$this->name}_<myname>";
 	}
 }

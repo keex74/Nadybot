@@ -2,14 +2,14 @@
 
 namespace Nadybot\Modules\NEWS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'news_confirmed', shared: NCA\DB\Shared::Yes)]
+#[DB\Table(name: 'news_confirmed', shared: DB\Shared::Yes)]
 class NewsConfirmed extends DBRow {
-	/** @param ?int $id The internal ID of this news entry */
+	/** @param int $id The confirmed news entry */
 	public function __construct(
-		#[NCA\DB\AutoInc] public ?int $id,
-		public string $player,
+		#[DB\PK] public int $id,
+		#[DB\PK] public string $player,
 		public int $time,
 	) {
 	}

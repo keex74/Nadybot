@@ -5,6 +5,7 @@ namespace Nadybot\Core;
 use Nadybot\Core\Attributes\DB\Table;
 use ReflectionClass;
 use Stringable;
+use ValueError;
 
 class DBRow implements Stringable {
 	use StringableTrait;
@@ -29,12 +30,25 @@ class DBRow implements Stringable {
 		return null;
 	}
 
-	public static function getTable(): ?string {
+	/**
+	 * Get the name of the table represented by this class
+	 *
+	 * @throws ValueError if there is no table defined
+	 */
+	public static function getTable(): string {
 		$refClass = new ReflectionClass(static::class);
 		$tableDefs = $refClass->getAttributes(Table::class);
 		if (!count($tableDefs)) {
-			return null;
+			throw new ValueError('The class ' . static::class . " doesn't have a table defined.");
 		}
 		return $tableDefs[0]->newInstance()->getName();
+	}
+
+	public static function tryGetTable(): ?string {
+		try {
+			return self::getTable();
+		} catch (\Throwable) {
+		}
+		return null;
 	}
 }
