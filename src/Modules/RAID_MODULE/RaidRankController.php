@@ -204,11 +204,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 		if (isset($this->ranks[$who]) && $this->ranks[$who]->rank > $rank) {
 			$action = 'demoted';
 		}
-		$this->db->table(RaidRank::getTable())
-			->upsert(
-				['rank' => $rank, 'name' => $who],
-				['name']
-			);
+		$this->db->upsert(new RaidRank(name: $who, rank: $rank));
 
 		if (isset($oldRank)) {
 			$audit = new Audit(

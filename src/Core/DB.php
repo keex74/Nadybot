@@ -478,6 +478,52 @@ class DB {
 		return $this->table($table)->insertGetId($data, $sequence);
 	}
 
+	public function upsert(DBRow $row, ?string $table=null): int {
+		$table ??= $row::tryGetTable();
+		if (!isset($table)) {
+			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): $table missing');
+		}
+		$refClass = new ReflectionClass($row);
+		$props = $refClass->getProperties(ReflectionProperty::IS_PUBLIC);
+
+		/** @var array<string,mixed> */
+		$data = [];
+		$pks = [];
+		foreach ($props as $prop) {
+			$colName = $prop->name;
+			if (count($colProp = $prop->getAttributes(NCA\DB\ColName::class))) {
+				$colName = $colProp[0]->newInstance()->col;
+			}
+			if (count($prop->getAttributes(NCA\DB\Ignore::class))) {
+				continue;
+			}
+			if (count($prop->getAttributes(NCA\DB\AutoInc::class))) {
+				if ($prop->getValue($row) === null) {
+					continue;
+				}
+				$pks []= $colName;
+			} elseif (count($prop->getAttributes(NCA\DB\PK::class))) {
+				$pks []= $colName;
+			}
+			if (!$prop->isInitialized($row)) {
+				continue;
+			}
+			$data[$colName] = $prop->getValue($row);
+			if (count($attrs = $prop->getAttributes(NCA\DB\MapWrite::class))) {
+				/** @var NCA\DB\MapWrite */
+				$mapper = $attrs[0]->newInstance();
+				$data[$colName] = $mapper->map($data[$colName]);
+			} elseif ($data[$colName] instanceof DateTimeInterface) {
+				$data[$colName] = $data[$colName]->getTimestamp();
+			} elseif ($data[$colName] instanceof BackedEnum) {
+				$data[$colName] = $data[$colName]->value;
+			}
+		}
+		$table = $this->formatSql($table);
+		$update = array_values(array_diff(array_keys($data), $pks));
+		return $this->table($table)->upsert($data, $pks, $update);
+	}
+
 	/**
 	 * Update a DBRow $row in the database table $table, using property $key in the where
 	 *

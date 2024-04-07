@@ -17,7 +17,7 @@ class LastOnline extends DBRow {
 		#[NCA\DB\PK] public int $uid,
 		public string $name,
 		public int $dt,
-		#[NCA\DB\Ignore] public string $main,
+		#[NCA\DB\Ignore] public ?string $main=null,
 	) {
 	}
 }

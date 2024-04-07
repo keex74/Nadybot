@@ -39,7 +39,7 @@ class SubcommandManager {
 		string $command,
 		string $accessLevel,
 		string $parentCommand,
-		?string $description='none',
+		string $description='none',
 		?int $defaultStatus=null
 	): void {
 		$command = strtolower($command);
@@ -77,20 +77,15 @@ class SubcommandManager {
 			'command' => $command,
 			'file' => $filename,
 		]);
-		$this->db->table(CmdCfg::getTable())
-			->upsert(
-				[
-					'module' => $module,
-					'verify' => 1,
-					'file' => $filename,
-					'description' => $description,
-					'cmd' => $command,
-					'dependson' => $parentCommand,
-					'cmdevent' => 'subcmd',
-				],
-				['cmd'],
-				['module', 'verify', 'file', 'description']
-			);
+		$this->db->upsert(new CmdCfg(
+			module: $module,
+			verify: 1,
+			file: $filename,
+			description: $description,
+			cmd: $command,
+			dependson: $parentCommand,
+			cmdevent: 'subcmd',
+		));
 		if (isset($this->chatBot->existing_subcmds[$command])) {
 			return;
 		}

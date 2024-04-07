@@ -16,6 +16,7 @@ use Nadybot\Core\DBSchema\{
 	CmdCfg,
 	EventCfg,
 	HlpCfg,
+	LastOnline,
 	Setting,
 };
 use Nadybot\Core\Event\{
@@ -995,15 +996,11 @@ class Nadybot {
 			'name' => $charName,
 			'id' => $userId,
 		]);
-		$this->db->table('last_online')
-			->upsert(
-				[
-					'uid' => $userId,
-					'name' => $charName,
-					'dt' => time(),
-				],
-				['uid'],
-			);
+		$this->db->upsert(new LastOnline(
+			uid: $userId,
+			name: $charName,
+			dt: time(),
+		));
 	}
 
 	public function getWorkerId(string $worker): int {

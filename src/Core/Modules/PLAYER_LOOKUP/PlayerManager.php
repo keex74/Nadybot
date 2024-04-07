@@ -286,34 +286,10 @@ class PlayerManager extends ModuleInstance {
 	}
 
 	public function update(Player $char): void {
-		$this->db->table('players')
-			->upsert(
-				[
-					'charid' =>        $char->charid,
-					'firstname' =>     $char->firstname,
-					'name' =>          $char->name,
-					'lastname' =>      $char->lastname,
-					'level' =>         $char->level,
-					'breed' =>         $char->breed,
-					'gender' =>        $char->gender,
-					'faction' =>       $char->faction,
-					'profession' =>    $char->profession?->value,
-					'prof_title' =>    $char->prof_title,
-					'ai_rank' =>       $char->ai_rank,
-					'ai_level' =>      $char->ai_level,
-					'guild_id' =>      $char->guild_id ?? 0,
-					'guild' =>         $char->guild,
-					'guild_rank' =>    $char->guild_rank,
-					'guild_rank_id' => $char->guild_rank_id,
-					'dimension' =>     $char->dimension,
-					'head_id' =>       $char->head_id,
-					'pvp_rating' =>    $char->pvp_rating,
-					'pvp_title' =>     $char->pvp_title,
-					'source' =>        $char->source,
-					'last_update' =>   $char->last_update ?? time(),
-				],
-				['name', 'dimension']
-			);
+		$save = clone $char;
+		$save->last_update ??= time();
+		$this->logger->notice('Upserting player {name}', ['name' => $char->name]);
+		$this->db->upsert($save);
 	}
 
 	public function getInfo(Player $whois, bool $showFirstAndLastName=true): string {

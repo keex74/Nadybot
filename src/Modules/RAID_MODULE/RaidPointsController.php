@@ -651,14 +651,7 @@ class RaidPointsController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			$newPoints = $altsPoints + ($mainPoints??0);
-			$this->db->table(RaidPoints::getTable())
-				->upsert(
-					[
-						'username' => $event->main,
-						'points' => $newPoints,
-					],
-					['username']
-				);
+			$this->db->upsert(new RaidPoints(username: $event->main, points: $newPoints));
 			$this->db->table(RaidPoints::getTable())
 				->where('username', $event->alt)
 				->delete();
@@ -807,11 +800,7 @@ class RaidPointsController extends ModuleInstance {
 		if ($oldPoints === null) {
 			return;
 		}
-		$this->db->table(RaidPoints::getTable())
-			->upsert(
-				['username' => $event->main, 'points' => $oldPoints],
-				['username']
-			);
+		$this->db->upsert(new RaidPoints(username: $event->main, points: $oldPoints));
 		$this->db->table(RaidPoints::getTable())
 			->where('username', $event->alt)
 			->delete();

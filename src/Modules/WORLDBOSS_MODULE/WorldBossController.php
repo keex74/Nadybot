@@ -621,19 +621,19 @@ class WorldBossController extends ModuleInstance {
 			$vulnerable += $mobData[static::INTERVAL] + $mobData[static::IMMORTAL];
 		}
 		$vulnerable += time();
-		$data = [
-			'mob_name' => $mobName,
-			'timer' => $mobData[static::INTERVAL] ?? null,
-			'spawn' => $vulnerable - $mobData[static::IMMORTAL],
-			'killable' => $vulnerable,
-			'time_submitted' => time(),
-			'submitter_name' => $sender->name,
-		];
+		$data = new WorldBossTimer(
+			mob_name: $mobName,
+			timer: $mobData[static::INTERVAL] ?? null,
+			spawn: $vulnerable - $mobData[static::IMMORTAL],
+			killable: $vulnerable,
+			time_submitted: time(),
+			submitter_name: $sender->name,
+		);
+		$this->db->upsert($data);
 		$this->logger->notice('Update for {mob_name} stored in DB', [
 			'mob_name' => $mobName,
 			'data' => $data,
 		]);
-		$this->db->table(WorldBossTimer::getTable())->upsert($data, ['mob_name']);
 		$this->reloadWorldBossTimers();
 		return true;
 	}

@@ -201,19 +201,14 @@ class CommandManager implements MessageEmitter {
 		);
 		$this->cmdDefaultPermissions[$command] = $defaultPerms;
 		try {
-			$this->db->table(CmdCfg::getTable())
-				->upsert(
-					[
-						'module' => $module,
-						'verify' => 1,
-						'file' => $filename,
-						'description' => $description,
-						'cmd' => $command,
-						'cmdevent' => 'cmd',
-					],
-					['cmd'],
-					['module', 'verify', 'file', 'description']
-				);
+			$this->db->upsert(new CmdCfg(
+				module: $module,
+				verify: 1,
+				file: $filename,
+				description: $description,
+				cmd: $command,
+				cmdevent: 'cmd',
+			));
 		} catch (SQLException $e) {
 			$this->logger->error("Error registering method '{method}' for command '{command}': {error}", [
 				'method' => $handler,

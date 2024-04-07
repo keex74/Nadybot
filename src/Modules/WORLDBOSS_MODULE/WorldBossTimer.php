@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
-use Nadybot\Core\Attributes\DB\{PK, Table};
+use Nadybot\Core\Attributes\DB\{Ignore, PK, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'worldboss_timers')]
@@ -16,8 +16,8 @@ class WorldBossTimer extends DBRow {
 		public string $submitter_name,
 		?int $time_submitted=null,
 		public ?int $timer=null,
-		public ?int $next_spawn=null,
-		public ?int $next_killable=null,
+		#[Ignore] public ?int $next_spawn=null,
+		#[Ignore] public ?int $next_killable=null,
 	) {
 		$this->time_submitted = $time_submitted ?? time();
 	}

@@ -401,8 +401,10 @@ class GuildController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$this->db->table(OrgMember::getTable())
-			->upsert(['name' => $name, 'mode' => 'add'], 'name');
+		$this->db->upsert(new OrgMember(
+			name: $name,
+			mode: 'add'
+		));
 
 		if ($this->buddylistManager->isOnline($name)) {
 			$this->db->insert(new DBOnline(
