@@ -4,9 +4,9 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	DB,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
 };
@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 #[NCA\Migration(order: 2021_07_22_07_29_16)]
 class CreateRouteTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = MessageHub::DB_TABLE_ROUTES;
+		$table = Route::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('source', 100);

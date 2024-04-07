@@ -9,8 +9,6 @@ use Nadybot\Core\DBSchema\RouteHopFormat;
 use Nadybot\Core\{Config\BotConfig, Registry, Safe};
 
 class Source {
-	public const DB_TABLE = 'route_hop_format_<myname>';
-
 	public const RELAY = 'relay';
 	public const ORG = 'aoorg';
 	public const PUB = 'aopub';

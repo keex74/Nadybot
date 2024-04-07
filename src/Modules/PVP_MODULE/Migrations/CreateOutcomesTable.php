@@ -5,13 +5,13 @@ namespace Nadybot\Modules\PVP_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\PVP_MODULE\NotumWarsController;
+use Nadybot\Modules\PVP_MODULE\{DBOutcome};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2023_03_03_20_58_12)]
 class CreateOutcomesTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = NotumWarsController::DB_OUTCOMES;
+		$table = DBOutcome::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->unsignedSmallInteger('playfield_id');
 			$table->unsignedSmallInteger('site_id');

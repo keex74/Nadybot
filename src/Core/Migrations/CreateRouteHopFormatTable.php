@@ -4,6 +4,7 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\RouteHopFormat;
 use Nadybot\Core\Routing\Source;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
@@ -11,7 +12,7 @@ use Psr\Log\LoggerInterface;
 #[NCA\Migration(order: 2021_08_21_10_39_01)]
 class CreateRouteHopFormatTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = Source::DB_TABLE;
+		$table = RouteHopFormat::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('hop', 50);

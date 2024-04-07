@@ -234,7 +234,7 @@ class PermissionSetMappingController extends ModuleInstance {
 		}
 
 		/** @var ?Setting $row */
-		$row = $this->db->table(SettingManager::DB_TABLE)
+		$row = $this->db->table(Setting::getTable())
 			->where('name', 'symbol')
 			->asObj(Setting::class)
 			->first();

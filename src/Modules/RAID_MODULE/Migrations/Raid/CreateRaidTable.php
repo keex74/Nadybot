@@ -5,13 +5,13 @@ namespace Nadybot\Modules\RAID_MODULE\Migrations\Raid;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\RAID_MODULE\RaidController;
+use Nadybot\Modules\RAID_MODULE\{Raid};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_27_09_43_32)]
 class CreateRaidTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = RaidController::DB_TABLE;
+		$table = Raid::getTable();
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->id('raid_id')->change();

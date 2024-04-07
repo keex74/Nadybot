@@ -4,14 +4,14 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\DBSchema\Setting;
-use Nadybot\Core\{CommandManager, DB, SchemaMigration, SettingManager};
+use Nadybot\Core\DBSchema\{CmdPermSetMapping, Setting};
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_01_23_08_11_44)]
 class CreatePermissionSetMapping implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = CommandManager::DB_TABLE_MAPPING;
+		$table = CmdPermSetMapping::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->string('permission_set', 50);
@@ -90,7 +90,7 @@ class CreatePermissionSetMapping implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

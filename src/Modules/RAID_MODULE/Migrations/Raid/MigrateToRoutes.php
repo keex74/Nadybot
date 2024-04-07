@@ -3,13 +3,12 @@
 namespace Nadybot\Modules\RAID_MODULE\Migrations\Raid;
 
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\{Route, RouteHopFormat};
 use Nadybot\Core\{
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
@@ -21,21 +20,21 @@ class MigrateToRoutes implements SchemaMigration {
 			'destination' => Source::PRIV . '(' . $db->getMyname() . ')',
 			'two_way' => false,
 		];
-		$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+		$db->table(Route::getTable())->insert($route);
 
 		$format = [
 			'render' => false,
 			'hop' => 'raid',
 			'format' => '%s',
 		];
-		$db->table(Source::DB_TABLE)->insert($format);
+		$db->table(RouteHopFormat::getTable())->insert($format);
 
 		$raidAnnounceRaidmemberLoc = $this->getSetting($db, 'raid_announce_raidmember_loc');
 		if (!isset($raidAnnounceRaidmemberLoc)) {
 			return;
 		}
 		$raidInformMemberBeingAdded = ((int)($raidAnnounceRaidmemberLoc->value??3) & 2) === 2;
-		$db->table(SettingManager::DB_TABLE)
+		$db->table(Setting::getTable())
 			->where('name', $raidAnnounceRaidmemberLoc->name)
 			->update([
 				'name' => 'raid_inform_member_being_added',
@@ -45,7 +44,7 @@ class MigrateToRoutes implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

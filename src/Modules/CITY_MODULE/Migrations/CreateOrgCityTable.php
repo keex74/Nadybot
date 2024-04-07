@@ -5,13 +5,13 @@ namespace Nadybot\Modules\CITY_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\CITY_MODULE\CloakController;
+use Nadybot\Modules\CITY_MODULE\{OrgCity};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_13_47_33)]
 class CreateOrgCityTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = CloakController::DB_TABLE;
+		$table = OrgCity::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

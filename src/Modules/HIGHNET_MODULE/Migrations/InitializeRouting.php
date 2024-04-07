@@ -2,8 +2,8 @@
 
 namespace Nadybot\Modules\HIGHNET_MODULE\Migrations;
 
-use Nadybot\Core\DBSchema\{RouteHopColor, RouteHopFormat};
-use Nadybot\Core\{Attributes as NCA, Config\BotConfig, DB, MessageHub, SchemaMigration};
+use Nadybot\Core\DBSchema\{Route, RouteHopColor, RouteHopFormat};
+use Nadybot\Core\{Attributes as NCA, Config\BotConfig, DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2023_05_31_12_53_12)]
@@ -19,14 +19,14 @@ class InitializeRouting implements SchemaMigration {
 				'destination' => $hop,
 				'two_way' => false,
 			];
-			$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+			$db->table(Route::getTable())->insert($route);
 
 			$route = [
 				'source' => $hop,
 				'destination' => 'highnet',
 				'two_way' => false,
 			];
-			$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+			$db->table(Route::getTable())->insert($route);
 		}
 
 		$db->insert(new RouteHopFormat(

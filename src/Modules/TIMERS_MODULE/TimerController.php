@@ -55,8 +55,6 @@ use Psr\Log\LoggerInterface;
 	)
 ]
 class TimerController extends ModuleInstance implements MessageEmitter {
-	public const DB_TABLE = 'timers_<myname>';
-
 	/** Times to display timer alerts */
 	#[NCA\Setting\Text(
 		options: ['1h 15m 1m'],
@@ -117,7 +115,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 	/** @return Collection<Timer> */
 	public function readAllTimers(): Collection {
 		/** @var Collection<Timer> */
-		$data = $this->db->table(static::DB_TABLE)
+		$data = $this->db->table(Timer::getTable())
 			->select(['id', 'name', 'owner', 'mode', 'endtime', 'settime', 'origin'])
 			->addSelect(['callback', 'data', 'alerts'])
 			->asObj(Timer::class);
@@ -537,7 +535,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$event = new TimerStartEvent(timer: $timer);
 
 		if (isset($id)) {
-			$this->db->table(static::DB_TABLE)
+			$this->db->table(Timer::getTable())
 				->insert([
 					'id' => $id,
 					'name' => $name,
@@ -552,7 +550,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 				]);
 			$timer->id = $id;
 		} else {
-			$timer->id = $this->db->table(static::DB_TABLE)
+			$timer->id = $this->db->table(Timer::getTable())
 				->insertGetId([
 					'name' => $name,
 					'owner' => $owner,
@@ -573,13 +571,13 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 
 	public function remove(string|int $name): void {
 		if (is_string($name)) {
-			$this->db->table(static::DB_TABLE)
+			$this->db->table(Timer::getTable())
 				->whereIlike('name', $name)
 				->delete();
 			unset($this->timers[strtolower($name)]);
 			return;
 		}
-		$this->db->table(static::DB_TABLE)->delete($name);
+		$this->db->table(Timer::getTable())->delete($name);
 		foreach ($this->timers as $tName => $timer) {
 			if ($timer->id === $name) {
 				unset($this->timers[$tName]);

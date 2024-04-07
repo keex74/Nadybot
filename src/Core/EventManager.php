@@ -21,7 +21,6 @@ use Revolt\EventLoop;
 
 #[NCA\Instance]
 class EventManager {
-	public const DB_TABLE = 'eventcfg_<myname>';
 	public const PACKET_TYPE_REGEX = '/packet\(\d+\)/';
 	public const TIMER_EVENT_REGEX = '/timer\(([0-9a-z]+)\)/';
 
@@ -107,7 +106,7 @@ class EventManager {
 
 		try {
 			if (isset($this->chatBot->existing_events[$type][$filename])) {
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(EventCfg::getTable())
 					->where('type', $type)
 					->where('file', $filename)
 					->where('module', $module)
@@ -127,7 +126,7 @@ class EventManager {
 			} else {
 				$status = $defaultStatus;
 			}
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(EventCfg::getTable())
 					->insert([
 						'module' => $module,
 						'type' => $type,
@@ -448,7 +447,7 @@ class EventManager {
 	public function loadEvents(): void {
 		$this->logger->info('Loading enabled events');
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(EventCfg::getTable())
 			->where('status', 1)
 			->asObj(EventCfg::class)
 			->each(function (EventCfg $row): void {

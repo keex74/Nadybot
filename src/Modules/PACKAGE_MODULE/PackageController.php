@@ -47,7 +47,6 @@ use ZipArchive;
 	)
 ]
 class PackageController extends ModuleInstance {
-	public const DB_TABLE = 'package_files_<myname>';
 	public const EXTRA = 2;
 	public const BUILT_INT = 1;
 	public const UNINST = 0;
@@ -144,7 +143,7 @@ class PackageController extends ModuleInstance {
 			$installLink = '';
 			$installedVersion = null;
 			if ($package->state === static::EXTRA) {
-				$installedVersion = (string)$this->db->table(self::DB_TABLE)
+				$installedVersion = (string)$this->db->table(PackageFile::getTable())
 					->where('module', $package->name)
 					->max('version');
 			}
@@ -224,7 +223,7 @@ class PackageController extends ModuleInstance {
 			return;
 		}
 		if ($packages[0]->state === static::EXTRA) {
-			$installedVersion = (string)$this->db->table(self::DB_TABLE)
+			$installedVersion = (string)$this->db->table(PackageFile::getTable())
 				->where('module', $packages[0]->name)
 				->max('version');
 		}
@@ -564,7 +563,7 @@ class PackageController extends ModuleInstance {
 	 * the module directory itself
 	 */
 	public function removePackageInstallation(PackageAction $cmd, string $targetDir): bool {
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(PackageFile::getTable())
 			->where('module', $cmd->package);
 		$query->orderByColFunc('LENGTH', 'file', 'desc');
 
@@ -637,7 +636,7 @@ class PackageController extends ModuleInstance {
 
 	/** Scan for and add all files of $module into the database */
 	private function scanExtraModule(string $targetDir, string $module): void {
-		$exists = $this->db->table(self::DB_TABLE)
+		$exists = $this->db->table(PackageFile::getTable())
 			->where('module', $module)
 			->exists();
 		if ($exists) {
@@ -662,7 +661,7 @@ class PackageController extends ModuleInstance {
 			if (substr($relPath, 0, 2) === '..') {
 				continue;
 			}
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(PackageFile::getTable())
 				->insert([
 					'module' => $module,
 					'version' => $version ?? '',
@@ -767,7 +766,7 @@ class PackageController extends ModuleInstance {
 			return 'This package is not compatible with Nadybot.';
 		}
 		if ($packages[0]->state === static::EXTRA) {
-			$installedVersion = (string)$this->db->table(self::DB_TABLE)
+			$installedVersion = (string)$this->db->table(PackageFile::getTable())
 				->where('module', $packages[0]->name)
 				->max('version');
 		}
@@ -977,7 +976,7 @@ class PackageController extends ModuleInstance {
 		}
 		$this->removePackageInstallation($cmd, $targetDir);
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(PackageFile::getTable())
 			->where('module', $cmd->package)
 			->delete();
 		$this->installAndRegisterZip($zip, $cmd, $targetDir);
@@ -1043,12 +1042,11 @@ class PackageController extends ModuleInstance {
 				continue;
 			}
 			$this->logger->notice('unzip -> {file}', ['file' => $targetFile]);
-			$this->db->table(self::DB_TABLE)
-				->insert([
-					'module' => $cmd->package,
-					'version' => $cmd->version,
-					'file' => "{$cmd->package}/" . substr($index, strlen($subDir)),
-				]);
+			$this->db->insert(new PackageFile(
+				module: $cmd->package,
+				version: (string)$cmd->version,
+				file: "{$cmd->package}/" . substr($index, strlen($subDir)),
+			));
 		}
 	}
 

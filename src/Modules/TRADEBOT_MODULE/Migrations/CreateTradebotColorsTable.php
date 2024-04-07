@@ -5,13 +5,13 @@ namespace Nadybot\Modules\TRADEBOT_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\TRADEBOT_MODULE\TradebotController;
+use Nadybot\Modules\TRADEBOT_MODULE\{TradebotColors};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_28_08_21_30)]
 class CreateTradebotColorsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = TradebotController::DB_TABLE;
+		$table = TradebotColors::getTable();
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->id('id')->change();

@@ -3,6 +3,7 @@
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Migrations;
 
 use Exception;
+use Nadybot\Core\DBSchema\RouteHopColor;
 use Nadybot\Core\Modules\DISCORD\DiscordAPIClient;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -16,9 +17,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SchemaMigration,
-	SettingManager,
 };
-
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -80,7 +79,7 @@ class MigrateToRoutes implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();
@@ -106,7 +105,7 @@ class MigrateToRoutes implements SchemaMigration {
 			'tag_color' => $tag,
 			'text_color' => $text,
 		];
-		$db->table(MessageHub::DB_TABLE_COLORS)->insert($spec);
+		$db->table(RouteHopColor::getTable())->insert($spec);
 	}
 
 	protected function addRoute(DB $db, string $from, string $to, bool $relayCommands): void {
@@ -115,7 +114,7 @@ class MigrateToRoutes implements SchemaMigration {
 			destination: $to,
 			two_way: true,
 		);
-		$route->id = $db->table(MessageHub::DB_TABLE_ROUTES)->insertGetId([
+		$route->id = $db->table(Route::getTable())->insertGetId([
 			'source' => $route->source,
 			'destination' => $route->destination,
 			'two_way' => $route->two_way,
@@ -125,7 +124,7 @@ class MigrateToRoutes implements SchemaMigration {
 				route_id: $route->id,
 				modifier: 'if-not-command',
 			);
-			$mod->id = $db->table(MessageHub::DB_TABLE_ROUTE_MODIFIER)->insertGetId([
+			$mod->id = $db->table(RouteModifier::getTable())->insertGetId([
 				'route_id' => $mod->route_id,
 				'modifier' => $mod->modifier,
 			]);

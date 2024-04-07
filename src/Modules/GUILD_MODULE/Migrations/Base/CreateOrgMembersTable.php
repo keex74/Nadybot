@@ -5,13 +5,13 @@ namespace Nadybot\Modules\GUILD_MODULE\Migrations\Base;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\GUILD_MODULE\GuildController;
+use Nadybot\Modules\GUILD_MODULE\{OrgMember};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_04_52_14)]
 class CreateOrgMembersTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = GuildController::DB_TABLE;
+		$table = OrgMember::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

@@ -5,13 +5,13 @@ namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordSlashCommandController;
+use Nadybot\Modules\DISCORD_GATEWAY_MODULE\{DiscordSlashCommand};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_05_12_13_27_49)]
 class CreateSlashCommandTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = DiscordSlashCommandController::DB_SLASH_TABLE;
+		$table = DiscordSlashCommand::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->string('cmd', 50)->unique();

@@ -5,13 +5,13 @@ namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordGatewayCommandHandler;
+use Nadybot\Modules\DISCORD_GATEWAY_MODULE\{DiscordMapping};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_19_11_22)]
 class CreateDiscordMappingTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = DiscordGatewayCommandHandler::DB_TABLE;
+		$table = DiscordMapping::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

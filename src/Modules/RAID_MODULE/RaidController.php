@@ -81,8 +81,6 @@ use Safe\DateTimeImmutable;
 	NCA\EmitsMessages('raid', 'stop'),
 ]
 class RaidController extends ModuleInstance {
-	public const DB_TABLE = 'raid_<myname>';
-	public const DB_TABLE_LOG = 'raid_log_<myname>';
 	public const CMD_RAID_MANAGE = 'raid manage';
 	public const CMD_RAID_TICKER = 'raid change ticker';
 
@@ -383,7 +381,7 @@ class RaidController extends ModuleInstance {
 	/** Try to resume a raid that was already running when the bot shut down */
 	public function resumeRaid(): void {
 		/** @var ?Raid */
-		$lastRaid = $this->db->table(self::DB_TABLE)
+		$lastRaid = $this->db->table(Raid::getTable())
 			->orderByDesc('raid_id')
 			->limit(1)
 			->asObj(Raid::class)
@@ -393,7 +391,7 @@ class RaidController extends ModuleInstance {
 		}
 
 		/** @var ?RaidLog */
-		$lastRaidLog = $this->db->table(self::DB_TABLE_LOG)
+		$lastRaidLog = $this->db->table(RaidLog::getTable())
 			->where('raid_id', $lastRaid->raid_id)
 			->orderByDesc('time')
 			->limit(1)
@@ -723,8 +721,8 @@ class RaidController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('history')] string $action
 	): void {
-		$query = $this->db->table(self::DB_TABLE, 'r')
-			->join(RaidPointsController::DB_TABLE_LOG . ' AS p', 'r.raid_id', 'p.raid_id')
+		$query = $this->db->table(Raid::getTable(), 'r')
+			->join(RaidPointsLog::getTable() . ' AS p', 'r.raid_id', 'p.raid_id')
 			->where('p.individual', false)
 			->orWhere('p.ticker', true)
 			->groupBy('r.raid_id', 'r.started', 'r.stopped')
@@ -770,22 +768,22 @@ class RaidController extends ModuleInstance {
 		int $raidId
 	): void {
 		/** @var ?Raid */
-		$raid = $this->db->table(self::DB_TABLE)
+		$raid = $this->db->table(Raid::getTable())
 			->where('raid_id', $raidId)
 			->asObj(Raid::class)->first();
 		if ($raid === null) {
 			$context->reply("The raid <highlight>{$raidId}<end> doesn't exist.");
 			return;
 		}
-		$query = $this->db->table(RaidPointsController::DB_TABLE_LOG)
+		$query = $this->db->table(RaidPointsLog::getTable())
 			->where('raid_id', $raidId)
 			->where('individual', false)
 			->groupBy('username')
 			->select('username');
 		$query->addSelect($query->colFunc('SUM', 'delta', 'delta'));
 
-		$noPoints = $this->db->table(RaidMemberController::DB_TABLE, 'rm')
-			->leftJoin(RaidPointsController::DB_TABLE_LOG . ' as l', static function (JoinClause $join): void {
+		$noPoints = $this->db->table(RaidMember::getTable(), 'rm')
+			->leftJoin(RaidPointsLog::getTable() . ' as l', static function (JoinClause $join): void {
 				$join->on('rm.raid_id', 'l.raid_id')
 					->on('rm.player', 'l.username');
 			})
@@ -828,7 +826,7 @@ class RaidController extends ModuleInstance {
 		PCharacter $char
 	): void {
 		/** @var ?Raid */
-		$raid = $this->db->table(self::DB_TABLE)
+		$raid = $this->db->table(Raid::getTable())
 			->where('raid_id', $raidId)
 			->asObj(Raid::class)
 			->first();
@@ -838,17 +836,17 @@ class RaidController extends ModuleInstance {
 		}
 
 		/** @var Collection<RaidPointsLog> */
-		$logs = $this->db->table(RaidPointsController::DB_TABLE_LOG)
+		$logs = $this->db->table(RaidPointsLog::getTable())
 			->where('raid_id', $raidId)
 			->where('username', $char())
 			->asObj(RaidPointsLog::class);
-		$joined = $this->db->table(RaidMemberController::DB_TABLE)
+		$joined = $this->db->table(RaidMember::getTable())
 			->where('raid_id', $raidId)
 			->where('player', $char())
 			->whereNotNull('joined')
 			->select('joined AS time');
 		$joined->selectRaw('1' . $joined->as('status'));
-		$left = $this->db->table(RaidMemberController::DB_TABLE)
+		$left = $this->db->table(RaidMember::getTable())
 			->where('raid_id', $raidId)
 			->where('player', $char())
 			->whereNotNull('left')
@@ -977,7 +975,7 @@ class RaidController extends ModuleInstance {
 
 	/** Log to the database whenever something of the raid changes */
 	public function logRaidChanges(Raid $raid): void {
-		$this->db->table(self::DB_TABLE_LOG)
+		$this->db->table(RaidLog::getTable())
 			->insert([
 				'raid_id' => $raid->raid_id,
 				'description' => $raid->description,
@@ -1073,7 +1071,7 @@ class RaidController extends ModuleInstance {
 			$this->raid = $raid;
 			return;
 		}
-		$raid->raid_id = $this->db->table(self::DB_TABLE)
+		$raid->raid_id = $this->db->table(Raid::getTable())
 			->insertGetId([
 				'description' => $raid->description,
 				'seconds_per_point' => $raid->seconds_per_point,
@@ -1100,7 +1098,7 @@ class RaidController extends ModuleInstance {
 		$raid = $this->raid;
 		$raid->stopped = time();
 		$raid->stopped_by = $sender;
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(Raid::getTable())
 			->where('raid_id', $raid->raid_id)
 			->update([
 				'stopped' => $raid->stopped,
@@ -1193,7 +1191,7 @@ class RaidController extends ModuleInstance {
 		}
 		$this->logger->notice('Removing non-raiding bot members');
 		// Get a list of the main chars of everyone who's raided in the given timeframe
-		$activeMains = $this->db->table(RaidMemberController::DB_TABLE)
+		$activeMains = $this->db->table(RaidMember::getTable())
 			->where('joined', '>', time() - $this->raidDemoteMembersInterval)
 			->select('player')
 			->distinct()

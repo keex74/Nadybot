@@ -2,24 +2,20 @@
 
 namespace Nadybot\Core\Migrations;
 
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_08_28_08_13_07)]
 class ConvertCmdMgrErrorToMsg implements SchemaMigration {
-	#[NCA\Inject]
-	private MessageHub $messageHub;
-
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = $this->messageHub::DB_TABLE_ROUTES;
+		$table = Route::getTable();
 		$errToOrg = $this->getSetting($db, 'access_denied_notify_guild');
 		$errToPriv = $this->getSetting($db, 'access_denied_notify_priv');
 		$toOrg = isset($errToOrg) ? ($errToOrg->value === '1') : true;
@@ -45,7 +41,7 @@ class ConvertCmdMgrErrorToMsg implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

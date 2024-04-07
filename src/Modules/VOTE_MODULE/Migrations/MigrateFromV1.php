@@ -5,8 +5,7 @@ namespace Nadybot\Modules\VOTE_MODULE\Migrations;
 use function Safe\json_encode;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-
-use Nadybot\Modules\VOTE_MODULE\VoteController;
+use Nadybot\Modules\VOTE_MODULE\{Poll, Vote, VoteController};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_28_08_33_08)]
@@ -23,7 +22,7 @@ class MigrateFromV1 implements SchemaMigration {
 			->get()
 			->toArray();
 		foreach ($oldPolls as $oldPoll) {
-			$id = $db->table(VoteController::DB_POLLS)->insertGetId([
+			$id = $db->table(Poll::getTable())->insertGetId([
 				'author' => (string)$oldPoll->author,
 				'question' => (string)$oldPoll->question,
 				'possible_answers' => json_encode(explode(VoteController::DELIMITER, (string)$oldPoll->answer)),
@@ -36,7 +35,7 @@ class MigrateFromV1 implements SchemaMigration {
 				->whereNull('duration')
 				->get()->toArray();
 			foreach ($oldVotes as $oldVote) {
-				if (!$db->table(VoteController::DB_VOTES)->insert([
+				if (!$db->table(Vote::getTable())->insert([
 					'poll_id' => $id,
 					'author' => (string)$oldVote->author,
 					'answer' => (string)$oldVote->answer,

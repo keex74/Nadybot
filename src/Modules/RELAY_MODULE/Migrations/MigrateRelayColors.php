@@ -2,9 +2,9 @@
 
 namespace Nadybot\Modules\RELAY_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\CmdCfg;
 use Nadybot\Core\{
 	Attributes as NCA,
-	CommandManager,
 	DB,
 	DBSchema\RouteHopColor,
 	DBSchema\Setting,
@@ -32,7 +32,7 @@ class MigrateRelayColors implements SchemaMigration {
 			$this->migrateAllianceRelayModuleColors($db);
 		}
 
-		if ($db->table(CommandManager::DB_TABLE)
+		if ($db->table(CmdCfg::getTable())
 			->where('module', 'ALLIANCE_RELAY_MODULE')
 			->update(['status' => 0])) {
 			$logger->warning(
@@ -44,7 +44,7 @@ class MigrateRelayColors implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

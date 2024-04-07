@@ -4,13 +4,14 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{CommandAlias, DB, SchemaMigration};
+use Nadybot\Core\DBSchema\CmdAlias;
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_23_09_06_08)]
 class CreateCmdAliasTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = CommandAlias::DB_TABLE;
+		$table = CmdAlias::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

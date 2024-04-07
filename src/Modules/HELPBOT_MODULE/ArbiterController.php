@@ -41,8 +41,6 @@ class ArbiterController extends ModuleInstance {
 	public const BS = 'bs';
 	public const CYCLE_LENGTH = 3_628_800;
 
-	public const DB_TABLE = 'icc_arbiter';
-
 	#[NCA\Inject]
 	private Text $text;
 
@@ -57,7 +55,7 @@ class ArbiterController extends ModuleInstance {
 		$time ??= time();
 
 		/** @var ?ICCArbiter */
-		$entry = $this->db->table(static::DB_TABLE)
+		$entry = $this->db->table(ICCArbiter::getTable())
 			->where('type', $type)
 			->asObj(ICCArbiter::class)
 			->first();
@@ -148,7 +146,7 @@ class ArbiterController extends ModuleInstance {
 		}
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(static::DB_TABLE)->truncate();
+			$this->db->table(ICCArbiter::getTable())->truncate();
 			for ($i = 0; $i < 3; $i++) {
 				$arbStart = (new DateTimeImmutable())->setTimestamp($start);
 				$arbEnd = (new DateTimeImmutable())->setTimestamp($end);

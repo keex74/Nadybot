@@ -430,7 +430,7 @@ class WhoisController extends ModuleInstance {
 		$main = $this->altsController->getMainOf($name);
 		if ($main === $name) {
 			/** @var Collection<Audit> */
-			$audits = $this->db->table(AccessManager::DB_TABLE)
+			$audits = $this->db->table(Audit::getTable())
 				->where('actee', $name)
 				->whereIn('action', [
 					AccessManager::ADD_RANK,

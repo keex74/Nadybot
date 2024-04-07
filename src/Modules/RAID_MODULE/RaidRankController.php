@@ -49,8 +49,6 @@ use Psr\Log\LoggerInterface;
 	)
 ]
 class RaidRankController extends ModuleInstance implements AccessLevelProvider {
-	public const DB_TABLE = 'raid_rank_<myname>';
-
 	/** Number of raid ranks below your own you can manage */
 	#[NCA\Setting\Number]
 	public int $raidRankPromotionDistance = 1;
@@ -159,7 +157,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 		defaultStatus: 1
 	)]
 	public function checkRaidRanksEvent(): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidRank::getTable())
 			->asObj(RaidRank::class)
 			->each(function (RaidRank $row): void {
 				$this->buddylistManager->addName($row->name, 'raidrank');
@@ -169,7 +167,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 	/** Load the raid leaders, admins and veterans from the database into $ranks */
 	#[NCA\Setup]
 	public function uploadRaidRanks(): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidRank::getTable())
 			->asObj(RaidRank::class)
 			->each(function (RaidRank $row): void {
 				$this->ranks[$row->name] = $row;
@@ -180,7 +178,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 	public function removeFromLists(string $who, string $sender): void {
 		$oldRank = $this->ranks[$who]??null;
 		unset($this->ranks[$who]);
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidRank::getTable())
 			->where('name', $who)
 			->delete();
 		$this->buddylistManager->remove($who, 'raidrank');
@@ -206,7 +204,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 		if (isset($this->ranks[$who]) && $this->ranks[$who]->rank > $rank) {
 			$action = 'demoted';
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidRank::getTable())
 			->upsert(
 				['rank' => $rank, 'name' => $who],
 				['name']
@@ -448,8 +446,8 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 
 	/** @return Collection<RaidStat> */
 	protected function getRaidsByStarter(): Collection {
-		$query = $this->db->table(RaidController::DB_TABLE, 'r')
-			->join(RaidMemberController::DB_TABLE . ' AS rm', 'r.raid_id', 'rm.raid_id')
+		$query = $this->db->table(Raid::getTable(), 'r')
+			->join(RaidMember::getTable() . ' AS rm', 'r.raid_id', 'rm.raid_id')
 			->groupBy('r.raid_id', 'r.started_by', 'r.started');
 		return $query->havingRaw('COUNT(*) >= 5')
 			->select([

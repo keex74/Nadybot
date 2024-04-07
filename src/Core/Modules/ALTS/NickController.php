@@ -26,8 +26,6 @@ use Nadybot\Core\{
 	),
 ]
 class NickController extends ModuleInstance {
-	public const DB_TABLE = 'nickname';
-
 	/** How to display nicknames */
 	#[NCA\Setting\Template(
 		options: [
@@ -72,7 +70,7 @@ class NickController extends ModuleInstance {
 
 	/** Reload the nickname-cache from the database */
 	public function cacheNicknames(): void {
-		$this->nickNames = $this->db->table(self::DB_TABLE)
+		$this->nickNames = $this->db->table(Nickname::getTable())
 			->asObj(Nickname::class)
 			->reduce(static function (array $result, Nickname $data): array {
 				$result[$data->main] = $data->nick;
@@ -99,10 +97,10 @@ class NickController extends ModuleInstance {
 			throw new UserException('Your Nickname must not contain any HTML-tags.');
 		}
 		$main = $this->altsController->getMainOf($char);
-		if ($this->db->table(self::DB_TABLE)->whereIlike('nick', $nick)->exists()) {
+		if ($this->db->table(Nickname::getTable())->whereIlike('nick', $nick)->exists()) {
 			throw new UserException("The nickname '<highlight>{$nick}<end>' is already in use.");
 		}
-		$changeSuccess = $this->db->table(self::DB_TABLE)
+		$changeSuccess = $this->db->table(Nickname::getTable())
 			->where('main', $main)
 			->updateOrInsert(
 				['main' => $main],
@@ -121,7 +119,7 @@ class NickController extends ModuleInstance {
 	 */
 	public function clearNickname(string $char): bool {
 		$main = $this->altsController->getMainOf($char);
-		$nickDeleted = $this->db->table(self::DB_TABLE)
+		$nickDeleted = $this->db->table(Nickname::getTable())
 			->where('main', $main)
 			->delete() > 0;
 		unset($this->nickNames[$main]);
@@ -133,7 +131,7 @@ class NickController extends ModuleInstance {
 		description: 'Move nickname to new main'
 	)]
 	public function moveNickname(AltNewMainEvent $event): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(Nickname::getTable())
 			->where('main', $event->alt)
 			->update(['main' => $event->main]);
 		$this->cacheNicknames();

@@ -48,9 +48,6 @@ use Nadybot\Core\{
 	NCA\ProvidesEvent(VoteChangeEvent::class)
 ]
 class VoteController extends ModuleInstance implements MessageEmitter {
-	public const DB_POLLS = 'polls_<myname>';
-	public const DB_VOTES = 'votes_<myname>';
-
 	public const DELIMITER = '|';
 
 	// status indicates the last alert that happened (not the next alert that will happen)
@@ -90,7 +87,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function cacheVotes(): void {
-		$this->db->table(self::DB_POLLS)
+		$this->db->table(Poll::getTable())
 			->where('status', '!=', self::STATUS_ENDED)
 			->asObj(Poll::class)
 			->each(function (Poll $topic): void {
@@ -102,7 +99,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function getPoll(int $id, ?string $creator=null): ?Poll {
-		$query = $this->db->table(self::DB_POLLS)->where('id', $id);
+		$query = $this->db->table(Poll::getTable())->where('id', $id);
 		if ($creator !== null) {
 			$query->where('owner', $creator);
 		}
@@ -132,14 +129,14 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 
 			if ($timeleft <= 0) {
 				$title = "Finished Vote: {$poll->question}";
-				$this->db->table(self::DB_POLLS)
+				$this->db->table(Poll::getTable())
 					->where('id', $poll->id)
 					->update(['status' => self::STATUS_ENDED]);
 				$ePoll = clone $poll;
 				unset($ePoll->possible_answers);
 				$event = new PollEndEvent(
 					poll: $ePoll,
-					votes: $this->db->table(self::DB_VOTES)
+					votes: $this->db->table(Vote::getTable())
 						->where('poll_id', $poll->id)
 						->asObj(Vote::class)->toArray(),
 				);
@@ -194,7 +191,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	#[NCA\Help\Group('voting')]
 	public function pollCommand(CmdContext $context): void {
 		/** @var Poll[] */
-		$topics = $this->db->table(self::DB_POLLS)
+		$topics = $this->db->table(Poll::getTable())
 			->orderBy('started')
 			->asObj(Poll::class)->toArray();
 		$running = '';
@@ -244,8 +241,8 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			$context->reply($msg);
 			return;
 		}
-		$this->db->table(self::DB_VOTES)->where('poll_id', $topic->id)->delete();
-		$this->db->table(self::DB_POLLS)->delete($topic->id);
+		$this->db->table(Vote::getTable())->where('poll_id', $topic->id)->delete();
+		$this->db->table(Poll::getTable())->delete($topic->id);
 		$ePoll = clone $topic;
 		unset($ePoll->possible_answers);
 		unset($this->polls[$topic->id]);
@@ -265,7 +262,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 		$topic = $this->polls[$pollId];
-		$deleted = $this->db->table(self::DB_VOTES)
+		$deleted = $this->db->table(Vote::getTable())
 			->where('poll_id', $pollId)
 			->where('author', $context->char->name)
 			->delete();
@@ -299,7 +296,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 
 		if ($timeleft > 60) {
 			$topic->duration = (time() - $topic->started) + 61;
-			$this->db->table(self::DB_POLLS)
+			$this->db->table(Poll::getTable())
 				->where('id', $topic->id)
 				->update(['duration' => $topic->duration]);
 			$this->polls[$pollId]->duration = $topic->duration;
@@ -325,7 +322,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		$blob = $this->getPollBlob($topic, $context->char->name);
 
 		/** @var ?Vote */
-		$vote = $this->db->table(self::DB_VOTES)
+		$vote = $this->db->table(Vote::getTable())
 			->where('poll_id', $topic->id)
 			->where('author', $context->char->name)
 			->asObj(Vote::class)
@@ -372,7 +369,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		}
 
 		/** @var ?Vote */
-		$oldVote = $this->db->table(self::DB_VOTES)
+		$oldVote = $this->db->table(Vote::getTable())
 			->where('poll_id', $topic->id)
 			->where('author', $context->char->name)
 			->asObj(Vote::class)
@@ -380,7 +377,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		$ePoll = clone $topic;
 		unset($ePoll->possible_answers);
 		if (isset($oldVote)) {
-			$this->db->table(self::DB_VOTES)
+			$this->db->table(Vote::getTable())
 				->where('author', $context->char->name)
 				->where('poll_id', $topic->id)
 				->update([
@@ -396,7 +393,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 				oldVote: $oldVote->answer ?? 'unknown',
 			);
 		} else {
-			$this->db->table(self::DB_VOTES)->insert([
+			$this->db->table(Vote::getTable())->insert([
 				'author' => $context->char->name,
 				'answer' => $answer,
 				'time' => time(),
@@ -470,7 +467,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 
 	public function getPollBlob(Poll $topic, ?string $sender=null): string {
 		/** @var Vote[] */
-		$votes = $this->db->table(self::DB_VOTES)
+		$votes = $this->db->table(Vote::getTable())
 			->where('poll_id', $topic->id)
 			->asObj(Vote::class)
 			->toArray();
@@ -551,7 +548,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	]
 	public function pollsNewsTile(string $sender): ?string {
 		/** @var Poll[] */
-		$topics = $this->db->table(self::DB_POLLS)
+		$topics = $this->db->table(Poll::getTable())
 			->orderBy('started')
 			->asObj(Poll::class)->toArray();
 		if (count($topics) === 0) {

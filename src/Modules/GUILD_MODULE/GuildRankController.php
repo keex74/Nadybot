@@ -38,8 +38,6 @@ use Nadybot\Core\{
 	),
 ]
 class GuildRankController extends ModuleInstance implements AccessLevelProvider {
-	public const DB_TABLE = 'org_rank_mapping_<myname>';
-
 	/** Map org ranks to bot ranks */
 	#[NCA\Setting\Boolean]
 	public bool $mapOrgRanksToBotRanks = false;
@@ -86,7 +84,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 	 * @return OrgRankMapping[]
 	 */
 	public function getMappings(): array {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(OrgRankMapping::getTable())
 			->orderBy('min_rank')
 			->asObj(OrgRankMapping::class)
 			->toArray();
@@ -94,7 +92,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 
 	public function getEffectiveAccessLevel(int $rank): string {
 		/** @var ?OrgRankMapping */
-		$rank = $this->db->table(self::DB_TABLE)
+		$rank = $this->db->table(OrgRankMapping::getTable())
 			->where('min_rank', '>=', $rank)
 			->orderBy('min_rank')
 			->limit(1)
@@ -217,13 +215,13 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 		);
 
 		/** @var ?OrgRankMapping */
-		$alEntry = $this->db->table(self::DB_TABLE)
+		$alEntry = $this->db->table(OrgRankMapping::getTable())
 			->where('access_level', $rankMapping->access_level)
 			->asObj(OrgRankMapping::class)
 			->first();
 
 		/** @var ?OrgRankMapping */
-		$rankEntry = $this->db->table(self::DB_TABLE)
+		$rankEntry = $this->db->table(OrgRankMapping::getTable())
 			->where('min_rank', $rankMapping->min_rank)
 			->asObj(OrgRankMapping::class)
 			->first();
@@ -265,7 +263,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 		}
 
 		/** @var ?OrgRankMapping */
-		$oldEntry = $this->db->table(self::DB_TABLE)
+		$oldEntry = $this->db->table(OrgRankMapping::getTable())
 			->where('min_rank', $rank)
 			->asObj(OrgRankMapping::class)
 			->first();
@@ -279,7 +277,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			$context->reply('You can only manage access levels below your own.');
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(OrgRankMapping::getTable())
 			->where('min_rank', $rank)
 			->delete();
 		$context->reply(

@@ -211,7 +211,7 @@ class AdminController extends ModuleInstance {
 		defaultStatus: 1
 	)]
 	public function checkAdminsEvent(ConnectEvent $eventObj): void {
-		$this->db->table(AdminManager::DB_TABLE)->asObj(Admin::class)
+		$this->db->table(Admin::getTable())->asObj(Admin::class)
 			->each(function (Admin $row): void {
 				$this->buddylistManager->addName($row->name, 'admin');
 			});

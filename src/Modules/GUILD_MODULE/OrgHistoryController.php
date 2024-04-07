@@ -31,8 +31,6 @@ use Nadybot\Modules\WEBSERVER_MODULE\ApiResponse;
 	)
 ]
 class OrgHistoryController extends ModuleInstance {
-	public const DB_TABLE = 'org_history';
-
 	#[NCA\Inject]
 	private DB $db;
 
@@ -50,7 +48,7 @@ class OrgHistoryController extends ModuleInstance {
 		$blob = '';
 
 		/** @var Collection<OrgHistory> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(OrgHistory::getTable())
 			->orderByDesc('time')
 			->limit($pageSize)
 			->offset($startingRecord)
@@ -77,7 +75,7 @@ class OrgHistoryController extends ModuleInstance {
 		$blob = '';
 
 		/** @var Collection<OrgHistory> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(OrgHistory::getTable())
 			->whereIlike('actee', $player)
 			->orderByDesc('time')
 			->asObj(OrgHistory::class);
@@ -88,7 +86,7 @@ class OrgHistoryController extends ModuleInstance {
 		}
 
 		/** @var Collection<OrgHistory> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(OrgHistory::getTable())
 			->whereIlike('actor', $player)
 			->orderByDesc('time')
 			->asObj(OrgHistory::class);
@@ -126,7 +124,7 @@ class OrgHistoryController extends ModuleInstance {
 			|| count($arr = Safe::pregMatch('/^(?<actor>.+) (?<action>invited) (?<actee>.+) to your organization.$/', $message))
 			|| count($arr = Safe::pregMatch('/^(?<actor>.+) (?<action>removed) inactive character (?<actee>.+) from your organization.$/', $message))
 		) {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(OrgHistory::getTable())
 				->insert([
 					'actor' => $arr['actor'] ?? '',
 					'actee' => $arr['actee'] ?? '',
@@ -153,7 +151,7 @@ class OrgHistoryController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'OrgHistory[]', desc: 'The org history log entries')
 	]
 	public function historyGetListEndpoint(Request $request): Response {
-		$query = $this->db->table(static::DB_TABLE)
+		$query = $this->db->table(OrgHistory::getTable())
 			->orderByDesc('time')
 			->orderByDesc('id');
 

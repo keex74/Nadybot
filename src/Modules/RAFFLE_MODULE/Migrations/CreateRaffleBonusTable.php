@@ -5,13 +5,13 @@ namespace Nadybot\Modules\RAFFLE_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\RAFFLE_MODULE\RaffleController;
+use Nadybot\Modules\RAFFLE_MODULE\{RaffleBonus};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_27_07_32_22)]
 class CreateRaffleBonusTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = RaffleController::DB_TABLE;
+		$table = RaffleBonus::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

@@ -36,7 +36,6 @@ use Nadybot\Core\{
 	)
 ]
 class RaidBlockController extends ModuleInstance {
-	public const DB_TABLE = 'raid_block_<myname>';
 	public const POINTS_GAIN = 'points';
 	public const JOIN_RAIDS = 'join';
 	public const AUCTION_BIDS = 'bid';
@@ -67,7 +66,7 @@ class RaidBlockController extends ModuleInstance {
 
 	/** Load all blocks from the database into memory */
 	public function loadBlocks(): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidBlock::getTable())
 			->whereNull('expiration')
 			->orWhere('expiration', '>', time())
 			->asObj(RaidBlock::class)
@@ -229,7 +228,7 @@ class RaidBlockController extends ModuleInstance {
 			);
 			return;
 		}
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(RaidBlock::getTable())
 			->where('player', $player);
 		if (isset($blockFrom)) {
 			$query->where('blocked_from', $blockFrom);

@@ -4,14 +4,14 @@ namespace Nadybot\Core\Modules\USAGE\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\Modules\USAGE\UsageController;
+use Nadybot\Core\DBSchema\Usage;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_12_55_23)]
 class CreateUsageTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = UsageController::DB_TABLE;
+		$table = Usage::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

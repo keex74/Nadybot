@@ -5,13 +5,13 @@ namespace Nadybot\Modules\ONLINE_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\ONLINE_MODULE\OnlineController;
+use Nadybot\Modules\ONLINE_MODULE\{OnlineHide};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_04_11_15_44_26)]
 class CreateOnlineHideTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = OnlineController::DB_TABLE_HIDE;
+		$table = OnlineHide::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->string('mask', 20)->unique();

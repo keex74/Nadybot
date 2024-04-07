@@ -5,13 +5,13 @@ namespace Nadybot\Modules\NOTES_MODULE\Migrations\OrgNotes;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\NOTES_MODULE\OrgNotesController;
+use Nadybot\Modules\NOTES_MODULE\{OrgNote};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_04_26_09_34_29, shared: true)]
 class CreateOrgNotesTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = OrgNotesController::DB_TABLE;
+		$table = OrgNote::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->string('uuid', 36)->unique()->index();

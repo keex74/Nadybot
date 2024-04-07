@@ -59,7 +59,7 @@ class SettingsController extends ModuleInstance {
 		$blob = "Changing any of these settings will take effect immediately. Please note that some of these settings are read-only and cannot be changed.\n\n";
 
 		/** @var Setting[] $data */
-		$data = $this->db->table(SettingManager::DB_TABLE)
+		$data = $this->db->table(Setting::getTable())
 			->orderBy('module')
 			->asObj(Setting::class)
 			->toArray();
@@ -93,7 +93,7 @@ class SettingsController extends ModuleInstance {
 		$settingName = strtolower($setting());
 
 		/** @var ?Setting $row */
-		$row = $this->db->table(SettingManager::DB_TABLE)
+		$row = $this->db->table(Setting::getTable())
 			->where('name', $settingName)
 			->asObj(Setting::class)
 			->first();
@@ -141,7 +141,7 @@ class SettingsController extends ModuleInstance {
 		$name = strtolower($setting());
 
 		/** @var ?Setting */
-		$setting = $this->db->table(SettingManager::DB_TABLE)
+		$setting = $this->db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

@@ -80,7 +80,6 @@ use Nadybot\Modules\{
 ]
 class LootController extends ModuleInstance {
 	public const CMD_LOOT_MANAGE = 'loot add/change/delete';
-	public const DB_TABLE = 'loot_history_<myname>';
 
 	/** Confirmation messages for adding to loot */
 	#[NCA\Setting\Options(options: [
@@ -141,7 +140,7 @@ class LootController extends ModuleInstance {
 	#[NCA\Setup]
 	public function setup(): void {
 		$this->commandAlias->register($this->moduleName, 'loot addmulti', 'multiloot');
-		$this->roll = (int)$this->db->table(self::DB_TABLE)->max('roll') + 1;
+		$this->roll = (int)$this->db->table(LootHistory::getTable())->max('roll') + 1;
 	}
 
 	#[NCA\Event(
@@ -177,7 +176,7 @@ class LootController extends ModuleInstance {
 		#[NCA\Str('history')] string $action,
 	): void {
 		/** @var Collection<LootHistory> */
-		$items = $this->db->table(self::DB_TABLE)
+		$items = $this->db->table(LootHistory::getTable())
 			->orderByDesc('dt')
 			->orderBy('pos')
 			->limit($this->lootHistoryMaxEntries)
@@ -216,7 +215,7 @@ class LootController extends ModuleInstance {
 		#[NCA\PNumber] #[NCA\Str('last')] string $number,
 	): void {
 		if (strtolower($number) === 'last') {
-			$number = $this->db->table(self::DB_TABLE)->max('roll');
+			$number = $this->db->table(LootHistory::getTable())->max('roll');
 			if ($number < 1) {
 				$context->reply('There is no last roll to display.');
 				return;
@@ -225,7 +224,7 @@ class LootController extends ModuleInstance {
 		$roll = (int)$number;
 
 		/** @var Collection<LootHistory> */
-		$items = $this->db->table(self::DB_TABLE)
+		$items = $this->db->table(LootHistory::getTable())
 			->where('roll', $roll)
 			->orderBy('pos')
 			->asObj(LootHistory::class);
@@ -270,7 +269,7 @@ class LootController extends ModuleInstance {
 		#[NCA\Str('winner=')] string $subAction,
 		#[NCA\NoSpace] PCharacter $winner,
 	): void {
-		$items = $this->db->table(self::DB_TABLE)
+		$items = $this->db->table(LootHistory::getTable())
 			->where('winner', $winner())
 			->orderByDesc('dt')
 			->limit($this->lootHistoryMaxEntries)
@@ -323,7 +322,7 @@ class LootController extends ModuleInstance {
 		}
 
 		/** @var Collection<LootHistory> */
-		$items = $this->db->table(self::DB_TABLE)
+		$items = $this->db->table(LootHistory::getTable())
 			->whereIlike('display', "%{$search}%")
 			->orderByDesc('dt')
 			->orderBy('pos')

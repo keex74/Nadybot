@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\TRACKER_MODULE\Migrations;
 
 use Nadybot\Core\DBSchema\Setting;
-use Nadybot\Core\{Attributes as NCA, DB, SchemaMigration, SettingManager};
+use Nadybot\Core\{Attributes as NCA, DB, SchemaMigration};
 use Nadybot\Modules\TRACKER_MODULE\TrackerController;
 use Psr\Log\LoggerInterface;
 
@@ -54,7 +54,7 @@ class MigrateToTrackerFormat implements SchemaMigration {
 
 	protected function getSetting(DB $db, string $name): ?string {
 		/** @var ?Setting */
-		$setting = $db->table(SettingManager::DB_TABLE)
+		$setting = $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

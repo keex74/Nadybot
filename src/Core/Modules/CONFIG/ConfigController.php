@@ -156,8 +156,8 @@ class ConfigController extends ModuleInstance {
 			$context->reply("No such permission set '<highlight>{$permissionSet}<end>'.");
 			return;
 		}
-		$permQuery = $this->db->table(CommandManager::DB_TABLE_PERMS);
-		$query = $this->db->table(CommandManager::DB_TABLE)
+		$permQuery = $this->db->table(CmdPermission::getTable());
+		$query = $this->db->table(CmdCfg::getTable())
 			->where('cmdevent', 'cmd')
 			->where('cmd', '!=', 'config');
 		$confirmString = 'all';
@@ -189,7 +189,7 @@ class ConfigController extends ModuleInstance {
 			}
 		}
 
-		$this->db->table(CommandManager::DB_TABLE_PERMS)
+		$this->db->table(CmdPermission::getTable())
 			->whereIn('id', $updated)
 			->update(['enabled' => $status]);
 
@@ -326,7 +326,7 @@ class ConfigController extends ModuleInstance {
 		}
 
 		$this->toggleCmdCfg($cfg, $enable);
-		$this->db->table(CommandManager::DB_TABLE_PERMS)
+		$this->db->table(CmdPermission::getTable())
 			->whereIn('id', array_column($cfg->permissions, 'id'))
 			->update(['enabled' => $enable]);
 
@@ -340,7 +340,7 @@ class ConfigController extends ModuleInstance {
 		if ($file === '') {
 			return false;
 		}
-		$query = $this->db->table(EventManager::DB_TABLE)
+		$query = $this->db->table(EventCfg::getTable())
 			->where('file', $file)
 			->where('type', $eventType)
 			->select('*');
@@ -370,7 +370,7 @@ class ConfigController extends ModuleInstance {
 			->where('cmd', '!=', 'config');
 		$events = new Collection();
 		if ($permissionSet === 'all') {
-			$eventQuery = $this->db->table(EventManager::DB_TABLE)
+			$eventQuery = $this->db->table(EventCfg::getTable())
 				->where('module', $module);
 			$events = $eventQuery->asObj(EventCfg::class);
 		}
@@ -391,7 +391,7 @@ class ConfigController extends ModuleInstance {
 			$this->toggleEventCfg($event, $enable);
 		}
 
-		$this->db->table(CommandManager::DB_TABLE_PERMS)
+		$this->db->table(CmdPermission::getTable())
 			->whereIn('id', $ids)
 			->update(['enabled' => $enable]);
 		if ($events->isNotEmpty() && isset($eventQuery)) {
@@ -516,7 +516,7 @@ class ConfigController extends ModuleInstance {
 		} elseif (!$this->accessManager->checkAccess($sender, $accessLevel)) {
 			return -1;
 		}
-		$this->db->table(CommandManager::DB_TABLE_PERMS)
+		$this->db->table(CmdPermission::getTable())
 			->whereIn('id', array_column($cfg->permissions, 'id'))
 			->update(['access_level' => $accessLevel]);
 		$this->subcommandManager->loadSubcommands();
@@ -703,7 +703,7 @@ class ConfigController extends ModuleInstance {
 		}
 
 		/** @var EventCfg[] */
-		$data = $this->db->table(EventManager::DB_TABLE)
+		$data = $this->db->table(EventCfg::getTable())
 			->where('module', $module)
 			->orderBy('type')
 			->asObj(EventCfg::class)
@@ -751,7 +751,7 @@ class ConfigController extends ModuleInstance {
 		$setting = strtolower($setting());
 
 		/** @var ?Setting */
-		$row = $this->db->table(SettingManager::DB_TABLE)
+		$row = $this->db->table(Setting::getTable())
 			->where('name', $setting)
 			->asObj(Setting::class)
 			->first();
@@ -802,7 +802,7 @@ class ConfigController extends ModuleInstance {
 		$accessLevel = $this->accessManager->getAccessLevel($accessLevel);
 
 		/** @var ?Setting */
-		$row = $this->db->table(SettingManager::DB_TABLE)
+		$row = $this->db->table(Setting::getTable())
 			->where('name', $setting)
 			->asObj(Setting::class)
 			->first();
@@ -817,7 +817,7 @@ class ConfigController extends ModuleInstance {
 		if (!$this->accessManager->checkAccess($sender, $row->admin??'superadmin')) {
 			throw new InsufficientAccessException("You do not have the required access level to change this setting's access level.");
 		}
-		return $this->db->table(SettingManager::DB_TABLE)
+		return $this->db->table(Setting::getTable())
 			->where('name', $setting)
 			->update(['admin' => $accessLevel]);
 	}
@@ -840,10 +840,10 @@ class ConfigController extends ModuleInstance {
 			$modules[$moduleName] = true;
 		}
 		ksort($modules);
-		$eventQuery = $this->db->table(EventManager::DB_TABLE)
+		$eventQuery = $this->db->table(EventCfg::getTable())
 			->select('module');
 		$eventQuery->selectRaw($eventQuery->grammar->wrap('status') . '+2 ' . $eventQuery->as('status'));
-		$settingsQuery = $this->db->table(SettingManager::DB_TABLE)
+		$settingsQuery = $this->db->table(Setting::getTable())
 			->select('module');
 		$settingsQuery->selectRaw('4 ' . $settingsQuery->as('status'));
 
@@ -939,7 +939,7 @@ class ConfigController extends ModuleInstance {
 	public function getModuleSettings(string $module): array {
 		$module = strtoupper($module);
 
-		return $this->db->table(SettingManager::DB_TABLE)
+		return $this->db->table(Setting::getTable())
 			->where('module', $module)
 			->orderBy('mode')
 			->orderBy('description')
@@ -953,8 +953,8 @@ class ConfigController extends ModuleInstance {
 
 	/** Check if we need to show the raid access levels */
 	private function showRaidAL(): bool {
-		return $this->db->table(CommandManager::DB_TABLE, 'c')
-			->join(CommandManager::DB_TABLE_PERMS . ' as p', 'c.cmd', 'p.cmd')
+		return $this->db->table(CmdCfg::getTable(), 'c')
+			->join(CmdPermission::getTable() . ' as p', 'c.cmd', 'p.cmd')
 			->where('c.module', 'RAID_MODULE')
 			->where('p.enabled', true)
 			->exists();
@@ -1010,11 +1010,11 @@ class ConfigController extends ModuleInstance {
 		$subcmdList = '';
 
 		/** @var Collection<CmdCfg> */
-		$commands = $this->db->table(CommandManager::DB_TABLE)
+		$commands = $this->db->table(CmdCfg::getTable())
 			->where('dependson', $cmd)
 			->where('cmdevent', 'subcmd')
 			->asObj(CmdCfg::class);
-		$permissions = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissions = $this->db->table(CmdPermission::getTable())
 			->where('permission_set', $permSet)
 			->whereIn('cmd', $commands->pluck('cmd')->toArray())
 			->asObj(CmdPermission::class)

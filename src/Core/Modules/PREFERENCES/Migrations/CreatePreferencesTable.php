@@ -4,14 +4,14 @@ namespace Nadybot\Core\Modules\PREFERENCES\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\Modules\PREFERENCES\Preferences;
+use Nadybot\Core\DBSchema\Preferences;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_09_36_44)]
 class CreatePreferencesTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = Preferences::DB_TABLE;
+		$table = Preferences::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

@@ -4,11 +4,11 @@ namespace Nadybot\Core\Modules\CONFIG;
 
 use Exception;
 use Illuminate\Support\Collection;
+use Nadybot\Core\DBSchema\CmdCfg;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
 	CmdContext,
-	CommandManager,
 	DB,
 	DBSchema\CmdPermission,
 	DBSchema\CommandSearchResult,
@@ -140,10 +140,10 @@ class CommandSearchController extends ModuleInstance {
 
 	/** @return Collection<CommandSearchResult> */
 	protected function getAllCmds(): Collection {
-		$permissions = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissions = $this->db->table(CmdPermission::getTable())
 			->asObj(CmdPermission::class)
 			->groupBy('cmd');
-		return $this->db->table(CommandManager::DB_TABLE)
+		return $this->db->table(CmdCfg::getTable())
 			->where('cmdevent', 'cmd')
 			->asObj(CommandSearchResult::class)
 			->each(static function (CommandSearchResult $cmd) use ($permissions): void {

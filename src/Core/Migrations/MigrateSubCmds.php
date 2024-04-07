@@ -3,9 +3,8 @@
 namespace Nadybot\Core\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\{CmdAlias, CmdCfg, CmdPermission};
 use Nadybot\Core\{
-	CommandAlias,
-	CommandManager,
 	DB,
 	SchemaMigration,
 };
@@ -91,20 +90,20 @@ class MigrateSubCmds implements SchemaMigration {
 	}
 
 	protected function deleteAlias(DB $db, LoggerInterface $logger, string $alias): void {
-		$db->table(CommandAlias::DB_TABLE)
+		$db->table(CmdAlias::getTable())
 			->where('alias', $alias)
 			->delete();
 	}
 
 	protected function migrateSubCmdRights(DB $db, LoggerInterface $logger, string $old, string $new): void {
-		$db->table(CommandManager::DB_TABLE)
+		$db->table(CmdCfg::getTable())
 			->where('cmd', $old)
 			->update([
 				'cmd' => $new,
 				'cmdevent' => 'subcmd',
 				'dependson' => strtolower(explode(' ', $new)[0]),
 			]);
-		$db->table(CommandManager::DB_TABLE_PERMS)
+		$db->table(CmdPermission::getTable())
 			->where('cmd', $old)
 			->update(['cmd' => $new]);
 	}

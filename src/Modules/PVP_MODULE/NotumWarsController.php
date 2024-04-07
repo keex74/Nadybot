@@ -96,8 +96,6 @@ class NotumWarsController extends ModuleInstance {
 	public const TOWER_API = 'https://towers.aobots.org/api/sites/';
 	public const ATTACKS_API = 'https://towers.aobots.org/api/attacks/';
 	public const OUTCOMES_API = 'https://towers.aobots.org/api/outcomes/';
-	public const DB_ATTACKS = 'nw_attacks_<myname>';
-	public const DB_OUTCOMES = 'nw_outcomes_<myname>';
 
 	/** Breakpoints of QLs that start a new tower type */
 	public const TOWER_TYPE_QLS = [
@@ -429,7 +427,7 @@ class NotumWarsController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		$this->attacks = $this->db->table(self::DB_ATTACKS)
+		$this->attacks = $this->db->table(DBTowerAttack::getTable())
 			->where('timestamp', '>=', time() - 6 * 3_600)
 			->orderByDesc('timestamp')
 			->asObj(DBTowerAttack::class)
@@ -438,7 +436,7 @@ class NotumWarsController extends ModuleInstance {
 			})
 			->toArray();
 
-		$this->outcomes = $this->db->table(self::DB_OUTCOMES)
+		$this->outcomes = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>=', time() - 7_200)
 			->orderByDesc('timestamp')
 			->asObj(DBOutcome::class)
@@ -450,7 +448,7 @@ class NotumWarsController extends ModuleInstance {
 
 	#[NCA\Event('connect', 'Load all attacks from the API')]
 	public function initAttacksFromApi(): void {
-		$maxTS = $this->db->table(self::DB_ATTACKS)->max('timestamp');
+		$maxTS = $this->db->table(DBTowerAttack::getTable())->max('timestamp');
 		$client = $this->http->build();
 		$uri = self::ATTACKS_API;
 		if (isset($maxTS)) {
@@ -490,7 +488,7 @@ class NotumWarsController extends ModuleInstance {
 
 			$this->attacks = [];
 			// All attacks from up to 6h ago that penalize can influence the current hot-duration
-			$this->db->table(self::DB_ATTACKS)
+			$this->db->table(DBTowerAttack::getTable())
 				->where('timestamp', '>=', time() - 6 * 3_600)
 				->asObj(DBTowerAttack::class)
 				->each(function (DBTowerAttack $attack): void {
@@ -512,7 +510,7 @@ class NotumWarsController extends ModuleInstance {
 
 	#[NCA\Event('connect', 'Load all tower outcomes from the API')]
 	public function initOutcomesFromApi(): void {
-		$maxTS = $this->db->table(self::DB_OUTCOMES)->max('timestamp');
+		$maxTS = $this->db->table(DBOutcome::getTable())->max('timestamp');
 		$client = $this->http->build();
 		$uri = self::OUTCOMES_API;
 		if (isset($maxTS)) {
@@ -538,7 +536,7 @@ class NotumWarsController extends ModuleInstance {
 				$this->db->insert(DBOutcome::fromTowerOutcome($outcome));
 				$this->outcomes []= $outcome;
 			}
-			$this->outcomes = $this->db->table(self::DB_OUTCOMES)
+			$this->outcomes = $this->db->table(DBOutcome::getTable())
 				->where('timestamp', '>=', time() - 7_200)
 				->orderByDesc('timestamp')
 				->asObj(DBOutcome::class)
@@ -1442,7 +1440,7 @@ class NotumWarsController extends ModuleInstance {
 				]);
 				$attack->penalizing_ended = time();
 			});
-		$this->db->table(self::DB_ATTACKS)
+		$this->db->table(DBTowerAttack::getTable())
 			->whereNull('penalizing_ended')
 			->where('att_org_id', $site->org_id)
 			->update(['penalizing_ended' => time()]);
@@ -1474,7 +1472,7 @@ class NotumWarsController extends ModuleInstance {
 
 	/** Count how many attacks on a field occurred in the recent past */
 	private function countRecentAttacks(FeedMessage\SiteUpdate $site): int {
-		$query = $this->db->table(self::DB_ATTACKS)
+		$query = $this->db->table(DBTowerAttack::getTable())
 			->where('playfield_id', $site->playfield)
 			->where('site_id', $site->site_id);
 		if ($this->mostRecentAttacksAge > 0) {
@@ -1486,7 +1484,7 @@ class NotumWarsController extends ModuleInstance {
 
 	/** Count how many victories/abandonments on a field occurred in the recent past */
 	private function countRecentOutcomes(FeedMessage\SiteUpdate $site): int {
-		$query = $this->db->table(self::DB_OUTCOMES)
+		$query = $this->db->table(DBOutcome::getTable())
 			->where('playfield_id', $site->playfield)
 			->where('site_id', $site->site_id);
 		if ($this->mostRecentOutcomesAge > 0) {

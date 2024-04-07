@@ -46,9 +46,6 @@ use Throwable;
 	),
 ]
 class WishlistController extends ModuleInstance {
-	public const DB_TABLE = 'wishlist';
-	public const DB_TABLE_FULFILMENT = 'wishlist_fulfilment';
-
 	#[NCA\Setting\TimeOrOff]
 	/** Enforced default and maximum duration for every wish */
 	public int $maxWishLifetime = 0;
@@ -108,7 +105,7 @@ class WishlistController extends ModuleInstance {
 	/** Show what everyone has on their wishlist */
 	#[NCA\HandlesCommand('wishes')]
 	public function showWishesCommand(CmdContext $context): void {
-		$wishlist = $this->db->table(self::DB_TABLE)
+		$wishlist = $this->db->table(Wish::getTable())
 			->orderBy('created_on')
 			->where('fulfilled', false)
 			->whereNull('from')
@@ -184,10 +181,10 @@ class WishlistController extends ModuleInstance {
 	): void {
 		$mainChar = $this->altsController->getMainOf($context->char->name);
 		$alts = $this->altsController->getAltsOf($mainChar);
-		$senderQuery = $this->db->table(self::DB_TABLE)
+		$senderQuery = $this->db->table(Wish::getTable())
 			->where('created_by', $context->char->name)
 			->orderBy('created_on');
-		$altsQuery = $this->db->table(self::DB_TABLE)
+		$altsQuery = $this->db->table(Wish::getTable())
 			->whereIn('created_by', array_diff([$mainChar, ...$alts], [$context->char->name]))
 			->orderBy('created_by')
 			->orderBy('created_on');
@@ -279,7 +276,7 @@ class WishlistController extends ModuleInstance {
 	 * @return Collection<string,Collection<Wish>>
 	 */
 	public function getOthersNeeds(string ...$chars): Collection {
-		$wishlist = $this->db->table(self::DB_TABLE)
+		$wishlist = $this->db->table(Wish::getTable())
 			->whereIn('from', $chars)
 			->where('fulfilled', false)
 			->where(static function (QueryBuilder $subQuery): void {
@@ -313,7 +310,7 @@ class WishlistController extends ModuleInstance {
 			$main = $this->altsController->getMainOf($char());
 			$alts = [$main, ...$this->altsController->getAltsOf($main)];
 		}
-		$wishlist = $this->db->table(self::DB_TABLE)
+		$wishlist = $this->db->table(Wish::getTable())
 			->whereIn('created_by', $alts)
 			->where('fulfilled', false)
 			->where(static function (QueryBuilder $subQuery): void {
@@ -356,7 +353,7 @@ class WishlistController extends ModuleInstance {
 		string $what,
 	): void {
 		$what = strip_tags($what);
-		$query = $this->db->table(self::DB_TABLE);
+		$query = $this->db->table(Wish::getTable());
 
 		/** @var string[] */
 		$tokens = preg_split("/\s+/", $what);
@@ -414,7 +411,7 @@ class WishlistController extends ModuleInstance {
 	public function addFulfilments(Collection $wishes): Collection {
 		$enriched = clone $wishes;
 		$ids = $wishes->pluck('id');
-		$this->db->table(self::DB_TABLE_FULFILMENT)
+		$this->db->table(WishFulfilment::getTable())
 			->whereIn('wish_id', $ids->toArray())
 			->orderBy('fulfilled_on')
 			->asObj(WishFulfilment::class)
@@ -530,7 +527,7 @@ class WishlistController extends ModuleInstance {
 		$alts = $this->altsController->getAltsOf($mainChar);
 
 		/** @var ?Wish */
-		$entry = $this->db->table(self::DB_TABLE)
+		$entry = $this->db->table(Wish::getTable())
 			->whereIn('created_by', [$mainChar, ...$alts])
 			->where('id', $id)
 			->asObj(Wish::class)
@@ -542,10 +539,10 @@ class WishlistController extends ModuleInstance {
 		$oldFrom = $this->getActiveFroms();
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(self::DB_TABLE_FULFILMENT)
+			$this->db->table(WishFulfilment::getTable())
 				->where('wish_id', $id)
 				->delete();
-			$this->db->table(self::DB_TABLE)->delete($id);
+			$this->db->table(Wish::getTable())->delete($id);
 		} catch (Throwable) {
 			$this->db->rollback();
 			$context->reply('An unknown error occurred while removing the item from your wishlist.');
@@ -576,7 +573,7 @@ class WishlistController extends ModuleInstance {
 		$allChars = [$mainChar, ...$alts];
 
 		/** @var ?WishFulfilment */
-		$fullfillment = $this->db->table(self::DB_TABLE_FULFILMENT)
+		$fullfillment = $this->db->table(WishFulfilment::getTable())
 			->where('id', $fulfilmentId)
 			->asObj(WishFulfilment::class)
 			->first();
@@ -586,12 +583,12 @@ class WishlistController extends ModuleInstance {
 		}
 
 		/** @var ?Wish */
-		$entry = $this->db->table(self::DB_TABLE)
+		$entry = $this->db->table(Wish::getTable())
 			->where('id', $fullfillment->wish_id)
 			->asObj(Wish::class)
 			->first();
 		if (!isset($entry)) {
-			$this->db->table(self::DB_TABLE_FULFILMENT)->delete($fulfilmentId);
+			$this->db->table(WishFulfilment::getTable())->delete($fulfilmentId);
 			$context->reply("There is no fulfilment #{$fulfilmentId}.");
 			return;
 		}
@@ -601,15 +598,15 @@ class WishlistController extends ModuleInstance {
 			$context->reply("You don't have the right to remove this fulfilment.");
 			return;
 		}
-		$newNumFulfilled = (int)$this->db->table(self::DB_TABLE_FULFILMENT)
+		$newNumFulfilled = (int)$this->db->table(WishFulfilment::getTable())
 			->where('wish_id', $fullfillment->wish_id)
 			->where('id', '!=', $fulfilmentId)
 			->sum('amount');
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(self::DB_TABLE_FULFILMENT)->delete($fulfilmentId);
+			$this->db->table(WishFulfilment::getTable())->delete($fulfilmentId);
 			if ($newNumFulfilled < $entry->amount) {
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(Wish::getTable())
 					->where('id', $fullfillment->wish_id)
 					->update(['fulfilled' => false]);
 			}
@@ -640,13 +637,13 @@ class WishlistController extends ModuleInstance {
 		$alts = $this->altsController->getAltsOf($mainChar);
 
 		/** @var ?Wish */
-		$entry = $this->db->table(self::DB_TABLE)
+		$entry = $this->db->table(Wish::getTable())
 			->whereIn('created_by', [$mainChar, ...$alts])
 			->where('id', $id)
 			->asObj(Wish::class)
 			->first()
 			??
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(Wish::getTable())
 			->whereIn('from', [$mainChar, ...$alts])
 			->where('id', $id)
 			->asObj(Wish::class)
@@ -655,7 +652,7 @@ class WishlistController extends ModuleInstance {
 			$context->reply("No item #{$id} on your wishlist or wished from you.");
 			return;
 		}
-		$fulfilments = $this->db->table(self::DB_TABLE_FULFILMENT)
+		$fulfilments = $this->db->table(WishFulfilment::getTable())
 			->where('wish_id', $entry->id)
 			->asObj(WishFulfilment::class);
 		$numFulfilled = $fulfilments->sum(static fn (WishFulfilment $f): int => $f->amount);
@@ -673,7 +670,7 @@ class WishlistController extends ModuleInstance {
 		try {
 			$fulfilment->id = $this->db->insert($fulfilment);
 			if ($numFulfilled + $fulfilment->amount >= $entry->amount) {
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(Wish::getTable())
 					->where('id', $entry->id)
 					->update(['fulfilled' => true]);
 			}
@@ -705,7 +702,7 @@ class WishlistController extends ModuleInstance {
 		$alts = $this->altsController->getAltsOf($mainChar);
 
 		/** @var ?Wish */
-		$entry = $this->db->table(self::DB_TABLE)
+		$entry = $this->db->table(Wish::getTable())
 			->whereIn('from', [$mainChar, ...$alts])
 			->where('id', $id)
 			->asObj(Wish::class)
@@ -717,10 +714,10 @@ class WishlistController extends ModuleInstance {
 		$oldFrom = $this->getActiveFroms();
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(self::DB_TABLE_FULFILMENT)
+			$this->db->table(WishFulfilment::getTable())
 				->where('wish_id', $id)
 				->delete();
-			$this->db->table(self::DB_TABLE)->delete($id);
+			$this->db->table(Wish::getTable())->delete($id);
 		} catch (Throwable) {
 			$this->db->rollback();
 			$context->reply('An unknown error occurred when denying the wish.');
@@ -759,7 +756,7 @@ class WishlistController extends ModuleInstance {
 			$alts = $this->altsController->getAltsOf($mainChar);
 			$names = [$mainChar, ...$alts];
 		}
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Wish::getTable())
 			->whereIn('created_by', $names);
 		if (!$includeActive) {
 			$query = $query->where('fulfilled', true)
@@ -779,10 +776,10 @@ class WishlistController extends ModuleInstance {
 		$oldFrom = $this->getActiveFroms();
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(self::DB_TABLE_FULFILMENT)
+			$this->db->table(WishFulfilment::getTable())
 				->whereIn('wish_id', $ids)
 				->delete();
-			$numDeleted = $this->db->table(self::DB_TABLE)
+			$numDeleted = $this->db->table(Wish::getTable())
 				->whereIn('id', $ids)
 				->delete();
 		} catch (Throwable $e) {
@@ -863,7 +860,7 @@ class WishlistController extends ModuleInstance {
 
 	/** @return string[] */
 	private function getActiveFroms(): array {
-		$fromChars = $this->db->table(self::DB_TABLE)
+		$fromChars = $this->db->table(Wish::getTable())
 			->whereNotNull('from')
 			->where('fulfilled', false)
 			->where(static function (QueryBuilder $subQuery): void {

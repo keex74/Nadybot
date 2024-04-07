@@ -42,8 +42,6 @@ use Nadybot\Modules\WEBSERVER_MODULE\StatsController;
 	NCA\ProvidesEvent(CloakLowerEvent::class)
 ]
 class CloakController extends ModuleInstance implements MessageEmitter {
-	public const DB_TABLE = 'org_city_<myname>';
-
 	/** Show cloak status to players at logon */
 	#[NCA\Setting\Options(options: [
 		'Never' => 0,
@@ -102,7 +100,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 	#[NCA\HandlesCommand('cloak')]
 	public function cloakCommand(CmdContext $context): void {
 		/** @var Collection<OrgCity> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(OrgCity::getTable())
 			->whereIn('action', ['on', 'off'])
 			->orderByDesc('time')
 			->limit(20)
@@ -155,7 +153,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 		if ($row !== null && $row->action === 'on') {
 			$msg = 'The cloaking device is already <on>enabled<end>.';
 		} else {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(OrgCity::getTable())
 				->insert([
 					'time' => time(),
 					'action' => 'on',
@@ -179,7 +177,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 		) {
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(OrgCity::getTable())
 			->insert([
 				'time' => time(),
 				'action' => $arr[2],
@@ -194,7 +192,7 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function getLastOrgEntry(bool $cloakOnly=false): ?OrgCity {
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(OrgCity::getTable())
 			->orderByDesc('time')
 			->limit(1);
 		if ($cloakOnly) {

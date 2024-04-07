@@ -5,13 +5,13 @@ namespace Nadybot\Modules\PACKAGE_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\PACKAGE_MODULE\PackageController;
+use Nadybot\Modules\PACKAGE_MODULE\{PackageFile};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_27_06_11_00)]
 class CreatePackageFilesTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = PackageController::DB_TABLE;
+		$table = PackageFile::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

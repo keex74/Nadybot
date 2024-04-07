@@ -43,8 +43,6 @@ use Throwable;
 	),
 ]
 class DiscordSlashCommandController extends ModuleInstance {
-	public const DB_SLASH_TABLE = 'discord_slash_command_<myname>';
-
 	/** Slash-commands are disabled */
 	public const SLASH_OFF = 0;
 
@@ -120,7 +118,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 	 * @return ApplicationCommand[]
 	 */
 	public function calcSlashCommands(): array {
-		$enabledCommands = $this->db->table(self::DB_SLASH_TABLE)
+		$enabledCommands = $this->db->table(DiscordSlashCommand::getTable())
 			->pluckStrings('cmd')->toArray();
 		if ($this->discordSlashCommands === self::SLASH_OFF) {
 			return [];
@@ -144,7 +142,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		#[NCA\Str('slash')] string $action,
 		#[NCA\Str('list')] ?string $subAction
 	): void {
-		$cmds = $this->db->table(self::DB_SLASH_TABLE)
+		$cmds = $this->db->table(DiscordSlashCommand::getTable())
 			->orderBy('cmd')
 			->pluckStrings('cmd');
 		$lines = $cmds->map(static function (string $cmd): string {
@@ -174,7 +172,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		#[NCA\Str('add')] string $subAction,
 		#[NCA\PWord] string ...$commands,
 	): void {
-		$cmds = $this->db->table(self::DB_SLASH_TABLE)
+		$cmds = $this->db->table(DiscordSlashCommand::getTable())
 			->orderBy('cmd')
 			->pluckStrings('cmd')
 			->toArray();
@@ -213,7 +211,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			return;
 		}
 		$cmdText = $newCommands->containsOneItem() ? 'command' : 'commands';
-		if (!$this->db->table(self::DB_SLASH_TABLE)
+		if (!$this->db->table(DiscordSlashCommand::getTable())
 			->insert(
 				$newCommands->map(static function (string $cmd): array {
 					return ['cmd' => $cmd];
@@ -227,7 +225,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		try {
 			$this->syncSlashCommands();
 		} catch (Throwable $e) {
-			$this->db->table(self::DB_SLASH_TABLE)
+			$this->db->table(DiscordSlashCommand::getTable())
 				->whereIn('cmd', $newCommands->toArray())
 				->delete();
 			$context->reply(
@@ -250,7 +248,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		PRemove $subAction,
 		#[NCA\PWord] string ...$commands,
 	): void {
-		$cmds = $this->db->table(self::DB_SLASH_TABLE)
+		$cmds = $this->db->table(DiscordSlashCommand::getTable())
 			->orderBy('cmd')
 			->pluckStrings('cmd')
 			->toArray();
@@ -267,14 +265,14 @@ class DiscordSlashCommandController extends ModuleInstance {
 			return;
 		}
 		$cmdText = $delCommands->containsOneItem() ? 'command' : 'commands';
-		$this->db->table(self::DB_SLASH_TABLE)
+		$this->db->table(DiscordSlashCommand::getTable())
 			->whereIn('cmd', $delCommands->toArray())
 			->delete();
 		$context->reply('Trying to remove ' . $delCommands->count() . " {$cmdText}...");
 		try {
 			$this->syncSlashCommands();
 		} catch (Throwable $e) {
-			$this->db->table(self::DB_SLASH_TABLE)
+			$this->db->table(DiscordSlashCommand::getTable())
 				->insert(
 					$delCommands->map(static function (string $cmd): array {
 						return ['cmd' => $cmd];
@@ -300,7 +298,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		#[NCA\Str('pick')] string $subAction,
 	): void {
 		/** @var string[] */
-		$exposedCmds = $this->db->table(self::DB_SLASH_TABLE)
+		$exposedCmds = $this->db->table(DiscordSlashCommand::getTable())
 			->orderBy('cmd')
 			->pluckStrings('cmd')
 			->toArray();
@@ -457,7 +455,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 
 	/** @return array<string,CmdCfg> */
 	private function getCmdDefinitions(string ...$commands): array {
-		$cfgs = $this->db->table(CommandManager::DB_TABLE)
+		$cfgs = $this->db->table(CmdCfg::getTable())
 			->whereIn('cmd', $commands)
 			->orWhereIn('dependson', $commands)
 			->asObj(CmdCfg::class);

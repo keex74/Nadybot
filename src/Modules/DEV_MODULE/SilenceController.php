@@ -34,8 +34,6 @@ use Psr\Log\LoggerInterface;
 	)
 ]
 class SilenceController extends ModuleInstance {
-	public const DB_TABLE = 'silence_cmd_<myname>';
-
 	public const NULL_COMMAND_HANDLER = 'SilenceController.nullCommand';
 
 	#[NCA\Logger]
@@ -54,7 +52,7 @@ class SilenceController extends ModuleInstance {
 	#[NCA\HandlesCommand('silence')]
 	public function silenceCommand(CmdContext $context): void {
 		/** @var Collection<SilenceCmd> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(SilenceCmd::getTable())
 			->orderBy('cmd')
 			->orderBy('channel')
 			->asObj(SilenceCmd::class);
@@ -116,7 +114,7 @@ class SilenceController extends ModuleInstance {
 
 	public function addSilencedCommand(CmdCfg $row, string $channel): void {
 		$this->commandManager->activate($channel, self::NULL_COMMAND_HANDLER, $row->cmd, 'all');
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(SilenceCmd::getTable())
 			->insert([
 				'cmd' => $row->cmd,
 				'channel' => $channel,
@@ -124,7 +122,7 @@ class SilenceController extends ModuleInstance {
 	}
 
 	public function isSilencedCommand(CmdCfg $row, string $channel): bool {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(SilenceCmd::getTable())
 			->where('cmd', $row->cmd)
 			->where('channel', $channel)
 			->exists();
@@ -132,7 +130,7 @@ class SilenceController extends ModuleInstance {
 
 	public function removeSilencedCommand(CmdCfg $row, string $channel): void {
 		$this->commandManager->activate($channel, $row->file, $row->cmd, $row->permissions[$channel]->access_level);
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(SilenceCmd::getTable())
 			->where('cmd', $row->cmd)
 			->where('channel', $channel)
 			->delete();
@@ -143,7 +141,7 @@ class SilenceController extends ModuleInstance {
 		description: 'Overwrite command handlers for silenced commands'
 	)]
 	public function overwriteCommandHandlersEvent(ConnectEvent $eventObj): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(SilenceCmd::getTable())
 			->asObj(SilenceCmd::class)
 			->each(function (SilenceCmd $row): void {
 				$this->commandManager->activate($row->channel, self::NULL_COMMAND_HANDLER, $row->cmd, 'all');

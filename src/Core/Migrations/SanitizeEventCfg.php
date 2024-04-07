@@ -4,13 +4,14 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{DB, EventManager, SchemaMigration};
+use Nadybot\Core\DBSchema\EventCfg;
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_11_09_14_52_33)]
 class SanitizeEventCfg implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = EventManager::DB_TABLE;
+		$table = EventCfg::getTable();
 		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->string('module', 50)->nullable(false)->change();
 			$table->string('type', 50)->nullable(false)->change();

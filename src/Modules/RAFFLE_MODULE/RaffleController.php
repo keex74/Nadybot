@@ -47,7 +47,6 @@ use Nadybot\Modules\RAID_MODULE\RaidController;
 	NCA\ProvidesEvent(RaffleLeaveEvent::class)
 ]
 class RaffleController extends ModuleInstance {
-	public const DB_TABLE = 'raffle_bonus_<myname>';
 	public const NO_RAFFLE_ERROR = 'There is no active raffle.';
 
 	public const CMD_RAFFLE_MANAGE = 'raffle manage';
@@ -631,19 +630,19 @@ class RaffleController extends ModuleInstance {
 		$losersUpdate = [];
 		if (count($losers)) {
 			/** @var string[] */
-			$losersUpdate = $this->db->table(self::DB_TABLE)
+			$losersUpdate = $this->db->table(RaffleBonus::getTable())
 					->whereIn('name', $losers)
 					->select('name')
 					->pluckStrings('name')->toArray();
 		}
 		$losersInsert = array_diff($losers, $losersUpdate);
 		if (count($losersUpdate)) {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(RaffleBonus::getTable())
 				->whereIn('name', $losersUpdate)
 				->increment('bonus', $bonusPerLoss);
 		}
 		if (count($losersInsert)) {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(RaffleBonus::getTable())
 				->insert(
 					array_map(static function (string $loser) use ($bonusPerLoss): array {
 						return ['name' => $loser, 'bonus' => $bonusPerLoss];
@@ -651,7 +650,7 @@ class RaffleController extends ModuleInstance {
 				);
 		}
 		if (count($winners)) {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(RaffleBonus::getTable())
 				->whereIn('name', $winners)
 				->update(['bonus' => 0]);
 		}
@@ -793,7 +792,7 @@ class RaffleController extends ModuleInstance {
 		if ($this->shareRaffleBonusOnAlts) {
 			$player = $this->altsController->getMainOf($player);
 		}
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(RaffleBonus::getTable())
 			->where('name', $player)
 			->select('bonus')
 			->pluckInts('bonus')->first() ?? 0;

@@ -2,28 +2,24 @@
 
 namespace Nadybot\Modules\TRADEBOT_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_08_16_06_32_18)]
 class MigrateToRouting implements SchemaMigration {
 	#[NCA\Inject]
-	private MessageHub $messageHub;
-
-	#[NCA\Inject]
 	private BotConfig $config;
 
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = $this->messageHub::DB_TABLE_ROUTES;
+		$table = Route::getTable();
 		$tradebot = $this->getSetting($db, 'tradebot');
 		if (!isset($tradebot) || ($tradebot->value === 'None')) {
 			return;
@@ -51,7 +47,7 @@ class MigrateToRouting implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

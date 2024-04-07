@@ -39,8 +39,6 @@ use Nadybot\Core\{
 	)
 ]
 class OrgNotesController extends ModuleInstance {
-	public const DB_TABLE = 'org_notes';
-
 	/** Rank required to delete other people's org notes */
 	#[NCA\Setting\Rank]
 	public string $orgnoteDeleteOtherRank = 'mod';
@@ -66,13 +64,13 @@ class OrgNotesController extends ModuleInstance {
 	 * @return Collection<OrgNote>
 	 */
 	public function getOrgNotes(): Collection {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(OrgNote::getTable())
 			->asObj(OrgNote::class);
 	}
 
 	/** Get a single org note */
 	public function getOrgNote(int $id): ?OrgNote {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(OrgNote::getTable())
 			->where('id', $id)
 			->asObj(OrgNote::class)
 			->first();
@@ -94,7 +92,7 @@ class OrgNotesController extends ModuleInstance {
 
 	/** Delete an org note form the DB and return success status */
 	public function removeOrgNote(OrgNote $note, bool $forceSync=false): bool {
-		$success = $this->db->table(self::DB_TABLE)->delete($note->id) > 0;
+		$success = $this->db->table(OrgNote::getTable())->delete($note->id) > 0;
 		if (!$success) {
 			return false;
 		}
@@ -192,7 +190,7 @@ class OrgNotesController extends ModuleInstance {
 			return;
 		}
 		$note = $event->toOrgNote();
-		$note->id = $this->db->table(self::DB_TABLE)
+		$note->id = $this->db->table(OrgNote::getTable())
 			->where('uuid', $event->uuid)
 			->pluckInts('id')
 			->first();
@@ -211,7 +209,7 @@ class OrgNotesController extends ModuleInstance {
 		if ($event->isLocal()) {
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(OrgNote::getTable())
 			->where('uuid', $event->uuid)
 			->delete();
 	}

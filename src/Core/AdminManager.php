@@ -16,8 +16,6 @@ use Nadybot\Core\{
  */
 #[NCA\Instance]
 class AdminManager implements AccessLevelProvider {
-	public const DB_TABLE = 'admin_<myname>';
-
 	/**
 	 * Admin access levels of our admin users
 	 *
@@ -55,7 +53,7 @@ class AdminManager implements AccessLevelProvider {
 	/** Load the bot admins from database into $admins */
 	public function uploadAdmins(): void {
 		foreach ($this->config->general->superAdmins as $superAdmin) {
-			$this->db->table(self::DB_TABLE)->upsert(
+			$this->db->table(Admin::getTable())->upsert(
 				[
 					'adminlevel' => 4,
 					'name' => $superAdmin,
@@ -64,7 +62,7 @@ class AdminManager implements AccessLevelProvider {
 			);
 		}
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(Admin::getTable())
 			->asObj(Admin::class)
 			->each(function (Admin $row): void {
 				if (isset($row->adminlevel)) {
@@ -77,7 +75,7 @@ class AdminManager implements AccessLevelProvider {
 	public function removeFromLists(string $who, string $sender): void {
 		$oldRank = $this->admins[$who]??[];
 		unset($this->admins[$who]);
-		$this->db->table(self::DB_TABLE)->where('name', $who)->delete();
+		$this->db->table(Admin::getTable())->where('name', $who)->delete();
 		$this->buddylistManager->remove($who, 'admin');
 		$alMod = $this->accessManager->getAccessLevels()['mod'];
 		$audit = new Audit(
@@ -98,7 +96,7 @@ class AdminManager implements AccessLevelProvider {
 		$action = 'promoted';
 		$alMod = $this->accessManager->getAccessLevels()['mod'];
 		if (isset($this->admins[$who])) {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(Admin::getTable())
 				->where('name', $who)
 				->update(['adminlevel' => $intlevel]);
 			if ($this->admins[$who]['level'] > $intlevel) {
@@ -112,8 +110,10 @@ class AdminManager implements AccessLevelProvider {
 			);
 			$this->accessManager->addAudit($audit);
 		} else {
-			$this->db->table(self::DB_TABLE)
-				->insert(['adminlevel' => $intlevel, 'name' => $who]);
+			$this->db->insert(new Admin(
+				name: $who,
+				adminlevel: $intlevel,
+			));
 		}
 
 		$this->admins[$who]['level'] = $intlevel;

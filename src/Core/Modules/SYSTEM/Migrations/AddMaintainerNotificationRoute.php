@@ -3,9 +3,9 @@
 namespace Nadybot\Core\Modules\SYSTEM\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	DB,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
 };
@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 #[NCA\Migration(order: 2023_01_15_11_26_47)]
 class AddMaintainerNotificationRoute implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = MessageHub::DB_TABLE_ROUTES;
+		$table = Route::getTable();
 
 		$route = [
 			'source' => Source::SYSTEM . '(maintainer-notification)',

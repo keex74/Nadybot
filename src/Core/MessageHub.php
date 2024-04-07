@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use JsonException;
 use Monolog\Logger;
+use Nadybot\Core\DBSchema\{RouteModifier, RouteModifierArgument};
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
@@ -32,11 +33,6 @@ class MessageHub {
 	public const EVENT_NOT_ROUTED = 0;
 	public const EVENT_DISCARDED = 1;
 	public const EVENT_DELIVERED = 2;
-	public const DB_TABLE_ROUTES = 'route_<myname>';
-	public const DB_TABLE_COLORS = 'route_hop_color_<myname>';
-	public const DB_TABLE_TEXT_COLORS = 'route_text_color_<myname>';
-	public const DB_TABLE_ROUTE_MODIFIER = 'route_modifier_<myname>';
-	public const DB_TABLE_ROUTE_MODIFIER_ARGUMENT = 'route_modifier_argument_<myname>';
 
 	/** @var array<string,ClassSpec> */
 	public array $modifiers = [];
@@ -62,9 +58,6 @@ class MessageHub {
 	private LoggerInterface $logger;
 
 	#[NCA\Inject]
-	private Text $text;
-
-	#[NCA\Inject]
 	private BuddylistManager $buddyListManager;
 
 	#[NCA\Inject]
@@ -81,9 +74,6 @@ class MessageHub {
 
 	#[NCA\Inject]
 	private MessageHubController $msgHubCtrl;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private Nadybot $chatBot;
@@ -123,14 +113,14 @@ class MessageHub {
 	}
 
 	public function loadTagFormat(): void {
-		$query = $this->db->table(Source::DB_TABLE);
+		$query = $this->db->table(RouteHopFormat::getTable());
 		Source::$format = $query
 			->orderByDesc($query->colFunc('LENGTH', 'hop'))
 			->asObj(RouteHopFormat::class);
 	}
 
 	public function loadTagColor(): void {
-		$query = $this->db->table(static::DB_TABLE_COLORS);
+		$query = $this->db->table(RouteHopColor::getTable());
 		static::$colors = $query
 			->orderByDesc($query->colFunc('LENGTH', 'hop'))
 			->orderByDesc($query->colFunc('LENGTH', 'where'))
@@ -680,9 +670,9 @@ class MessageHub {
 		$routes = $this->getRoutes();
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(MessageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT)->truncate();
-			$this->db->table(MessageHub::DB_TABLE_ROUTE_MODIFIER)->truncate();
-			$this->db->table(MessageHub::DB_TABLE_ROUTES)->truncate();
+			$this->db->table(RouteModifierArgument::getTable())->truncate();
+			$this->db->table(RouteModifier::getTable())->truncate();
+			$this->db->table(Route::getTable())->truncate();
 		} catch (Exception $e) {
 			$this->db->rollback();
 			throw $e;

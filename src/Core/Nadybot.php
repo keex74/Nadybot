@@ -229,32 +229,32 @@ class Nadybot {
 		$this->logger->info('Initializing bot');
 
 		// Prepare command/event settings table
-		$this->db->table(CommandManager::DB_TABLE)->update(['verify' => 0]);
-		$this->db->table(EventManager::DB_TABLE)->update(['verify' => 0]);
-		$this->db->table(SettingManager::DB_TABLE)->update(['verify' => 0]);
-		$this->db->table(HelpManager::DB_TABLE)->update(['verify' => 0]);
-		$this->db->table(EventManager::DB_TABLE)->where('type', 'setup')->update(['verify' => 1]);
+		$this->db->table(CmdCfg::getTable())->update(['verify' => 0]);
+		$this->db->table(EventCfg::getTable())->update(['verify' => 0]);
+		$this->db->table(Setting::getTable())->update(['verify' => 0]);
+		$this->db->table(HlpCfg::getTable())->update(['verify' => 0]);
+		$this->db->table(EventCfg::getTable())->where('type', 'setup')->update(['verify' => 1]);
 
 		// To reduce queries load core items into memory
-		$this->db->table(CommandManager::DB_TABLE)
+		$this->db->table(CmdCfg::getTable())
 			->where('cmdevent', 'subcmd')
 			->asObj(CmdCfg::class)
 			->each(function (CmdCfg $row): void {
 				$this->existing_subcmds[$row->cmd] = true;
 			});
 
-		$this->db->table(EventManager::DB_TABLE)->asObj(EventCfg::class)
+		$this->db->table(EventCfg::getTable())->asObj(EventCfg::class)
 			->each(function (EventCfg $row): void {
 				$this->existing_events[$row->type??''][$row->file??''] = true;
 			});
 
-		$this->db->table(HelpManager::DB_TABLE)->asObj(HlpCfg::class)
+		$this->db->table(HlpCfg::getTable())->asObj(HlpCfg::class)
 			->each(function (HlpCfg $row): void {
 				$this->existing_helps[$row->name] = true;
 			});
 
 		$this->existing_settings = [];
-		$this->db->table(SettingManager::DB_TABLE)->asObj(Setting::class)
+		$this->db->table(Setting::getTable())->asObj(Setting::class)
 			->each(function (Setting $row): void {
 				$this->existing_settings[$row->name] = true;
 			});
@@ -320,7 +320,7 @@ class Nadybot {
 		$this->settingManager::$isInitialized = true;
 
 		// Delete old entries in the DB
-		$this->db->table(CommandManager::DB_TABLE)->where('verify', 0)
+		$this->db->table(CmdCfg::getTable())->where('verify', 0)
 			->asObj(CmdCfg::class)
 			->each(function (CmdCfg $row): void {
 				$this->logger->notice(
@@ -331,9 +331,9 @@ class Nadybot {
 					]
 				);
 			});
-		$this->db->table(CommandManager::DB_TABLE)->where('verify', 0)->delete();
-		$this->db->table(EventManager::DB_TABLE)->where('verify', 0)->delete();
-		$this->db->table(SettingManager::DB_TABLE)->where('verify', 0)
+		$this->db->table(CmdCfg::getTable())->where('verify', 0)->delete();
+		$this->db->table(EventCfg::getTable())->where('verify', 0)->delete();
+		$this->db->table(Setting::getTable())->where('verify', 0)
 			->asObj(Setting::class)
 			->each(function (Setting $row): void {
 				$this->logger->notice(
@@ -344,8 +344,8 @@ class Nadybot {
 					]
 				);
 			});
-		$this->db->table(HelpManager::DB_TABLE)->where('verify', 0)->delete();
-		$this->db->table(SettingManager::DB_TABLE)->where('verify', 0)->delete();
+		$this->db->table(HlpCfg::getTable())->where('verify', 0)->delete();
+		$this->db->table(Setting::getTable())->where('verify', 0)->delete();
 
 		$this->commandManager->loadCommands();
 		$this->subcommandManager->loadSubcommands();

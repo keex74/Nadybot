@@ -15,8 +15,6 @@ use Psr\Log\LoggerInterface;
 	NCA\ProvidesEvent(SettingEvent::class)
 ]
 class SettingManager {
-	public const DB_TABLE = 'settings_<myname>';
-
 	/** @var array<string,SettingValue> */
 	public array $settings = [];
 
@@ -159,7 +157,7 @@ class SettingManager {
 				value: (string)$value,
 			);
 			if (array_key_exists($name, $this->chatBot->existing_settings) || $this->exists($name)) {
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(Setting::getTable())
 					->where('name', $name)
 					->update([
 						'module' => $module,
@@ -177,7 +175,7 @@ class SettingManager {
 					$this->settings[$name] = new SettingValue($setting);
 				}
 			} else {
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(Setting::getTable())
 					->insert([
 						'name' => $name,
 						'module' => $module,
@@ -228,7 +226,7 @@ class SettingManager {
 			return $this->settings[$name]->value;
 		} elseif (!static::$isInitialized) {
 			/** @var ?Setting */
-			$value = $this->db->table(self::DB_TABLE)
+			$value = $this->db->table(Setting::getTable())
 				->where('name', $name)
 				->asObj(Setting::class)
 				->first();
@@ -249,7 +247,7 @@ class SettingManager {
 			return $this->settings[$name]->typed();
 		} elseif (!static::$isInitialized) {
 			/** @var ?Setting */
-			$value = $this->db->table(self::DB_TABLE)
+			$value = $this->db->table(Setting::getTable())
 				->where('name', $name)
 				->asObj(Setting::class)
 				->first();
@@ -343,7 +341,7 @@ class SettingManager {
 		$this->eventManager->fireEvent($event);
 
 		$this->settings[$name]->value = (string)$value;
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(Setting::getTable())
 			->where('name', $name)
 			->update([
 				'verify' => 1,
@@ -358,7 +356,7 @@ class SettingManager {
 
 		// Upload Settings from the db that are set by modules
 		/** @var Setting[] $data */
-		$data = $this->db->table(self::DB_TABLE)->asObj(Setting::class)->toArray();
+		$data = $this->db->table(Setting::getTable())->asObj(Setting::class)->toArray();
 		foreach ($data as $row) {
 			$row->value = $this->getHardcoded($row->name, $row->value);
 			$this->settings[$row->name] = new SettingValue($row);

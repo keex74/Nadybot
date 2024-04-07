@@ -500,7 +500,7 @@ class AttacksController extends ModuleInstance {
 		#[NCA\Str('attacks')] string $action,
 		?int $page,
 	): void {
-		$query = $this->db->table($this->nwCtrl::DB_ATTACKS);
+		$query = $this->db->table(DBTowerAttack::getTable());
 		$context->reply($this->nwAttacksCmd(
 			$query,
 			'Tower Attacks',
@@ -525,7 +525,7 @@ class AttacksController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$query = $this->db->table($this->nwCtrl::DB_ATTACKS)
+		$query = $this->db->table(DBTowerAttack::getTable())
 			->where('playfield_id', $pf->value)
 			->where('site_id', $towerSite->site);
 		$context->reply($this->nwAttacksCmd(
@@ -553,7 +553,7 @@ class AttacksController extends ModuleInstance {
 		?int $page,
 	): void {
 		$search = str_replace('*', '%', $orgName());
-		$query = $this->db->table($this->nwCtrl::DB_ATTACKS)
+		$query = $this->db->table(DBTowerAttack::getTable())
 			->whereIlike('att_org', $search)
 			->orWhereIlike('def_org', $search);
 		$context->reply(
@@ -582,7 +582,7 @@ class AttacksController extends ModuleInstance {
 		PNonGreedy $search,
 		?int $page,
 	): void {
-		$query = $this->db->table($this->nwCtrl::DB_ATTACKS)
+		$query = $this->db->table(DBTowerAttack::getTable())
 			->whereIlike('att_name', str_replace('*', '%', $search()));
 		$context->reply(
 			$this->nwAttacksCmd(
@@ -605,19 +605,19 @@ class AttacksController extends ModuleInstance {
 		$from = time() - (isset($duration) ? $duration->toSecs() : 3_600 * 24);
 
 		/** @var Collection<DBTowerAttack> */
-		$attacks = $this->db->table($this->nwCtrl::DB_ATTACKS)
+		$attacks = $this->db->table(DBTowerAttack::getTable())
 			->where('timestamp', '>', $from)
 			->whereNotNull('att_faction')
 			->asObj(DBTowerAttack::class);
 
 		/** @var Collection<DBOutcome> */
-		$victories = $this->db->table($this->nwCtrl::DB_OUTCOMES)
+		$victories = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>', $from)
 			->whereNotNull('attacker_faction')
 			->asObj(DBOutcome::class);
 
 		/** @var Collection<DBOutcome> */
-		$abandonments = $this->db->table($this->nwCtrl::DB_OUTCOMES)
+		$abandonments = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>', $from)
 			->whereNull('attacker_faction')
 			->asObj(DBOutcome::class);
@@ -660,7 +660,7 @@ class AttacksController extends ModuleInstance {
 		#[NCA\Str('victory')] string $action,
 		?int $page,
 	): void {
-		$query = $this->db->table($this->nwCtrl::DB_OUTCOMES);
+		$query = $this->db->table(DBOutcome::getTable());
 		$context->reply($this->nwOutcomesCmd(
 			$query,
 			'Tower Victories',
@@ -684,7 +684,7 @@ class AttacksController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$query = $this->db->table($this->nwCtrl::DB_OUTCOMES)
+		$query = $this->db->table(DBOutcome::getTable())
 			->where('playfield_id', $pf->value)
 			->where('site_id', $towerSite->site);
 		$context->reply($this->nwOutcomesCmd(
@@ -711,7 +711,7 @@ class AttacksController extends ModuleInstance {
 		?int $page,
 	): void {
 		$search = str_replace('*', '%', $orgName());
-		$query = $this->db->table($this->nwCtrl::DB_OUTCOMES)
+		$query = $this->db->table(DBOutcome::getTable())
 			->whereIlike('attacker_org', $search)
 			->orWhereIlike('losing_org', $search);
 		$context->reply(
@@ -917,7 +917,7 @@ class AttacksController extends ModuleInstance {
 		 *
 		 * @var array<string,DBOutcome[]>
 		 */
-		$outcomes = $this->db->table($this->nwCtrl::DB_OUTCOMES)
+		$outcomes = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>', $attacks->last()->timestamp)
 			->where('timestamp', '<', $attacks->first()->timestamp)
 			->orderByDesc('timestamp')
@@ -993,7 +993,7 @@ class AttacksController extends ModuleInstance {
 				assert(isset($site));
 
 				/** @var ?DBOutcome */
-				$outcome = $this->db->table($this->nwCtrl::DB_OUTCOMES)
+				$outcome = $this->db->table(DBOutcome::getTable())
 					->where('losing_org', $first->def_org)
 					->where('timestamp', '>', $last->timestamp)
 					->where('timestamp', '<', $last->timestamp + 6 * 3_600)
@@ -1159,7 +1159,7 @@ class AttacksController extends ModuleInstance {
 		if (!isset($whois) || !isset($whois->guild)) {
 			return null;
 		}
-		$query = $this->db->table($this->nwCtrl::DB_ATTACKS)
+		$query = $this->db->table(DBTowerAttack::getTable())
 			->where('def_org', $whois->guild)
 			->where('timestamp', '>=', time() - (3 * 24 * 3_600))
 			->limit(5);

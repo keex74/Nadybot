@@ -5,13 +5,13 @@ namespace Nadybot\Modules\HIGHNET_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\HIGHNET_MODULE\HighnetController;
+use Nadybot\Modules\HIGHNET_MODULE\{FilterEntry};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2023_05_31_13_14_25)]
 class CreateFilterTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = HighnetController::DB_TABLE;
+		$table = FilterEntry::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->string('creator', 12)->nullable(false);

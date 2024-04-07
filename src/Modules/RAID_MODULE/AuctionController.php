@@ -67,7 +67,6 @@ use Safe\DateTimeImmutable;
 class AuctionController extends ModuleInstance {
 	public const CMD_BID_AUCTION = 'bid auction';
 	public const CMD_BID_REIMBURSE = 'bid reimburse';
-	public const DB_TABLE = 'auction_<myname>';
 	public const ERR_NO_AUCTION = "There's currently nothing being auctioned.";
 
 	/** Allow auctions only for people in the raid */
@@ -264,7 +263,7 @@ class AuctionController extends ModuleInstance {
 		$winner = $winner();
 
 		/** @var ?DBAuction */
-		$lastAuction = $this->db->table(self::DB_TABLE)
+		$lastAuction = $this->db->table(DBAuction::getTable())
 			->where('winner', $winner)
 			->orderByDesc('id')
 			->limit(1)
@@ -335,7 +334,7 @@ class AuctionController extends ModuleInstance {
 			$context->char->name,
 			$raid
 		);
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(DBAuction::getTable())
 			->where('id', $lastAuction->id)
 			->update(['reimbursed' => true]);
 		if ($minPenalty > $percentualPenalty) {
@@ -420,7 +419,7 @@ class AuctionController extends ModuleInstance {
 		#[NCA\Str('history')] string $action
 	): void {
 		/** @var DBAuction[] */
-		$items = $this->db->table(self::DB_TABLE)
+		$items = $this->db->table(DBAuction::getTable())
 			->orderByDesc('id')
 			->limit(40)
 			->asObj(DBAuction::class)
@@ -455,7 +454,7 @@ class AuctionController extends ModuleInstance {
 			'ape' => ['%Action Probability Estimator%'],
 		];
 		$quickSearch = $shortcuts[strtolower($search)] ?? [];
-		$query = $this->db->table(self::DB_TABLE);
+		$query = $this->db->table(DBAuction::getTable());
 		if (count($quickSearch)) {
 			foreach ($quickSearch as $searchTerm) {
 				$query->orWhereIlike('item', $searchTerm);
@@ -811,15 +810,14 @@ class AuctionController extends ModuleInstance {
 
 	/** Record a finished auction into the database so that it can be searched later on */
 	protected function recordAuctionInDB(Auction $auction): bool {
-		return $this->db->table(self::DB_TABLE)
-			->insert([
-				'item' => $auction->item->toString(),
-				'auctioneer' => $auction->auctioneer,
-				'cost' => $auction->bid,
-				'winner' => $auction->top_bidder,
-				'end' => $auction->end,
-				'reimbursed' => false,
-			]);
+		return $this->db->insert(new DBAuction(
+			item: $auction->item->toString(),
+			auctioneer: $auction->auctioneer,
+			cost: $auction->bid,
+			winner: $auction->top_bidder,
+			end: $auction->end,
+			reimbursed: false,
+		)) > 0;
 	}
 
 	protected function rainbow(string $text, int $length=1): string {

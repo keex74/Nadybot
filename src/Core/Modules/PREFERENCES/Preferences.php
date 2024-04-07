@@ -4,6 +4,7 @@ namespace Nadybot\Core\Modules\PREFERENCES;
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
+use Nadybot\Core\DBSchema\Preferences as DBSchemaPreferences;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
@@ -22,8 +23,6 @@ use Nadybot\Modules\WEBSERVER_MODULE\{
 	NCA\HasMigrations
 ]
 class Preferences extends ModuleInstance {
-	public const DB_TABLE = 'preferences_<myname>';
-
 	#[NCA\Inject]
 	private DB $db;
 
@@ -31,7 +30,7 @@ class Preferences extends ModuleInstance {
 		$sender = ucfirst(strtolower($sender));
 		$name = strtolower($name);
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(DBSchemaPreferences::getTable())
 			->updateOrInsert(
 				['sender' => $sender, 'name' => $name],
 				['sender' => $sender, 'name' => $name, 'value' => $value],
@@ -41,7 +40,7 @@ class Preferences extends ModuleInstance {
 	public function get(string $sender, string $name): ?string {
 		$sender = ucfirst(strtolower($sender));
 		$name = strtolower($name);
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(DBSchemaPreferences::getTable())
 			->where('sender', $sender)
 			->where('name', $name)
 			->select('value')
@@ -52,7 +51,7 @@ class Preferences extends ModuleInstance {
 	public function delete(string $sender, string $name): bool {
 		$sender = ucfirst(strtolower($sender));
 		$name = strtolower($name);
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(DBSchemaPreferences::getTable())
 			->where('sender', $sender)
 			->where('name', $name)
 			->delete() !== 0;

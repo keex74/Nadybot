@@ -4,13 +4,14 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{DB, MessageHub, SchemaMigration};
+use Nadybot\Core\DBSchema\RouteModifier;
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_07_27_07_30_09)]
 class CreateRouteModifierTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = MessageHub::DB_TABLE_ROUTE_MODIFIER;
+		$table = RouteModifier::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->unsignedBigInteger('route_id')->index();

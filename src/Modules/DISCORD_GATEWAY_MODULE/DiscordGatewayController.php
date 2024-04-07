@@ -151,8 +151,6 @@ use Throwable;
 	),
 ]
 class DiscordGatewayController extends ModuleInstance {
-	public const DB_TABLE = 'discord_invite_<myname>';
-	public const EMOJI_TABLE = 'discord_emoji_<myname>';
 	public const RENAME_OFF = 'Off';
 
 	/** Game the bot is shown to play on Discord */
@@ -1067,7 +1065,7 @@ class DiscordGatewayController extends ModuleInstance {
 		)
 	]
 	public function deleteExpiredInvites(): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(DBDiscordInvite::getTable())
 			->where('expires', '<', time())
 			->delete();
 	}
@@ -1144,7 +1142,7 @@ class DiscordGatewayController extends ModuleInstance {
 	): void {
 		$aoChar = $this->altsController->getMainOf($context->char->name);
 		$alts = $this->altsController->getAltsOf($aoChar);
-		$isLinked = $this->db->table(DiscordGatewayCommandHandler::DB_TABLE)
+		$isLinked = $this->db->table(DiscordMapping::getTable())
 			->whereIn('name', [$aoChar, ...$alts])
 			->whereNull('token')
 			->whereNotNull('confirmed')
@@ -1234,7 +1232,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$aoChar = $this->altsController->getMainOf($context->char->name);
 
 		/** @var ?DBDiscordInvite */
-		$oldInvite = $this->db->table(self::DB_TABLE)
+		$oldInvite = $this->db->table(DBDiscordInvite::getTable())
 			->where('character', $aoChar)
 			->where('expires', '>', time())
 			->asObj(DBDiscordInvite::class)
@@ -1760,7 +1758,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$inviteCode = $usedInviteCodes[array_keys($usedInviteCodes)[0]];
 		try {
 			/** @var DBDiscordInvite */
-			$invite = $this->db->table(self::DB_TABLE)
+			$invite = $this->db->table(DBDiscordInvite::getTable())
 				->where('token', $inviteCode)
 				->asObj(DBDiscordInvite::class)
 				->firstOrFail();
@@ -1770,7 +1768,7 @@ class DiscordGatewayController extends ModuleInstance {
 			]);
 			return;
 		}
-		$this->db->table(self::DB_TABLE)->delete($invite->id);
+		$this->db->table(DBDiscordInvite::getTable())->delete($invite->id);
 
 		$this->logger->notice(
 			'Discord user {userId} joined the server using invite code {token}, '.
@@ -1784,7 +1782,7 @@ class DiscordGatewayController extends ModuleInstance {
 		$this->handleAccountLinking($guildId, $userId, $invite->character);
 
 		/** @var ?DiscordMapping */
-		$data = $this->db->table(DiscordGatewayCommandHandler::DB_TABLE)
+		$data = $this->db->table(DiscordMapping::getTable())
 			->where('discord_id', $userId)
 			->whereNotNull('confirmed')
 			->asObj(DiscordMapping::class)
@@ -1796,7 +1794,7 @@ class DiscordGatewayController extends ModuleInstance {
 			]);
 			return;
 		}
-		$this->db->table(DiscordGatewayCommandHandler::DB_TABLE)
+		$this->db->table(DiscordMapping::getTable())
 			->where('discord_id', $userId)
 			->where('name', $invite->character)
 			->delete();
@@ -1835,7 +1833,7 @@ class DiscordGatewayController extends ModuleInstance {
 			) . ']';
 		}
 		$aoChar = $this->altsController->getMainOf($context->char->name);
-		$isLinked = $this->db->table(DiscordGatewayCommandHandler::DB_TABLE)
+		$isLinked = $this->db->table(DiscordMapping::getTable())
 			->whereIn('name', [$aoChar, $context->char->name])
 			->whereNull('token')
 			->whereNotNull('confirmed')
@@ -1894,7 +1892,7 @@ class DiscordGatewayController extends ModuleInstance {
 	}
 
 	private function registerDiscordChannelInvite(DiscordChannelInvite $invite, string $main): void {
-		$this->db->table(self::DB_TABLE)->insert([
+		$this->db->table(DBDiscordInvite::getTable())->insert([
 			'token' => $invite->code,
 			'character' => $main,
 			'expires' => $invite->expires_at?->getTimestamp() ?? null,
@@ -1907,7 +1905,7 @@ class DiscordGatewayController extends ModuleInstance {
 	private function registerEmojis(Guild $guild): void {
 		try {
 			/** @var Collection<DBEmoji> */
-			$registered = $this->db->table(self::EMOJI_TABLE)
+			$registered = $this->db->table(DBEmoji::getTable())
 				->where('guild_id', $guild->id)
 				->asObj(DBEmoji::class);
 			if (!$this->discordController->discordCustomEmojis) {
@@ -1922,7 +1920,7 @@ class DiscordGatewayController extends ModuleInstance {
 						'emoji' => $emoji->name,
 						'guild' => $guild->name,
 					]);
-					$this->db->table(self::EMOJI_TABLE)->delete($emoji->id);
+					$this->db->table(DBEmoji::getTable())->delete($emoji->id);
 					$guild->emojis = (new Collection($guild->emojis))
 						->where('id', '!=', $emoji->emoji_id)
 						->toArray();
@@ -2289,7 +2287,7 @@ class DiscordGatewayController extends ModuleInstance {
 	private function renderInvites(): array {
 		$blobs = [];
 		$numInvites = 0;
-		$charInvites = $this->db->table(self::DB_TABLE)
+		$charInvites = $this->db->table(DBDiscordInvite::getTable())
 			->asObj(DBDiscordInvite::class)
 			->keyBy('token');
 		foreach ($this->guilds as $guildId => $guild) {

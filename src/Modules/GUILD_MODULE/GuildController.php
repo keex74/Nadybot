@@ -88,7 +88,6 @@ use Throwable;
 	),
 ]
 class GuildController extends ModuleInstance {
-	public const DB_TABLE = 'org_members_<myname>';
 	private const CONSECUTIVE_BAD_UPDATES = 2;
 
 	/** Maximum characters a logon message can have */
@@ -322,7 +321,7 @@ class GuildController extends ModuleInstance {
 		$time = time() - $time;
 
 		/** @var Collection<RecentOrgMember> */
-		$members = $this->db->table(self::DB_TABLE)
+		$members = $this->db->table(OrgMember::getTable())
 			->where('mode', '!=', 'del')
 			->where('logged_off', '>', $time)
 			->orderByDesc('logged_off')
@@ -392,7 +391,7 @@ class GuildController extends ModuleInstance {
 			return;
 		}
 
-		$mode = $this->db->table(self::DB_TABLE)
+		$mode = $this->db->table(OrgMember::getTable())
 			->where('name', $name)
 			->select('mode')
 			->pluckStrings('mode')->first();
@@ -402,7 +401,7 @@ class GuildController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(OrgMember::getTable())
 			->upsert(['name' => $name, 'mode' => 'add'], 'name');
 
 		if ($this->buddylistManager->isOnline($name)) {
@@ -438,7 +437,7 @@ class GuildController extends ModuleInstance {
 			return;
 		}
 
-		$mode = $this->db->table(self::DB_TABLE)
+		$mode = $this->db->table(OrgMember::getTable())
 			->where('name', $name)
 			->select('mode')
 			->pluckStrings('mode')->first();
@@ -448,7 +447,7 @@ class GuildController extends ModuleInstance {
 		} elseif ($mode == 'del') {
 			$msg = "<highlight>{$name}<end> has already been removed from the Notify list.";
 		} else {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(OrgMember::getTable())
 				->where('name', $name)
 				->update(['mode' => 'del']);
 			$this->delMemberFromOnline($name);
@@ -509,7 +508,7 @@ class GuildController extends ModuleInstance {
 		}
 
 		$org = $this->guildManager->byId($this->config->orgId, $this->config->main->dimension, false);
-		$members = $this->db->table(self::DB_TABLE, 'om')
+		$members = $this->db->table(OrgMember::getTable(), 'om')
 			->join('players AS p', 'om.name', '=', 'p.name')
 			->select('p.*')
 			->asObj(Player::class);
@@ -602,7 +601,7 @@ class GuildController extends ModuleInstance {
 						'dt' => time(),
 					]);
 			}
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(OrgMember::getTable())
 				->upsert(['mode' => 'add', 'name' => $name], 'name');
 			$this->buddylistManager->addName($name, 'org');
 			$this->chatBot->guildmembers[$name] = 6;
@@ -617,7 +616,7 @@ class GuildController extends ModuleInstance {
 		) {
 			$name = ucfirst(strtolower($arr['char']));
 
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(OrgMember::getTable())
 				->where('name', $name)
 				->update(['mode' => 'del']);
 			$this->delMemberFromOnline($name);
@@ -768,7 +767,7 @@ class GuildController extends ModuleInstance {
 		) {
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(OrgMember::getTable())
 			->where('name', $sender)
 			->update(['logged_off' => time()]);
 	}
@@ -948,7 +947,7 @@ class GuildController extends ModuleInstance {
 
 	private function loadGuildMembers(): void {
 		$this->chatBot->guildmembers = [];
-		$members = $this->db->table(self::DB_TABLE)
+		$members = $this->db->table(OrgMember::getTable())
 			->where('mode', '!=', 'del')
 			->orderBy('name')
 			->asObj(OrgMember::class);
@@ -974,7 +973,7 @@ class GuildController extends ModuleInstance {
 
 		// Save the current org_members table in a var
 		/** @var Collection<OrgMember> */
-		$data = $this->db->table(self::DB_TABLE)->asObj(OrgMember::class);
+		$data = $this->db->table(OrgMember::getTable())->asObj(OrgMember::class);
 
 		// If the update would remove over 30% of the org members,
 		// only do this, if this happens 2 times in a row.
@@ -1033,7 +1032,7 @@ class GuildController extends ModuleInstance {
 
 					// if member was added to notify list manually, switch mode to org and let guild roster update from now on
 					if ($dbEntries[$member->name]['mode'] == 'add') {
-						$this->db->table(self::DB_TABLE)
+						$this->db->table(OrgMember::getTable())
 							->where('name', $member->name)
 							->update(['mode' => 'org']);
 					}
@@ -1045,7 +1044,7 @@ class GuildController extends ModuleInstance {
 					->catch(Nadybot::asyncErrorHandler(...));
 				$this->chatBot->guildmembers[$member->name] = $member->guild_rank_id ?? 0;
 
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(OrgMember::getTable())
 					->insert([
 						'name' => $member->name,
 						'mode' => 'org',
@@ -1060,7 +1059,7 @@ class GuildController extends ModuleInstance {
 		foreach ($dbEntries as $buddy) {
 			if ($buddy['mode'] !== 'add') {
 				$this->delMemberFromOnline($buddy['name']);
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(OrgMember::getTable())
 					->where('name', $buddy['name'])
 					->delete();
 				$this->buddylistManager->remove($buddy['name'], 'org');

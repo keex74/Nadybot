@@ -122,8 +122,6 @@ class WorldBossController extends ModuleInstance {
 
 	public const WORLDBOSS_API = 'https://timers.aobots.org/api/v1.1/bosses';
 
-	public const DB_TABLE = 'worldboss_timers_<myname>';
-
 	public const INTERVAL = 'interval';
 	public const IMMORTAL = 'immortal';
 	public const COORDS = 'coordinates';
@@ -493,7 +491,7 @@ class WorldBossController extends ModuleInstance {
 
 	public function getWorldBossTimer(string $mobName): ?WorldBossTimer {
 		/** @var WorldBossTimer[] */
-		$timers = $this->db->table(static::DB_TABLE)
+		$timers = $this->db->table(WorldBossTimer::getTable())
 			->where('mob_name', $mobName)
 			->asObj(WorldBossTimer::class)
 			->toArray();
@@ -603,7 +601,7 @@ class WorldBossController extends ModuleInstance {
 	}
 
 	public function worldBossDeleteCommand(Character $sender, string $mobName): string {
-		if ($this->db->table(static::DB_TABLE)
+		if ($this->db->table(WorldBossTimer::getTable())
 			->where('mob_name', $mobName)
 			->delete() === 0
 		) {
@@ -635,7 +633,7 @@ class WorldBossController extends ModuleInstance {
 			'mob_name' => $mobName,
 			'data' => $data,
 		]);
-		$this->db->table(static::DB_TABLE)->upsert($data, ['mob_name']);
+		$this->db->table(WorldBossTimer::getTable())->upsert($data, ['mob_name']);
 		$this->reloadWorldBossTimers();
 		return true;
 	}
@@ -1004,7 +1002,7 @@ class WorldBossController extends ModuleInstance {
 
 	protected function reloadWorldBossTimers(): void {
 		/** @var WorldBossTimer[] */
-		$timers = $this->db->table(static::DB_TABLE)
+		$timers = $this->db->table(WorldBossTimer::getTable())
 			->asObj(WorldBossTimer::class)
 			->toArray();
 		$this->timers = $this->addNextDates($timers);

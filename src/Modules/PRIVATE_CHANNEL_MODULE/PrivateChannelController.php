@@ -152,8 +152,6 @@ use Throwable;
 	NCA\EmitsMessages(Source::SYSTEM, 'lock-reminder')
 ]
 class PrivateChannelController extends ModuleInstance implements AccessLevelProvider {
-	public const DB_TABLE = 'members_<myname>';
-
 	/** Automatically add player as member when they join */
 	#[NCA\Setting\Boolean]
 	public bool $addMemberOnJoin = false;
@@ -312,7 +310,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	}
 
 	public function cacheMembers(): void {
-		$this->members = $this->db->table(self::DB_TABLE)
+		$this->members = $this->db->table(Member::getTable())
 			->asObj(Member::class)
 			->keyBy('name')
 			->toArray();
@@ -369,7 +367,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	#[NCA\Help\Group('private-channel')]
 	public function membersCommand(CmdContext $context): void {
 		/** @var Collection<Member> */
-		$members = $this->db->table(self::DB_TABLE)
+		$members = $this->db->table(Member::getTable())
 			->orderBy('name')
 			->asObj(Member::class);
 		$count = $members->count();
@@ -414,7 +412,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 
 		/** @var Collection<Member> */
-		$members = $this->db->table(self::DB_TABLE)->asObj(Member::class);
+		$members = $this->db->table(Member::getTable())->asObj(Member::class);
 		if ($members->isEmpty()) {
 			$context->reply('This bot has no members.');
 			return;
@@ -638,7 +636,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			$onOrOff = 0;
 		}
 
-		if (!$this->db->table(self::DB_TABLE)->where('name', $context->char->name)->exists()) {
+		if (!$this->db->table(Member::getTable())->where('name', $context->char->name)->exists()) {
 			$memberObj = new Member(
 				name: $context->char->name,
 				added_by: $context->char->name,
@@ -652,7 +650,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			$event = new MemberAddEvent(sender: $context->char->name);
 			$this->eventManager->fireEvent($event);
 		} else {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(Member::getTable())
 				->where('name', $context->char->name)
 				->update(['autoinv' => $onOrOff]);
 			$msg = 'Your auto invite preference has been updated.';
@@ -885,7 +883,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		if (!$this->addMemberOnJoin) {
 			return;
 		}
-		if ($this->db->table(self::DB_TABLE)->where('name', $context->char->name)->exists()) {
+		if ($this->db->table(Member::getTable())->where('name', $context->char->name)->exists()) {
 			return;
 		}
 		$autoInvite = $this->autoinviteDefault;
@@ -984,7 +982,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		description: 'Adds all members as buddies'
 	)]
 	public function connectEvent(ConnectEvent $eventObj): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(Member::getTable())
 			->asObj(Member::class)
 			->each(function (Member $member): void {
 				$this->buddylistManager->addName($member->name, 'member');
@@ -1002,7 +1000,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 
 		/** @var Member[] */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(Member::getTable())
 			->where('name', $sender)
 			->where('autoinv', 1)
 			->asObj(Member::class)
@@ -1281,7 +1279,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	public function removeUser(string $name, string $sender): string {
 		$name = ucfirst(strtolower($name));
 
-		if (!$this->db->table(self::DB_TABLE)->where('name', $name)->delete()) {
+		if (!$this->db->table(Member::getTable())->where('name', $name)->delete()) {
 			return "<highlight>{$name}<end> is not a member of this bot.";
 		}
 		unset($this->members[$name]);
@@ -1517,7 +1515,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 		// always add in case they were removed from the buddy list for some reason
 		$this->buddylistManager->addName($name, 'member');
-		if ($this->db->table(self::DB_TABLE)->where('name', $name)->exists()) {
+		if ($this->db->table(Member::getTable())->where('name', $name)->exists()) {
 			return "<highlight>{$name}<end> is already a member of this bot.";
 		}
 		$memberObj = new Member(

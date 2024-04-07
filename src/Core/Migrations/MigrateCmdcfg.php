@@ -4,13 +4,14 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{CommandManager, DB, SchemaMigration};
+use Nadybot\Core\DBSchema\CmdCfg;
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_01_15_13_22_57)]
 class MigrateCmdcfg implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = CommandManager::DB_TABLE;
+		$table = CmdCfg::getTable();
 		$db->table('cmd_permission_set_<myname>')->insert([
 			['name' => 'msg',   'letter' => 'T'],
 			['name' => 'priv',  'letter' => 'P'],
@@ -39,7 +40,7 @@ class MigrateCmdcfg implements SchemaMigration {
 			if (isset($cmds[(string)$entry->cmd])) {
 				continue;
 			}
-			$db->table(CommandManager::DB_TABLE)->insert([
+			$db->table(CmdCfg::getTable())->insert([
 				'module' => (string)$entry->module,
 				'cmd' => (string)$entry->cmd,
 				'cmdevent' => (string)$entry->cmdevent,

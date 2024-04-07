@@ -43,8 +43,6 @@ use Throwable;
 	NCA\ProvidesEvent(CommandReplyEvent::class)
 ]
 class ApiController extends ModuleInstance {
-	public const DB_TABLE = 'api_key_<myname>';
-
 	/** Enable REST API */
 	#[NCA\Setting\Boolean]
 	public bool $api = true;
@@ -95,7 +93,7 @@ class ApiController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('list')] ?string $action
 	): void {
-		$keys = $this->db->table(static::DB_TABLE)
+		$keys = $this->db->table(ApiKey::getTable())
 			->orderBy('created')
 			->asObj(ApiKey::class);
 		if ($keys->isEmpty()) {
@@ -193,7 +191,7 @@ class ApiController extends ModuleInstance {
 		string $token
 	): void {
 		/** @var ?ApiKey */
-		$key = $this->db->table(static::DB_TABLE)
+		$key = $this->db->table(ApiKey::getTable())
 			->where('token', $token)
 			->asObj(ApiKey::class)
 			->first();
@@ -209,7 +207,7 @@ class ApiController extends ModuleInstance {
 			);
 			return;
 		}
-		$this->db->table(static::DB_TABLE)->delete($key->id);
+		$this->db->table(ApiKey::getTable())->delete($key->id);
 		$context->reply("API token <highlight>{$token}<end> deleted.");
 	}
 
@@ -221,7 +219,7 @@ class ApiController extends ModuleInstance {
 		string $token
 	): void {
 		/** @var ?ApiKey */
-		$key = $this->db->table(static::DB_TABLE)
+		$key = $this->db->table(ApiKey::getTable())
 			->where('token', $token)
 			->asObj(ApiKey::class)
 			->first();

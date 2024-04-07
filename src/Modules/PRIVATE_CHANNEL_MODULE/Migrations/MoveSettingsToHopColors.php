@@ -2,16 +2,15 @@
 
 namespace Nadybot\Modules\PRIVATE_CHANNEL_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\RouteHopColor;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	Safe,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
@@ -26,7 +25,7 @@ class MoveSettingsToHopColors implements SchemaMigration {
 			'text_color' => $this->getSettingColor($db, 'guest_color_guild') ?? 'C3C3C3',
 			'hop' => Source::PRIV . '(' . $this->config->main->character . ')',
 		];
-		$db->table(MessageHub::DB_TABLE_COLORS)->insert($hop);
+		$db->table(RouteHopColor::getTable())->insert($hop);
 
 		if (strlen($this->config->general->orgName)) {
 			$hop = [
@@ -34,13 +33,13 @@ class MoveSettingsToHopColors implements SchemaMigration {
 				'text_color' => $this->getSettingColor($db, 'guest_color_guest') ?? 'C3C3C3',
 				'hop' => Source::ORG . "({$this->config->general->orgName})",
 			];
-			$db->table(MessageHub::DB_TABLE_COLORS)->insert($hop);
+			$db->table(RouteHopColor::getTable())->insert($hop);
 		}
 	}
 
 	protected function getSettingColor(DB $db, string $name): ?string {
 		/** @var ?Setting */
-		$setting = $db->table(SettingManager::DB_TABLE)
+		$setting = $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

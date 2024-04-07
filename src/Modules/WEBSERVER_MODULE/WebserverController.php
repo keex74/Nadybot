@@ -267,7 +267,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 		$signature = $matches[1];
 
 		/** @var ?ApiKey */
-		$key = $this->db->table(ApiController::DB_TABLE)
+		$key = $this->db->table(ApiKey::getTable())
 			->where('token', $keyId)
 			->asObj(ApiKey::class)
 			->first();

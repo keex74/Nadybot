@@ -3,13 +3,12 @@
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
@@ -26,7 +25,7 @@ class MigrateVoiceStateToRoutes implements SchemaMigration {
 				'destination' => Source::PRIV . '(' . $db->getBotname() . ')',
 				'two_way' => false,
 			];
-			$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+			$db->table(Route::getTable())->insert($route);
 		}
 		if ((int)$setting->value & 2) {
 			$route = [
@@ -34,12 +33,12 @@ class MigrateVoiceStateToRoutes implements SchemaMigration {
 				'destination' => Source::ORG,
 				'two_way' => false,
 			];
-			$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+			$db->table(Route::getTable())->insert($route);
 		}
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

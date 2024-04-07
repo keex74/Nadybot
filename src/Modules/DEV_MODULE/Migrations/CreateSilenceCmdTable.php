@@ -5,13 +5,13 @@ namespace Nadybot\Modules\DEV_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\DEV_MODULE\SilenceController;
+use Nadybot\Modules\DEV_MODULE\{SilenceCmd};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_16_38_59)]
 class CreateSilenceCmdTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = SilenceController::DB_TABLE;
+		$table = SilenceCmd::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

@@ -4,14 +4,13 @@ namespace Nadybot\Modules\PVP_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\DBSchema\{RouteHopColor, RouteHopFormat};
-use Nadybot\Core\Routing\Source;
-use Nadybot\Core\{DB, MessageHub, SchemaMigration};
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2023_03_14_06_12_25)]
 class AddRoutingLayoutAndColors implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		if ($db->table(Source::DB_TABLE)->whereIlike('hop', 'pvp%')->exists()) {
+		if ($db->table(RouteHopFormat::getTable())->whereIlike('hop', 'pvp%')->exists()) {
 			return;
 		}
 		$db->insert(new RouteHopFormat(
@@ -20,7 +19,7 @@ class AddRoutingLayoutAndColors implements SchemaMigration {
 			format: 'PVP',
 		));
 
-		if ($db->table(MessageHub::DB_TABLE_COLORS)->whereIlike('hop', 'pvp%')->exists()) {
+		if ($db->table(RouteHopColor::getTable())->whereIlike('hop', 'pvp%')->exists()) {
 			return;
 		}
 		$db->insert(new RouteHopColor(

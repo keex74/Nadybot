@@ -3,9 +3,9 @@
 namespace Nadybot\Modules\MASSMSG_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	DB,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
 };
@@ -25,7 +25,7 @@ class MigrateToRoutes implements SchemaMigration {
 					'destination' => $channel,
 					'two_way' => false,
 				];
-				$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+				$db->table(Route::getTable())->insert($route);
 			}
 		}
 	}

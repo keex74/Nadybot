@@ -19,6 +19,7 @@ use ErrorException;
 use Exception;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Config\BotConfig;
+use Nadybot\Core\DBSchema\CmdCfg;
 use Nadybot\Core\Modules\SETUP\Setup;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -316,7 +317,7 @@ class BotRunner {
 
 		// startup core systems, load modules and call setup methods
 		$db = Registry::getInstance(DB::class);
-		if ($db->table(CommandManager::DB_TABLE)->exists()) {
+		if ($db->table(CmdCfg::getTable())->exists()) {
 			$this->logger->notice('Initializing modules...');
 		} else {
 			$this->logger->notice('Initializing modules and db tables...');

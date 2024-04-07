@@ -11,6 +11,8 @@ use Nadybot\Core\DBSchema\{
 	CmdAlias,
 	CmdCfg,
 	CmdPermSetMapping,
+	CmdPermission,
+	CmdPermissionSet,
 	EventCfg,
 	ExtCmdPermissionSet,
 	RouteHopColor,
@@ -19,19 +21,16 @@ use Nadybot\Core\DBSchema\{
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
-	CommandAlias,
 	CommandManager,
 	CommandReply,
 	Config\BotConfig,
 	DB,
-	EventManager,
 	Filesystem,
 	MessageHub,
 	ModuleInstance,
 	Nadybot,
 	ParamClass\PFilename,
 	ParamClass\PRemove,
-	Routing\Source,
 	Safe,
 	SettingManager,
 	SubcommandManager,
@@ -222,7 +221,7 @@ class ProfileController extends ModuleInstance {
 		$contents .= "\n# Events\n";
 
 		/** @var EventCfg[] */
-		$data = $this->db->table(EventManager::DB_TABLE)->asObj(EventCfg::class)->toArray();
+		$data = $this->db->table(EventCfg::getTable())->asObj(EventCfg::class)->toArray();
 		foreach ($data as $row) {
 			$status = 'disable';
 			if ($row->status === 1) {
@@ -244,7 +243,7 @@ class ProfileController extends ModuleInstance {
 		$contents .= "\n# Aliases\n";
 
 		/** @var CmdAlias[] */
-		$data = $this->db->table(CommandAlias::DB_TABLE)
+		$data = $this->db->table(CmdAlias::getTable())
 			->where('status', 1)
 			->orderBy('alias')
 			->asObj(CmdAlias::class)->toArray();
@@ -265,7 +264,7 @@ class ProfileController extends ModuleInstance {
 			"!route color remall\n";
 
 		/** @var RouteHopColor[] */
-		$data = $this->db->table(MessageHub::DB_TABLE_COLORS)
+		$data = $this->db->table(RouteHopColor::getTable())
 			->asObj(RouteHopColor::class)->toArray();
 		foreach ($data as $row) {
 			foreach (['text', 'tag'] as $color) {
@@ -283,7 +282,7 @@ class ProfileController extends ModuleInstance {
 			"!route format remall\n";
 
 		/** @var RouteHopFormat[] */
-		$data = $this->db->table(Source::DB_TABLE)
+		$data = $this->db->table(RouteHopFormat::getTable())
 			->asObj(RouteHopFormat::class)->toArray();
 		foreach ($data as $row) {
 			if ($row->render === false) {
@@ -373,7 +372,7 @@ class ProfileController extends ModuleInstance {
 						continue;
 					}
 				} elseif (count($parts = Safe::pregMatch('/^!config (cmd|subcmd) (.+) (enable|disable) ([^ ]+)$/', $line))) {
-					$exists = $this->db->table(CommandManager::DB_TABLE_PERMS)
+					$exists = $this->db->table(CmdPermission::getTable())
 						->where('cmd', $parts[2])
 						->where('permission_set', $parts[4])
 						->where('enabled', $parts[3] === 'enable')
@@ -383,7 +382,7 @@ class ProfileController extends ModuleInstance {
 						continue;
 					}
 				} elseif (count($parts = Safe::pregMatch('/^!config (cmd|subcmd) (.+) admin ([^ ]+) ([^ ]+)$/', $line))) {
-					$exists = $this->db->table(CommandManager::DB_TABLE_PERMS)
+					$exists = $this->db->table(CmdPermission::getTable())
 						->where('cmd', $parts[2])
 						->where('permission_set', $parts[3])
 						->where('access_level', $parts[4])
@@ -393,7 +392,7 @@ class ProfileController extends ModuleInstance {
 						continue;
 					}
 				} elseif (count($parts = Safe::pregMatch('/^!config event (.+) ([^ ]+) (enable|disable) ([^ ]+)$/', $line))) {
-					$exists = $this->db->table(EventManager::DB_TABLE)
+					$exists = $this->db->table(EventCfg::getTable())
 						->where('type', $parts[1])
 						->where('file', $parts[2])
 						->where('status', ($parts[3] === 'enable') ? 1 : 0)
@@ -407,7 +406,7 @@ class ProfileController extends ModuleInstance {
 					$alias = explode(' ', $line, 3)[2];
 					if (count($parts = Safe::pregMatch("/^!alias add \Q{$alias}\E (.+)$/", $lines[$profileRow+1]))) {
 						/** @var ?CmdAlias $data */
-						$data = $this->db->table(CommandAlias::DB_TABLE)
+						$data = $this->db->table(CmdAlias::getTable())
 							->where('status', 1)
 							->where('alias', $alias)
 							->asObj(CmdAlias::class)
@@ -453,9 +452,9 @@ class ProfileController extends ModuleInstance {
 
 	private function loadPermissions(string $export, CommandReply $reply): void {
 		$sets = json_decode($export);
-		$this->db->table(CommandManager::DB_TABLE_PERMS)->delete();
-		$this->db->table(CommandManager::DB_TABLE_PERM_SET)->delete();
-		$this->db->table(CommandManager::DB_TABLE_MAPPING)->delete();
+		$this->db->table(CmdPermission::getTable())->delete();
+		$this->db->table(CmdPermissionSet::getTable())->delete();
+		$this->db->table(CmdPermSetMapping::getTable())->delete();
 		$reply->reply('All permissions reset');
 
 		/** @var ExtCmdPermissionSet[] $sets */

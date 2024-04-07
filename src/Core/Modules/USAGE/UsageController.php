@@ -4,6 +4,7 @@ namespace Nadybot\Core\Modules\USAGE;
 
 use function Safe\json_encode;
 use Illuminate\Support\Collection;
+use Nadybot\Core\DBSchema\Usage;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -23,7 +24,7 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
-use Nadybot\Modules\RELAY_MODULE\{RelayController, RelayLayer};
+use Nadybot\Modules\RELAY_MODULE\{RelayConfig, RelayLayer};
 
 use stdClass;
 
@@ -42,8 +43,6 @@ use stdClass;
 	),
 ]
 class UsageController extends ModuleInstance {
-	public const DB_TABLE = 'usage_<myname>';
-
 	/** Record usage stats */
 	#[NCA\Setting\Boolean]
 	public bool $recordUsageStats = true;
@@ -97,7 +96,7 @@ class UsageController extends ModuleInstance {
 		$timeString = Util::unixtimeToReadable($time);
 		$time = time() - $time;
 
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Usage::getTable())
 			->where('sender', $character())
 			->where('dt', '>', $time)
 			->groupBy('command')
@@ -143,7 +142,7 @@ class UsageController extends ModuleInstance {
 
 		$cmd = strtolower($cmd());
 
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Usage::getTable())
 			->where('command', $cmd)
 			->where('dt', '>', $time)
 			->groupBy('sender');
@@ -195,7 +194,7 @@ class UsageController extends ModuleInstance {
 		$limit = 25;
 
 		// channel usage
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Usage::getTable())
 			->where('dt', '>', $time)
 			->groupBy('type')
 			->orderBy('type')
@@ -212,7 +211,7 @@ class UsageController extends ModuleInstance {
 		$blob .= "\n";
 
 		// most used commands
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Usage::getTable())
 			->where('dt', '>', $time)
 			->groupBy('command')
 			->orderByColFunc('COUNT', 'command', 'desc')
@@ -231,7 +230,7 @@ class UsageController extends ModuleInstance {
 		}
 
 		// users who have used the most commands
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Usage::getTable())
 			->where('dt', '>', $time)
 			->groupBy('sender')
 			->orderByColFunc('COUNT', 'sender', 'desc')
@@ -264,7 +263,7 @@ class UsageController extends ModuleInstance {
 			return;
 		}
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(Usage::getTable())
 			->insert([
 				'type' => $type,
 				'command' => $cmd,
@@ -280,7 +279,7 @@ class UsageController extends ModuleInstance {
 			$this->settingManager->save('botid', $botid);
 		}
 
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(Usage::getTable())
 			->where('dt', '>=', $lastSubmittedStats)
 			->where('dt', '<', time())
 			->groupBy('command')
@@ -302,8 +301,8 @@ class UsageController extends ModuleInstance {
 		$settings->using_git               = $this->fs->exists(BotRunner::getBasedir() . '/.git');
 		$settings->os                      = BotRunner::isWindows() ? 'Windows' : php_uname('s');
 		$settings->symbol                  = $this->settingManager->getString('symbol')??'!';
-		$settings->num_relays              = $this->db->table(RelayController::DB_TABLE)->count();
-		$settings->relay_protocols         = $this->db->table(RelayController::DB_TABLE_LAYER)
+		$settings->num_relays              = $this->db->table(RelayConfig::getTable())->count();
+		$settings->relay_protocols         = $this->db->table(RelayLayer::getTable())
 			->orderBy('relay_id')->orderByDesc('id')->asObj(RelayLayer::class)
 			->groupBy('relay_id')
 			->map(static function (Collection $group): string {
@@ -363,7 +362,7 @@ class UsageController extends ModuleInstance {
 	]
 	public function usageNewsTile(string $sender): ?string {
 		/** @var Collection<string> */
-		$commands = $this->db->table(self::DB_TABLE)
+		$commands = $this->db->table(Usage::getTable())
 			->where('sender', $sender)
 			->where('dt', '>', time() - 7*24*3_600)
 			->groupBy('command')

@@ -24,7 +24,6 @@ use Nadybot\Core\{
 	MessageHub,
 	MessageRoute,
 	ModuleInstance,
-	Nadybot,
 	ParamClass\PColor,
 	ParamClass\PRemove,
 	Routing\Source,
@@ -75,12 +74,6 @@ class MessageHubController extends ModuleInstance {
 	private MessageHub $messageHub;
 
 	#[NCA\Inject]
-	private Nadybot $chatBot;
-
-	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Inject]
@@ -91,18 +84,18 @@ class MessageHubController extends ModuleInstance {
 
 	/** Load defined routes from the database and activate them */
 	public function loadRouting(): void {
-		$arguments = $this->db->table($this->messageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT)
+		$arguments = $this->db->table(RouteModifierArgument::getTable())
 			->orderBy('id')
 			->asObj(RouteModifierArgument::class)
 			->groupBy('route_modifier_id');
-		$modifiers = $this->db->table($this->messageHub::DB_TABLE_ROUTE_MODIFIER)
+		$modifiers = $this->db->table(RouteModifier::getTable())
 			->orderBy('id')
 			->asObj(RouteModifier::class)
 			->each(static function (RouteModifier $mod) use ($arguments): void {
 				$mod->arguments = $arguments->get($mod->id, new Collection())->toArray();
 			})
 			->groupBy('route_id');
-		$this->db->table($this->messageHub::DB_TABLE_ROUTES)
+		$this->db->table(Route::getTable())
 			->orderBy('id')
 			->asObj(Route::class)
 			->each(function (Route $route) use ($modifiers): void {
@@ -142,7 +135,7 @@ class MessageHubController extends ModuleInstance {
 			$context->reply(
 				"Route {$from} {$direction} {$to} <on>enabled<end> again"
 			);
-			$this->db->table(MessageHub::DB_TABLE_ROUTES)
+			$this->db->table(Route::getTable())
 				->where('id', $route->getID())
 				->update(['disabled_until' => null]);
 			return;
@@ -153,7 +146,7 @@ class MessageHubController extends ModuleInstance {
 			return;
 		}
 		$route->disable($durationSecs);
-		$this->db->table(MessageHub::DB_TABLE_ROUTES)
+		$this->db->table(Route::getTable())
 			->where('id', $route->getID())
 			->update(['disabled_until' => time() + $durationSecs]);
 		$context->reply(
@@ -445,14 +438,14 @@ class MessageHubController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			if (count($modifiers)) {
-				$this->db->table($this->messageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT)
+				$this->db->table(RouteModifierArgument::getTable())
 					->whereIn('route_modifier_id', $modifiers)
 					->delete();
-				$this->db->table($this->messageHub::DB_TABLE_ROUTE_MODIFIER)
+				$this->db->table(RouteModifier::getTable())
 					->where('route_id', $id)
 					->delete();
 			}
-			$this->db->table($this->messageHub::DB_TABLE_ROUTES)
+			$this->db->table(Route::getTable())
 				->delete($id);
 		} catch (Throwable $e) {
 			$this->db->rollback();
@@ -710,7 +703,7 @@ class MessageHubController extends ModuleInstance {
 			);
 			return;
 		}
-		$this->db->table($this->messageHub::DB_TABLE_COLORS)
+		$this->db->table(RouteHopColor::getTable())
 			->delete($color->id);
 		$this->messageHub->loadTagColor();
 		$context->reply("Color definition for <highlight>{$name}<end> deleted.");
@@ -719,7 +712,7 @@ class MessageHubController extends ModuleInstance {
 	/** Remove all color definitions for tags and texts */
 	#[NCA\HandlesCommand('route')]
 	public function routeTagColorRemAllCommand(CmdContext $context, #[NCA\Str('color')] string $action, #[NCA\Str('remall')] string $subAction): void {
-		$this->db->table($this->messageHub::DB_TABLE_COLORS)
+		$this->db->table(RouteHopColor::getTable())
 			->truncate();
 		$this->messageHub->loadTagColor();
 		$context->reply('All route color definitions deleted.');
@@ -915,7 +908,7 @@ class MessageHubController extends ModuleInstance {
 	/** Reset the rendering of all hops to their default */
 	#[NCA\HandlesCommand('route')]
 	public function routeFormatRemAllCommand(CmdContext $context, #[NCA\Str('format')] string $action, #[NCA\Str('remall')] string $subAction): void {
-		$this->db->table(Source::DB_TABLE)->truncate();
+		$this->db->table(RouteHopFormat::getTable())->truncate();
 		$this->messageHub->loadTagFormat();
 		$context->reply('All route format definitions deleted.');
 	}
@@ -1029,7 +1022,7 @@ class MessageHubController extends ModuleInstance {
 		if (!isset($format)) {
 			return false;
 		}
-		if ($this->db->table(Source::DB_TABLE)->delete($format->id) === 0) {
+		if ($this->db->table(RouteHopFormat::getTable())->delete($format->id) === 0) {
 			return false;
 		}
 		$this->messageHub->loadTagFormat();
@@ -1057,7 +1050,7 @@ class MessageHubController extends ModuleInstance {
 
 	public function getRoute(int $id): ?Route {
 		/** @var Route|null */
-		$route = $this->db->table($this->messageHub::DB_TABLE_ROUTES)
+		$route = $this->db->table(Route::getTable())
 			->where('id', $id)
 			->limit(1)
 			->asObj(Route::class)
@@ -1065,17 +1058,13 @@ class MessageHubController extends ModuleInstance {
 		if (!isset($route)) {
 			return null;
 		}
-		$route->modifiers = $this->db->table(
-			$this->messageHub::DB_TABLE_ROUTE_MODIFIER
-		)
+		$route->modifiers = $this->db->table(RouteModifier::getTable())
 		->where('route_id', $id)
 		->orderBy('id')
 		->asObj(RouteModifier::class)
 		->toArray();
 		foreach ($route->modifiers as $modifier) {
-			$modifier->arguments = $this->db->table(
-				$this->messageHub::DB_TABLE_ROUTE_MODIFIER_ARGUMENT
-			)
+			$modifier->arguments = $this->db->table(RouteModifierArgument::getTable())
 			->where('route_modifier_id', $modifier->id)
 			->orderBy('id')
 			->asObj(RouteModifierArgument::class)

@@ -5,13 +5,13 @@ namespace Nadybot\Modules\RAID_MODULE\Migrations\Auctions;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\RAID_MODULE\AuctionController;
+use Nadybot\Modules\RAID_MODULE\{DBAuction};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_27_07_40_56)]
 class CreateAuctionTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = AuctionController::DB_TABLE;
+		$table = DBAuction::getTable();
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->id('id')->change();

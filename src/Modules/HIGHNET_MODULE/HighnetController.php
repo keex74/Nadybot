@@ -83,7 +83,6 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		'RP',
 		'Lootrights',
 	];
-	public const DB_TABLE = 'highnet_filter_<myname>';
 
 	/** Enable incoming and outgoing Highnet messages */
 	#[NCA\Setting\Boolean]
@@ -218,11 +217,11 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	}
 
 	public function reloadFilters(): void {
-		$this->filters = $this->db->table(self::DB_TABLE)->asObj(FilterEntry::class);
+		$this->filters = $this->db->table(FilterEntry::getTable())->asObj(FilterEntry::class);
 	}
 
 	public function removeExpiredFilters(): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(FilterEntry::getTable())
 			->whereNotNull('expires')
 			->where('expires', '<=', time())
 			->delete();
@@ -488,13 +487,13 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		$msgRoutes = [];
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table($this->msgHub::DB_TABLE_ROUTES)
+			$this->db->table(Route::getTable())
 				->whereIn('id', $deleteIds)
 				->delete();
-			$this->db->table($this->msgHub::DB_TABLE_COLORS)
+			$this->db->table(RouteHopColor::getTable())
 				->whereIn('id', $colorIds)
 				->delete();
-			$this->db->table(Source::DB_TABLE)
+			$this->db->table(RouteHopFormat::getTable())
 				->whereIn('id', $formatIds)
 				->delete();
 			$this->db->insert($rhc);
@@ -649,7 +648,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	): void {
 		/** @var ?FilterEntry */
 		$filter = $this->db
-			->table(self::DB_TABLE)
+			->table(FilterEntry::getTable())
 			->where('id', $id)
 			->asObj(FilterEntry::class)
 			->first();
@@ -667,7 +666,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 				return;
 			}
 		}
-		if ($this->db->table(self::DB_TABLE)->delete($filter->id) === 0) {
+		if ($this->db->table(FilterEntry::getTable())->delete($filter->id) === 0) {
 			$context->reply('There was an unknown error deleting this filter.');
 			return;
 		}
@@ -977,7 +976,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 						|| $route->getDest() === "highnet({$channel})"
 					) {
 						$this->msgHub->deleteRouteID($route->getID());
-						$this->db->table($this->msgHub::DB_TABLE_ROUTES)->delete($route->getID());
+						$this->db->table(Route::getTable())->delete($route->getID());
 					}
 				}
 				$this->msgHub->unregisterMessageEmitter("highnet({$channel})");

@@ -4,7 +4,7 @@ namespace Nadybot\Modules\BASIC_CHAT_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\DBSchema\Setting;
-use Nadybot\Core\{DB, SchemaMigration, SettingManager};
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2023_12_22_10_28_53)]
@@ -14,7 +14,7 @@ class MigrateToLeaderEchoFormat implements SchemaMigration {
 		if (!isset($setting) || !isset($setting->value)) {
 			return;
 		}
-		$db->table(SettingManager::DB_TABLE)
+		$db->table(Setting::getTable())
 			->updateOrInsert(
 				['name' => 'leader_echo_format'],
 				[
@@ -36,7 +36,7 @@ class MigrateToLeaderEchoFormat implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

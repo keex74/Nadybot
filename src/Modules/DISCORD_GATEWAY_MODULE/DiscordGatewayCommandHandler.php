@@ -34,8 +34,6 @@ use Nadybot\Core\{
 	)
 ]
 class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevelProvider {
-	public const DB_TABLE = 'discord_mapping_<myname>';
-
 	#[NCA\Inject]
 	private DB $db;
 
@@ -87,7 +85,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 
 	public function getNameForDiscordId(string $discordId): ?string {
 		/** @var ?DiscordMapping */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(DiscordMapping::getTable())
 			->where('discord_id', $discordId)
 			->whereNotNull('confirmed')
 			->asObj(DiscordMapping::class)
@@ -104,7 +102,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		$uid = strtoupper($uid);
 
 		/** @var ?DiscordMapping */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(DiscordMapping::getTable())
 			->where('name', $uid)
 			->whereNotNull('confirmed')
 			->asObj(DiscordMapping::class)
@@ -116,7 +114,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		}
 
 		/** @var ?DiscordMapping */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(DiscordMapping::getTable())
 			->where('name', $context->char->name)
 			->where('token', $uid)
 			->asObj(DiscordMapping::class)
@@ -126,7 +124,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 			$context->reply($msg);
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(DiscordMapping::getTable())
 			->where('name', $context->char->name)
 			->where('token', $uid)
 			->update([
@@ -149,7 +147,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 			return;
 		}
 		$uid = strtoupper($uid);
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(DiscordMapping::getTable())
 			->where('token', $uid)
 			->where('name', $context->char->name)
 			->delete();
@@ -189,7 +187,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		}
 
 		/** @var ?DiscordMapping */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(DiscordMapping::getTable())
 			->where('name', $name)
 			->whereNotNull('confirmed')
 			->asObj(DiscordMapping::class)
@@ -201,7 +199,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		}
 
 		/** @var ?DiscordMapping */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(DiscordMapping::getTable())
 			->where('name', $name)
 			->where('discord_id', $discordUserId)
 			->asObj(DiscordMapping::class)
@@ -209,7 +207,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		// Never tried to link before
 		if ($data === null) {
 			$uid = strtoupper(bin2hex(random_bytes(16)));
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(DiscordMapping::getTable())
 				->insert([
 					'name' => $name,
 					'discord_id' => $discordUserId,

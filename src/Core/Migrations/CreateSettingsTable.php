@@ -4,13 +4,14 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{DB, SchemaMigration, SettingManager};
+use Nadybot\Core\DBSchema\Setting;
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_23_08_50_34)]
 class CreateSettingsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = SettingManager::DB_TABLE;
+		$table = Setting::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

@@ -49,7 +49,7 @@ class InactiveMemberController extends ModuleInstance {
 		$timeString = Util::unixtimeToReadable($time, false);
 		$time = time() - $time;
 
-		$members = $this->db->table(GuildController::DB_TABLE)
+		$members = $this->db->table(OrgMember::getTable())
 			->where('mode', '!=', 'del')
 			->orderByDesc('logged_off')
 			->asObj(RecentOrgMember::class)

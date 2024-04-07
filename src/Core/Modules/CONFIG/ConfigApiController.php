@@ -16,7 +16,6 @@ use Nadybot\Core\{
 	DBSchema\CmdPermissionSet,
 	DBSchema\EventCfg,
 	DBSchema\Setting,
-	EventManager,
 	HelpManager,
 	InsufficientAccessException,
 	ModuleInstance,
@@ -121,7 +120,7 @@ class ConfigApiController extends ModuleInstance {
 	]
 	public function changeModuleSettingEndpoint(Request $request, string $module, string $setting): Response {
 		/** @var Setting|null */
-		$oldSetting = $this->db->table(SettingManager::DB_TABLE)
+		$oldSetting = $this->db->table(Setting::getTable())
 			->where('name', $setting)->where('module', $module)
 			->asObj(Setting::class)->first();
 		if ($oldSetting === null) {
@@ -374,7 +373,7 @@ class ConfigApiController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'ModuleEventConfig[]', desc: 'A list of all events and their status for this module')
 	]
 	public function apiConfigEventsGetEndpoint(Request $request, string $module): Response {
-		$events = $this->db->table(EventManager::DB_TABLE)
+		$events = $this->db->table(EventCfg::getTable())
 			->where('type', '!=', 'setup')
 			->where('module', $module)
 			->asObj(EventCfg::class)

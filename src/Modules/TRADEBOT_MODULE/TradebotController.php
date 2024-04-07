@@ -45,7 +45,6 @@ use Psr\Log\LoggerInterface;
 ]
 class TradebotController extends ModuleInstance {
 	public const NONE = 'None';
-	public const DB_TABLE = 'tradebot_colors_<myname>';
 
 	/** @var array<string,array<string,mixed>> */
 	private const BOT_DATA = [
@@ -290,7 +289,7 @@ class TradebotController extends ModuleInstance {
 	#[NCA\HandlesCommand('tradecolor')]
 	public function listTradecolorsCommand(CmdContext $context): void {
 		/** @var Collection<TradebotColors> */
-		$colors = $this->db->table(self::DB_TABLE)
+		$colors = $this->db->table(TradebotColors::getTable())
 			->orderBy('tradebot')
 			->orderBy('id')
 			->asObj(TradebotColors::class);
@@ -331,7 +330,7 @@ class TradebotController extends ModuleInstance {
 	/** Remove a custom defined color */
 	#[NCA\HandlesCommand('tradecolor')]
 	public function remTradecolorCommand(CmdContext $context, PRemove $action, int $id): void {
-		if (!$this->db->table(self::DB_TABLE)->delete($id)) {
+		if (!$this->db->table(TradebotColors::getTable())->delete($id)) {
 			$context->reply("Tradebot color <highlight>#{$id}<end> doesn't exist.");
 			return;
 		}
@@ -460,7 +459,7 @@ class TradebotController extends ModuleInstance {
 	}
 
 	protected function getTagColor(string $tradeBot, string $tag): ?TradebotColors {
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(TradebotColors::getTable())
 			->where('tradebot', $tradeBot);
 
 		/** @var Collection<TradebotColors> */

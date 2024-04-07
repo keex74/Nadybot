@@ -4,15 +4,16 @@ namespace Nadybot\Modules\WORLDBOSS_MODULE\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{CommandManager, DB, EventManager, SchemaMigration};
-use Nadybot\Modules\WORLDBOSS_MODULE\WorldBossController;
+use Nadybot\Core\DBSchema\{CmdCfg, EventCfg};
+use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\WORLDBOSS_MODULE\{WorldBossTimer};
 use Psr\Log\LoggerInterface;
 use stdClass;
 
 #[NCA\Migration(order: 2021_10_23_12_39_55)]
 class CreateWorldbossTimersTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = WorldBossController::DB_TABLE;
+		$table = WorldBossTimer::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->string('mob_name', 50)->primary();
 			$table->integer('timer');
@@ -31,19 +32,19 @@ class CreateWorldbossTimersTable implements SchemaMigration {
 		$db->table('bigboss_timers')
 			->get()
 			->each(static function (stdClass $timer) use ($db): void {
-				$db->table(WorldBossController::DB_TABLE)->insert([
-					'mob_name' => (string)$timer->mob_name,
-					'timer' => (int)$timer->timer,
-					'spawn' => (int)$timer->spawn,
-					'killable' => (int)$timer->killable,
-					'time_submitted' => (int)$timer->time_submitted,
-					'submitter_name' => (string)$timer->submitter_name,
-				]);
+				$db->insert(new WorldBossTimer(
+					mob_name: (string)$timer->mob_name,
+					timer: (int)$timer->timer,
+					spawn: (int)$timer->spawn,
+					killable: (int)$timer->killable,
+					time_submitted: (int)$timer->time_submitted,
+					submitter_name: (string)$timer->submitter_name,
+				));
 			});
-		$db->table(CommandManager::DB_TABLE)
+		$db->table(CmdCfg::getTable())
 			->where('module', 'BIGBOSS_MODULE')
 			->update(['status' => 0]);
-		$db->table(EventManager::DB_TABLE)
+		$db->table(EventCfg::getTable())
 			->where('module', 'BIGBOSS_MODULE')
 			->update(['status' => 0]);
 	}

@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
-	MessageHub,
 	Routing\Character,
 	SchemaMigration,
 };
@@ -68,7 +68,7 @@ class MigrateGauntletData implements SchemaMigration {
 						'destination' => $channel,
 						'two_way' => false,
 					];
-					$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+					$db->table(Route::getTable())->insert($route);
 				}
 			}
 			foreach ($channels as $channel) {
@@ -77,7 +77,7 @@ class MigrateGauntletData implements SchemaMigration {
 					'destination' => $channel,
 					'two_way' => false,
 				];
-				$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+				$db->table(Route::getTable())->insert($route);
 			}
 			return;
 		}

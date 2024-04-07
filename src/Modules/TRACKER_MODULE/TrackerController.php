@@ -60,11 +60,6 @@ use Throwable;
 	NCA\ProvidesEvent(TrackerLogoffEvent::class)
 ]
 class TrackerController extends ModuleInstance implements MessageEmitter {
-	public const DB_TABLE = 'tracked_users_<myname>';
-	public const DB_TRACKING = 'tracking_<myname>';
-	public const DB_ORG = 'tracking_org_<myname>';
-	public const DB_ORG_MEMBER = 'tracking_org_member_<myname>';
-
 	public const REASON_TRACKER = 'tracking';
 	public const REASON_ORG_TRACKER = 'tracking_org';
 
@@ -213,12 +208,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		description: 'Adds all players on the track list to the buddy list'
 	)]
 	public function trackedUsersConnectEvent(ConnectEvent $eventObj): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(TrackedUser::getTable())
 			->asObj(TrackedUser::class)
 			->each(function (TrackedUser $row): void {
 				$this->buddylistManager->addName($row->name, static::REASON_TRACKER);
 			});
-		$this->db->table(static::DB_ORG_MEMBER)
+		$this->db->table(TrackingOrgMember::getTable())
 			->asObj(TrackingOrgMember::class)
 			->each(function (TrackingOrgMember $row) {
 				$this->buddylistManager->addId($row->uid, static::REASON_ORG_TRACKER);
@@ -235,12 +230,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		}
 
 		/** @var Collection<int,TrackedUser> */
-		$users = $this->db->table(self::DB_TABLE)
+		$users = $this->db->table(TrackedUser::getTable())
 			->asObj(TrackedUser::class)
 			->keyBy('uid');
 
-		$query = $this->db->table(self::DB_TABLE, 't');
-		$query->join(self::DB_TRACKING . ' as ev', 'ev.uid', '=', 't.uid')
+		$query = $this->db->table(TrackedUser::getTable(), 't');
+		$query->join(Tracking::getTable() . ' as ev', 'ev.uid', '=', 't.uid')
 			->where('ev.event', 'logon')
 			->groupBy('ev.uid')
 			->select(['ev.uid', $query->colFunc('max', 'ev.dt', 'dt')])
@@ -266,7 +261,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	)]
 	public function downloadOrgRostersEvent(Event $eventObj): void {
 		/** @var Collection<TrackingOrg> */
-		$orgs = $this->db->table(static::DB_ORG)->asObj(TrackingOrg::class);
+		$orgs = $this->db->table(TrackingOrg::getTable())->asObj(TrackingOrg::class);
 		try {
 			foreach ($orgs as $org) {
 				$orgData = $this->guildManager->byId($org->org_id, $this->config->main->dimension, true);
@@ -351,7 +346,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		) {
 			return;
 		}
-		$this->db->table(self::DB_TRACKING)
+		$this->db->table(Tracking::getTable())
 			->insert([
 				'uid' => $uid,
 				'dt' => time(),
@@ -448,8 +443,8 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 
 		// Prevent excessive "XXX logged off" messages after adding a whole org
 		/** @var ?TrackingOrg */
-		$orgMember = $this->db->table(self::DB_ORG_MEMBER, 'om')
-			->join(self::DB_ORG . ' AS o', 'om.org_id', '=', 'o.org_id')
+		$orgMember = $this->db->table(TrackingOrgMember::getTable(), 'om')
+			->join(TrackingOrg::getTable() . ' AS o', 'om.org_id', '=', 'o.org_id')
 			->where('om.uid', $uid)
 			->select('o.*')
 			->asObj(TrackingOrg::class)
@@ -457,7 +452,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		if (isset($orgMember) && (time() - $orgMember->added_dt->getTimestamp()) < 60) {
 			return;
 		}
-		$this->db->table(self::DB_TRACKING)
+		$this->db->table(Tracking::getTable())
 			->insert([
 				'uid' => $uid,
 				'dt' => time(),
@@ -478,7 +473,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	#[NCA\HandlesCommand('track')]
 	public function trackListCommand(CmdContext $context): void {
 		/** @var Collection<TrackedUser> */
-		$users = $this->db->table(self::DB_TABLE)
+		$users = $this->db->table(TrackedUser::getTable())
 			->select(['added_dt', 'added_by', 'name', 'uid'])
 			->asObj(TrackedUser::class)
 			->sortBy('name');
@@ -491,7 +486,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$blob = "<header2>Tracked players<end>\n";
 		foreach ($users as $user) {
 			/** @var ?Tracking */
-			$lastState = $this->db->table(self::DB_TRACKING)
+			$lastState = $this->db->table(Tracking::getTable())
 				->where('uid', $user->uid)
 				->orderByDesc('dt')
 				->limit(1)
@@ -549,18 +544,18 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function trackRemoveCommand(CmdContext $context, string $name, int $uid): void {
-		$deleted = $this->db->table(self::DB_TABLE)->where('uid', $uid)->delete();
+		$deleted = $this->db->table(TrackedUser::getTable())->where('uid', $uid)->delete();
 		if ($deleted) {
 			$msg = "<highlight>{$name}<end> has been removed from the track list.";
 			$this->buddylistManager->removeId($uid, static::REASON_TRACKER);
-			$this->db->table(self::DB_TRACKING)->where('uid', $uid)->delete();
+			$this->db->table(Tracking::getTable())->where('uid', $uid)->delete();
 
 			$context->reply($msg);
 			return;
 		}
 
 		/** @var ?TrackingOrgMember */
-		$orgMember = $this->db->table(self::DB_ORG_MEMBER)
+		$orgMember = $this->db->table(TrackingOrgMember::getTable())
 			->where('uid', $uid)
 			->asObj(TrackingOrgMember::class)
 			->first();
@@ -572,7 +567,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 
 		$msg = "Removed <highlight>{$name}<end> from the tracklist, but ".
 			'they were tracked, because the whole org';
-		$deleted = $this->db->table(self::DB_ORG_MEMBER)
+		$deleted = $this->db->table(TrackingOrgMember::getTable())
 			->where('uid', $uid)
 			->delete();
 		if ($deleted) {
@@ -643,7 +638,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 
-		if ($this->db->table(static::DB_ORG)->where('org_id', $orgId)->exists()) {
+		if ($this->db->table(TrackingOrg::getTable())->where('org_id', $orgId)->exists()) {
 			$msg = "The org {$org->faction->inColor($org->name)} is already being tracked.";
 			$context->reply($msg);
 			return;
@@ -717,7 +712,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		}
 		$org = $this->findOrgController->getByID($orgId);
 
-		if ($this->db->table(static::DB_ORG)->where('org_id', $orgId)->doesntExist()) {
+		if ($this->db->table(TrackingOrg::getTable())->where('org_id', $orgId)->doesntExist()) {
 			$msg = "The org <highlight>#{$orgId}<end> is not being tracked.";
 			if (isset($org)) {
 				$msg = "The org {$org->faction->inColor($org->name)} is not being tracked.";
@@ -725,16 +720,16 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$context->reply($msg);
 			return;
 		}
-		$this->db->table(static::DB_ORG_MEMBER)
+		$this->db->table(TrackingOrgMember::getTable())
 			->where('org_id', $orgId)
 			->asObj(TrackingOrgMember::class)
 			->each(function (TrackingOrgMember $exMember): void {
 				$this->buddylistManager->removeId($exMember->uid, static::REASON_ORG_TRACKER);
 			});
-		$this->db->table(static::DB_ORG_MEMBER)
+		$this->db->table(TrackingOrgMember::getTable())
 			->where('org_id', $orgId)
 			->delete();
-		$this->db->table(static::DB_ORG)
+		$this->db->table(TrackingOrg::getTable())
 			->where('org_id', $orgId)
 			->delete();
 		$msg = "The org <highlight>#{$orgId}<end> is no longer being tracked.";
@@ -751,7 +746,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		#[NCA\Regexp('orgs?', example: 'orgs')] string $action,
 		#[NCA\Str('list')] ?string $subAction
 	): void {
-		$orgs = $this->db->table(static::DB_ORG)
+		$orgs = $this->db->table(TrackingOrg::getTable())
 			->asObj(TrackingOrg::class);
 		$orgIds = $orgs->pluck('org_id')->filter()->toArray();
 		$orgsByID = $this->findOrgController->getOrgsById(...$orgIds)
@@ -819,19 +814,19 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 				$filters[$option->type] []= $option->value;
 			}
 		}
-		$hiddenChars = $this->db->table(self::DB_ORG_MEMBER)
+		$hiddenChars = $this->db->table(TrackingOrgMember::getTable())
 			->select('name')
 			->where('hidden', true)
 			->union(
-				$this->db->table(self::DB_TABLE)
+				$this->db->table(TrackedUser::getTable())
 					->select('name')
 					->where('hidden', true)
 			)->pluckStrings('name')
 			->unique()
 			->mapToDictionary(static fn (string $s): array => [$s => true])
 			->toArray();
-		$data1 = $this->db->table(self::DB_ORG_MEMBER)->select('name');
-		$data2 = $this->db->table(self::DB_TABLE)->select('name');
+		$data1 = $this->db->table(TrackingOrgMember::getTable())->select('name');
+		$data2 = $this->db->table(TrackedUser::getTable())->select('name');
 		if (!isset($filters['all'])) {
 			$data1->where('hidden', false);
 			$data2->where('hidden', false);
@@ -1074,10 +1069,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function trackHideCommand(CmdContext $context, string $name, int $uid): void {
-		$updated = $this->db->table(self::DB_TABLE)
+		$updated = $this->db->table(TrackedUser::getTable())
 			->where('uid', $uid)
 			->update(['hidden' => true])
-			?: $this->db->table(self::DB_ORG_MEMBER)
+			?: $this->db->table(TrackingOrgMember::getTable())
 			->where('uid', $uid)
 			->update(['hidden' => true]);
 		if ($updated === 0) {
@@ -1117,11 +1112,11 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function trackUnhideCommand(CmdContext $context, string $name, int $uid): void {
-		$updated = $this->db->table(self::DB_TABLE)
+		$updated = $this->db->table(TrackedUser::getTable())
 			->where('uid', $uid)
 			->update(['hidden' => false])
 			?:
-			$this->db->table(self::DB_ORG_MEMBER)
+			$this->db->table(TrackingOrgMember::getTable())
 				->where('uid', $uid)
 				->update(['hidden' => false]);
 		if ($updated === 0) {
@@ -1150,14 +1145,14 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$orgMember = null;
 
 		/** @var ?TrackedUser */
-		$user = $this->db->table(self::DB_TABLE)
+		$user = $this->db->table(TrackedUser::getTable())
 			->where('uid', $uid)
 			->asObj(TrackedUser::class)
 			->first();
 
 		if ($user === null) {
 			/** @var ?TrackingOrgMember */
-			$orgMember = $this->db->table(self::DB_ORG_MEMBER)
+			$orgMember = $this->db->table(TrackingOrgMember::getTable())
 				->where('uid', $uid)
 				->asObj(TrackingOrgMember::class)
 				->first();
@@ -1172,7 +1167,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		}
 
 		/** @var Collection<Tracking> */
-		$events = $this->db->table(self::DB_TRACKING)
+		$events = $this->db->table(Tracking::getTable())
 			->where('uid', $uid)
 			->orderByDesc('dt')
 			->select(['event', 'dt'])
@@ -1217,10 +1212,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	}
 
 	protected function trackUid(int $uid, string $name, ?string $sender=null): bool {
-		if ($this->db->table(self::DB_TABLE)->where('uid', $uid)->exists()) {
+		if ($this->db->table(TrackedUser::getTable())->where('uid', $uid)->exists()) {
 			return false;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(TrackedUser::getTable())
 			->insert([
 				'name' => $name,
 				'uid' => $uid,
@@ -1240,12 +1235,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			'uid' => $uid,
 			'duration' => Util::unixtimeToReadable($age),
 		]);
-		$deleted = $this->db->table(self::DB_TABLE)
+		$deleted = $this->db->table(TrackedUser::getTable())
 			->where('uid', $uid)
 			->delete();
 		if ($deleted) {
 			$this->buddylistManager->removeId($uid, static::REASON_TRACKER);
-			$this->db->table(self::DB_TRACKING)->where('uid', $uid)->delete();
+			$this->db->table(Tracking::getTable())->where('uid', $uid)->delete();
 		}
 	}
 
@@ -1264,7 +1259,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 
 		// Save the current members in a hash for easy access
 		/** @var Collection<TrackingOrgMember> */
-		$oldMembers = $this->db->table(static::DB_ORG_MEMBER)
+		$oldMembers = $this->db->table(TrackingOrgMember::getTable())
 			->where('org_id', $org->guild_id)
 			->asObj(TrackingOrgMember::class)
 			->keyBy('uid');
@@ -1280,7 +1275,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 					continue;
 				}
 				if (isset($oldMember)) {
-					$this->db->table(static::DB_ORG_MEMBER)
+					$this->db->table(TrackingOrgMember::getTable())
 						->where('uid', $oldMember->uid)
 						->update(['name' => $member->name]);
 					$oldMembers->forget((string)$oldMember->uid);
@@ -1302,7 +1297,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 				$numBuddies = $this->buddylistManager->getUsedBuddySlots();
 				if (count($toInsert) + $numBuddies > $maxBuddies) {
 					$this->db->rollback();
-					$this->db->table(static::DB_ORG)->where('org_id', $org->guild_id)->delete();
+					$this->db->table(TrackingOrg::getTable())->where('org_id', $org->guild_id)->delete();
 					throw new Exception(
 						'You cannot add ' . count($toInsert) . ' more '.
 						'characters to the tracking list, you only have '.
@@ -1315,9 +1310,9 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 					'count' => count($toInsert),
 					'orgname' => $org->orgname,
 				]);
-				$this->db->table(static::DB_ORG_MEMBER)
+				$this->db->table(TrackingOrgMember::getTable())
 					->chunkInsert($toInsert);
-				$this->db->table(static::DB_TRACKING)
+				$this->db->table(Tracking::getTable())
 					->chunkInsert($toInit);
 				foreach ($toInsert as $buddy) {
 					$this->logger->info('Adding {name} ({uid}) to tracker', [
@@ -1337,7 +1332,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 					'uid' => $exMember->uid,
 				]);
 				$this->buddylistManager->removeId($exMember->uid, static::REASON_ORG_TRACKER);
-				$this->db->table(self::DB_TRACKING)
+				$this->db->table(Tracking::getTable())
 					->where('uid', $exMember->uid)
 					->delete();
 			});

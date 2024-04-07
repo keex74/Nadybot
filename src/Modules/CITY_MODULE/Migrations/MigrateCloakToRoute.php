@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\CITY_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
 };
@@ -23,6 +23,6 @@ class MigrateCloakToRoute implements SchemaMigration {
 			'destination' => Source::ORG,
 			'two_way' => false,
 		];
-		$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+		$db->table(Route::getTable())->insert($route);
 	}
 }

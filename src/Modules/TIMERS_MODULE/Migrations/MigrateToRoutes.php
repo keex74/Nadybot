@@ -13,9 +13,8 @@ use Nadybot\Core\{
 	Modules\DISCORD\DiscordChannel,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
-use Nadybot\Modules\TIMERS_MODULE\TimerController;
+use Nadybot\Modules\TIMERS_MODULE\{Timer};
 use Psr\Log\LoggerInterface;
 use stdClass;
 use Throwable;
@@ -29,7 +28,7 @@ class MigrateToRoutes implements SchemaMigration {
 	private MessageHub $messageHub;
 
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = TimerController::DB_TABLE;
+		$table = Timer::getTable();
 		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->string('mode', 50)->nullable()->change();
 			$table->string('origin', 100)->nullable();
@@ -66,7 +65,7 @@ class MigrateToRoutes implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

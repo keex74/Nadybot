@@ -3,9 +3,9 @@
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\DBSchema\{RouteHopColor, RouteHopFormat};
+use Nadybot\Core\DBSchema\{Route, RouteHopColor, RouteHopFormat};
 use Nadybot\Core\Routing\Source;
-use Nadybot\Core\{DB, MessageHub, SchemaMigration};
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2023_05_15_14_37_04)]
@@ -29,6 +29,6 @@ class DefineDiscordRouteFormat implements SchemaMigration {
 			'destination' => Source::ORG,
 			'two_way' => false,
 		];
-		$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+		$db->table(Route::getTable())->insert($route);
 	}
 }

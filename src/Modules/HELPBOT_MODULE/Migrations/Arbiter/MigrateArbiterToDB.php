@@ -8,13 +8,13 @@ use Nadybot\Core\{
 	DB,
 	SchemaMigration,
 };
-use Nadybot\Modules\HELPBOT_MODULE\ArbiterController;
+use Nadybot\Modules\HELPBOT_MODULE\{ArbiterController, ICCArbiter};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_08_21_06_32_53, shared: true)]
 class MigrateArbiterToDB implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = ArbiterController::DB_TABLE;
+		$table = ICCArbiter::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('type', 3)->unique();

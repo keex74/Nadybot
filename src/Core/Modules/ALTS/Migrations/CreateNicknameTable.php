@@ -4,14 +4,14 @@ namespace Nadybot\Core\Modules\ALTS\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\Modules\ALTS\NickController;
+use Nadybot\Core\DBSchema\Nickname;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_12_20_08_18_07, shared: true)]
 class CreateNicknameTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = NickController::DB_TABLE;
+		$table = Nickname::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->string('main', 12)->primary();
 			$table->string('nick', 25)->nullable(false)->unique();

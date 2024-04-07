@@ -6,14 +6,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\TIMERS_MODULE\TimerController;
+use Nadybot\Modules\TIMERS_MODULE\{Timer};
 use Psr\Log\LoggerInterface;
 use stdClass;
 
 #[NCA\Migration(order: 2021_05_12_07_38_04)]
 class AddIdColumn implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = TimerController::DB_TABLE;
+		$table = Timer::getTable();
 		$data = $db->schema()->hasTable($table) ? $db->table($table)->get() : new Collection();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {

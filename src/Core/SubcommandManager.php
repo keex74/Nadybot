@@ -3,6 +3,7 @@
 namespace Nadybot\Core;
 
 use Illuminate\Support\Collection;
+use Nadybot\Core\DBSchema\CmdPermissionSet;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
@@ -76,7 +77,7 @@ class SubcommandManager {
 			'command' => $command,
 			'file' => $filename,
 		]);
-		$this->db->table(CommandManager::DB_TABLE)
+		$this->db->table(CmdCfg::getTable())
 			->upsert(
 				[
 					'module' => $module,
@@ -93,10 +94,10 @@ class SubcommandManager {
 		if (isset($this->chatBot->existing_subcmds[$command])) {
 			return;
 		}
-		$permSets = $this->db->table(CommandManager::DB_TABLE_PERM_SET)
+		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->select('name')->pluckStrings('name');
 		foreach ($permSets as $permSet) {
-			$this->db->table(CommandManager::DB_TABLE_PERMS)
+			$this->db->table(CmdPermission::getTable())
 				->insertOrIgnore(
 					[
 						'permission_set' => $permSet,
@@ -114,12 +115,12 @@ class SubcommandManager {
 
 		$this->subcommands = [];
 
-		$permissions = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissions = $this->db->table(CmdPermission::getTable())
 			->where('enabled', true)
 			->asObj(CmdPermission::class)
 			->groupBy('cmd');
 
-		$this->db->table(CommandManager::DB_TABLE)
+		$this->db->table(CmdCfg::getTable())
 			->where('cmdevent', 'subcmd')
 			->asObj(CmdCfg::class)
 			->each(static function (CmdCfg $row) use ($permissions): void {

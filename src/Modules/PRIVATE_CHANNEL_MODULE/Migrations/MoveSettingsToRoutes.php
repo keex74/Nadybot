@@ -12,7 +12,6 @@ use Nadybot\Core\{
 	DBSchema\Setting,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
@@ -62,7 +61,7 @@ class MoveSettingsToRoutes implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

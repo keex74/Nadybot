@@ -4,15 +4,14 @@ namespace Nadybot\Modules\PRIVATE_CHANNEL_MODULE\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\DBSchema\Audit;
+use Nadybot\Core\DBSchema\{Audit, Member};
 use Nadybot\Core\{AccessManager, DB, SchemaMigration};
-use Nadybot\Modules\PRIVATE_CHANNEL_MODULE\PrivateChannelController;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_08_02_08_26_20)]
 class AddMemberDetails implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = PrivateChannelController::DB_TABLE;
+		$table = Member::getTable();
 		$db->table($table)->whereNull('autoinv')->update(['autoinv' => 0]);
 		$db->schema()->table($table, static function (Blueprint $table) {
 			$table->integer('autoinv')->nullable(false)->change();
@@ -27,7 +26,7 @@ class AddMemberDetails implements SchemaMigration {
 		// Try to backfill the "joined" value from the audit table
 		foreach ($members as $member) {
 			/** @var ?Audit */
-			$audit = $db->table(AccessManager::DB_TABLE)
+			$audit = $db->table(Audit::getTable())
 				->where('actee', $member)
 				->where('action', AccessManager::ADD_RANK)
 				->orderBy('time')

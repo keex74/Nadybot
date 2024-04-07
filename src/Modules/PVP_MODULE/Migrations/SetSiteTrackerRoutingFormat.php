@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PVP_MODULE\Migrations;
 
-use Nadybot\Core\Routing\Source;
+use Nadybot\Core\DBSchema\{RouteHopColor, RouteHopFormat};
 use Nadybot\Core\{Attributes as NCA, DB, MessageHub, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
@@ -18,14 +18,14 @@ class SetSiteTrackerRoutingFormat implements SchemaMigration {
 			'tag_color' => $towerColor,
 			'text_color' => null,
 		];
-		$db->table(MessageHub::DB_TABLE_COLORS)->insert($hopColor);
+		$db->table(RouteHopColor::getTable())->insert($hopColor);
 
 		$hopFormat = [
 			'hop' => 'site-tracker',
 			'format' => 'SITE-TRACKER-%s',
 			'render' => true,
 		];
-		$db->table(Source::DB_TABLE)->insert($hopFormat);
+		$db->table(RouteHopFormat::getTable())->insert($hopFormat);
 
 		$this->messageHub->loadTagFormat();
 	}

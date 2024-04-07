@@ -66,11 +66,6 @@ use Throwable;
 	),
 ]
 class RelayController extends ModuleInstance {
-	public const DB_TABLE = 'relay_<myname>';
-	public const DB_TABLE_LAYER = 'relay_layer_<myname>';
-	public const DB_TABLE_ARGUMENT = 'relay_layer_argument_<myname>';
-	public const DB_TABLE_EVENT = 'relay_event_<myname>';
-
 	/** @var array<string,Relay> */
 	public array $relays = [];
 
@@ -458,17 +453,17 @@ class RelayController extends ModuleInstance {
 		}
 		try {
 			if (count($layers)) {
-				$this->db->table(static::DB_TABLE_ARGUMENT)
+				$this->db->table(RelayLayerArgument::getTable())
 					->whereIn('layer_id', $layers)
 					->delete();
-				$this->db->table(static::DB_TABLE_LAYER)
+				$this->db->table(RelayLayer::getTable())
 					->where('relay_id', $relay->id)
 					->delete();
 			}
-			$this->db->table(static::DB_TABLE_EVENT)
+			$this->db->table(RelayEvent::getTable())
 				->where('relay_id', $relay->id)
 				->delete();
-			$this->db->table(static::DB_TABLE)
+			$this->db->table(RelayConfig::getTable())
 				->delete($relay->id);
 		} catch (Throwable $e) {
 			if (!$transactionActive) {
@@ -497,10 +492,10 @@ class RelayController extends ModuleInstance {
 		foreach ($relays as $relay) {
 			$this->deleteRelay($relay);
 		}
-		$this->db->table(static::DB_TABLE_ARGUMENT)->truncate();
-		$this->db->table(static::DB_TABLE_LAYER)->truncate();
-		$this->db->table(static::DB_TABLE_EVENT)->truncate();
-		$this->db->table(static::DB_TABLE)->truncate();
+		$this->db->table(RelayLayerArgument::getTable())->truncate();
+		$this->db->table(RelayLayer::getTable())->truncate();
+		$this->db->table(RelayEvent::getTable())->truncate();
+		$this->db->table(RelayConfig::getTable())->truncate();
 		return count($relays);
 	}
 
@@ -791,7 +786,7 @@ class RelayController extends ModuleInstance {
 			[$eventName, $dir] = preg_split("/\s+/", $eventConfig??'');
 			$eventConfigs[$eventName] = $dir;
 		}
-		$this->db->table(static::DB_TABLE_EVENT)
+		$this->db->table(RelayEvent::getTable())
 			->where('relay_id', $relay->id)
 			->delete();
 		$relay->events = [];
@@ -831,22 +826,22 @@ class RelayController extends ModuleInstance {
 	 * @return RelayConfig[]
 	 */
 	public function getRelays(): array {
-		$arguments = $this->db->table(static::DB_TABLE_ARGUMENT)
+		$arguments = $this->db->table(RelayLayerArgument::getTable())
 			->orderBy('id')
 			->asObj(RelayLayerArgument::class)
 			->groupBy('layer_id');
-		$layers = $this->db->table(static::DB_TABLE_LAYER)
+		$layers = $this->db->table(RelayLayer::getTable())
 			->orderBy('id')
 			->asObj(RelayLayer::class)
 			->each(static function (RelayLayer $layer) use ($arguments): void {
 				$layer->arguments = $arguments->get($layer->id, new Collection())->toArray();
 			})
 			->groupBy('relay_id');
-		$events = $this->db->table(static::DB_TABLE_EVENT)
+		$events = $this->db->table(RelayEvent::getTable())
 			->orderBy('id')
 			->asObj(RelayEvent::class)
 			->groupBy('relay_id');
-		$relays = $this->db->table(static::DB_TABLE)
+		$relays = $this->db->table(RelayConfig::getTable())
 			->orderBy('id')
 			->asObj(RelayConfig::class)
 			->each(static function (RelayConfig $relay) use ($layers, $events): void {
@@ -861,7 +856,7 @@ class RelayController extends ModuleInstance {
 	/** Read a relay by its ID */
 	public function getRelay(int $id): ?RelayConfig {
 		/** @var RelayConfig|null */
-		$relay = $this->db->table(static::DB_TABLE)
+		$relay = $this->db->table(RelayConfig::getTable())
 			->where('id', $id)
 			->limit(1)
 			->asObj(RelayConfig::class)
@@ -876,7 +871,7 @@ class RelayController extends ModuleInstance {
 	/** Read a relay by its name */
 	public function getRelayByName(string $name): ?RelayConfig {
 		/** @var RelayConfig|null */
-		$relay = $this->db->table(static::DB_TABLE)
+		$relay = $this->db->table(RelayConfig::getTable())
 			->where('name', $name)
 			->limit(1)
 			->asObj(RelayConfig::class)
@@ -1091,7 +1086,7 @@ class RelayController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		$oldEvents = $relay->events;
 		try {
-			$this->db->table(static::DB_TABLE_EVENT)
+			$this->db->table(RelayEvent::getTable())
 				->where('relay_id', $relay->id)
 				->delete();
 			$relay->events = [];
@@ -1341,7 +1336,7 @@ class RelayController extends ModuleInstance {
 		$event->{$direction} = $enable;
 		if (isset($event->id)) {
 			if ($event->incoming === false && $event->outgoing === false) {
-				$this->db->table(static::DB_TABLE_EVENT)->delete($event->id);
+				$this->db->table(RelayEvent::getTable())->delete($event->id);
 				$relay->deleteEvent($eventName);
 			} else {
 				$this->db->update($event);
@@ -1372,19 +1367,19 @@ class RelayController extends ModuleInstance {
 
 	/** Add layers and args to a relay from the DB */
 	protected function completeRelay(RelayConfig $relay): void {
-		$relay->layers = $this->db->table(static::DB_TABLE_LAYER)
+		$relay->layers = $this->db->table(RelayLayer::getTable())
 		->where('relay_id', $relay->id)
 		->orderBy('id')
 		->asObj(RelayLayer::class)
 		->toArray();
 		foreach ($relay->layers as $layer) {
-			$layer->arguments = $this->db->table(static::DB_TABLE_ARGUMENT)
+			$layer->arguments = $this->db->table(RelayLayerArgument::getTable())
 			->where('layer_id', $layer->id)
 			->orderBy('id')
 			->asObj(RelayLayerArgument::class)
 			->toArray();
 		}
-		$relay->events = $this->db->table(static::DB_TABLE_EVENT)
+		$relay->events = $this->db->table(RelayEvent::getTable())
 			->where('relay_id', $relay->id)
 			->orderBy('id')
 			->asObj(RelayEvent::class)

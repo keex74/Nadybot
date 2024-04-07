@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core;
 
+use Nadybot\Core\DBSchema\{CmdCfg, CmdPermission, HlpCfg, Setting};
 use Nadybot\Core\{
 	Attributes as NCA,
 	DBSchema\HelpTopic,
@@ -11,8 +12,6 @@ use Psr\Log\LoggerInterface;
 
 #[NCA\Instance]
 class HelpManager {
-	public const DB_TABLE = 'hlpcfg_<myname>';
-
 	#[NCA\Logger]
 	private LoggerInterface $logger;
 
@@ -61,7 +60,7 @@ class HelpManager {
 		}
 
 		if (isset($this->chatBot->existing_helps[$command])) {
-			$this->db->table(self::DB_TABLE)->where('name', $command)
+			$this->db->table(HlpCfg::getTable())->where('name', $command)
 				->update([
 					'verify' => 1,
 					'file' => $actual_filename,
@@ -69,7 +68,7 @@ class HelpManager {
 					'description' => $description,
 				]);
 		} else {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(HlpCfg::getTable())
 				->insert([
 					'name' => $command,
 					'admin' => $admin,
@@ -84,11 +83,11 @@ class HelpManager {
 	/** Find a help topic by name if it exists and if the user has permissions to see it */
 	public function find(string $helpcmd, string $char): ?string {
 		$helpcmd = strtolower($helpcmd);
-		$settingsHelp = $this->db->table(SettingManager::DB_TABLE)
+		$settingsHelp = $this->db->table(Setting::getTable())
 			->where('name', $helpcmd)
 			->where('help', '!=', '')
 			->select('module', 'admin', 'name', 'help AS file');
-		$hlpHelp = $this->db->table(self::DB_TABLE)
+		$hlpHelp = $this->db->table(HlpCfg::getTable())
 			->where('name', $helpcmd)
 			->where('file', '!=', '')
 			->select('module', 'admin', 'name', 'file');
@@ -125,7 +124,7 @@ class HelpManager {
 		$helpTopic = strtolower($helpTopic);
 		$admin = strtolower($admin);
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(HlpCfg::getTable())
 			->where('name', $helpTopic)
 			->update(['admin' => $admin]);
 	}
@@ -148,19 +147,19 @@ class HelpManager {
 	 * @return HelpTopic[] Help topics
 	 */
 	public function getAllHelpTopics(?CmdContext $context): array {
-		$cmdHelp = $this->db->table(CommandManager::DB_TABLE, 'c')
-			->join(CommandManager::DB_TABLE_PERMS . ' as p', 'c.cmd', 'p.cmd')
+		$cmdHelp = $this->db->table(CmdCfg::getTable(), 'c')
+			->join(CmdPermission::getTable() . ' as p', 'c.cmd', 'p.cmd')
 			->where('c.cmdevent', 'cmd')
 			->where('p.enabled', true)
 			->select('c.module', 'p.access_level as admin', 'c.cmd AS name');
 		$cmdHelp->selectRaw('NULL' . $cmdHelp->as('file'));
 		$cmdHelp->addSelect('description');
 		$cmdHelp->selectRaw('2' . $cmdHelp->as('sort'));
-		$settingsHelp = $this->db->table(SettingManager::DB_TABLE)
+		$settingsHelp = $this->db->table(Setting::getTable())
 			->where('help', '!=', '')
 			->select('module', 'admin', 'name', 'help AS file', 'description');
 		$settingsHelp->selectRaw('3' . $settingsHelp->as('sort'));
-		$hlpHelp = $this->db->table(self::DB_TABLE)
+		$hlpHelp = $this->db->table(HlpCfg::getTable())
 			->select('module', 'admin', 'name', 'file', 'description');
 		$hlpHelp->selectRaw('1' . $settingsHelp->as('sort'));
 		$outerQuery = $this->db->fromSub(

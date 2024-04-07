@@ -26,8 +26,6 @@ use Throwable;
 	),
 ]
 class SiteTrackerController extends ModuleInstance {
-	public const DB_TRACKER = 'nw_tracker_<myname>';
-
 	public const EVENTS = [
 		'gas-change',
 		'site-hot',
@@ -123,7 +121,7 @@ class SiteTrackerController extends ModuleInstance {
 			}
 		}
 
-		$this->trackers = $this->db->table(self::DB_TRACKER)
+		$this->trackers = $this->db->table(TrackerEntry::getTable())
 			->asObj(TrackerEntry::class)
 			->reduce(
 				function (array $result, TrackerEntry $entry): array {
@@ -215,7 +213,7 @@ class SiteTrackerController extends ModuleInstance {
 			$context->reply("No tracker <highlight>#{$id}<end> found.");
 			return;
 		}
-		$this->db->table(self::DB_TRACKER)->delete($id);
+		$this->db->table(TrackerEntry::getTable())->delete($id);
 		$this->msgHub->unregisterMessageEmitter($tracker->getChannelName());
 		$routes = $this->msgHub->getRoutes();
 		foreach ($routes as $route) {

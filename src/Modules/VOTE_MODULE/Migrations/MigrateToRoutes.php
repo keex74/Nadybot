@@ -2,15 +2,14 @@
 
 namespace Nadybot\Modules\VOTE_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Nadybot\Modules\VOTE_MODULE\VoteController;
 use Psr\Log\LoggerInterface;
@@ -24,7 +23,7 @@ class MigrateToRoutes implements SchemaMigration {
 	private BotConfig $config;
 
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = MessageHub::DB_TABLE_ROUTES;
+		$table = Route::getTable();
 		$showWhere = $this->getSetting($db, 'vote_channel_spam');
 		if (!isset($showWhere)) {
 			if (strlen($this->config->general->orgName)) {
@@ -54,7 +53,7 @@ class MigrateToRoutes implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

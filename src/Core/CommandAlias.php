@@ -11,8 +11,6 @@ use Psr\Log\LoggerInterface;
 
 #[NCA\Instance]
 class CommandAlias {
-	public const DB_TABLE = 'cmd_alias_<myname>';
-
 	public const ALIAS_HANDLER = 'CommandAlias.process';
 
 	#[NCA\Logger]
@@ -28,7 +26,7 @@ class CommandAlias {
 	public function load(): void {
 		$this->logger->info('Loading enabled command aliases');
 
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(CmdAlias::getTable())
 			->where('status', 1)
 			->asObj(CmdAlias::class)
 			->each(function (CmdAlias $row): void {
@@ -151,31 +149,23 @@ class CommandAlias {
 			'alias' => $row->alias,
 			'command' => $row->cmd,
 		]);
-		return $this->db->table(self::DB_TABLE)->insert([
-			'module' => $row->module,
-			'cmd' => $row->cmd,
-			'alias' => $row->alias,
-			'status' => $row->status,
-		]) ? 1 : 0;
+		return $this->db->insert($row);
 	}
 
 	/** Updates a command alias in the db */
 	public function update(CmdAlias $row): int {
-		$this->logger->info('Updating alias :({alias})', ['alias' => $row->alias]);
-		return $this->db->table(self::DB_TABLE)
-			->where('alias', $row->alias)
-			->update([
-				'module' => $row->module,
-				'cmd' => $row->cmd,
-				'status' => $row->status,
-			]);
+		$this->logger->info('Updating alias ({alias})', ['alias' => $row]);
+		return $this->db->update($row);
 	}
 
 	/** Read the database entry for an alias */
 	public function get(string $alias): ?CmdAlias {
 		$alias = strtolower($alias);
 
-		return $this->db->table(self::DB_TABLE)->where('alias', $alias)->asObj(CmdAlias::class)->first();
+		return $this->db->table(CmdAlias::getTable())
+			->where('alias', $alias)
+			->asObj(CmdAlias::class)
+			->first();
 	}
 
 	/** Get the command for which an alias actually is an alias */
@@ -198,7 +188,7 @@ class CommandAlias {
 	 * @return Collection<CmdAlias>
 	 */
 	public function findAliasesByCommand(string $command): Collection {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(CmdAlias::getTable())
 			->whereIlike('cmd', $command)
 			->asObj(CmdAlias::class);
 	}
@@ -209,7 +199,7 @@ class CommandAlias {
 	 * @return CmdAlias[]
 	 */
 	public function getEnabledAliases(): array {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(CmdAlias::getTable())
 			->where('status', 1)
 			->orderBy('alias')
 			->asObj(CmdAlias::class)

@@ -4,13 +4,13 @@ namespace Nadybot\Modules\PRIVATE_CHANNEL_MODULE\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\DBSchema\Setting;
-use Nadybot\Core\{DB, SchemaMigration, SettingManager};
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_12_07_15_23_30)]
 class ConvertSuppresAltList implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = SettingManager::DB_TABLE;
+		$table = Setting::getTable();
 		if (!$db->schema()->hasTable($table)) {
 			return;
 		}
@@ -39,7 +39,7 @@ class ConvertSuppresAltList implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 		->where('name', $name)
 		->asObj(Setting::class)
 		->first();

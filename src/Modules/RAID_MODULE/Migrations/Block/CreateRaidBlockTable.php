@@ -5,13 +5,13 @@ namespace Nadybot\Modules\RAID_MODULE\Migrations\Block;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\RAID_MODULE\RaidBlockController;
+use Nadybot\Modules\RAID_MODULE\{RaidBlock};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_27_09_31_20)]
 class CreateRaidBlockTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = RaidBlockController::DB_TABLE;
+		$table = RaidBlock::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

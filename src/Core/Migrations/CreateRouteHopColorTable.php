@@ -6,21 +6,20 @@ use function Safe\preg_match;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 
+use Nadybot\Core\DBSchema\RouteHopColor;
 use Nadybot\Core\{
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	Safe,
 	SchemaMigration,
-	SettingManager,
 };
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_08_11_12_55_55)]
 class CreateRouteHopColorTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = MessageHub::DB_TABLE_COLORS;
+		$table = RouteHopColor::getTable();
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('hop', 50)->default('*');
@@ -66,7 +65,7 @@ class CreateRouteHopColorTable implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

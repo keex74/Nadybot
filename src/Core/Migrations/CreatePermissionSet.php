@@ -4,19 +4,20 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{CommandManager, DB, SchemaMigration};
+use Nadybot\Core\DBSchema\{CmdPermission, CmdPermissionSet};
+use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_01_15_12_53_09)]
 class CreatePermissionSet implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'cmd_permission_set_<myname>';
+		$table = CmdPermissionSet::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->string('name', 50)->unique();
 			$table->string('letter', 1)->unique();
 		});
 
-		$table = CommandManager::DB_TABLE_PERMS;
+		$table = CmdPermission::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->string('permission_set', 50)->index();

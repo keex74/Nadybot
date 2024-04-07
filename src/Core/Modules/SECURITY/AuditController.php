@@ -8,7 +8,6 @@ use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
-	AccessManager,
 	Attributes as NCA,
 	CmdContext,
 	DB,
@@ -60,7 +59,7 @@ class AuditController extends ModuleInstance {
 	#[NCA\Help\Example('<symbol>audit actor=Nady action=set-rank after=last week')]
 	#[NCA\Help\Example('<symbol>audit action=action=invite,join,leave after=2021-08-01 20:17:55 CEST')]
 	public function auditListCommand(CmdContext $context, ?string $filter): void {
-		$query = $this->db->table(AccessManager::DB_TABLE)
+		$query = $this->db->table(Audit::getTable())
 			->orderByDesc('time')
 			->orderByDesc('id');
 		$params = [];
@@ -112,7 +111,7 @@ class AuditController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'Audit[]', desc: 'The audit log entries')
 	]
 	public function auditGetListEndpoint(Request $request): Response {
-		$query = $this->db->table(AccessManager::DB_TABLE)
+		$query = $this->db->table(Audit::getTable())
 			->orderByDesc('time')
 			->orderByDesc('id');
 

@@ -46,11 +46,6 @@ use Throwable;
 	NCA\ProvidesEvent(ErrorCmdEvent::class)
 ]
 class CommandManager implements MessageEmitter {
-	public const DB_TABLE = 'cmdcfg_<myname>';
-	public const DB_TABLE_PERMS = 'cmd_permission_<myname>';
-	public const DB_TABLE_PERM_SET = 'cmd_permission_set_<myname>';
-	public const DB_TABLE_MAPPING = 'cmd_permission_set_mapping_<myname>';
-
 	/** @var array<string,array<string,CommandHandler>> */
 	public array $commands;
 
@@ -115,7 +110,7 @@ class CommandManager implements MessageEmitter {
 	}
 
 	public function loadPermsetMappings(): void {
-		$query = $this->db->table(self::DB_TABLE_MAPPING);
+		$query = $this->db->table(CmdPermSetMapping::getTable());
 		$this->permSetMappings = $query->orderByDesc($query->colFunc('LENGTH', 'source'))
 			->asObj(CmdPermSetMapping::class)
 			->toArray();
@@ -206,7 +201,7 @@ class CommandManager implements MessageEmitter {
 		);
 		$this->cmdDefaultPermissions[$command] = $defaultPerms;
 		try {
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(CmdCfg::getTable())
 				->upsert(
 					[
 						'module' => $module,
@@ -227,13 +222,13 @@ class CommandManager implements MessageEmitter {
 				'exception' => $e,
 			]);
 		}
-		$permSets = $this->db->table(self::DB_TABLE_PERM_SET)
+		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->select('name')->pluckStrings('name');
 		foreach ($permSets as $permSet) {
 			$this->logger->info('Adding permissions to command {command}', [
 				'command' => $command,
 			]);
-			$this->db->table(self::DB_TABLE_PERMS)
+			$this->db->table(CmdPermission::getTable())
 				->insertOrIgnore(
 					[
 						'permission_set' => $permSet,
@@ -318,7 +313,7 @@ class CommandManager implements MessageEmitter {
 	 * @param string|null $admin         The access level for which to update the status
 	 */
 	public function updateStatus(?string $permissionSet, ?string $cmd, ?string $module, int $status, ?string $admin): int {
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(CmdCfg::getTable())
 			->where('cmdevent', 'cmd');
 		if ($module !== '' && $module !== null) {
 			$query->where('module', $module);
@@ -332,7 +327,7 @@ class CommandManager implements MessageEmitter {
 		if ($data->isEmpty()) {
 			return 0;
 		}
-		$permissionQuery = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissionQuery = $this->db->table(CmdPermission::getTable())
 			->whereIn('cmd', $data->pluck('cmd')->toArray());
 
 		if ($permissionSet !== 'all' && $permissionSet !== '' && $permissionSet !== null) {
@@ -364,21 +359,21 @@ class CommandManager implements MessageEmitter {
 	}
 
 	public function hasPermissionSet(string $name): bool {
-		return $this->db->table(CommandManager::DB_TABLE_PERM_SET)
+		return $this->db->table(CmdPermissionSet::getTable())
 			->where('name', $name)
 			->exists();
 	}
 
 	/** @return Collection<CmdPermissionSet> */
 	public function getPermissionSets(): Collection {
-		$permSets = $this->db->table(CommandManager::DB_TABLE_PERM_SET)
+		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(CmdPermissionSet::class);
 		return $permSets;
 	}
 
 	/** @return Collection<ExtCmdPermissionSet> */
 	public function getExtPermissionSets(): Collection {
-		$permSets = $this->db->table(CommandManager::DB_TABLE_PERM_SET)
+		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(ExtCmdPermissionSet::class);
 		$mappings = $this->getPermSetMappings()
 			->groupBy('permission_set');
@@ -395,12 +390,12 @@ class CommandManager implements MessageEmitter {
 
 	/** @return Collection<CmdCfg> */
 	public function getAll(bool $includeSubcommands=false): Collection {
-		$permissions = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissions = $this->db->table(CmdPermission::getTable())
 			->asObj(CmdPermission::class)
 			->groupBy('cmd');
 
 		/** @var Collection<CmdCfg> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(CmdCfg::getTable())
 			->whereIn('cmdevent', $includeSubcommands ? ['cmd', 'subcmd'] : ['cmd'])
 			->asObj(CmdCfg::class)
 			->each(static function (CmdCfg $row) use ($permissions): void {
@@ -412,12 +407,12 @@ class CommandManager implements MessageEmitter {
 
 	/** @return Collection<CmdCfg> */
 	public function getAllForModule(string $module, bool $includeSubcommands=false): Collection {
-		$permissions = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissions = $this->db->table(CmdPermission::getTable())
 			->asObj(CmdPermission::class)
 			->groupBy('cmd');
 
 		/** @var Collection<CmdCfg> */
-		$data = $this->db->table(self::DB_TABLE)
+		$data = $this->db->table(CmdCfg::getTable())
 			->whereIn('cmdevent', $includeSubcommands ? ['cmd', 'subcmd'] : ['cmd'])
 			->where('module', $module)
 			->asObj(CmdCfg::class)
@@ -449,7 +444,7 @@ class CommandManager implements MessageEmitter {
 		if (isset($subCmd)) {
 			return $subCmd;
 		}
-		$query = $this->db->table(self::DB_TABLE)
+		$query = $this->db->table(CmdCfg::getTable())
 			->where('cmd', strtolower($command));
 
 		/** @var ?CmdCfg */
@@ -457,7 +452,7 @@ class CommandManager implements MessageEmitter {
 		if (!isset($cmd)) {
 			return null;
 		}
-		$permQuery = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permQuery = $this->db->table(CmdPermission::getTable())
 			->where('cmd', strtolower($command));
 		if (isset($permissionSet)) {
 			$permQuery->where('permission_set', $permissionSet);
@@ -470,14 +465,14 @@ class CommandManager implements MessageEmitter {
 	}
 
 	public function cmdEnabled(string $command): bool {
-		return $this->db->table(CommandManager::DB_TABLE_PERMS)
+		return $this->db->table(CmdPermission::getTable())
 			->where('cmd', $command)
 			->where('enabled', true)
 			->exists();
 	}
 
 	public function cmdExecutable(string $command, string $sender, ?string $permissionSet=null): bool {
-		$permissionQuery = $this->db->table(CommandManager::DB_TABLE_PERMS)
+		$permissionQuery = $this->db->table(CmdPermission::getTable())
 			->where('cmd', $command)
 			->where('enabled', true);
 		if (isset($permissionSet)) {
@@ -936,7 +931,7 @@ class CommandManager implements MessageEmitter {
 	 * @return string|string[] The help text as one or more pages
 	 */
 	public function getCmdHelpFromCode(string $cmd, CmdContext $context): string|array {
-		$cmds = $this->db->table(self::DB_TABLE)
+		$cmds = $this->db->table(CmdCfg::getTable())
 			->where('dependson', $cmd)
 			->orWhere('cmd', $cmd)
 			->asObj(CmdCfg::class)
@@ -1249,7 +1244,7 @@ class CommandManager implements MessageEmitter {
 
 	public function getPermissionSet(string $name): ?CmdPermissionSet {
 		/** @var ?CmdPermissionSet */
-		$permSet = $this->db->table(self::DB_TABLE_PERM_SET)
+		$permSet = $this->db->table(CmdPermissionSet::getTable())
 			->where('name', $name)
 			->asObj(CmdPermissionSet::class)
 			->first();
@@ -1258,7 +1253,7 @@ class CommandManager implements MessageEmitter {
 
 	public function getExtPermissionSet(string $name): ?ExtCmdPermissionSet {
 		/** @var ?ExtCmdPermissionSet */
-		$permSet = $this->db->table(self::DB_TABLE_PERM_SET)
+		$permSet = $this->db->table(CmdPermissionSet::getTable())
 			->where('name', $name)
 			->asObj(ExtCmdPermissionSet::class)
 			->first();
@@ -1309,7 +1304,7 @@ class CommandManager implements MessageEmitter {
 			throw new InvalidArgumentException("The permission set <highlight>{$name}<end> does not exist.");
 		}
 		if ($data->name !== $old->name) {
-			$newNameExists = $this->db->table(self::DB_TABLE_PERM_SET)
+			$newNameExists = $this->db->table(CmdPermissionSet::getTable())
 				->where('name', $data->name)->exists();
 			if ($newNameExists) {
 				throw new InvalidArgumentException(
@@ -1318,7 +1313,7 @@ class CommandManager implements MessageEmitter {
 			}
 		}
 		if ($data->letter !== $old->letter) {
-			$newLetterExists = $this->db->table(self::DB_TABLE_PERM_SET)
+			$newLetterExists = $this->db->table(CmdPermissionSet::getTable())
 				->where('letter', $data->letter)->exists();
 			if ($newLetterExists) {
 				throw new InvalidArgumentException(
@@ -1328,17 +1323,17 @@ class CommandManager implements MessageEmitter {
 		}
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(self::DB_TABLE_PERM_SET)
+			$this->db->table(CmdPermissionSet::getTable())
 				->where('name', $name)
 				->update([
 					'name' => $data->name,
 					'letter' => $data->letter,
 				]);
 			if ($data->name !== $old->name) {
-				$this->db->table(self::DB_TABLE_MAPPING)
+				$this->db->table(CmdPermSetMapping::getTable())
 					->where('permission_set', $name)
 					->update(['permission_set' => $data->name]);
-				$this->db->table(self::DB_TABLE_PERMS)
+				$this->db->table(CmdPermission::getTable())
 					->where('permission_set', $name)
 					->update(['permission_set' => $data->name]);
 			}
@@ -1359,7 +1354,7 @@ class CommandManager implements MessageEmitter {
 	 * @throws Exception                on unknown errors, like SQL
 	 */
 	public function clonePermissionSet(string $oldName, string $name, string $letter): void {
-		$perms = $this->db->table(self::DB_TABLE_PERMS)
+		$perms = $this->db->table(CmdPermission::getTable())
 			->where('permission_set', $oldName)
 			->asObj(CmdPermission::class)
 			->toArray();
@@ -1374,7 +1369,7 @@ class CommandManager implements MessageEmitter {
 	 */
 	public function deletePermissionSet(string $name): void {
 		$name = strtolower($name);
-		if (!$this->db->table(self::DB_TABLE_PERM_SET)->where('name', $name)->exists()) {
+		if (!$this->db->table(CmdPermissionSet::getTable())->where('name', $name)->exists()) {
 			throw new InvalidArgumentException("The permission set <highlight>{$name}<end> does not exist.");
 		}
 		if (count($usedBy = $this->getSourcesForPermsetName($name)) > 0) {
@@ -1386,10 +1381,10 @@ class CommandManager implements MessageEmitter {
 		}
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table(self::DB_TABLE_PERMS)
+			$this->db->table(CmdPermission::getTable())
 				->where('permission_set', $name)
 				->delete();
-			$this->db->table(self::DB_TABLE_PERM_SET)
+			$this->db->table(CmdPermissionSet::getTable())
 				->where('name', $name)
 				->delete();
 		} catch (Exception $e) {
@@ -1416,7 +1411,7 @@ class CommandManager implements MessageEmitter {
 		if ($this->getPermSetMappings()->where('source', $source)->isEmpty()) {
 			return false;
 		}
-		$numDeleted = $this->db->table(self::DB_TABLE_MAPPING)
+		$numDeleted = $this->db->table(CmdPermSetMapping::getTable())
 			->where('source', $source)
 			->delete();
 		if ($numDeleted === 0) {
@@ -1697,10 +1692,10 @@ class CommandManager implements MessageEmitter {
 		if (strlen($letter) !== 1) {
 			throw new InvalidArgumentException('The letter of a permission set must be exactly 1 character long.');
 		}
-		if ($this->db->table(self::DB_TABLE_PERM_SET)->where('name', $name)->exists()) {
+		if ($this->db->table(CmdPermissionSet::getTable())->where('name', $name)->exists()) {
 			throw new InvalidArgumentException("The permission set <highlight>{$name}<end> already exists.");
 		}
-		if ($this->db->table(self::DB_TABLE_PERM_SET)->where('letter', $letter)->exists()) {
+		if ($this->db->table(CmdPermissionSet::getTable())->where('letter', $letter)->exists()) {
 			throw new InvalidArgumentException("A permission set with the letter <highlight>{$letter}<end> already exists.");
 		}
 		$inserts = [];
@@ -1714,9 +1709,9 @@ class CommandManager implements MessageEmitter {
 			$this->db->beginTransaction();
 		}
 		try {
-			$this->db->table(self::DB_TABLE_PERM_SET)
+			$this->db->table(CmdPermissionSet::getTable())
 				->insert(['name' => $name, 'letter' => $letter]);
-			$this->db->table(self::DB_TABLE_PERMS)
+			$this->db->table(CmdPermission::getTable())
 				->chunkInsert($inserts);
 		} catch (Exception $e) {
 			if (!$inTransaction) {

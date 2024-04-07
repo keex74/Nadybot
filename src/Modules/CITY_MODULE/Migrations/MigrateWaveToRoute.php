@@ -2,14 +2,13 @@
 
 namespace Nadybot\Modules\CITY_MODULE\Migrations;
 
+use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
 	DBSchema\Setting,
-	MessageHub,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 	SettingMode,
 };
 use Nadybot\Modules\CITY_MODULE\CityWaveController;
@@ -39,12 +38,12 @@ class MigrateWaveToRoute implements SchemaMigration {
 				'destination' => $new,
 				'two_way' => false,
 			];
-			$db->table(MessageHub::DB_TABLE_ROUTES)->insert($route);
+			$db->table(Route::getTable())->insert($route);
 		}
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

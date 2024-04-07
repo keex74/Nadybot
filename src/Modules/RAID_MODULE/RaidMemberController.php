@@ -45,7 +45,6 @@ use Nadybot\Core\{
 	NCA\EmitsMessages('raid', 'kick'),
 ]
 class RaidMemberController extends ModuleInstance {
-	public const DB_TABLE = 'raid_member_<myname>';
 	public const CMD_RAID_JOIN_LEAVE = 'raid join/leave';
 	public const CMD_RAID_KICK_ADD = 'raid kick/add';
 
@@ -101,11 +100,11 @@ class RaidMemberController extends ModuleInstance {
 
 	/** Resume an old raid after a bot restart */
 	public function resumeRaid(Raid $raid): void {
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidMember::getTable())
 			->where('raid_id', $raid->raid_id)
 			->whereNull('left')
 			->update(['left' => time()]);
-		$raid->raiders = $this->db->table(self::DB_TABLE)
+		$raid->raiders = $this->db->table(RaidMember::getTable())
 			->where('raid_id', $raid->raid_id)
 			->asObj(RaidMember::class)
 			->keyBy('player')->toArray();
@@ -180,7 +179,7 @@ class RaidMemberController extends ModuleInstance {
 			$raid->raiders[$player]->left = null;
 		}
 		$this->eventManager->fireEvent(new RaidJoinEvent(raid: $raid, player: $player));
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidMember::getTable())
 			->insert([
 				'raid_id' => $raid->raid_id,
 				'player' => $player,
@@ -240,7 +239,7 @@ class RaidMemberController extends ModuleInstance {
 			$countMsg = ' (' . ($numRaiders - 1) . "/{$raid->max_members} slots)";
 		}
 		$raid->raiders[$player]->left = time();
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidMember::getTable())
 			->where('raid_id', $raid->raid_id)
 			->where('player', $player)
 			->whereNull('left')

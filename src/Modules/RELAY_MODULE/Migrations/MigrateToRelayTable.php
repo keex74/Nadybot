@@ -7,20 +7,18 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DB,
+	DBSchema\EventCfg,
 	DBSchema\Route,
 	DBSchema\RouteModifier,
 	DBSchema\RouteModifierArgument,
 	DBSchema\Setting,
-	EventManager,
 	Modules\CONFIG\ConfigController,
 	Routing\Source,
 	SchemaMigration,
 	SettingManager,
 };
-
 use Nadybot\Modules\RELAY_MODULE\{
 	RelayConfig,
-	RelayController,
 	RelayLayer,
 	RelayLayerArgument,
 };
@@ -29,8 +27,6 @@ use Psr\Log\LoggerInterface;
 #[NCA\Migration(order: 2021_08_17_09_03_34)]
 class MigrateToRelayTable implements SchemaMigration {
 	protected string $prefix = '';
-	#[NCA\Inject]
-	private RelayController $relayController;
 
 	#[NCA\Inject]
 	private SettingManager $settingManager;
@@ -53,7 +49,7 @@ class MigrateToRelayTable implements SchemaMigration {
 		if (preg_match('/^(bot|relay)/', $name)) {
 			$name = "{$this->prefix}{$name}";
 		}
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();
@@ -63,7 +59,7 @@ class MigrateToRelayTable implements SchemaMigration {
 		if ($this->prefix === 'a') {
 			return false;
 		}
-		$relayLogon = $db->table(EventManager::DB_TABLE)
+		$relayLogon = $db->table(EventCfg::getTable())
 			->where('module', 'RELAY_MODULE')
 			->where('status', '1')
 			->whereIn('type', ['logon', 'logoff', 'joinpriv', 'leavepriv'])
@@ -120,7 +116,7 @@ class MigrateToRelayTable implements SchemaMigration {
 				$transportArgs['channel'] = $relayBot->value;
 				break;
 			default:
-				$db->table($this->relayController::DB_TABLE)->delete($relay->id);
+				$db->table(RelayConfig::getTable())->delete($relay->id);
 				return null;
 		}
 		$transport = new RelayLayer(

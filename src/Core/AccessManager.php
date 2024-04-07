@@ -19,7 +19,6 @@ use SplObjectStorage;
  */
 #[NCA\Instance]
 class AccessManager {
-	public const DB_TABLE = 'audit_<myname>';
 	public const ADD_RANK = 'add-rank';
 	public const DEL_RANK = 'del-rank';
 	public const PERM_BAN = 'permanent-ban';

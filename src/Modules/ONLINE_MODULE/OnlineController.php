@@ -71,7 +71,6 @@ use Psr\Log\LoggerInterface;
 class OnlineController extends ModuleInstance {
 	public const CMD_MANAGE_HIDDEN = 'online manage hidden users';
 
-	public const DB_TABLE_HIDE = 'online_hide_<myname>';
 	protected const GROUP_OFF = 0;
 	protected const GROUP_BY_PLAYER = 1;
 	protected const GROUP_BY_ORG = 1;
@@ -339,7 +338,7 @@ class OnlineController extends ModuleInstance {
 		#[NCA\Str('show', 'unhide')] string $action,
 		int $id
 	): void {
-		if ($this->db->table(self::DB_TABLE_HIDE)->delete($id) === 0) {
+		if ($this->db->table(OnlineHide::getTable())->delete($id) === 0) {
 			$context->reply("The mask <highlight>#{$id}<end> is not hidden.");
 		} else {
 			$context->reply("<highlight>#{$id}<end> removed from the online hidden mask list.");
@@ -354,7 +353,7 @@ class OnlineController extends ModuleInstance {
 		string $mask
 	): void {
 		$mask = strtolower($mask);
-		if ($this->db->table(self::DB_TABLE_HIDE)
+		if ($this->db->table(OnlineHide::getTable())
 			->where('mask', $mask)
 			->delete() === 0
 		) {
@@ -739,7 +738,7 @@ class OnlineController extends ModuleInstance {
 
 	/** @return OnlineHide[] */
 	public function getHiddenPlayerMasks(): array {
-		return $this->db->table(self::DB_TABLE_HIDE)
+		return $this->db->table(OnlineHide::getTable())
 			->asObj(OnlineHide::class)
 			->toArray();
 	}

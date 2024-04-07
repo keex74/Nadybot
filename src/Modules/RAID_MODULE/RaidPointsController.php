@@ -74,10 +74,6 @@ use Throwable;
 	NCA\EmitsMessages('raid', 'points-modified'),
 ]
 class RaidPointsController extends ModuleInstance {
-	public const DB_TABLE = 'raid_points_<myname>';
-	public const DB_TABLE_LOG = 'raid_points_log_<myname>';
-	public const DB_TABLE_REWARD = 'raid_reward_<myname>';
-
 	public const CMD_RAID_REWARD_PUNISH = 'raid reward/punish';
 	public const CMD_POINTS_OTHER = 'points see other';
 	public const CMD_POINTS_MODIFY = 'points modify';
@@ -179,7 +175,7 @@ class RaidPointsController extends ModuleInstance {
 		}
 		$raid->raiders[$player]->points++;
 		$raid->raiders[$player]->pointsRewarded++;
-		$updated = $this->db->table(self::DB_TABLE_LOG)
+		$updated = $this->db->table(RaidPointsLog::getTable())
 			->where('raid_id', $raid->raid_id)
 			->where('username', $pointsChar)
 			->where('ticker', true)
@@ -188,7 +184,7 @@ class RaidPointsController extends ModuleInstance {
 			$this->giveRaidPoints($pointsChar, 1);
 			return $pointsChar;
 		}
-		$this->db->table(self::DB_TABLE_LOG)
+		$this->db->table(RaidPointsLog::getTable())
 			->insert([
 				'username' => $pointsChar,
 				'delta' => 1,
@@ -228,7 +224,7 @@ class RaidPointsController extends ModuleInstance {
 				$raid->raiders[$player]->pointsRewarded += $delta;
 			}
 		}
-		$inserted = $this->db->table(self::DB_TABLE_LOG)
+		$inserted = $this->db->table(RaidPointsLog::getTable())
 			->insert([
 				'username' =>   ucfirst(strtolower($player)),
 				'delta' =>      $delta,
@@ -293,7 +289,7 @@ class RaidPointsController extends ModuleInstance {
 
 	/** Get this character's raid points, not taking into consideration any alts */
 	public function getThisAltsRaidPoints(string $player): ?int {
-		return $this->db->table(self::DB_TABLE)
+		return $this->db->table(RaidPoints::getTable())
 			->where('username', $player)
 			->select('points')
 			->pluckInts('points')
@@ -396,7 +392,7 @@ class RaidPointsController extends ModuleInstance {
 		#[NCA\Str('top')] string $action
 	): void {
 		/** @var RaidPoints[] */
-		$topRaiders = $this->db->table(self::DB_TABLE)
+		$topRaiders = $this->db->table(RaidPoints::getTable())
 			->orderByDesc('points')
 			->limit($this->raidTopAmount)
 			->asObj(RaidPoints::class)
@@ -657,7 +653,7 @@ class RaidPointsController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			$newPoints = $altsPoints + ($mainPoints??0);
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(RaidPoints::getTable())
 				->upsert(
 					[
 						'username' => $event->main,
@@ -665,7 +661,7 @@ class RaidPointsController extends ModuleInstance {
 					],
 					['username']
 				);
-			$this->db->table(self::DB_TABLE)
+			$this->db->table(RaidPoints::getTable())
 				->where('username', $event->alt)
 				->delete();
 		} catch (Throwable $e) {
@@ -685,7 +681,7 @@ class RaidPointsController extends ModuleInstance {
 	#[NCA\HandlesCommand('reward')]
 	public function rewardListCommand(CmdContext $context): void {
 		/** @var Collection<RaidReward> */
-		$rewards = $this->db->table(self::DB_TABLE_REWARD)
+		$rewards = $this->db->table(RaidReward::getTable())
 			->orderBy('name')
 			->asObj(RaidReward::class);
 		if ($rewards->isEmpty()) {
@@ -706,7 +702,7 @@ class RaidPointsController extends ModuleInstance {
 	}
 
 	public function getRaidReward(string $name): ?RaidReward {
-		return $this->db->table(self::DB_TABLE_REWARD)
+		return $this->db->table(RaidReward::getTable())
 			->whereIlike('name', $name)
 			->asObj(RaidReward::class)->first();
 	}
@@ -762,7 +758,7 @@ class RaidPointsController extends ModuleInstance {
 	/** Remove a pre-defined raid reward */
 	#[NCA\HandlesCommand(self::CMD_REWARD_EDIT)]
 	public function rewardRemIdCommand(CmdContext $context, PRemove $action, int $id): void {
-		$deleted = $this->db->table(self::DB_TABLE_REWARD)->delete($id);
+		$deleted = $this->db->table(RaidReward::getTable())->delete($id);
 		if ($deleted) {
 			$context->reply("Raid reward <highlight>#{$id}<end> successfully deleted.");
 		} else {
@@ -813,12 +809,12 @@ class RaidPointsController extends ModuleInstance {
 		if ($oldPoints === null) {
 			return;
 		}
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidPoints::getTable())
 			->upsert(
 				['username' => $event->main, 'points' => $oldPoints],
 				['username']
 			);
-		$this->db->table(self::DB_TABLE)
+		$this->db->table(RaidPoints::getTable())
 			->where('username', $event->alt)
 			->delete();
 		$this->logger->notice('Moved {points} raid points from {alt} to {main}.', [
@@ -864,13 +860,13 @@ class RaidPointsController extends ModuleInstance {
 
 	/** Low level function to modify a player's points, returning success or not */
 	protected function giveRaidPoints(string $player, int $delta): bool {
-		$updated = $this->db->table(self::DB_TABLE)
+		$updated = $this->db->table(RaidPoints::getTable())
 			->where('username', $player)
 			->increment('points', $delta);
 		if ($updated) {
 			return true;
 		}
-		$inserted = $this->db->table(self::DB_TABLE)
+		$inserted = $this->db->table(RaidPoints::getTable())
 			->insert([
 				'username' => $player,
 				'points' => $delta,
@@ -886,7 +882,7 @@ class RaidPointsController extends ModuleInstance {
 	protected function getRaidpointLogsForAccount(string $sender): array {
 		$main = $this->altsController->getMainOf($sender);
 		$alts = $this->altsController->getAltsOf($main);
-		return $this->db->table(self::DB_TABLE_LOG)
+		return $this->db->table(RaidPointsLog::getTable())
 			->whereIn('username', array_merge([$sender], $alts))
 			->orderByDesc('time')
 			->limit(50)
@@ -901,7 +897,7 @@ class RaidPointsController extends ModuleInstance {
 	 * @return RaidPointsLog[]
 	 */
 	protected function getRaidpointLogsForChar(string $sender): array {
-		return $this->db->table(self::DB_TABLE_LOG)
+		return $this->db->table(RaidPointsLog::getTable())
 			->where('username', $sender)
 			->orderByDesc('time')
 			->limit(50)

@@ -5,13 +5,13 @@ namespace Nadybot\Modules\LOOT_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
-use Nadybot\Modules\LOOT_MODULE\LootController;
+use Nadybot\Modules\LOOT_MODULE\LootHistory;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_05_05_15_01_53)]
 class CreateLootHistoryTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = LootController::DB_TABLE;
+		$table = LootHistory::getTable();
 		$db->schema()->create($table, static function (Blueprint $table) {
 			$table->id();
 			$table->unsignedInteger('dt')->index();

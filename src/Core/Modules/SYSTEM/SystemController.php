@@ -541,7 +541,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 	public function refreshMySQLConnectionEvent(Event $eventObj): void {
 		// if the bot doesn't query the mysql database for 8 hours the db connection is closed
 		$this->logger->info('Pinging database');
-		$this->db->table(SettingManager::DB_TABLE)
+		$this->db->table(Setting::getTable())
 			->limit(1)
 			->asObj(Setting::class)
 			->first();

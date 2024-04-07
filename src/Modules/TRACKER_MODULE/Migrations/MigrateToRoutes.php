@@ -14,7 +14,6 @@ use Nadybot\Core\{
 	Modules\DISCORD\DiscordChannel,
 	Routing\Source,
 	SchemaMigration,
-	SettingManager,
 };
 use Nadybot\Modules\TRACKER_MODULE\TrackerController;
 use Psr\Log\LoggerInterface;
@@ -35,7 +34,7 @@ class MigrateToRoutes implements SchemaMigration {
 	private MessageHub $messageHub;
 
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = MessageHub::DB_TABLE_ROUTES;
+		$table = Route::getTable();
 		$showWhere = $this->getSetting($db, 'show_tracker_events');
 		if (!isset($showWhere)) {
 			if (strlen($this->config->general->orgName)) {
@@ -88,7 +87,7 @@ class MigrateToRoutes implements SchemaMigration {
 	}
 
 	protected function getSetting(DB $db, string $name): ?Setting {
-		return $db->table(SettingManager::DB_TABLE)
+		return $db->table(Setting::getTable())
 			->where('name', $name)
 			->asObj(Setting::class)
 			->first();

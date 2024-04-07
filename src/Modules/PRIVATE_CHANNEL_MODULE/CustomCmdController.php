@@ -77,7 +77,7 @@ class CustomCmdController extends ModuleInstance {
 	)]
 	public function changeCustomCmdDir(SettingEvent $event): void {
 		if ($event->oldValue->value !== self::OFF) {
-			$this->db->table($this->cmdManager::DB_TABLE)
+			$this->db->table(CmdCfg::getTable())
 				->where('file', 'CustomCmdController.executeCustomCmd:123')
 				->asObj(CmdCfg::class)
 				->each(function (CmdCfg $cfg): void {
@@ -90,7 +90,7 @@ class CustomCmdController extends ModuleInstance {
 							);
 						});
 				});
-			$this->db->table($this->cmdManager::DB_TABLE)
+			$this->db->table(CmdCfg::getTable())
 				->where('file', 'CustomCmdController.executeCustomCmd:123')
 				->delete();
 		}
@@ -193,7 +193,7 @@ class CustomCmdController extends ModuleInstance {
 
 	/** Check if a given command is already defined somewhere else */
 	private function cmdExists(string $cmd): bool {
-		$exists = $this->db->table($this->cmdManager::DB_TABLE)
+		$exists = $this->db->table(CmdCfg::getTable())
 			->where('cmd', $cmd)
 			->where('file', '!=', 'CustomCmdController.executeCustomCmd:123')
 			->count() > 0;
