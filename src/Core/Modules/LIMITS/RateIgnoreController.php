@@ -91,12 +91,11 @@ class RateIgnoreController extends ModuleInstance {
 		if ($this->check($user) === true) {
 			return "<highlight>{$user}<end> is already on the rate limit ignore list.";
 		}
-		$this->db->table('rateignorelist')
-			->insert([
-				'name' => $user,
-				'added_by' => $sender,
-				'added_dt' => time(),
-			]);
+		$this->db->insert(new RateIgnoreList(
+			name: $user,
+			added_by: $sender,
+			added_dt: time(),
+		));
 		return "<highlight>{$user}<end> has been added to the rate limit ignore list.";
 	}
 

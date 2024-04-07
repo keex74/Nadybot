@@ -272,17 +272,16 @@ class BankController extends ModuleInstance {
 				$container = $location;
 			}
 
-			$this->db->table('bank')
-				->insert([
-					'name' => $name,
-					'lowid' => $lowId,
-					'highid' => $highId,
-					'ql' => $ql,
-					'player' => $player,
-					'container' => $container,
-					'container_id' => $containerId,
-					'location' => $location,
-				]);
+			$this->db->insert(new Bank(
+				name: $name,
+				lowid: (int)$lowId,
+				highid: (int)$highId,
+				ql: (int)$ql,
+				player: $player,
+				container: $container,
+				container_id: (int)$containerId,
+				location: $location,
+			));
 		}
 		$this->db->commit();
 	}

@@ -549,14 +549,13 @@ class OnlineController extends ModuleInstance {
 					$this->buildOnlineQuery($name, 'guild')
 						->update(['dt' => $time]);
 				} else {
-					$this->db->table('online')
-						->insert([
-							'name' => $name,
-							'channel' => $this->db->getMyguild(),
-							'channel_type' => 'guild',
-							'added_by' => $this->db->getBotname(),
-							'dt' => $time,
-						]);
+					$this->db->insert(new Online(
+						name: $name,
+						channel: $this->db->getMyguild(),
+						channel_type: 'guild',
+						added_by: $this->db->getBotname(),
+						dt: $time,
+					));
 				}
 			}
 		}
@@ -566,14 +565,13 @@ class OnlineController extends ModuleInstance {
 				$this->buildOnlineQuery($name, 'priv')
 						->update(['dt' => $time]);
 			} else {
-				$this->db->table('online')
-						->insert([
-							'name' => $name,
-							'channel' => $this->db->getMyguild() . ' Guests',
-							'channel_type' => 'priv',
-							'added_by' => $this->db->getBotname(),
-							'dt' => $time,
-						]);
+				$this->db->insert(new Online(
+					name: $name,
+					channel: $this->db->getMyguild() . ' Guests',
+					channel_type: 'priv',
+					added_by: $this->db->getBotname(),
+					dt: $time,
+				));
 			}
 		}
 
@@ -709,14 +707,13 @@ class OnlineController extends ModuleInstance {
 	public function addPlayerToOnlineList(string $sender, string $channel, string $channelType): ?OnlinePlayer {
 		$exists = $this->buildOnlineQuery($sender, $channelType)->exists();
 		if (!$exists) {
-			$this->db->table('online')
-				->insert([
-					'name' => $sender,
-					'channel' => $channel,
-					'channel_type' => $channelType,
-					'added_by' => $this->db->getBotname(),
-					'dt' => time(),
-				]);
+			$this->db->insert(new Online(
+				name: $sender,
+				channel: $channel,
+				channel_type: $channelType,
+				added_by: $this->db->getBotname(),
+				dt: time(),
+			));
 		}
 		$player = $this->playerManager->findInDb($sender, $this->config->main->dimension);
 		if (!isset($player)) {

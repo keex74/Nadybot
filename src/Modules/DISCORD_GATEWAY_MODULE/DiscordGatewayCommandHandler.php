@@ -207,13 +207,12 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 		// Never tried to link before
 		if ($data === null) {
 			$uid = strtoupper(bin2hex(random_bytes(16)));
-			$this->db->table(DiscordMapping::getTable())
-				->insert([
-					'name' => $name,
-					'discord_id' => $discordUserId,
-					'token' => $uid,
-					'created' => time(),
-				]);
+			$this->db->insert(new DiscordMapping(
+				name: $name,
+				discord_id: $discordUserId,
+				token: $uid,
+				created: time(),
+			));
 		} else {
 			$uid = $data->token;
 		}

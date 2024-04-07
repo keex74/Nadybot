@@ -124,14 +124,13 @@ class OrgHistoryController extends ModuleInstance {
 			|| count($arr = Safe::pregMatch('/^(?<actor>.+) (?<action>invited) (?<actee>.+) to your organization.$/', $message))
 			|| count($arr = Safe::pregMatch('/^(?<actor>.+) (?<action>removed) inactive character (?<actee>.+) from your organization.$/', $message))
 		) {
-			$this->db->table(OrgHistory::getTable())
-				->insert([
-					'actor' => $arr['actor'] ?? '',
-					'actee' => $arr['actee'] ?? '',
-					'action' => $arr['action'] ?? '',
-					'organization' => $this->db->getMyguild(),
-					'time' => time(),
-				]);
+			$this->db->insert(new OrgHistory(
+				actor: $arr['actor'] ?? '',
+				actee: $arr['actee'] ?? '',
+				action: $arr['action'] ?? '',
+				organization: $this->db->getMyguild(),
+				time: time(),
+			));
 		}
 	}
 

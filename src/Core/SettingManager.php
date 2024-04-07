@@ -175,21 +175,20 @@ class SettingManager {
 					$this->settings[$name] = new SettingValue($setting);
 				}
 			} else {
-				$this->db->table(Setting::getTable())
-					->insert([
-						'name' => $name,
-						'module' => $module,
-						'type' => $type,
-						'mode' => $mode,
-						'value' => $value,
-						'options' => $options,
-						'intoptions' => $intoptions,
-						'description' => $description,
-						'source' => 'db',
-						'admin' => $accessLevel,
-						'verify' => 1,
-						'help' => $help,
-					]);
+				$this->db->insert(new Setting(
+					name: $name,
+					module: $module,
+					type: $type,
+					mode: $mode,
+					value: (string)$value,
+					options: $options,
+					intoptions: $intoptions,
+					description: $description,
+					source: 'db',
+					admin: $accessLevel,
+					verify: 1,
+					help: $help,
+				));
 			}
 			$this->settings[$name] = new SettingValue($setting);
 		} catch (SQLException $e) {

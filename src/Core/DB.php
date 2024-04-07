@@ -418,8 +418,21 @@ class DB {
 		return $sql;
 	}
 
-	/** Insert a DBRow $row into the database */
-	public function insert(DBRow $row, ?string $table=null): int {
+	/**
+	 * Insert a DBRow $row into the database
+	 *
+	 * @param DBRow|DBRow[] $row
+	 */
+	public function insert(array|DBRow $row, ?string $table=null): int {
+		if (is_array($row)) {
+			return array_reduce(
+				$row,
+				function (int $carry, DBRow $row) use ($table): int {
+					return $this->insert($row, $table) * $carry;
+				},
+				0
+			) ? 1 : 0;
+		}
 		$table ??= $row::tryGetTable();
 		if (!isset($table)) {
 			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): $table missing');
@@ -428,6 +441,7 @@ class DB {
 		$props = $refClass->getProperties(ReflectionProperty::IS_PUBLIC);
 		$data = [];
 		$sequence = null;
+		$successId = 1;
 		foreach ($props as $prop) {
 			$colName = $prop->name;
 			if (count($colProp = $prop->getAttributes(NCA\DB\ColName::class))) {
@@ -437,8 +451,11 @@ class DB {
 				continue;
 			}
 			if (count($prop->getAttributes(NCA\DB\AutoInc::class))) {
-				$sequence = $colName;
-				continue;
+				if ($prop->getValue($row) === null) {
+					$sequence = $colName;
+					continue;
+				}
+				$successId = $prop->getValue($row);
 			}
 			if (!$prop->isInitialized($row)) {
 				continue;
@@ -456,7 +473,7 @@ class DB {
 		}
 		$table = $this->formatSql($table);
 		if ($sequence === null) {
-			return $this->table($table)->insert($data) ? 1 : 0;
+			return $this->table($table)->insert($data) ? $successId : 0;
 		}
 		return $this->table($table)->insertGetId($data, $sequence);
 	}

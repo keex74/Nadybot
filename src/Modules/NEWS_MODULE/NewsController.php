@@ -259,12 +259,11 @@ class NewsController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$this->db->table('news_confirmed')
-			->insert([
-				'id' => $row->id,
-				'player' => $sender,
-				'time' => time(),
-			]);
+		$this->db->insert(new NewsConfirmed(
+			id: $id,
+			player: $sender,
+			time: time(),
+		));
 		$msg = "News confirmed, it won't be shown to you again.";
 		$context->reply($msg);
 	}
@@ -276,23 +275,22 @@ class NewsController extends ModuleInstance {
 		#[NCA\Str('add')] string $action,
 		string $news
 	): void {
-		$entry = [
-			'time' => time(),
-			'name' => $context->char->name,
-			'news' => $news,
-			'sticky' => 0,
-			'deleted' => 0,
-			'uuid' => Util::createUUID(),
-		];
-		$this->db->table('news')
-			->insert($entry);
+		$entry = new News(
+			time: time(),
+			name: $context->char->name,
+			news: $news,
+			sticky: false,
+			deleted: false,
+			uuid: Util::createUUID(),
+		);
+		$this->db->insert($entry);
 		$msg = 'News has been added successfully.';
 		$event = new SyncNewsEvent(
-			time: $entry['time'],
-			name: $entry['name'],
-			news: $entry['news'],
-			uuid: $entry['uuid'],
-			sticky: (bool)$entry['sticky'],
+			time: $entry->time,
+			name: $entry->name,
+			news: $entry->news,
+			uuid: $entry->uuid,
+			sticky: $entry->sticky,
 			forceSync: $context->forceSync,
 		);
 		$this->eventManager->fireEvent($event);

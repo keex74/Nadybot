@@ -179,12 +179,11 @@ class RaidMemberController extends ModuleInstance {
 			$raid->raiders[$player]->left = null;
 		}
 		$this->eventManager->fireEvent(new RaidJoinEvent(raid: $raid, player: $player));
-		$this->db->table(RaidMember::getTable())
-			->insert([
-				'raid_id' => $raid->raid_id,
-				'player' => $player,
-				'joined' => time(),
-			]);
+		$this->db->insert(new RaidMember(
+			raid_id: $raid->raid_id,
+			player: $player,
+			joined: time(),
+		));
 		$msg = null;
 		if ($force) {
 			if ($this->raidInformMemberBeingAdded) {

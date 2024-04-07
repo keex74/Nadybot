@@ -126,16 +126,15 @@ class EventManager {
 			} else {
 				$status = $defaultStatus;
 			}
-			$this->db->table(EventCfg::getTable())
-					->insert([
-						'module' => $module,
-						'type' => $type,
-						'file' => $filename,
-						'verify' => 1,
-						'description' => $description,
-						'status' => $status,
-						'help' => $help,
-					]);
+			$this->db->insert(new EventCfg(
+				module: $module,
+				type: $type,
+				file: $filename,
+				verify: 1,
+				description: $description,
+				status: $status,
+				help: $help,
+			));
 		} catch (SQLException $e) {
 			$this->logger->error('Error registering handler {handler} for event type {type}: {error}', [
 				'handler' => $filename,

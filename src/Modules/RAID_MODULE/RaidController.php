@@ -975,17 +975,19 @@ class RaidController extends ModuleInstance {
 
 	/** Log to the database whenever something of the raid changes */
 	public function logRaidChanges(Raid $raid): void {
-		$this->db->table(RaidLog::getTable())
-			->insert([
-				'raid_id' => $raid->raid_id,
-				'description' => $raid->description,
-				'seconds_per_point' => $raid->seconds_per_point,
-				'ticker_paused' => $raid->ticker_paused,
-				'locked' => $raid->locked,
-				'time' => time(),
-				'announce_interval' => $raid->announce_interval,
-				'max_members' => $raid->max_members,
-			]);
+		if (!isset($raid->raid_id)) {
+			return;
+		}
+		$this->db->insert(new RaidLog(
+			raid_id: $raid->raid_id,
+			description: $raid->description,
+			seconds_per_point: $raid->seconds_per_point,
+			ticker_paused: $raid->ticker_paused,
+			locked: $raid->locked,
+			time: time(),
+			announce_interval: $raid->announce_interval,
+			max_members: $raid->max_members,
+		));
 	}
 
 	#[NCA\Event(

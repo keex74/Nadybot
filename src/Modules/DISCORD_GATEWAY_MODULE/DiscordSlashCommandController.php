@@ -211,13 +211,11 @@ class DiscordSlashCommandController extends ModuleInstance {
 			return;
 		}
 		$cmdText = $newCommands->containsOneItem() ? 'command' : 'commands';
-		if (!$this->db->table(DiscordSlashCommand::getTable())
-			->insert(
-				$newCommands->map(static function (string $cmd): array {
-					return ['cmd' => $cmd];
-				})->toArray()
-			)
-		) {
+		if (!$this->db->insert(
+			$newCommands->map(static function (string $cmd): DiscordSlashCommand {
+				return new DiscordSlashCommand(cmd: $cmd);
+			})->toArray()
+		)) {
 			$context->reply("There was an error registering the {$cmdText}.");
 			return;
 		}
@@ -272,12 +270,11 @@ class DiscordSlashCommandController extends ModuleInstance {
 		try {
 			$this->syncSlashCommands();
 		} catch (Throwable $e) {
-			$this->db->table(DiscordSlashCommand::getTable())
-				->insert(
-					$delCommands->map(static function (string $cmd): array {
-						return ['cmd' => $cmd];
-					})->toArray()
-				);
+			$this->db->insert(
+				$delCommands->map(static function (string $cmd): DiscordSlashCommand {
+					return new DiscordSlashCommand(cmd: $cmd);
+				})->toArray()
+			);
 			$context->reply(
 				'Error removing ' . $delCommands->count(). ' '.
 				"Slash-{$cmdText}: " . $e->getMessage()

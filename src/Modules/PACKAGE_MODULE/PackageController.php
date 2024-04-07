@@ -661,12 +661,11 @@ class PackageController extends ModuleInstance {
 			if (substr($relPath, 0, 2) === '..') {
 				continue;
 			}
-			$this->db->table(PackageFile::getTable())
-				->insert([
-					'module' => $module,
-					'version' => $version ?? '',
-					'file' => $relPath,
-				]);
+			$this->db->insert(new PackageFile(
+				module: $module,
+				version: $version ?? '',
+				file: $relPath,
+			));
 		}
 	}
 

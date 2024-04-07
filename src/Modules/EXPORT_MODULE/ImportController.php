@@ -8,7 +8,7 @@ use Amp\File\{FilesystemException};
 use Closure;
 use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection, UnableToHydrateObject};
 use Exception;
-use Nadybot\Core\DBSchema\{Admin, BanEntry, Member};
+use Nadybot\Core\DBSchema\{Admin, Alt, BanEntry, Member};
 use Nadybot\Core\{
 	AccessManager,
 	AdminManager,
@@ -178,16 +178,14 @@ class ImportController extends ModuleInstance {
 			$this->logger->notice('Deleting all auctions');
 			$this->db->table(DBAuction::getTable())->truncate();
 			foreach ($auctions as $auction) {
-				$this->db->table(DBAuction::getTable())
-					->insert([
-						'raid_id' => $auction->raidId ?? null,
-						'item' => $auction->item,
-						'auctioneer' => ($this->characterToName($auction->startedBy??null)) ?? $this->config->main->character,
-						'cost' => (0 !== ($auction->cost ?? 0)) ? (int)round($auction->cost??0, 0) : null,
-						'winner' => $this->characterToName($auction->winner??null),
-						'end' => $auction->timeEnd ?? time(),
-						'reimbursed' => $auction->reimbursed ?? false,
-					]);
+				$this->db->insert(new DBAuction(
+					item: $auction->item,
+					auctioneer: ($this->characterToName($auction->startedBy??null)) ?? $this->config->main->character,
+					cost: (0 !== ($auction->cost ?? 0)) ? (int)round($auction->cost??0, 0) : null,
+					winner: $this->characterToName($auction->winner??null),
+					end: $auction->timeEnd ?? time(),
+					reimbursed: $auction->reimbursed ?? false,
+				));
 			}
 		} catch (Throwable $e) {
 			$this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -1065,14 +1063,13 @@ class ImportController extends ModuleInstance {
 		if (!isset($altName)) {
 			return 0;
 		}
-		$this->db->table('alts')
-			->insert([
-				'alt' => $altName,
-				'main' => $mainName,
-				'validated_by_main' => $alt->validatedByMain ?? true,
-				'validated_by_alt' => $alt->validatedByAlt ?? true,
-				'added_via' => $this->db->getMyname(),
-			]);
+		$this->db->insert(new Alt(
+			alt: $altName,
+			main: $mainName,
+			validated_by_main: $alt->validatedByMain ?? true,
+			validated_by_alt: $alt->validatedByAlt ?? true,
+			added_via: $this->db->getMyname(),
+		));
 		return 1;
 	}
 

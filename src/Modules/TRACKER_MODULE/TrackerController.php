@@ -346,12 +346,11 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		) {
 			return;
 		}
-		$this->db->table(Tracking::getTable())
-			->insert([
-				'uid' => $uid,
-				'dt' => time(),
-				'event' => 'logon',
-			]);
+		$this->db->insert(new Tracking(
+			uid: $uid,
+			dt: time(),
+			event: 'logon',
+		));
 
 		$event = new TrackerLogonEvent(player: $eventObj->sender, uid: $uid);
 		$this->eventManager->fireEvent($event);
@@ -452,12 +451,11 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		if (isset($orgMember) && (time() - $orgMember->added_dt->getTimestamp()) < 60) {
 			return;
 		}
-		$this->db->table(Tracking::getTable())
-			->insert([
-				'uid' => $uid,
-				'dt' => time(),
-				'event' => 'logoff',
-			]);
+		$this->db->insert(new Tracking(
+			uid: $uid,
+			dt: time(),
+			event: 'logoff',
+		));
 
 		$event = new TrackerLogoffEvent(player: $eventObj->sender, uid: $uid);
 		$this->eventManager->fireEvent($event);
@@ -1215,13 +1213,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		if ($this->db->table(TrackedUser::getTable())->where('uid', $uid)->exists()) {
 			return false;
 		}
-		$this->db->table(TrackedUser::getTable())
-			->insert([
-				'name' => $name,
-				'uid' => $uid,
-				'added_by' => $sender ?? $this->config->main->character,
-				'added_dt' => time(),
-			]);
+		$this->db->insert(new TrackedUser(
+			name: $name,
+			uid: $uid,
+			added_by: $sender ?? $this->config->main->character,
+			added_dt: time(),
+		));
 		$this->buddylistManager->addId($uid, static::REASON_TRACKER);
 		return true;
 	}

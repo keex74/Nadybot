@@ -642,12 +642,14 @@ class RaffleController extends ModuleInstance {
 				->increment('bonus', $bonusPerLoss);
 		}
 		if (count($losersInsert)) {
-			$this->db->table(RaffleBonus::getTable())
-				->insert(
-					array_map(static function (string $loser) use ($bonusPerLoss): array {
-						return ['name' => $loser, 'bonus' => $bonusPerLoss];
-					}, $losersInsert)
-				);
+			$this->db->insert(
+				array_map(
+					static function (string $loser) use ($bonusPerLoss): RaffleBonus {
+						return new RaffleBonus(name: $loser, bonus: $bonusPerLoss);
+					},
+					$losersInsert
+				)
+			);
 		}
 		if (count($winners)) {
 			$this->db->table(RaffleBonus::getTable())

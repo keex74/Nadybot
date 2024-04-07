@@ -153,12 +153,11 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 		if ($row !== null && $row->action === 'on') {
 			$msg = 'The cloaking device is already <on>enabled<end>.';
 		} else {
-			$this->db->table(OrgCity::getTable())
-				->insert([
-					'time' => time(),
-					'action' => 'on',
-					'player' => "{$context->char->name}*",
-				]);
+			$this->db->insert(new OrgCity(
+				time: time(),
+				action: 'on',
+				player: "{$context->char->name}*",
+			));
 			$msg = "The cloaking device has been manually enabled in the bot (you must still enable the cloak if it's disabled).";
 		}
 
@@ -177,12 +176,11 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 		) {
 			return;
 		}
-		$this->db->table(OrgCity::getTable())
-			->insert([
-				'time' => time(),
-				'action' => $arr[2],
-				'player' => $arr[1],
-			]);
+		$this->db->insert(new OrgCity(
+			time: time(),
+			action: $arr[2],
+			player: $arr[1],
+		));
 		if ($arr[2] === 'on') {
 			$event = new CloakRaiseEvent(player: $arr[1]);
 		} else {

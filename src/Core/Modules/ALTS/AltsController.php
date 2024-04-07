@@ -541,14 +541,13 @@ class AltsController extends ModuleInstance {
 		$main = ucfirst(strtolower($main));
 		$alt = ucfirst(strtolower($alt));
 
-		$added = $this->db->table('alts')
-			->insert([
-				'alt' => $alt,
-				'main' => $main,
-				'validated_by_main' => $validatedByMain,
-				'validated_by_alt' => $validatedByAlt,
-				'added_via' => $this->db->getMyname(),
-			]);
+		$added = $this->db->insert(new Alt(
+			alt: $alt,
+			main: $main,
+			validated_by_main: $validatedByMain,
+			validated_by_alt: $validatedByAlt,
+			added_via: $this->db->getMyname(),
+		));
 		if ($added && $sendEvent) {
 			$event = new AltAddEvent(
 				main: $main,

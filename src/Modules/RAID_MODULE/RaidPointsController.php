@@ -184,17 +184,16 @@ class RaidPointsController extends ModuleInstance {
 			$this->giveRaidPoints($pointsChar, 1);
 			return $pointsChar;
 		}
-		$this->db->table(RaidPointsLog::getTable())
-			->insert([
-				'username' => $pointsChar,
-				'delta' => 1,
-				'time' => time(),
-				'changed_by' => $this->db->getMyname(),
-				'reason' => 'raid participation',
-				'ticker' => true,
-				'individual' => false,
-				'raid_id' => $raid->raid_id,
-			]);
+		$this->db->insert(new RaidPointsLog(
+			username: $pointsChar,
+			delta: 1,
+			time: time(),
+			changed_by: $this->db->getMyname(),
+			reason: 'raid participation',
+			ticker: true,
+			individual: false,
+			raid_id: $raid->raid_id,
+		));
 		$this->giveRaidPoints($pointsChar, 1);
 		return $pointsChar;
 	}
@@ -224,18 +223,17 @@ class RaidPointsController extends ModuleInstance {
 				$raid->raiders[$player]->pointsRewarded += $delta;
 			}
 		}
-		$inserted = $this->db->table(RaidPointsLog::getTable())
-			->insert([
-				'username' =>   ucfirst(strtolower($player)),
-				'delta' =>      $delta,
-				'time' =>       time(),
-				'changed_by' => $changedBy,
-				'individual' => $individual,
-				'reason' =>     $reason,
-				'ticker' =>     false,
-				'raid_id' =>    $raid->raid_id ?? null,
-			]);
-		if ($inserted === false) {
+		$inserted = $this->db->insert(new RaidPointsLog(
+			username: ucfirst(strtolower($player)),
+			delta: $delta,
+			time: time(),
+			changed_by: $changedBy,
+			individual: $individual,
+			reason: $reason,
+			ticker: false,
+			raid_id: $raid->raid_id ?? null,
+		));
+		if ($inserted === 0) {
 			$this->logger->error('Error logging the change of {delta} points for {character}.', [
 				'delta' => $delta,
 				'character' => $pointsChar,
@@ -866,11 +864,10 @@ class RaidPointsController extends ModuleInstance {
 		if ($updated) {
 			return true;
 		}
-		$inserted = $this->db->table(RaidPoints::getTable())
-			->insert([
-				'username' => $player,
-				'points' => $delta,
-			]);
+		$inserted = $this->db->insert(new RaidPoints(
+			username: $player,
+			points: $delta,
+		));
 		return $inserted > 0;
 	}
 

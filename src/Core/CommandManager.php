@@ -1709,8 +1709,10 @@ class CommandManager implements MessageEmitter {
 			$this->db->beginTransaction();
 		}
 		try {
-			$this->db->table(CmdPermissionSet::getTable())
-				->insert(['name' => $name, 'letter' => $letter]);
+			$this->db->insert(new CmdPermissionSet(
+				name: $name,
+				letter: $letter,
+			));
 			$this->db->table(CmdPermission::getTable())
 				->chunkInsert($inserts);
 		} catch (Exception $e) {

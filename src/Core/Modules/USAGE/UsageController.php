@@ -263,13 +263,12 @@ class UsageController extends ModuleInstance {
 			return;
 		}
 
-		$this->db->table(Usage::getTable())
-			->insert([
-				'type' => $type,
-				'command' => $cmd,
-				'sender' => $sender,
-				'dt' => time(),
-			]);
+		$this->db->insert(new Usage(
+			type: $type,
+			command: $cmd,
+			sender: $sender,
+			dt: time(),
+		));
 	}
 
 	public function getUsageInfo(int $lastSubmittedStats, int $now, bool $debug=false): UsageStats {

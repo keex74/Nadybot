@@ -77,13 +77,12 @@ class LinksController extends ModuleInstance {
 			return;
 		}
 
-		$this->db->table('links')
-			->insert([
-				'name' => $context->char->name,
-				'website' => $website,
-				'comments' => $comments,
-				'dt' => time(),
-			]);
+		$this->db->insert(new Link(
+			name: $context->char->name,
+			website: $website,
+			comments: $comments,
+			dt: time(),
+		));
 		$msg = 'Link added successfully.';
 		$context->reply($msg);
 	}

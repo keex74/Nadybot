@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\LIMITS\Migrations;
 
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\RateIgnoreList;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 use stdClass;
@@ -18,7 +19,7 @@ class MigrateWhitelistTable implements SchemaMigration {
 			->orderBy('added_dt')
 			->get()
 			->each(static function (stdClass $data) use ($db) {
-				$db->table('rateignorelist')
+				$db->table(RateIgnoreList::getTable())
 					->insert([
 						'name' => (string)$data->name,
 						'added_by' => (string)$data->added_by,

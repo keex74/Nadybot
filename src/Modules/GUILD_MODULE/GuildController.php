@@ -39,7 +39,7 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
-use Nadybot\Modules\ONLINE_MODULE\OnlineController;
+use Nadybot\Modules\ONLINE_MODULE\{Online as DBOnline, OnlineController};
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -405,14 +405,13 @@ class GuildController extends ModuleInstance {
 			->upsert(['name' => $name, 'mode' => 'add'], 'name');
 
 		if ($this->buddylistManager->isOnline($name)) {
-			$this->db->table('online')
-				->insert([
-					'name' => $name,
-					'channel' => $this->db->getMyguild(),
-					'channel_type' => 'guild',
-					'added_by' => $this->db->getBotname(),
-					'dt' => time(),
-				]);
+			$this->db->insert(new DBOnline(
+				name: $name,
+				channel: $this->db->getMyguild(),
+				channel_type: 'guild',
+				added_by: $this->db->getBotname(),
+				dt: time(),
+			));
 		}
 		$this->buddylistManager->addName($name, 'org');
 		$this->chatBot->guildmembers[$name] = 6;
@@ -592,14 +591,13 @@ class GuildController extends ModuleInstance {
 					->where('added_by', $this->db->getBotname())
 					->doesntExist()
 			) {
-				$this->db->table('online')
-					->insert([
-						'name' => $name,
-						'channel' => $this->db->getMyguild(),
-						'channel_type' => 'guild',
-						'added_by' => $this->db->getBotname(),
-						'dt' => time(),
-					]);
+				$this->db->insert(new DBOnline(
+					name: $name,
+					channel: $this->db->getMyguild(),
+					channel_type: 'guild',
+					added_by: $this->db->getBotname(),
+					dt: time(),
+				));
 			}
 			$this->db->table(OrgMember::getTable())
 				->upsert(['mode' => 'add', 'name' => $name], 'name');
@@ -1044,11 +1042,10 @@ class GuildController extends ModuleInstance {
 					->catch(Nadybot::asyncErrorHandler(...));
 				$this->chatBot->guildmembers[$member->name] = $member->guild_rank_id ?? 0;
 
-				$this->db->table(OrgMember::getTable())
-					->insert([
-						'name' => $member->name,
-						'mode' => 'org',
-					]);
+				$this->db->insert(new OrgMember(
+					name: $member->name,
+					mode: 'org',
+				));
 			}
 			unset($dbEntries[$member->name]);
 		}

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\TIMERS_MODULE;
 
-use function Safe\{json_encode, preg_match};
+use function Safe\{preg_match};
 use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
@@ -521,6 +521,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		/** @var Alert */
 		$lastAlert = (new Collection($alerts))->last();
 		$timer = new Timer(
+			id: $id,
 			name: $name,
 			owner: $owner,
 			endtime: $lastAlert->time,
@@ -534,35 +535,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 
 		$event = new TimerStartEvent(timer: $timer);
 
-		if (isset($id)) {
-			$this->db->table(Timer::getTable())
-				->insert([
-					'id' => $id,
-					'name' => $name,
-					'owner' => $owner,
-					'mode' => $timer->mode,
-					'origin' => $timer->origin,
-					'endtime' => $timer->endtime,
-					'settime' => $timer->settime,
-					'callback' => $callback,
-					'data' => $data,
-					'alerts' => json_encode($alerts),
-				]);
-			$timer->id = $id;
-		} else {
-			$timer->id = $this->db->table(Timer::getTable())
-				->insertGetId([
-					'name' => $name,
-					'owner' => $owner,
-					'mode' => $timer->mode,
-					'origin' => $timer->origin,
-					'endtime' => $timer->endtime,
-					'settime' => $timer->settime,
-					'callback' => $callback,
-					'data' => $data,
-					'alerts' => json_encode($alerts),
-				]);
-		}
+		$timer->id = $this->db->insert($timer);
 
 		$this->timers[strtolower($name)] = $timer;
 		$this->eventManager->fireEvent($event);

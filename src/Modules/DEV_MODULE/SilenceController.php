@@ -114,11 +114,10 @@ class SilenceController extends ModuleInstance {
 
 	public function addSilencedCommand(CmdCfg $row, string $channel): void {
 		$this->commandManager->activate($channel, self::NULL_COMMAND_HANDLER, $row->cmd, 'all');
-		$this->db->table(SilenceCmd::getTable())
-			->insert([
-				'cmd' => $row->cmd,
-				'channel' => $channel,
-			]);
+		$this->db->insert(new SilenceCmd(
+			cmd: $row->cmd,
+			channel: $channel,
+		));
 	}
 
 	public function isSilencedCommand(CmdCfg $row, string $channel): bool {

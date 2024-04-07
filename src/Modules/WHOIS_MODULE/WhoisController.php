@@ -109,13 +109,12 @@ class WhoisController extends ModuleInstance {
 					) {
 						continue;
 					}
-					$this->db->table('name_history')
-						->insert([
-							'name' => $entry->name,
-							'charid' => $entry->charid,
-							'dimension' => $this->db->getDim(),
-							'dt' => time(),
-						]);
+					$this->db->insert(new NameHistory(
+						name: $entry->name,
+						charid: $entry->charid,
+						dimension: $this->db->getDim(),
+						dt: time(),
+					));
 				} else {
 					$this->db->table('name_history')
 						->insertOrIgnore([

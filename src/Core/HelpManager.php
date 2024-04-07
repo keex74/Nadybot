@@ -68,15 +68,14 @@ class HelpManager {
 					'description' => $description,
 				]);
 		} else {
-			$this->db->table(HlpCfg::getTable())
-				->insert([
-					'name' => $command,
-					'admin' => $admin,
-					'verify' => 1,
-					'file' => $actual_filename,
-					'module' => $module,
-					'description' => $description,
-				]);
+			$this->db->insert(new HlpCfg(
+				name: $command,
+				admin: $admin,
+				verify: 1,
+				file: $actual_filename,
+				module: $module,
+				description: $description,
+			));
 		}
 	}
 

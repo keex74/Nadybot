@@ -393,12 +393,12 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 				oldVote: $oldVote->answer ?? 'unknown',
 			);
 		} else {
-			$this->db->table(Vote::getTable())->insert([
-				'author' => $context->char->name,
-				'answer' => $answer,
-				'time' => time(),
-				'poll_id' => $topic->id,
-			]);
+			$this->db->insert(new Vote(
+				author: $context->char->name,
+				answer: $answer,
+				time: time(),
+				poll_id: $pollId,
+			));
 			$msg = "You have voted <highlight>{$answer}<end> for \"{$topic->question}\".";
 			$event = new VoteCastEvent(
 				poll: $ePoll,
