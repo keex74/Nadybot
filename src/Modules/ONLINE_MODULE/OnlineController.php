@@ -245,7 +245,7 @@ class OnlineController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		$this->db->table('online')
+		$this->db->table(Online::getTable())
 			->where('added_by', $this->db->getBotname())
 			->delete();
 
@@ -258,7 +258,7 @@ class OnlineController extends ModuleInstance {
 	}
 
 	public function buildOnlineQuery(string $sender, string $channelType): QueryBuilder {
-		return $this->db->table('online')
+		return $this->db->table(Online::getTable())
 			->where('name', $sender)
 			->where('channel_type', $channelType)
 			->where('added_by', $this->db->getBotname());
@@ -387,7 +387,7 @@ class OnlineController extends ModuleInstance {
 			return;
 		}
 
-		$onlineChars = $this->db->table('online')->asObj(Online::class);
+		$onlineChars = $this->db->table(Online::getTable())->asObj(Online::class);
 		$onlineByName = $onlineChars->keyBy('name');
 
 		/** @var Collection<string> */
@@ -520,7 +520,7 @@ class OnlineController extends ModuleInstance {
 		}
 
 		/** @var Collection<Online> */
-		$data = $this->db->table('online')
+		$data = $this->db->table(Online::getTable())
 			->asObj(Online::class);
 
 		$guildArray = [];
@@ -575,7 +575,7 @@ class OnlineController extends ModuleInstance {
 			}
 		}
 
-		$this->db->table('online')
+		$this->db->table(Online::getTable())
 			->where(function (QueryBuilder $query) use ($time) {
 				$query->where('dt', '<', $time)
 					->where('added_by', $this->db->getBotname());
@@ -1047,7 +1047,7 @@ class OnlineController extends ModuleInstance {
 
 	/** @return OnlinePlayer[] */
 	public function getPlayers(string $channelType, ?string $limitToBot=null): array {
-		$query = $this->db->table('online AS o')
+		$query = $this->db->table(Online::getTable(), 'o')
 			->where('o.channel_type', $channelType);
 		if (isset($limitToBot)) {
 			$query->where('o.added_by', strtolower($limitToBot));

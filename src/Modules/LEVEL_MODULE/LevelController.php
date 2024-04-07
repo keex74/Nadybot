@@ -117,7 +117,7 @@ class LevelController extends ModuleInstance {
 		}
 
 		/** @var Collection<Level> */
-		$data = $this->db->table('levels')
+		$data = $this->db->table(Level::getTable())
 			->where('level', '>=', $startLevel)
 			->where('level', '<', $endLevel)
 			->asObj(Level::class);
@@ -150,7 +150,7 @@ class LevelController extends ModuleInstance {
 	}
 
 	public function getLevelInfo(int $level): ?Level {
-		return $this->db->table('levels')
+		return $this->db->table(Level::getTable())
 			->where('level', $level)
 			->asObj(Level::class)
 			->first();
@@ -158,7 +158,7 @@ class LevelController extends ModuleInstance {
 
 	/** @return Level[] */
 	public function findAllLevels(): array {
-		return $this->db->table('levels')
+		return $this->db->table(Level::getTable())
 			->orderBy('level')
 			->asObj(Level::class)
 			->toArray();

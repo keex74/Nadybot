@@ -269,7 +269,7 @@ class AlienBioController extends ModuleInstance {
 		}
 
 		/** @var OfabArmorType[] $data */
-		$data = $this->db->table('ofabarmortype')
+		$data = $this->db->table(OfabArmorType::getTable())
 			->where('type', $type)
 			->asObj(OfabArmorType::class)
 			->toArray();
@@ -295,7 +295,7 @@ class AlienBioController extends ModuleInstance {
 		}
 
 		/** @var OfabWeapon[] $data */
-		$data = $this->db->table('ofabweapons')
+		$data = $this->db->table(OfabWeapon::getTable())
 			->where('type', $type)
 			->asObj(OfabWeapon::class)->toArray();
 
@@ -328,7 +328,7 @@ class AlienBioController extends ModuleInstance {
 
 		$requiredEEandCL = (int)floor($ql * 4.5);
 
-		$specials = $this->db->table('alienweaponspecials')
+		$specials = $this->db->table(AlienWeaponSpecials::getTable())
 			->where('type', $type)
 			->select('specials')
 			->limit(1)
@@ -341,7 +341,7 @@ class AlienBioController extends ModuleInstance {
 		$blob .= "<highlight>Adds {$specials} to:<end>\n";
 
 		/** @var AlienWeapon[] $data */
-		$data = $this->db->table('alienweapons')
+		$data = $this->db->table(AlienWeapon::getTable())
 			->where('type', $type)
 			->asObj(AlienWeapon::class)
 			->toArray();

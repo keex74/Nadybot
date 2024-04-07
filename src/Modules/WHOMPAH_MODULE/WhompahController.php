@@ -43,7 +43,7 @@ class WhompahController extends ModuleInstance {
 	#[NCA\HandlesCommand('whompah')]
 	public function whompahListCommand(CmdContext $context): void {
 		/** @var Collection<WhompahCity> */
-		$data = $this->db->table('whompah_cities')
+		$data = $this->db->table(WhompahCity::getTable())
 			->orderBy('city_name')
 			->asObj(WhompahCity::class);
 
@@ -109,8 +109,8 @@ class WhompahController extends ModuleInstance {
 		}
 
 		/** @var WhompahCity[] */
-		$cities = $this->db->table('whompah_cities_rel AS w1')
-			->join('whompah_cities AS w2', 'w1.city2_id', 'w2.id')
+		$cities = $this->db->table(WhompahCityRel::getTable(), 'w1')
+			->join(WhompahCity::getTable(as: 'w2'), 'w1.city2_id', 'w2.id')
 			->where('w1.city1_id', $city->id)
 			->orderBy('w2.city_name')
 			->select('w2.*')
@@ -152,9 +152,9 @@ class WhompahController extends ModuleInstance {
 	}
 
 	public function findCity(string $search): ?WhompahCity {
-		$q1 = $this->db->table('whompah_cities')->whereIlike('city_name', $search)
+		$q1 = $this->db->table(WhompahCity::getTable())->whereIlike('city_name', $search)
 			->orWhereIlike('short_name', $search);
-		$q2 = $this->db->table('whompah_cities')->whereIlike('city_name', "%{$search}%")
+		$q2 = $this->db->table(WhompahCity::getTable())->whereIlike('city_name', "%{$search}%")
 			->orWhereIlike('short_name', "%{$search}%");
 		return $q1->asObj(WhompahCity::class)->first()
 			?: $q2->asObj(WhompahCity::class)->first();
@@ -163,7 +163,7 @@ class WhompahController extends ModuleInstance {
 	/** @return array<int,WhompahPath> */
 	public function buildWhompahNetwork(): array {
 		/** @var array<int,WhompahCity> */
-		$cities = $this->db->table('whompah_cities')
+		$cities = $this->db->table(WhompahCity::getTable())
 			->asObj(WhompahCity::class)
 			->keyBy('id')
 			->toArray();
@@ -174,7 +174,7 @@ class WhompahController extends ModuleInstance {
 			$network[$id] = new WhompahPath(current: $city);
 		}
 
-		$this->db->table('whompah_cities_rel')->orderBy('city1_id')
+		$this->db->table(WhompahCityRel::getTable())->orderBy('city1_id')
 			->asObj(WhompahCityRel::class)
 			->each(static function (WhompahCityRel $city) use ($network) {
 				$network[$city->city1_id]->connections[] = $city->city2_id;

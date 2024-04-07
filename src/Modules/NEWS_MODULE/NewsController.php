@@ -92,14 +92,14 @@ class NewsController extends ModuleInstance {
 		if ($this->newsConfirmedForAllAlts) {
 			$player = $this->altsController->getMainOf($player);
 		}
-		$query = $this->db->table('news AS n')
+		$query = $this->db->table(News::getTable(), 'n')
 			->where('deleted', 0)
 			->orderByDesc('sticky')
 			->orderByDesc('time')
 			->limit($this->numNewsShown)
 			->select('n.*')
 			->selectSub(
-				$this->db->table('news_confirmed AS c')
+				$this->db->table(NewsConfirmed::getTable(), 'c')
 					->whereColumn('c.id', 'n.id')
 					->where('c.player', $player)
 					->selectRaw('COUNT(*) > 0'),
@@ -153,7 +153,7 @@ class NewsController extends ModuleInstance {
 		}
 
 		/** @var ?News */
-		$item = $this->db->table('news')
+		$item = $this->db->table(News::getTable())
 			->where('deleted', 0)
 			->orderByDesc('time')
 			->limit(1)
@@ -250,7 +250,7 @@ class NewsController extends ModuleInstance {
 			$sender = $this->altsController->getMainOf($context->char->name);
 		}
 
-		if ($this->db->table('news_confirmed')
+		if ($this->db->table(NewsConfirmed::getTable())
 			->where('id', $row->id)
 			->where('player', $sender)
 			->exists()
@@ -309,7 +309,7 @@ class NewsController extends ModuleInstance {
 		if ($row === null) {
 			$msg = "No news entry found with the ID <highlight>{$id}<end>.";
 		} else {
-			$this->db->table('news')
+			$this->db->table(News::getTable())
 				->where('id', $id)
 				->update(['deleted' => 1]);
 			$msg = "News entry <highlight>{$id}<end> was deleted successfully.";
@@ -337,7 +337,7 @@ class NewsController extends ModuleInstance {
 		} elseif ($row->sticky) {
 			$msg = "News ID {$id} is already pinned.";
 		} else {
-			$this->db->table('news')
+			$this->db->table(News::getTable())
 				->where('id', $id)
 				->update(['sticky' => 1]);
 			$msg = "News ID {$id} successfully pinned.";
@@ -368,7 +368,7 @@ class NewsController extends ModuleInstance {
 		} elseif (!$row->sticky) {
 			$msg = "News ID {$id} is not pinned.";
 		} else {
-			$this->db->table('news')
+			$this->db->table(News::getTable())
 				->where('id', $id)
 				->update(['sticky' => 0]);
 			$msg = "News ID {$id} successfully unpinned.";
@@ -386,7 +386,7 @@ class NewsController extends ModuleInstance {
 	}
 
 	public function getNewsItem(int $id): ?News {
-		return $this->db->table('news')
+		return $this->db->table(News::getTable())
 			->where('deleted', 0)
 			->where('id', $id)
 			->asObj(News::class)
@@ -402,7 +402,7 @@ class NewsController extends ModuleInstance {
 	]
 	public function apiNewsEndpoint(Request $request): Response {
 		/** @var News[] */
-		$result = $this->db->table('news')
+		$result = $this->db->table(News::getTable())
 			->where('deleted', 0)
 			->asObj(News::class)
 			->toArray();
@@ -555,7 +555,7 @@ class NewsController extends ModuleInstance {
 		if ($event->isLocal()) {
 			return;
 		}
-		$this->db->table('news')
+		$this->db->table(News::getTable())
 			->upsert($event->toData(), 'uuid', $event->toData());
 	}
 
@@ -565,7 +565,7 @@ class NewsController extends ModuleInstance {
 	)]
 	public function processNewsDeleteSyncEvent(SyncNewsDeleteEvent $event): void {
 		if (!$event->isLocal()) {
-			$this->db->table('news')->where('uuid', $event->uuid)->update(['deleted' => 1]);
+			$this->db->table(News::getTable())->where('uuid', $event->uuid)->update(['deleted' => 1]);
 		}
 	}
 }

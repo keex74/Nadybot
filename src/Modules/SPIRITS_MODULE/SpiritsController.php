@@ -64,7 +64,7 @@ class SpiritsController extends ModuleInstance {
 		}
 
 		/** @var Spirit[] */
-		$data = $this->db->table('spiritsdb')
+		$data = $this->db->table(Spirit::getTable())
 			->where('spot', $slot->designSlotName())
 			->where('ql', '>=', $lowQL)
 			->where('ql', '<=', $highQL)
@@ -96,7 +96,7 @@ class SpiritsController extends ModuleInstance {
 		$title = "Spirits Database for {$name} {$slot->longName()}";
 
 		/** @var Spirit[] */
-		$data = $this->db->table('spiritsdb')
+		$data = $this->db->table(Spirit::getTable())
 			->whereIlike('name', "%{$name}%")
 			->where('spot', $slot->designSlotName())
 			->orderBy('level')
@@ -123,7 +123,7 @@ class SpiritsController extends ModuleInstance {
 		$title = "Spirits QL {$ql}";
 
 		/** @var Spirit[] */
-		$data = $this->db->table('spiritsdb')
+		$data = $this->db->table(Spirit::getTable())
 			->where('ql', $ql)
 			->asObj(Spirit::class)
 			->toArray();
@@ -151,7 +151,7 @@ class SpiritsController extends ModuleInstance {
 		$title = "Spirits QL {$lowQL} to {$highQL}";
 
 		/** @var Spirit[] */
-		$data = $this->db->table('spiritsdb')
+		$data = $this->db->table(Spirit::getTable())
 			->where('ql', '>=', $lowQL)
 			->where('ql', '<=', $highQL)
 			->orderBy('ql')
@@ -186,7 +186,7 @@ class SpiritsController extends ModuleInstance {
 		}
 
 		/** @var Spirit[] */
-		$data = $this->db->table('spiritsdb')
+		$data = $this->db->table(Spirit::getTable())
 			->where('spot', $slot->designSlotName())
 			->where('ql', $ql)
 			->asObj(Spirit::class)
@@ -211,7 +211,7 @@ class SpiritsController extends ModuleInstance {
 		}
 
 		/** @var Spirit[] */
-		$data = $this->db->table('spiritsdb')
+		$data = $this->db->table(Spirit::getTable())
 			->whereIlike('name', "%{$name}%")
 			->orWhereIlike('spot', "%{$name}%")
 			->orderBy('level')
@@ -238,10 +238,10 @@ class SpiritsController extends ModuleInstance {
 		$msg = '';
 		foreach ($spirits as $spirit) {
 			/** @var ?AODBEntry */
-			$dbSpirit = $this->db->table('aodb')
+			$dbSpirit = $this->db->table(AODBEntry::getTable())
 				->where('lowid', $spirit->id)
 				->union(
-					$this->db->table('aodb')
+					$this->db->table(AODBEntry::getTable())
 						->where('highid', $spirit->id)
 				)->limit(1)
 				->asObj(AODBEntry::class)
@@ -264,7 +264,7 @@ class SpiritsController extends ModuleInstance {
 
 	/** Check if a given aoid is a spirit */
 	public function isSpirit(int $aoid): bool {
-		return $this->db->table('spiritsdb')
+		return $this->db->table(Spirit::getTable())
 			->where('id', $aoid)
 			->exists();
 	}

@@ -587,7 +587,7 @@ class GuildController extends ModuleInstance {
 
 			if (
 				$this->buddylistManager->isOnline($name)
-				&& $this->db->table('online')
+				&& $this->db->table(DBOnline::getTable())
 					->where('name', $name)
 					->where('channel_type', 'guild')
 					->where('added_by', $this->db->getBotname())
@@ -897,7 +897,7 @@ class GuildController extends ModuleInstance {
 
 	/** Remove someone from the online list that we added for "guild" */
 	protected function delMemberFromOnline(string $member): int {
-		return $this->db->table('online')
+		return $this->db->table(DBOnline::getTable())
 			->where('name', $member)
 			->where('channel_type', 'guild')
 			->where('added_by', $this->db->getBotname())

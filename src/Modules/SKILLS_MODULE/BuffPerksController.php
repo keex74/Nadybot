@@ -533,7 +533,7 @@ class BuffPerksController extends ModuleInstance {
 
 		$perkInfo = $this->getPerkInfo();
 		$this->perks = new Collection($perkInfo);
-		$empty = !$this->db->table('perk')->exists();
+		$empty = !$this->db->table(Perk::getTable())->exists();
 		if (($dbVersion >= $mtime) && !$empty) {
 			return;
 		}
@@ -542,12 +542,12 @@ class BuffPerksController extends ModuleInstance {
 
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->table('perk')->truncate();
-			$this->db->table('perk_level')->truncate();
-			$this->db->table('perk_level_prof')->truncate();
-			$this->db->table('perk_level_buffs')->truncate();
-			$this->db->table('perk_level_actions')->truncate();
-			$this->db->table('perk_level_resistances')->truncate();
+			$this->db->table(Perk::getTable())->truncate();
+			$this->db->table(PerkLevel::getTable())->truncate();
+			$this->db->table(PerkLevelProf::getTable())->truncate();
+			$this->db->table(PerkLevelBuff::getTable())->truncate();
+			$this->db->table(PerkLevelAction::getTable())->truncate();
+			$this->db->table(PerkLevelResistance::getTable())->truncate();
 
 			$profInserts = [];
 			$resInserts = [];
@@ -588,9 +588,9 @@ class BuffPerksController extends ModuleInstance {
 					}
 				}
 			}
-			$this->db->table('perk_level_prof')->chunkInsert($profInserts);
-			$this->db->table('perk_level_resistances')->chunkInsert($resInserts);
-			$this->db->table('perk_level_buffs')->chunkInsert($buffInserts);
+			$this->db->table(PerkLevelProf::getTable())->chunkInsert($profInserts);
+			$this->db->table(PerkLevelResistance::getTable())->chunkInsert($resInserts);
+			$this->db->table(PerkLevelBuff::getTable())->chunkInsert($buffInserts);
 			$newVersion = max($mtime ?: time(), $dbVersion);
 			$this->settingManager->save('perks_db_version', (string)$newVersion);
 		} catch (Throwable $e) {

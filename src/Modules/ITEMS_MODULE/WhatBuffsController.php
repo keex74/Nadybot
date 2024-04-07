@@ -110,7 +110,7 @@ class WhatBuffsController extends ModuleInstance {
 		$blob = "<header2>Choose a skill<end>\n";
 
 		/** @var Collection<Skill> */
-		$skills = $this->db->table('skills')
+		$skills = $this->db->table(Skill::getTable())
 			->join('item_buffs', 'item_buffs.attribute_id', '=', 'skills.id')
 			->orderBy('skills.name')
 			->select('skills.*')
@@ -148,7 +148,7 @@ class WhatBuffsController extends ModuleInstance {
 			return;
 		}
 		if ($type === 'Nanoprogram') {
-			$query = $this->db->table('buffs');
+			$query = $this->db->table(Buff::getTable());
 			$query
 				->join('item_buffs', 'item_buffs.item_id', '=', 'buffs.id')
 				->join('skills', 'item_buffs.attribute_id', '=', 'skills.id')
@@ -191,7 +191,7 @@ class WhatBuffsController extends ModuleInstance {
 			);
 
 			/** @var Collection<int,Skill> */
-			$skillsById = $this->db->table('skills')
+			$skillsById = $this->db->table(Skill::getTable())
 				->asObj(Skill::class)
 				->keyBy('id');
 			$data = $perkBuffs->map(static function (int $buff, int $skillId) use ($skillsById): ?SkillBuffItemCount {
@@ -205,7 +205,7 @@ class WhatBuffsController extends ModuleInstance {
 				return $result;
 			})->filter()->sortBy('skill');
 		} else {
-			$query = $this->db->table('aodb');
+			$query = $this->db->table(AODBEntry::getTable());
 			$query
 				->join('item_types', 'item_types.item_id', '=', 'aodb.highid')
 				->join('item_buffs', 'item_buffs.item_id', '=', 'aodb.highid')
@@ -319,7 +319,7 @@ class WhatBuffsController extends ModuleInstance {
 		}
 		$skillId = $data[0]->id;
 		$skillName = $data[0]->name;
-		$itemQuery = $this->db->table('aodb');
+		$itemQuery = $this->db->table(AODBEntry::getTable());
 		$itemQuery
 			->join('item_types', 'item_types.item_id', '=', 'aodb.highid')
 			->join('item_buffs', 'item_buffs.item_id', '=', 'aodb.highid')
@@ -331,7 +331,7 @@ class WhatBuffsController extends ModuleInstance {
 			})
 			->groupBy('aodb.name', 'item_types.item_type', 'aodb.lowql', 'aodb.highql', 'item_buffs.amount')
 			->select('item_types.item_type');
-		$nanoQuery = $this->db->table('buffs');
+		$nanoQuery = $this->db->table(Buff::getTable());
 		$nanoQuery
 			->join('item_buffs', 'item_buffs.item_id', '=', 'buffs.id')
 			->join('skills', 'skills.id', '=', 'item_buffs.attribute_id')
@@ -394,11 +394,11 @@ class WhatBuffsController extends ModuleInstance {
 		$suffix = $froobFriendly ? 'Froob' : '';
 		$addNotInGameNotice = false;
 		if ($category === 'Nanoprogram') {
-			$query = $this->db->table('buffs AS b');
+			$query = $this->db->table(Buff::getTable(), 'b');
 			$query
-				->join('item_buffs AS ib', 'ib.item_id', 'b.id')
-				->join('skills AS s', 's.id', 'ib.attribute_id')
-				->leftJoin('aodb AS a', 'a.lowid', 'b.use_id')
+				->join(ItemBuff::getTable() . ' AS ib', 'ib.item_id', 'b.id')
+				->join(Skill::getTable() . ' AS s', 's.id', 'ib.attribute_id')
+				->leftJoin(AODBEntry::getTable() . ' AS a', 'a.lowid', 'b.use_id')
 				->where('s.id', $skill->id)
 				->where(static function (QueryBuilder $query) {
 					$query->whereIn('s.name', ['SkillLockModifier', '% Add. Nano Cost'])
@@ -452,12 +452,12 @@ class WhatBuffsController extends ModuleInstance {
 			$data = $this->generatePerkBufflist($data);
 			$result = $this->formatPerkBuffs($data, $skill);
 		} else {
-			$query = $this->db->table('aodb AS a');
+			$query = $this->db->table(AODBEntry::getTable(), 'a');
 			$query
 				->join('item_types AS i', 'i.item_id', 'a.highid')
-				->join('item_buffs AS b', 'b.item_id', 'a.highid')
-				->leftJoin('item_buffs AS b2', 'b2.item_id', 'a.lowid')
-				->join('skills AS s', static function (JoinClause $join) {
+				->join(ItemBuff::getTable(as: 'b'), 'b.item_id', 'a.highid')
+				->leftJoin(ItemBuff::getTable(as: 'b2'), 'b2.item_id', 'a.lowid')
+				->join(Skill::getTable() . ' AS s', static function (JoinClause $join) {
 					$join->on('b.attribute_id', 's.id')
 						->on('b2.attribute_id', 's.id');
 				})->where('i.item_type', $category)
@@ -518,7 +518,7 @@ class WhatBuffsController extends ModuleInstance {
 
 	/** Check if a slot (fingers, chest) exists */
 	public function verifySlot(string $type): bool {
-		return $this->db->table('item_types')
+		return $this->db->table(ItemType::getTable())
 			->where('item_type', $type)
 			->exists() || strtolower($type) === 'perk';
 	}
@@ -532,13 +532,13 @@ class WhatBuffsController extends ModuleInstance {
 		// check for exact match first, in order to disambiguate
 		// between Bow and Bow special attack
 		/** @var Collection<Skill> */
-		$results = $this->db->table('skills')
+		$results = $this->db->table(Skill::getTable())
 			->whereIlike('name', $skill)
 			->select(['id', 'name', 'unit'])
 			->distinct()
 			->union(
-				$this->db->table('skill_alias')
-					->join('skills', 'skills.id', 'skill_alias.id')
+				$this->db->table(SkillAlias::getTable())
+					->join(Skill::getTable(), 'skills.id', 'skill_alias.id')
 					->whereIlike('skill_alias.name', $skill)
 					->select(['skill_alias.id', 'skills.name', 'skills.unit'])
 					->distinct()
@@ -547,11 +547,11 @@ class WhatBuffsController extends ModuleInstance {
 			return $results->toArray();
 		}
 
-		$skillsQuery = $this->db->table('skills')
+		$skillsQuery = $this->db->table(Skill::getTable())
 			->select(['id', 'name', 'unit'])
 			->distinct();
-		$aliasQuery = $this->db->table('skill_alias', 'a')
-			->join('skills AS s', 'a.id', 's.id')
+		$aliasQuery = $this->db->table(SkillAlias::getTable(), 'a')
+			->join(Skill::getTable(as: 's'), 'a.id', 's.id')
 			->select(['s.id', 's.name', 's.unit'])
 			->distinct();
 

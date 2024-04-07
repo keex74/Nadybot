@@ -59,7 +59,7 @@ class RandomController extends ModuleInstance {
 	}
 
 	public function canRoll(string $sender, int $timeBetweenRolls): bool {
-		return $this->db->table('roll')
+		return $this->db->table(Roll::getTable())
 			->where('name', $sender)
 			->where('time', '>=', time() - $timeBetweenRolls)
 			->exists() === false;
@@ -218,7 +218,7 @@ class RandomController extends ModuleInstance {
 	#[NCA\HandlesCommand('verify')]
 	public function verifyCommand(CmdContext $context, int $rollId): void {
 		/** @var ?Roll */
-		$row = $this->db->table('roll')
+		$row = $this->db->table(Roll::getTable())
 			->where('id', $rollId)
 			->asObj(Roll::class)
 			->first();
@@ -262,7 +262,7 @@ class RandomController extends ModuleInstance {
 		mt_srand();
 		$result = (array)array_rand($revOptions, $amount);
 		$result = implode('|', $result);
-		$id = $this->db->table('roll')
+		$id = $this->db->table(Roll::getTable())
 			->insertGetId([
 				'time' => time(),
 				'name' => $sender,

@@ -118,12 +118,12 @@ class RateIgnoreController extends ModuleInstance {
 		if ($this->check($user) === false) {
 			return "<highlight>{$user}<end> is not on the rate limit ignore list.";
 		}
-		$this->db->table('rateignorelist')->where('name', $user)->delete();
+		$this->db->table(RateIgnoreList::getTable())->where('name', $user)->delete();
 		return "<highlight>{$user}<end> has been removed from the rate limit ignore list.";
 	}
 
 	public function check(string $user): bool {
-		return $this->db->table('rateignorelist')
+		return $this->db->table(RateIgnoreList::getTable())
 			->where('name', ucfirst(strtolower($user)))
 			->exists();
 	}
@@ -136,7 +136,7 @@ class RateIgnoreController extends ModuleInstance {
 	 * @throws SQLException
 	 */
 	public function all(): array {
-		return $this->db->table('rateignorelist')
+		return $this->db->table(RateIgnoreList::getTable())
 			->orderBy('name')
 			->asObj(RateIgnoreList::class)
 			->toArray();

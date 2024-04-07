@@ -738,7 +738,7 @@ class LootListsController extends ModuleInstance {
 		$sender = $context->char->name;
 
 		/** @var Collection<RaidLoot> */
-		$loot = $this->db->table('raid_loot AS r')
+		$loot = $this->db->table(RaidLoot::getTable(), 'r')
 					->whereIlike('r.raid', $raid)
 					->whereIlike('r.category', $category)
 					->asObj(RaidLoot::class);

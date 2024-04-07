@@ -66,7 +66,7 @@ class RecipeController extends ModuleInstance {
 		}
 
 		/** @var array<string,Recipe> */
-		$recipes = $this->db->table('recipes')->asObj(Recipe::class)->keyBy('id')->toArray();
+		$recipes = $this->db->table(Recipe::getTable())->asObj(Recipe::class)->keyBy('id')->toArray();
 		foreach ($fileNames as $fileName) {
 			if (!count($args = Safe::pregMatch("/(\d+)\.(txt|json)$/", $fileName))) {
 				continue;
@@ -96,7 +96,7 @@ class RecipeController extends ModuleInstance {
 	#[NCA\HandlesCommand('recipe')]
 	public function recipeShowCommand(CmdContext $context, int $id): void {
 		/** @var ?Recipe */
-		$row = $this->db->table('recipes')->where('id', $id)->asObj(Recipe::class)->first();
+		$row = $this->db->table(Recipe::getTable())->where('id', $id)->asObj(Recipe::class)->first();
 
 		if ($row === null) {
 			$msg = "Could not find recipe with id <highlight>{$id}<end>.";
@@ -109,7 +109,7 @@ class RecipeController extends ModuleInstance {
 	/** Search for a recipe */
 	#[NCA\HandlesCommand('recipe')]
 	public function recipeSearchCommand(CmdContext $context, string $search): void {
-		$query = $this->db->table('recipes')
+		$query = $this->db->table(Recipe::getTable())
 			->orderBy('name');
 		if (PItem::matches($search)) {
 			$item = new PItem($search);

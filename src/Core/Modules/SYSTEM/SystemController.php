@@ -8,6 +8,7 @@ use Amp\Http\Server\{Request, Response};
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
 use Illuminate\Support\Collection;
+use Nadybot\Core\DBSchema\Player;
 use Nadybot\Core\Event\ConnectEvent;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\{
@@ -377,7 +378,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 
 		$info->stats = $stats = new SystemStats();
 
-		$stats->charinfo_cache_size = $this->db->table('players')->count();
+		$stats->charinfo_cache_size = $this->db->table(Player::getTable())->count();
 
 		$stats->buddy_list_size = $this->buddylistManager->countConfirmedBuddies();
 		$stats->max_buddy_list_size = $this->chatBot->getBuddyListSize();

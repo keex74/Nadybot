@@ -82,7 +82,7 @@ class FindOrgController extends ModuleInstance {
 		if (!$this->fs->exists($this->config->paths->cache . '/orglist')) {
 			$this->fs->createDirectory($this->config->paths->cache . '/orglist', 0700);
 		}
-		$this->ready = $this->db->table('organizations')
+		$this->ready = $this->db->table(Organization::getTable())
 			->where('index', 'others')
 			->exists();
 	}
@@ -99,7 +99,7 @@ class FindOrgController extends ModuleInstance {
 	}
 
 	public function getByID(int $orgID): ?Organization {
-		return $this->db->table('organizations')
+		return $this->db->table(Organization::getTable())
 			->where('id', $orgID)
 			->asObj(Organization::class)
 			->first();
@@ -131,7 +131,7 @@ class FindOrgController extends ModuleInstance {
 	 * @throws SQLException
 	 */
 	public function lookupOrg(string $search, int $limit=50): array {
-		$query = $this->db->table('organizations')
+		$query = $this->db->table(Organization::getTable())
 			->limit($limit);
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $tmp, 'name');
@@ -196,10 +196,10 @@ class FindOrgController extends ModuleInstance {
 		}
 		try {
 			$this->db->awaitBeginTransaction();
-			$this->db->table('organizations')
+			$this->db->table(Organization::getTable())
 				->where('index', $letter)
 				->delete();
-			$this->db->table('organizations')
+			$this->db->table(Organization::getTable())
 				->chunkInsert($inserts);
 			$this->db->commit();
 		} catch (Exception $e) {
@@ -225,7 +225,7 @@ class FindOrgController extends ModuleInstance {
 			$this->fs->createDirectory($cacheFolder, 0700);
 		}
 
-		$this->ready = $this->db->table('organizations')
+		$this->ready = $this->db->table(Organization::getTable())
 			->where('index', 'others')
 			->exists();
 		$this->logger->info('Downloading list of all orgs');
@@ -248,7 +248,7 @@ class FindOrgController extends ModuleInstance {
 		if (empty($names)) {
 			return new Collection();
 		}
-		return $this->db->table('organizations')
+		return $this->db->table(Organization::getTable())
 			->whereIn('name', $names)
 			->asObj(Organization::class);
 	}
@@ -258,7 +258,7 @@ class FindOrgController extends ModuleInstance {
 		if (empty($ids)) {
 			return new Collection();
 		}
-		return $this->db->table('organizations')
+		return $this->db->table(Organization::getTable())
 			->whereIn('id', $ids)
 			->asObj(Organization::class);
 	}

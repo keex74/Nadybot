@@ -7,7 +7,7 @@ use Nadybot\Core\{
 	DB,
 	SchemaMigration,
 };
-use Nadybot\Modules\COMMENT_MODULE\ReputationController;
+use Nadybot\Modules\COMMENT_MODULE\{Comment, ReputationController};
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -32,7 +32,7 @@ class MigrateReputationTable implements SchemaMigration {
 		$cat = $this->reputationController->getReputationCategory();
 		try {
 			foreach ($oldData as $row) {
-				$db->table('<table:comments>')
+				$db->table(Comment::getTable())
 					->insert([
 						'category' => $cat->name,
 						'character' => (string)$row->name,

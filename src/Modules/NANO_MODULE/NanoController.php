@@ -101,7 +101,7 @@ class NanoController extends ModuleInstance {
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/nanos.csv');
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/nano_lines.csv');
 
-		$this->nanolines = $this->db->table('nano_lines')
+		$this->nanolines = $this->db->table(Nanoline::getTable())
 			->asObj(Nanoline::class)
 			->keyBy('strain_id')
 			->toArray();
@@ -114,7 +114,7 @@ class NanoController extends ModuleInstance {
 	#[NCA\Help\Group('nano')]
 	public function nanoCommand(CmdContext $context, string $search): void {
 		$search = htmlspecialchars_decode($search);
-		$query = $this->db->table('nanos')
+		$query = $this->db->table(Nano::getTable())
 			->orderBy('strain')
 			->orderBy('sub_strain')
 			->orderBy('sort_order')
@@ -200,7 +200,7 @@ class NanoController extends ModuleInstance {
 	 * @param bool       $froobOnly Is set, only show professions a froob can play
 	 */
 	public function listNanolineProfs(CmdContext $context, bool $froobOnly): void {
-		$query = $this->db->table('nanos')
+		$query = $this->db->table(Nano::getTable())
 			->where('professions', 'not like', '%:%')
 			->orderBy('professions')
 			->select('professions')->distinct();
@@ -258,7 +258,7 @@ class NanoController extends ModuleInstance {
 	#[NCA\HandlesCommand('nanoloc')]
 	#[NCA\Help\Group('nano')]
 	public function nanolocListCommand(CmdContext $context): void {
-		$query = $this->db->table('nanos')
+		$query = $this->db->table(Nano::getTable())
 			->groupBy('location')
 			->orderBy('location')
 			->select('location');
@@ -293,7 +293,7 @@ class NanoController extends ModuleInstance {
 	#[NCA\HandlesCommand('nanoloc')]
 	#[NCA\Help\Group('nano')]
 	public function nanolocViewCommand(CmdContext $context, string $location): void {
-		$nanos = $this->db->table('nanos')
+		$nanos = $this->db->table(Nano::getTable())
 			->whereIlike('location', $location)
 			->orWhereIlike('location', "%/{$location}")
 			->orWhereIlike('location', "{$location}/%")
@@ -302,7 +302,7 @@ class NanoController extends ModuleInstance {
 
 		$count = $nanos->count();
 		if ($count === 0) {
-			$nanos = $this->db->table('nanos')
+			$nanos = $this->db->table(Nano::getTable())
 				->whereIlike('location', "%{$location}%")
 				->orderBy('nano_name')
 				->asObj(Nano::class);
@@ -402,7 +402,7 @@ class NanoController extends ModuleInstance {
 
 	/** @return Collection<Nanoline> */
 	public function getNanoLinesByIds(int ...$ids): Collection {
-		return $this->db->table('nano_lines')
+		return $this->db->table(Nanoline::getTable())
 			->whereIn('strain_id', $ids)
 			->asObj(Nanoline::class);
 	}
@@ -417,7 +417,7 @@ class NanoController extends ModuleInstance {
 			throw new UserException('Level has to be between 1 and 220.');
 		}
 
-		$query = $this->db->table('nanos')
+		$query = $this->db->table(Nano::getTable())
 			->orderBy('school')
 			->orderBy('strain')
 			->orderBy('sub_strain')
@@ -577,7 +577,7 @@ class NanoController extends ModuleInstance {
 
 	/** Show all nanos of a nanoline grouped by sub-strain */
 	private function nanolinesShow(string $nanoline, ?string $prof, bool $froobOnly, CmdContext $context): void {
-		$query = $this->db->table('nanos')
+		$query = $this->db->table(Nano::getTable())
 			->whereIlike('strain', $nanoline)
 			->orderBy('sub_strain')
 			->orderBy('sort_order');
@@ -636,7 +636,7 @@ class NanoController extends ModuleInstance {
 	 * @param CmdContext $context    Object to send the reply to
 	 */
 	private function nanolinesList(string $profession, bool $froobOnly, CmdContext $context): void {
-		$query = $this->db->table('nanos')
+		$query = $this->db->table(Nano::getTable())
 			->whereIlike('professions', "%{$profession}%")
 			->orderBy('school')
 			->orderBy('strain')

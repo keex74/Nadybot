@@ -164,7 +164,7 @@ class LadderController extends ModuleInstance {
 
 	public function findMaxImplantQlByReqs(int $ability, int $treatment): ?LadderRequirements {
 		/** @var ?LadderRequirements */
-		$row = $this->db->table('implant_requirements')
+		$row = $this->db->table(LadderRequirements::getTable())
 			->where('ability', '<=', $ability)
 			->where('treatment', '<=', $treatment)
 			->orderByDesc('ql')
@@ -192,9 +192,9 @@ class LadderController extends ModuleInstance {
 	public function setHighestAndLowestQls(LadderRequirements $obj, string $var): void {
 		$varValue = $obj->{$var};
 
-		$min = $this->db->table('implant_requirements')
+		$min = $this->db->table(LadderRequirements::getTable())
 			->where($var, $varValue)->min('ql');
-		$max = $this->db->table('implant_requirements')
+		$max = $this->db->table(LadderRequirements::getTable())
 			->where($var, $varValue)->max('ql');
 		// camel case var name
 		$tempNameVar = ucfirst($var);

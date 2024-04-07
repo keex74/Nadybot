@@ -66,7 +66,7 @@ class ItemsController extends ModuleInstance {
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/item_groups.csv');
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/item_group_names.csv');
 
-		$this->skills = $this->db->table('skills')
+		$this->skills = $this->db->table(Skill::getTable())
 			->asObj(Skill::class)
 			->keyBy('id')
 			->toArray();
@@ -98,7 +98,7 @@ class ItemsController extends ModuleInstance {
 			return;
 		}
 		$blob = '';
-		$types = $this->db->table('item_types')
+		$types = $this->db->table(ItemType::getTable())
 			->where('item_id', $id)
 			->select('item_type')
 			->pluckStrings('item_type')
@@ -153,10 +153,10 @@ class ItemsController extends ModuleInstance {
 	}
 
 	public function findById(int $id): ?AODBEntry {
-		return $this->db->table('aodb')
+		return $this->db->table(AODBEntry::getTable())
 			->where('lowid', $id)
 			->union(
-				$this->db->table('aodb')
+				$this->db->table(AODBEntry::getTable())
 					->where('highid', $id)
 			)
 			->limit(1)
@@ -170,10 +170,10 @@ class ItemsController extends ModuleInstance {
 	 * @return Collection<AODBEntry>
 	 */
 	public function getByIDs(int ...$ids): Collection {
-		return $this->db->table('aodb')
+		return $this->db->table(AODBEntry::getTable())
 			->whereIn('lowid', $ids)
 			->union(
-				$this->db->table('aodb')
+				$this->db->table(AODBEntry::getTable())
 					->whereIn('highid', $ids)
 			)
 			->asObj(AODBEntry::class);
@@ -185,7 +185,7 @@ class ItemsController extends ModuleInstance {
 	 * @return Collection<AODBEntry>
 	 */
 	public function getByNames(string ...$names): Collection {
-		return $this->db->table('aodb')
+		return $this->db->table(AODBEntry::getTable())
 			->whereIn('name', $names)
 			->asObj(AODBEntry::class);
 	}
@@ -196,7 +196,7 @@ class ItemsController extends ModuleInstance {
 	 * @return Collection<AODBEntry>
 	 */
 	public function getBySearch(string $search, ?int $ql=null): Collection {
-		$query = $this->db->table('aodb');
+		$query = $this->db->table(AODBEntry::getTable());
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $tmp, 'name');
 
@@ -210,7 +210,7 @@ class ItemsController extends ModuleInstance {
 	/** Search the item id of an item */
 	#[NCA\HandlesCommand('id')]
 	public function idCommand(CmdContext $context, string $search): void {
-		$query = $this->db->table('aodb AS a')
+		$query = $this->db->table(AODBEntry::getTable(), 'a')
 			->leftJoin('item_groups AS g', 'g.item_id', 'a.lowid')
 			->leftJoin('item_group_names AS gn', 'g.group_id', 'gn.group_id')
 			->orderByColFunc('COALESCE', ['gn.name', 'a.name'])
@@ -281,7 +281,7 @@ class ItemsController extends ModuleInstance {
 	 * @return ItemSearchResult[]
 	 */
 	public function findItemsFromLocal(string $search, ?int $ql, bool $dontExclude=false): array {
-		$innerQuery = $this->db->table('aodb AS a')
+		$innerQuery = $this->db->table(AODBEntry::getTable(), 'a')
 			->leftJoin('item_groups AS g', 'g.item_id', 'a.lowid');
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($innerQuery, $tmp, 'name');
@@ -583,7 +583,7 @@ class ItemsController extends ModuleInstance {
 	 * @psalm-return (T is null ? null|AODBEntry : null|AODBItem)
 	 */
 	public function findByName(string $name, ?int $ql=null): ?AODBEntry {
-		$query = $this->db->table('aodb')
+		$query = $this->db->table(AODBEntry::getTable())
 			->where('name', $name)
 			->orderByDesc('highql')
 			->orderByDesc('highid');
@@ -703,7 +703,7 @@ class ItemsController extends ModuleInstance {
 
 	/** @return Collection<Skill> */
 	public function getSkillByIDs(int ...$ids): Collection {
-		return $this->db->table('skills')
+		return $this->db->table(Skill::getTable())
 			->whereIn('id', $ids)
 			->asObj(Skill::class);
 	}
@@ -712,7 +712,7 @@ class ItemsController extends ModuleInstance {
 	public function searchForSkill(string $skillName): Collection {
 		// check for exact match first, in order to disambiguate
 		// between Bow and Bow special attack
-		$query = $this->db->table('skills');
+		$query = $this->db->table(Skill::getTable());
 
 		/**
 		 * @psalm-suppress ImplicitToStringCast
@@ -728,7 +728,7 @@ class ItemsController extends ModuleInstance {
 			return $results;
 		}
 
-		$query = $this->db->table('skills')->select('*')->distinct();
+		$query = $this->db->table(Skill::getTable())->select('*')->distinct();
 
 		$tmp = explode(' ', $skillName);
 		$this->db->addWhereFromParams($query, $tmp, 'name');
@@ -738,7 +738,7 @@ class ItemsController extends ModuleInstance {
 
 	/** @return Collection<ItemWithBuffs> */
 	public function addBuffs(AODBEntry ...$items): Collection {
-		$buffs = $this->db->table('item_buffs')
+		$buffs = $this->db->table(ItemBuff::getTable())
 			->whereIn('item_id', array_unique([...array_column($items, 'highid'), ...array_column($items, 'lowid')]))
 			->asObj(ItemBuff::class);
 		$skills = $this->getSkillByIDs(...$buffs->pluck('attribute_id')->unique()->toArray())
@@ -768,7 +768,7 @@ class ItemsController extends ModuleInstance {
 
 	/** Check if an aoid is part of an item group */
 	public function hasItemGroup(int $aoid): bool {
-		return $this->db->table('item_groups')
+		return $this->db->table(ItemGroup::getTable())
 			->where('item_id', $aoid)
 			->exists();
 	}

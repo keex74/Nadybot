@@ -54,7 +54,7 @@ class QuoteController extends ModuleInstance {
 		string $quote
 	): void {
 		$quoteMsg = trim($quote);
-		$row = $this->db->table('quote')
+		$row = $this->db->table(Quote::getTable())
 			->whereIlike('msg', $quoteMsg)
 			->asObj(Quote::class)->first();
 		if (isset($row)) {
@@ -69,7 +69,7 @@ class QuoteController extends ModuleInstance {
 		}
 		$poster = $context->char->name;
 
-		$id = $this->db->table('quote')
+		$id = $this->db->table(Quote::getTable())
 			->insertGetId([
 				'poster' => $poster,
 				'dt' => time(),
@@ -87,7 +87,7 @@ class QuoteController extends ModuleInstance {
 		int $id
 	): void {
 		/** @var ?Quote */
-		$row = $this->db->table('quote')
+		$row = $this->db->table(Quote::getTable())
 			->where('id', $id)
 			->asObj(Quote::class)->first();
 
@@ -102,7 +102,7 @@ class QuoteController extends ModuleInstance {
 		if (($poster === $context->char->name)
 			|| $this->accessManager->checkAccess($context->char->name, 'moderator')
 		) {
-			$this->db->table('quote')->delete($id);
+			$this->db->table(Quote::getTable())->delete($id);
 			$msg = 'This quote has been deleted.';
 		} else {
 			$msg = "Only a moderator or {$poster} can delete this quote.";
@@ -121,7 +121,7 @@ class QuoteController extends ModuleInstance {
 		$msg = '';
 
 		// Search for poster:
-		$idList = $this->db->table('quote')
+		$idList = $this->db->table(Quote::getTable())
 			->whereIlike('poster', $searchParam)
 			->asObj(Quote::class)
 			->map(static function (Quote $quote): string {
@@ -137,7 +137,7 @@ class QuoteController extends ModuleInstance {
 		}
 
 		// Search inside quotes:
-		$idList = $this->db->table('quote')
+		$idList = $this->db->table(Quote::getTable())
 			->whereIlike('msg', $searchParam)
 			->asObj(Quote::class)
 			->map(static function (Quote $quote): string {
@@ -201,7 +201,7 @@ class QuoteController extends ModuleInstance {
 	}
 
 	public function getMaxId(): int {
-		return (int)($this->db->table('quote')->max('id') ?? 0);
+		return (int)($this->db->table(Quote::getTable())->max('id') ?? 0);
 	}
 
 	/** @return null|string[] */
@@ -213,12 +213,12 @@ class QuoteController extends ModuleInstance {
 		}
 
 		if ($id === null) {
-			$row = $this->db->table('quote')
+			$row = $this->db->table(Quote::getTable())
 				->inRandomOrder()
 				->limit(1)
 				->asObj(Quote::class)->first();
 		} else {
-			$row = $this->db->table('quote')
+			$row = $this->db->table(Quote::getTable())
 				->where('id', $id)
 				->asObj(Quote::class)->first();
 		}
@@ -246,7 +246,7 @@ class QuoteController extends ModuleInstance {
 		"]\n\n";
 
 		$msg .= "<header2>Quotes posted by \"{$poster}\"<end>\n";
-		$idList = $this->db->table('quote')
+		$idList = $this->db->table(Quote::getTable())
 			->where('poster', $poster)
 			->asObj(Quote::class)
 			->map(static function (Quote $row): string {
@@ -274,7 +274,7 @@ class QuoteController extends ModuleInstance {
 	]
 	public function quoteTile(string $sender): ?string {
 		/** @var ?Quote */
-		$row = $this->db->table('quote')
+		$row = $this->db->table(Quote::getTable())
 			->inRandomOrder()
 			->limit(1)
 			->asObj(Quote::class)->first();

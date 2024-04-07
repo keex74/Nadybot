@@ -598,13 +598,13 @@ class SkillsController extends ModuleInstance {
 		}
 
 		/** @var ?WeaponAttribute */
-		$lowAttributes = $this->db->table('weapon_attributes')
+		$lowAttributes = $this->db->table(WeaponAttribute::getTable())
 			->where('id', $row->lowid)
 			->asObj(WeaponAttribute::class)
 			->first();
 
 		/** @var ?WeaponAttribute */
-		$highAttributes = $this->db->table('weapon_attributes')
+		$highAttributes = $this->db->table(WeaponAttribute::getTable())
 			->where('id', $row->highid)
 			->asObj(WeaponAttribute::class)
 			->first();
@@ -711,7 +711,7 @@ class SkillsController extends ModuleInstance {
 					if (isset($kept[$item->lowid])) {
 						return false;
 					}
-					if (!$this->db->table('weapon_attributes')
+					if (!$this->db->table(WeaponAttribute::getTable())
 							->where('id', $item->lowid)
 							->orWhere('id', $item->highid)
 							->exists()
@@ -838,7 +838,7 @@ class SkillsController extends ModuleInstance {
 	 * @return Collection<WeaponAttribute>
 	 */
 	public function getWeaponAttributes(null|int|array $aoid): Collection {
-		$query = $this->db->table('weapon_attributes');
+		$query = $this->db->table(WeaponAttribute::getTable());
 		if (is_int($aoid)) {
 			$query->where('id', $aoid);
 		} elseif (is_array($aoid)) {

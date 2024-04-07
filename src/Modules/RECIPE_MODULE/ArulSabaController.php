@@ -68,7 +68,7 @@ class ArulSabaController extends ModuleInstance {
 	#[NCA\HandlesCommand('arulsaba')]
 	public function arulSabaListCommand(CmdContext $context): void {
 		$blob = "<header2>Choose the type of bracer<end>\n";
-		$blob = $this->db->table('arulsaba')
+		$blob = $this->db->table(ArulSaba::getTable())
 			->asObj(ArulSaba::class)
 			->reduce(static function (string $blob, ArulSaba $type): string {
 				$chooseLink = Text::makeChatcmd(
@@ -88,7 +88,7 @@ class ArulSabaController extends ModuleInstance {
 	#[NCA\Help\Example('<symbol>arulsaba desert')]
 	public function arulSabaChooseQLCommand(CmdContext $context, PWord $name): void {
 		/** @var Collection<ArulSabaBuffs> */
-		$aruls = $this->db->table('arulsaba_buffs')
+		$aruls = $this->db->table(ArulSabaBuffs::getTable())
 			->where('name', ucfirst(strtolower($name())))
 			->orderBy('min_level')
 			->asObj(ArulSabaBuffs::class);
@@ -124,7 +124,7 @@ class ArulSabaController extends ModuleInstance {
 
 	public function readIngredientByAoid(int $aoid, int $amount=1, ?int $ql=null, bool $qlCanBeHigher=false): ?Ingredient {
 		/** @var Ingredient|null */
-		$ing = $this->db->table('ingredient')
+		$ing = $this->db->table(Ingredient::getTable())
 			->where('aoid', $aoid)
 			->asObj(Ingredient::class)
 			->first();
@@ -136,12 +136,12 @@ class ArulSabaController extends ModuleInstance {
 
 	public function readIngredientByName(string $name, int $amount=1, ?int $ql=null, bool $qlCanBeHigher=false): Ingredient {
 		/** @var Ingredient|null */
-		$ing = $this->db->table('ingredient')
+		$ing = $this->db->table(Ingredient::getTable())
 			->where('name', $name)
 			->asObj(Ingredient::class)
 			->first();
 		if (!isset($ing)) {
-			$query = $this->db->table('ingredient');
+			$query = $this->db->table(Ingredient::getTable());
 			$tmp = explode(' ', $name);
 			$this->db->addWhereFromParams($query, $tmp, 'name');
 			$ing = $query->asObj(Ingredient::class)->first();
@@ -243,7 +243,7 @@ class ArulSabaController extends ModuleInstance {
 		];
 
 		/** @var ArulSaba|null */
-		$arul = $this->db->table('arulsaba')
+		$arul = $this->db->table(ArulSaba::getTable())
 			->where('name', $type)
 			->asObj(ArulSaba::class)
 			->first();
@@ -546,7 +546,7 @@ class ArulSabaController extends ModuleInstance {
 	}
 
 	protected function readSkill(int $id): ?Skill {
-		return $this->db->table('skills')
+		return $this->db->table(Skill::getTable())
 			->where('id', $id)
 			->asObj(Skill::class)
 			->first();

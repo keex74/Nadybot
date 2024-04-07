@@ -62,7 +62,7 @@ class BosslootController extends ModuleInstance {
 	public function bossCommand(CmdContext $context, string $bossName): void {
 		$bossName = strtolower($bossName);
 
-		$query = $this->db->table('boss_namedb');
+		$query = $this->db->table(BossNamedb::getTable());
 		$this->db->addWhereFromParams($query, explode(' ', $bossName), 'bossname');
 
 		/** @var Collection<BossNamedb> */
@@ -97,7 +97,7 @@ class BosslootController extends ModuleInstance {
 		$blob .= "<header2>Loot<end>\n";
 
 		/** @var Collection<BossLootdb> */
-		$data = $this->db->table('boss_lootdb')
+		$data = $this->db->table(BossLootdb::getTable())
 			->where('bossid', $row->bossid)
 			->asObj(BossLootdb::class);
 		$this->addItemsToLoot($data);
@@ -122,8 +122,8 @@ class BosslootController extends ModuleInstance {
 
 		$blob = "Bosses that drop items matching '{$item}':\n\n";
 
-		$query = $this->db->table('boss_lootdb AS b1')
-			->join('boss_namedb AS b2', 'b2.bossid', 'b1.bossid')
+		$query = $this->db->table(BossLootdb::getTable(), 'b1')
+			->join(BossNamedb::getTable() . ' AS b2', 'b2.bossid', 'b1.bossid')
 			->select(['b2.bossid', 'b2.bossname'])->distinct();
 		$this->db->addWhereFromParams($query, explode(' ', $item), 'b1.itemname');
 
@@ -142,7 +142,7 @@ class BosslootController extends ModuleInstance {
 	}
 
 	public function getBossLootOutput(BossNamedb $row, ?string $search=null): string {
-		$query = $this->db->table('boss_lootdb')
+		$query = $this->db->table(BossLootdb::getTable())
 			->where('bossid', $row->bossid);
 		if (isset($search)) {
 			$this->db->addWhereFromParams($query, explode(' ', $search), 'itemname');

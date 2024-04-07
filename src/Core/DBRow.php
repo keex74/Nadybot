@@ -35,18 +35,22 @@ class DBRow implements Stringable {
 	 *
 	 * @throws ValueError if there is no table defined
 	 */
-	public static function getTable(): string {
+	public static function getTable(?string $as=null): string {
 		$refClass = new ReflectionClass(static::class);
 		$tableDefs = $refClass->getAttributes(Table::class);
 		if (!count($tableDefs)) {
 			throw new ValueError('The class ' . static::class . " doesn't have a table defined.");
 		}
-		return $tableDefs[0]->newInstance()->getName();
+		$tableName = $tableDefs[0]->newInstance()->getName();
+		if (isset($as)) {
+			$tableName .= "AS {$as}";
+		}
+		return $tableName;
 	}
 
-	public static function tryGetTable(): ?string {
+	public static function tryGetTable(?string $as=null): ?string {
 		try {
-			return self::getTable();
+			return self::getTable($as);
 		} catch (\Throwable) {
 		}
 		return null;

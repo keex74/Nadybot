@@ -39,14 +39,14 @@ class WhereisController extends ModuleInstance {
 
 	/** @return Collection<Whereis> */
 	public function getByName(string ...$name): Collection {
-		return $this->db->table('whereis AS w')
+		return $this->db->table(Whereis::getTable())
 			->whereIn('name', $name)
 			->asObj(Whereis::class);
 	}
 
 	/** @return Collection<Whereis> */
 	public function getAll(): Collection {
-		return $this->db->table('whereis AS w')->asObj(Whereis::class);
+		return $this->db->table(Whereis::getTable())->asObj(Whereis::class);
 	}
 
 	/** Show the location of NPCs or places */
@@ -57,7 +57,7 @@ class WhereisController extends ModuleInstance {
 	public function whereisCommand(CmdContext $context, string $search): void {
 		$search = strtolower($search);
 		$words = explode(' ', $search);
-		$query = $this->db->table('whereis');
+		$query = $this->db->table(Whereis::getTable());
 		$this->db->addWhereFromParams($query, $words, 'name');
 		$this->db->addWhereFromParams($query, $words, 'keywords', 'or');
 

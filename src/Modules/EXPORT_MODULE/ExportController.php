@@ -163,7 +163,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\AltMain[] */
 	protected function exportAlts(): array {
-		$alts = $this->db->table('alts')->asObj(Alt::class);
+		$alts = $this->db->table(Alt::getTable())->asObj(Alt::class);
 
 		/** @var array<string,Schema\AltChar[]> */
 		$data = [];
@@ -287,7 +287,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\Quote[] */
 	protected function exportQuotes(): array {
-		return $this->db->table('quote')
+		return $this->db->table(Quote::getTable())
 			->orderBy('id')
 			->asObj(Quote::class)
 			->map(function (Quote $quote): Schema\Quote {
@@ -589,7 +589,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\News[] */
 	protected function exportNews(): array {
-		return $this->db->table('news')
+		return $this->db->table(News::getTable())
 			->asObj(News::class)
 			->map(function (News $topic): Schema\News {
 				$data = new Schema\News(
@@ -603,7 +603,7 @@ class ExportController extends ModuleInstance {
 				);
 
 				/** @var NewsConfirmed[] */
-				$confirmations = $this->db->table('news_confirmed')
+				$confirmations = $this->db->table(NewsConfirmed::getTable())
 					->where('id', $topic->id)
 					->asObj(NewsConfirmed::class)
 					->toArray();
@@ -619,7 +619,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\Note[] */
 	protected function exportNotes(): array {
-		return $this->db->table('notes')
+		return $this->db->table(Note::getTable())
 			->asObj(Note::class)
 			->map(function (Note $note): Schema\Note {
 				$data = new Schema\Note(
@@ -653,7 +653,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\Event[] */
 	protected function exportEvents(): array {
-		return $this->db->table('events')
+		return $this->db->table(EventModel::getTable())
 			->asObj(EventModel::class)
 			->map(function (EventModel $event): Schema\Event {
 				$attendees = array_values(array_diff(explode(',', $event->event_attendees ?? ''), ['']));
@@ -673,7 +673,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\Link[] */
 	protected function exportLinks(): array {
-		return $this->db->table('links')
+		return $this->db->table(Link::getTable())
 			->asObj(Link::class)
 			->map(function (Link $link): Schema\Link {
 				return new Schema\Link(
@@ -687,7 +687,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\CommentCategory[] */
 	protected function exportCommentCategories(): array {
-		return $this->db->table('<table:comment_categories>')
+		return $this->db->table(CommentCategory::getTable())
 			->asObj(CommentCategory::class)
 			->map(function (CommentCategory $category): Schema\CommentCategory {
 				return new Schema\CommentCategory(
@@ -703,7 +703,7 @@ class ExportController extends ModuleInstance {
 
 	/** @return Schema\Comment[] */
 	protected function exportComments(): array {
-		return $this->db->table('<table:comments>')
+		return $this->db->table(Comment::getTable())
 			->asObj(Comment::class)
 			->map(function (Comment $comment): Schema\Comment {
 				return new Schema\Comment(

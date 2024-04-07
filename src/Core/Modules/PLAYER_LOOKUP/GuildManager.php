@@ -214,7 +214,7 @@ class GuildManager extends ModuleInstance {
 		}
 		$this->db->awaitBeginTransaction();
 
-		$this->db->table('players')
+		$this->db->table(Player::getTable())
 			->where('guild_id', $guild->guild_id)
 			->where('dimension', $dimension)
 			->update([

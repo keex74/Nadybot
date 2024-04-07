@@ -70,7 +70,7 @@ class PocketbossController extends ModuleInstance {
 
 	public function singlePbBlob(string $name): string {
 		/** @var Pocketboss[] */
-		$data = $this->db->table('pocketboss')
+		$data = $this->db->table(Pocketboss::getTable())
 			->where('pb', $name)
 			->orderBy('ql')
 			->asObj(Pocketboss::class)
@@ -100,7 +100,7 @@ class PocketbossController extends ModuleInstance {
 		if ($search === 'tnh') {
 			$search = 'The Night Heart';
 		}
-		$row = $this->db->table('pocketboss')
+		$row = $this->db->table(Pocketboss::getTable())
 			->whereIlike('pb', $search)
 			->orderBy('pb')
 			->limit(1)
@@ -110,7 +110,7 @@ class PocketbossController extends ModuleInstance {
 			return [$row];
 		}
 
-		$query = $this->db->table('pocketboss')
+		$query = $this->db->table(Pocketboss::getTable())
 			->orderBy('pb');
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $tmp, 'pb');
@@ -201,7 +201,7 @@ class PocketbossController extends ModuleInstance {
 		$line = '%';
 
 		/** @var string[] */
-		$lines = $this->db->table('pocketboss')->select('line')->distinct()
+		$lines = $this->db->table(Pocketboss::getTable())->select('line')->distinct()
 			->pluckStrings('line')->toArray();
 
 		for ($i = 0; $i < $paramCount; $i++) {
@@ -243,7 +243,7 @@ class PocketbossController extends ModuleInstance {
 			return;
 		}
 
-		$query = $this->db->table('pocketboss')
+		$query = $this->db->table(Pocketboss::getTable())
 			->whereIlike('slot', $slot)
 			->whereIlike('type', $symbtype)
 			->whereIlike('line', $line)

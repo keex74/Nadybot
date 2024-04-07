@@ -47,7 +47,7 @@ class PlayfieldController extends ModuleInstance {
 	/** Show a list of playfields, including their id, short name, and long name */
 	#[NCA\HandlesCommand('playfields')]
 	public function playfieldListCommand(CmdContext $context): void {
-		$blob = $this->db->table('playfields')
+		$blob = $this->db->table(Playfield::getTable())
 			->orderBy('long_name')
 			->asObj(Playfield::class)
 			->reduce(static function (string $blob, Playfield $row): string {
@@ -62,7 +62,7 @@ class PlayfieldController extends ModuleInstance {
 	#[NCA\HandlesCommand('playfields')]
 	public function playfieldShowCommand(CmdContext $context, string $search): void {
 		$search = strtolower($search);
-		$query = $this->db->table('playfields');
+		$query = $this->db->table(Playfield::getTable());
 		$this->db->addWhereFromParams($query, explode(' ', $search), 'long_name');
 		$this->db->addWhereFromParams($query, explode(' ', $search), 'short_name', 'or');
 
@@ -157,7 +157,7 @@ class PlayfieldController extends ModuleInstance {
 
 	/** @return Collection<Playfield> */
 	public function searchPlayfieldsByName(string $playfieldName): Collection {
-		return $this->db->table('playfields')
+		return $this->db->table(Playfield::getTable())
 			->whereIlike('long_name', $playfieldName)
 			->orWhereIlike('short_name', $playfieldName)
 			->asObj(Playfield::class);

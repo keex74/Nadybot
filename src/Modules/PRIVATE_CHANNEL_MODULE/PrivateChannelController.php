@@ -426,7 +426,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		 *
 		 * @var Collection<string,LastOnline>
 		 */
-		$lastOnline = $this->db->table('last_online')
+		$lastOnline = $this->db->table(LastOnline::getTable())
 			->orderBy('dt')
 			->asObj(LastOnline::class)
 			->each(function (LastOnline $member): void {
@@ -1323,7 +1323,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		$main = $this->altsController->getMainOf($char());
 
 		/** @var Collection<LastOnline> */
-		$lastSeen = $this->db->table('last_online')
+		$lastSeen = $this->db->table(LastOnline::getTable())
 			->whereIn('name', $this->altsController->getAltsOf($main))
 			->orderByDesc('dt')
 			->asObj(LastOnline::class);

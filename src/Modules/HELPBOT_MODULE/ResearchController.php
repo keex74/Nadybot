@@ -44,7 +44,7 @@ class ResearchController extends ModuleInstance {
 		}
 
 		/** @var Research */
-		$row = $this->db->table('research')
+		$row = $this->db->table(Research::getTable())
 			->where('level', $level)
 			->asObj(Research::class)
 			->first();
@@ -75,7 +75,7 @@ class ResearchController extends ModuleInstance {
 		}
 		$loLevel = min($from, $to);
 		$hiLevel = max($from, $to);
-		$query = $this->db->table('research')
+		$query = $this->db->table(Research::getTable())
 			->where('level', '>', $loLevel)
 			->where('level', '<=', $hiLevel);
 		$query->select($query->colFunc('SUM', 'sk', 'totalsk'));

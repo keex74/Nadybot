@@ -64,7 +64,7 @@ class SpawntimeController extends ModuleInstance {
 	/** List all spawn times */
 	#[NCA\HandlesCommand('spawntime')]
 	public function spawntimeListCommand(CmdContext $context): void {
-		$spawnTimes = $this->db->table('spawntime')->asObj(Spawntime::class);
+		$spawnTimes = $this->db->table(Spawntime::getTable())->asObj(Spawntime::class);
 		if ($spawnTimes->isEmpty()) {
 			$msg = 'There are currently no spawntimes in the database.';
 			$context->reply($msg);
@@ -79,7 +79,7 @@ class SpawntimeController extends ModuleInstance {
 	#[NCA\HandlesCommand('spawntime')]
 	public function spawntimeSearchCommand(CmdContext $context, string $search): void {
 		$tokens = explode(' ', $search);
-		$query = $this->db->table('spawntime');
+		$query = $this->db->table(Spawntime::getTable());
 		$this->db->addWhereFromParams($query, $tokens, 'mob');
 		$this->db->addWhereFromParams($query, $tokens, 'placeholder', 'or');
 		$this->db->addWhereFromParams($query, $tokens, 'alias', 'or');

@@ -37,7 +37,7 @@ class ClusterController extends ModuleInstance {
 	#[NCA\HandlesCommand('cluster')]
 	public function clusterListCommand(CmdContext $context): void {
 		/** @var Collection<Cluster> */
-		$data = $this->db->table('Cluster')
+		$data = $this->db->table(Cluster::getTable())
 			->orderBy('LongName')
 			->asObj(Cluster::class);
 		$count = $data->count();
@@ -69,7 +69,7 @@ class ClusterController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$query = $this->db->table('Cluster')
+		$query = $this->db->table(Cluster::getTable())
 			->whereIn('SkillID', array_column($skills, 'id'));
 
 		/** @var Collection<Cluster> */
@@ -85,7 +85,7 @@ class ClusterController extends ModuleInstance {
 		$blob = "Click 'Add' to add cluster to {$implantDesignerLink}.\n\n";
 		foreach ($data as $cluster) {
 			/** @var SlotClusterType[] */
-			$results = $this->db->table('ClusterImplantMap AS c1')
+			$results = $this->db->table(ClusterImplantMap::getTable(), 'c1')
 				->join('ClusterType AS c2', 'c1.ClusterTypeID', 'c2.ClusterTypeID')
 				->join('ImplantType AS i', 'c1.ImplantTypeID', 'i.ImplantTypeID')
 				->where('c1.ClusterID', $cluster->ClusterID)

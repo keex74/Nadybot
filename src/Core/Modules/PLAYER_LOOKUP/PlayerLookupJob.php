@@ -6,6 +6,7 @@ use function Amp\{delay};
 
 use Amp\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Nadybot\Core\DBSchema\Alt;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
@@ -37,7 +38,7 @@ class PlayerLookupJob {
 	 * @return Collection<Player>
 	 */
 	public function getOudatedCharacters(): Collection {
-		return $this->db->table('players')
+		return $this->db->table(Player::getTable())
 			->where('last_update', '<', time() - PlayerManager::CACHE_GRACE_TIME)
 			->asObj(Player::class);
 	}
@@ -49,7 +50,7 @@ class PlayerLookupJob {
 	 */
 	public function getMissingAlts(): Collection {
 		/** @var Collection<MissingAlt> */
-		$result = $this->db->table('alts')
+		$result = $this->db->table(Alt::getTable())
 			->whereNotExists(static function (QueryBuilder $query): void {
 				$query->from('players')
 					->whereColumn('alts.alt', 'players.name');

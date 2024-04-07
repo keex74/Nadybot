@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\ALTS;
 
 use Illuminate\Support\Collection;
+use Nadybot\Core\DBSchema\Alt;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BuddylistManager,
@@ -247,7 +248,7 @@ class AltInfo {
 		$blob .= "\n";
 
 		/** @var Collection<AltPlayer> */
-		$alts = $this->db->table('alts AS a')
+		$alts = $this->db->table(Alt::getTable(), 'a')
 			->where('a.main', $this->main)
 			->asObj(AltPlayer::class)
 			->filter(static fn (AltPlayer $alt): bool => $alt->alt !== $alt->main);

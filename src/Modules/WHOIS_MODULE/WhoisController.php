@@ -101,7 +101,7 @@ class WhoisController extends ModuleInstance {
 		try {
 			foreach ($this->nameHistoryCache as $entry) {
 				if ($this->db->getType() === DB\Type::MSSQL) {
-					if ($this->db->table('name_history')
+					if ($this->db->table(NameHistory::getTable())
 						->where('name', $entry->name)
 						->where('charid', $entry->charid)
 						->where('dimension', $this->db->getDim())
@@ -116,7 +116,7 @@ class WhoisController extends ModuleInstance {
 						dt: time(),
 					));
 				} else {
-					$this->db->table('name_history')
+					$this->db->table(NameHistory::getTable())
 						->insertOrIgnore([
 							'name' => $entry->name,
 							'charid' => $entry->charid,
@@ -174,7 +174,7 @@ class WhoisController extends ModuleInstance {
 		}
 
 		/** @var NameHistory[] */
-		$players = $this->db->table('name_history')
+		$players = $this->db->table(NameHistory::getTable())
 		->where('charid', $charID)
 			->where('dimension', $this->db->getDim())
 			->orderByDesc('dt')
@@ -204,7 +204,7 @@ class WhoisController extends ModuleInstance {
 		$name = $char();
 
 		/** @var NameHistory[] */
-		$players = $this->db->table('name_history')
+		$players = $this->db->table(NameHistory::getTable())
 			->where('name', $name)
 			->where('dimension', $this->db->getDim())
 			->orderByDesc('dt')
@@ -229,7 +229,7 @@ class WhoisController extends ModuleInstance {
 
 	public function getNameHistory(int $charID, int $dimension): string {
 		/** @var NameHistory[] */
-		$data = $this->db->table('name_history')
+		$data = $this->db->table(NameHistory::getTable())
 			->where('charid', $charID)
 			->where('dimension', $dimension)
 			->orderByDesc('dt')

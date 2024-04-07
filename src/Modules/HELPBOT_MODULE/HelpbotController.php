@@ -60,7 +60,7 @@ class HelpbotController extends ModuleInstance {
 		$range2 = (int)ceil($ql + $ql / 10);
 
 		/** @var Collection<DynaDB> */
-		$data = $this->db->table('dynadb AS d')
+		$data = $this->db->table(DynaDB::getTable(), 'd')
 			->where('max_ql', '>=', $range1)
 			->where('min_ql', '<=', $range2)
 			->orderBy('min_ql')
@@ -90,7 +90,7 @@ class HelpbotController extends ModuleInstance {
 	public function dynaNameCommand(CmdContext $context, string $search): void {
 		$dbSearch = str_replace(' ', '%', $search);
 		$playfields = $this->pfController->searchPlayfieldsByName("%{$dbSearch}%");
-		$data = $this->db->table('dynadb AS d')
+		$data = $this->db->table(DynaDB::getTable(), 'd')
 			->whereIn('playfield_id', $playfields->pluck('id')->toArray())
 			->orWhereIlike('mob', "%{$dbSearch}%")
 			->asObj(DynaDB::class);

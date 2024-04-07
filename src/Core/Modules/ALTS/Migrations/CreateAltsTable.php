@@ -4,27 +4,29 @@ namespace Nadybot\Core\Modules\ALTS\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\Alt;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_23_10_26_50, shared: true)]
 class CreateAltsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'alts';
+		$table = Alt::getTable();
 		if ($db->schema()->hasTable($table)) {
 			if (!$db->schema()->hasColumn('alts', 'validated')) {
 				return;
 			}
-			$db->schema()->table('alts', static function (Blueprint $table): void {
+			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->renameColumn('validated', 'validated_by_alt');
 			});
-			$db->schema()->table('alts', static function (Blueprint $table): void {
+			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->boolean('validated_by_alt')->nullable()->default(false)->change();
 				$table->boolean('validated_by_main')->nullable()->default(false);
 				$table->string('added_via', 15)->nullable();
 			});
 			$myName = $db->getMyname();
-			$db->table('alts')->update(['validated_by_main' => true, 'added_via' => $myName]);
+			$db->table(Alt::getTable())
+				->update(['validated_by_main' => true, 'added_via' => $myName]);
 			return;
 		}
 		$db->schema()->create($table, static function (Blueprint $table): void {

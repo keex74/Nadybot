@@ -198,7 +198,7 @@ class NotesController extends ModuleInstance {
 		$altInfo = $this->altsController->getAltInfo($context->char->name);
 		$main = $altInfo->getValidatedMain($context->char->name);
 
-		$numRows = $this->db->table('notes')
+		$numRows = $this->db->table(Note::getTable())
 			->where('id', $id)
 			->where('owner', $main)
 			->delete();
@@ -234,7 +234,7 @@ class NotesController extends ModuleInstance {
 		}
 		$altInfo = $this->altsController->getAltInfo($context->char->name);
 		$main = $altInfo->getValidatedMain($context->char->name);
-		$updated = $this->db->table('notes')
+		$updated = $this->db->table(Note::getTable())
 			->where('id', $id)
 			->where('owner', $main)
 			->update(['reminder' => $reminder]);
@@ -432,7 +432,7 @@ class NotesController extends ModuleInstance {
 			return;
 		}
 		// convert all notes to be assigned to the main
-		$this->db->table('notes')
+		$this->db->table(Note::getTable())
 			->where('owner', $sender)
 			->update(['owner' => $main]);
 	}
@@ -443,7 +443,7 @@ class NotesController extends ModuleInstance {
 	 * @return Note[]
 	 */
 	protected function readNotes(string $main, bool $remindersOnly=false): array {
-		return $this->db->table('notes')
+		return $this->db->table(Note::getTable())
 			->where('owner', $main)
 			->where('reminder', '>', $remindersOnly ? 0 : -1)
 			->orderBy('added_by')

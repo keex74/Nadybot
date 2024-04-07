@@ -47,7 +47,7 @@ class OrgMembersController extends ModuleInstance {
 		}
 
 		/** @var Collection<Player> */
-		$players = $this->db->table('players')
+		$players = $this->db->table(Player::getTable())
 			->where('guild_id', $orgId)
 			->where('dimension', $this->db->getDim())
 			->orderBy('name')

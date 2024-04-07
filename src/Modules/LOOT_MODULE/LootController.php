@@ -527,7 +527,7 @@ class LootController extends ModuleInstance {
 		}
 
 		/** @var ?AODBEntry */
-		$row = $this->db->table('aodb')
+		$row = $this->db->table(AODBEntry::getTable())
 			->whereIlike('name', $itemName)
 			->asObj(AODBEntry::class)
 			->first();
@@ -955,7 +955,7 @@ class LootController extends ModuleInstance {
 		$count = 1;
 
 		/** @var Collection<RaidLoot> */
-		$data = $this->db->table('raid_loot')
+		$data = $this->db->table(RaidLoot::getTable())
 			->where(['raid' => $raid, 'category' => $category])
 			->asObj(RaidLoot::class);
 
@@ -1031,7 +1031,7 @@ class LootController extends ModuleInstance {
 
 	protected function getLootEntryID(int $id): ?RaidLoot {
 		/** @var ?RaidLoot */
-		$raidLoot = $this->db->table('raid_loot AS r')
+		$raidLoot = $this->db->table(RaidLoot::getTable(), 'r')
 					->where('r.id', $id)
 					->asObj(RaidLoot::class)
 					->first();

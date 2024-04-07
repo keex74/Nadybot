@@ -168,7 +168,7 @@ class SymbiantController extends ModuleInstance {
 	/** @param array<string,SymbiantConfig> $configs */
 	protected function configsToBlob(array $configs): string {
 		/** @var ImplantType[] */
-		$types = $this->db->table('ImplantType')
+		$types = $this->db->table(ImplantType::getTable())
 			->asObj(ImplantType::class)
 			->toArray();
 		$typeMap = array_column($types, 'Name', 'ShortName');
@@ -278,9 +278,9 @@ class SymbiantController extends ModuleInstance {
 	 * @return Symbiant[]
 	 */
 	private function findSymbiantsBuffing(Skill $skill): array {
-		$symbiants = $this->db->table('Symbiant', 'sym')
+		$symbiants = $this->db->table(Symbiant::getTable(), 'sym')
 			->join('SymbiantClusterMatrix AS scm', 'scm.SymbiantID', '=', 'sym.ID')
-			->join('Cluster AS c', 'c.ClusterID', '=', 'scm.ClusterID')
+			->join(Cluster::getTable() . ' AS c', 'c.ClusterID', '=', 'scm.ClusterID')
 			->join('ImplantType AS it', 'it.ImplantTypeID', 'sym.SlotID')
 			->select(['sym.*', 'it.ShortName AS SlotName', 'it.Name AS SlotLongName'])
 			->where('c.SkillID', $skill->id)
@@ -307,7 +307,7 @@ class SymbiantController extends ModuleInstance {
 
 	/** @return string[] */
 	private function getAndRenderBestSymbiants(Profession $prof, int $level): array {
-		$query = $this->db->table('Symbiant AS s')
+		$query = $this->db->table(Symbiant::getTable(), 's')
 			->join('SymbiantProfessionMatrix AS spm', 'spm.SymbiantID', 's.ID')
 			->join('Profession AS p', 'p.ID', 'spm.ProfessionID')
 			->join('ImplantType AS it', 'it.ImplantTypeID', 's.SlotID')

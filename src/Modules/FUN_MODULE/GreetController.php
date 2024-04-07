@@ -197,7 +197,7 @@ class GreetController extends ModuleInstance {
 	#[NCA\HandlesCommand('greeting')]
 	/** List all custom-greetings */
 	public function listGreetings(CmdContext $context): void {
-		$lines = $this->db->table('fun')
+		$lines = $this->db->table(Fun::getTable())
 			->where('type', self::TYPE_CUSTOM)
 			->asObj(Fun::class)
 			->map(static function (Fun $entry) use ($context): string {
@@ -252,7 +252,7 @@ class GreetController extends ModuleInstance {
 		PRemove $action,
 		int $id,
 	): void {
-		$deleted = $this->db->table('fun')
+		$deleted = $this->db->table(Fun::getTable())
 			->where('type', self::TYPE_CUSTOM)
 			->where('id', $id)
 			->delete();
@@ -368,7 +368,7 @@ class GreetController extends ModuleInstance {
 	 */
 	private function getMatchingGreeting(string $target): ?string {
 		/** @var array<Fun> */
-		$data = $this->db->table('fun')
+		$data = $this->db->table(Fun::getTable())
 			->whereIn('type', explode(',', $this->greetSource))
 			->asObj(Fun::class)
 			->toArray();

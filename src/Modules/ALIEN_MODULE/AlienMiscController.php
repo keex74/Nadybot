@@ -72,7 +72,7 @@ class AlienMiscController extends ModuleInstance {
 	#[NCA\HandlesCommand('leprocs')]
 	public function leprocsCommand(CmdContext $context): void {
 		$blob = "<header2>Choose a profession<end>\n";
-		$blob = $this->db->table('leprocs')
+		$blob = $this->db->table(LEProc::getTable())
 			->orderBy('profession')
 			->select('profession')
 			->distinct()
@@ -101,7 +101,7 @@ class AlienMiscController extends ModuleInstance {
 		}
 
 		/** @var Collection<LEProc> */
-		$data = $this->db->table('leprocs')
+		$data = $this->db->table(LEProc::getTable())
 			->whereIlike('profession', $profession->value)
 			->orderBy('proc_type')
 			->orderByDesc('research_lvl')
@@ -140,13 +140,13 @@ class AlienMiscController extends ModuleInstance {
 	)]
 	public function ofabarmorCommand(CmdContext $context): void {
 		/** @var int[] */
-		$qls = $this->db->table('ofabarmorcost')
+		$qls = $this->db->table(OfabArmorCost::getTable())
 			->orderBy('ql')
 			->select('ql')
 			->distinct()
 			->pluckInts('ql')
 			->toArray();
-		$blob = $this->db->table('ofabarmortype')
+		$blob = $this->db->table(OfabArmorType::getTable())
 			->orderBy('profession')
 			->asObj(OfabArmorType::class)
 			->reduce(
@@ -184,20 +184,20 @@ class AlienMiscController extends ModuleInstance {
 			return;
 		}
 
-		$type = $this->db->table('ofabarmortype')
+		$type = $this->db->table(OfabArmorType::getTable())
 			->where('profession', $profession->value)
 			->pluckInts('type')
 			->first();
 
 		/** @var Collection<OfabArmor> */
-		$armors = $this->db->table('ofabarmor')
+		$armors = $this->db->table(OfabArmor::getTable())
 			->where('profession', $profession->value)
 			->orderBy('upgrade')
 			->orderBy('name')
 			->asObj(OfabArmor::class);
 
 		/** @var Collection<OfabArmorCost> */
-		$costBySlot = $this->db->table('ofabarmorcost')
+		$costBySlot = $this->db->table(OfabArmorCost::getTable())
 			->where('ql', $ql)
 			->asObj(OfabArmorCost::class)
 			->keyBy('slot');
@@ -214,7 +214,7 @@ class AlienMiscController extends ModuleInstance {
 		$blob .= "Upgrade with {$typeLink} (minimum QL {$typeQl})\n\n";
 
 		/** @var Collection<int> */
-		$qls = $this->db->table('ofabarmorcost')
+		$qls = $this->db->table(OfabArmorCost::getTable())
 			->orderBy('ql')
 			->select('ql')->distinct()
 			->pluckInts('ql');
@@ -270,11 +270,11 @@ class AlienMiscController extends ModuleInstance {
 	)]
 	public function ofabweaponsCommand(CmdContext $context): void {
 		/** @var int[] */
-		$qls = $this->db->table('ofabweaponscost')
+		$qls = $this->db->table(OfabWeaponCost::getTable())
 			->orderBy('ql')
 			->select('ql')->distinct()
 			->pluckInts('ql')->toArray();
-		$blob = $this->db->table('ofabweapons')
+		$blob = $this->db->table(OfabWeapon::getTable())
 			->orderBy('name')
 			->asObj(OfabWeapon::class)
 			->reduce(
@@ -303,7 +303,7 @@ class AlienMiscController extends ModuleInstance {
 		$searchQL ??= 300;
 
 		/** @var OfabWeaponWithCost|null */
-		$row = $this->db->table('ofabweapons AS w')
+		$row = $this->db->table(OfabWeapon::getTable(), 'w')
 			->crossJoin('ofabweaponscost AS c')
 			->where('w.name', $weapon)
 			->where('c.ql', $searchQL)
@@ -319,7 +319,7 @@ class AlienMiscController extends ModuleInstance {
 		$typeLink = Text::makeChatcmd("Kyr'Ozch Bio-Material - Type {$row->type}", "/tell <myname> bioinfo {$row->type} {$typeQl}");
 		$blob .= "Upgrade with {$typeLink} (minimum QL {$typeQl})\n\n";
 
-		$blob = $this->db->table('ofabweaponscost')
+		$blob = $this->db->table(OfabWeaponCost::getTable())
 			->orderBy('ql')
 			->select('ql')->distinct()
 			->pluckInts('ql')

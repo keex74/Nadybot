@@ -43,7 +43,7 @@ class LinksController extends ModuleInstance {
 	#[NCA\HandlesCommand('links')]
 	public function linksListCommand(CmdContext $context): void {
 		/** @var Collection<Link> */
-		$links = $this->db->table('links')
+		$links = $this->db->table(Link::getTable())
 			->orderBy('name')
 			->asObj(Link::class);
 		if ($links->count() === 0) {
@@ -91,7 +91,7 @@ class LinksController extends ModuleInstance {
 	#[NCA\HandlesCommand('links')]
 	public function linksRemoveCommand(CmdContext $context, PRemove $action, int $id): void {
 		/** @var ?Link */
-		$obj = $this->db->table('links')
+		$obj = $this->db->table(Link::getTable())
 			->where('id', $id)
 			->asObj(Link::class)
 			->first();
@@ -99,7 +99,7 @@ class LinksController extends ModuleInstance {
 			$msg = "Link with ID <highlight>{$id}<end> could not be found.";
 		} elseif ($obj->name == $context->char->name
 			|| $this->accessManager->compareCharacterAccessLevels($context->char->name, $obj->name) > 0) {
-			$this->db->table('links')->delete($id);
+			$this->db->table(Link::getTable())->delete($id);
 			$msg = "Link with ID <highlight>{$id}<end> deleted successfully.";
 		} else {
 			$msg = "You do not have permission to delete links added by <highlight>{$obj->name}<end>";

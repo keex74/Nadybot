@@ -132,13 +132,13 @@ class PremadeImplantController extends ModuleInstance {
 	}
 
 	protected function getBaseQuery(): QueryBuilder {
-		$query = $this->db->table('premade_implant AS p')
-			->join('ImplantType AS i', 'p.ImplantTypeID', 'i.ImplantTypeID')
+		$query = $this->db->table(PremadeImplant::getTable(), 'p')
+			->join(ImplantType::getTable(as: 'i'), 'p.ImplantTypeID', 'i.ImplantTypeID')
 			->join('Profession AS p2', 'p.ProfessionID', 'p2.ID')
-			->join('Ability AS a', 'p.AbilityID', 'a.AbilityID')
-			->join('Cluster AS c1', 'p.ShinyClusterID', 'c1.ClusterID')
-			->join('Cluster AS c2', 'p.BrightClusterID', 'c2.ClusterID')
-			->join('Cluster AS c3', 'p.FadedClusterID', 'c3.ClusterID')
+			->join(Ability::getTable(as: 'a'), 'p.AbilityID', 'a.AbilityID')
+			->join(Cluster::getTable(as: 'c1'), 'p.ShinyClusterID', 'c1.ClusterID')
+			->join(Cluster::getTable(as: 'c2'), 'p.BrightClusterID', 'c2.ClusterID')
+			->join(Cluster::getTable(as: 'c3'), 'p.FadedClusterID', 'c3.ClusterID')
 			->orderBy('slot')
 			->select(['i.Name AS slot', 'p2.Name AS profession', 'a.Name as ability']);
 		$query->selectRaw(

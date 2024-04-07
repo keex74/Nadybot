@@ -79,7 +79,7 @@ class ImplantDesignerController extends ModuleInstance {
 		$list = new ShoppingList();
 
 		/** @var array<string,string> */
-		$lookup = $this->db->table('Cluster')
+		$lookup = $this->db->table(Cluster::getTable())
 			->asObj(Cluster::class)
 			->reduce(
 				static function (array $lookup, Cluster $cluster): array {
@@ -124,7 +124,7 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 			if ($addImp) {
 				/** @var string */
-				$longName = $this->db->table('ImplantType')
+				$longName = $this->db->table(ImplantType::getTable())
 					->where('ShortName', $slot)
 					->pluckStrings('Name')
 					->firstOrFail();
@@ -250,7 +250,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 		if ($grade === 'symb') {
 			/** @var ?Symbiant */
-			$symbRow = $this->db->table('Symbiant AS s')
+			$symbRow = $this->db->table(Symbiant::getTable(), 's')
 				->join('ImplantType AS i', 's.SlotID', 'i.ImplantTypeID')
 				->where('i.ShortName', $slot)
 				->where('s.Name', $cluster)
@@ -272,15 +272,15 @@ class ImplantDesignerController extends ModuleInstance {
 				$symb->Level = $symbRow->LevelReq;
 
 				// add requirements
-				$symb->reqs = $this->db->table('SymbiantAbilityMatrix AS s')
-					->join('Ability AS a', 's.AbilityID', 'a.AbilityID')
+				$symb->reqs = $this->db->table(SymbiantAbilityMatrix::getTable(), 's')
+					->join(Ability::getTable(as: 'a'), 's.AbilityID', 'a.AbilityID')
 					->where('SymbiantID', $symbRow->ID)
 					->select(['a.Name', 's.Amount'])
 					->asObj(AbilityAmount::class)->toArray();
 
 				// add mods
-				$symb->mods = $this->db->table('SymbiantClusterMatrix AS s')
-					->join('Cluster AS c', 's.ClusterID', 'c.ClusterID')
+				$symb->mods = $this->db->table(SymbiantClusterMatrix::getTable(), 's')
+					->join(Cluster::getTable(as: 'c'), 's.ClusterID', 'c.ClusterID')
 					->where('SymbiantID', $symbRow->ID)
 					->select(['c.LongName AS Name', 's.Amount'])
 					->asObj(AbilityAmount::class)->toArray();
@@ -396,7 +396,7 @@ class ImplantDesignerController extends ModuleInstance {
 				$blob .= $this->getImplantSummary($slotObj) . "\n";
 			}
 			$blob .= "Which ability do you want to require for {$slot->longName()}?\n\n";
-			$abilities = $this->db->table('Ability')->select('Name')
+			$abilities = $this->db->table(Ability::getTable())->select('Name')
 				->pluckStrings('Name')->toArray();
 			foreach ($abilities as $ability) {
 				$blob .= Text::makeChatcmd($ability, "/tell <myname> implantdesigner {$slot->designSlotName()} require {$ability}") . "\n";
@@ -440,11 +440,11 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 			$blob .= "Combinations for <highlight>{$slot->longName()}<end> that will require {$ability}:\n";
 			$query = $this->db
-				->table('ImplantMatrix AS i')
-				->join('Cluster AS c1', 'i.ShiningID', 'c1.ClusterID')
-				->join('Cluster AS c2', 'i.BrightID', 'c2.ClusterID')
-				->join('Cluster AS c3', 'i.FadedID', 'c3.ClusterID')
-				->join('Ability AS a', 'i.AbilityID', 'a.AbilityID')
+				->table(ImplantMatrix::getTable(), 'i')
+				->join(Cluster::getTable(as: 'c1'), 'i.ShiningID', 'c1.ClusterID')
+				->join(Cluster::getTable(as: 'c2'), 'i.BrightID', 'c2.ClusterID')
+				->join(Cluster::getTable(as: 'c3'), 'i.FadedID', 'c3.ClusterID')
+				->join(Ability::getTable(as: 'a'), 'i.AbilityID', 'a.AbilityID')
 				->where('a.Name', ucfirst($ability))
 				->select(['i.AbilityQL1', 'i.AbilityQL200', 'i.AbilityQL201'])
 				->addSelect(['i.AbilityQL300', 'i.TreatQL1', 'i.TreatQL200'])
@@ -633,11 +633,11 @@ class ImplantDesignerController extends ModuleInstance {
 
 	public function getImplantInfo(int $ql, ?string $shiny, ?string $bright, ?string $faded): ?ImplantInfo {
 		/** @var ?ImplantInfo */
-		$row = $this->db->table('ImplantMatrix AS i')
-			->join('Cluster AS c1', 'i.ShiningID', 'c1.ClusterID')
-			->join('Cluster AS c2', 'i.BrightID', 'c2.ClusterID')
-			->join('Cluster AS c3', 'i.FadedID', 'c3.ClusterID')
-			->join('Ability AS a', 'i.AbilityID', 'a.AbilityID')
+		$row = $this->db->table(ImplantMatrix::getTable(), 'i')
+			->join(Cluster::getTable(as: 'c1'), 'i.ShiningID', 'c1.ClusterID')
+			->join(Cluster::getTable(as: 'c2'), 'i.BrightID', 'c2.ClusterID')
+			->join(Cluster::getTable(as: 'c3'), 'i.FadedID', 'c3.ClusterID')
+			->join(Ability::getTable(as: 'a'), 'i.AbilityID', 'a.AbilityID')
 			->where('c1.LongName', $shiny ?? '')
 			->where('c2.LongName', $bright ?? '')
 			->where('c3.LongName', $faded ?? '')
@@ -661,7 +661,7 @@ class ImplantDesignerController extends ModuleInstance {
 	/** @return string[] */
 	public function getClustersForSlot(string $implantType, string $clusterType): array {
 		return $this->db
-			->table('Cluster AS c1')
+			->table(Cluster::getTable(), 'c1')
 			->join('ClusterImplantMap AS c2', 'c1.ClusterID', 'c2.ClusterID')
 			->join('ClusterType AS c3', 'c2.ClusterTypeID', 'c3.ClusterTypeID')
 			->join('ImplantType AS i', 'c2.ImplantTypeID', 'i.ImplantTypeID')
@@ -787,7 +787,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 	private function getClusterModAmount(int $ql, string $grade, int $effectId): int {
 		/** @var EffectTypeMatrix */
-		$etm = $this->db->table('EffectTypeMatrix')
+		$etm = $this->db->table(EffectTypeMatrix::getTable())
 			->where('ID', $effectId)
 			->asObj(EffectTypeMatrix::class)->firstOrFail();
 

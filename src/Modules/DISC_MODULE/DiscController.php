@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	ParamClass\PItem,
 	Text,
 };
+use Nadybot\Modules\NANO_MODULE\Nano;
 
 /**
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
@@ -42,14 +43,14 @@ class DiscController extends ModuleInstance {
 	 * @return Disc[] An array of database entries that matched
 	 */
 	public function getDiscsByName(string $discName): array {
-		$query = $this->db->table('discs');
+		$query = $this->db->table(Disc::getTable());
 		$this->db->addWhereFromParams($query, explode(' ', $discName), 'disc_name');
 		return $query->asObj(Disc::class)->toArray();
 	}
 
 	/** Get the instruction disc from its id and return the result or null */
 	public function getDiscById(int $discId): ?Disc {
-		return $this->db->table('discs')
+		return $this->db->table(Disc::getTable())
 			->where('disc_id', $discId)
 			->asObj(Disc::class)
 			->first();
@@ -115,7 +116,7 @@ class DiscController extends ModuleInstance {
 
 	/** Get additional information about the nano of a disc */
 	public function getNanoDetails(Disc $disc): ?NanoDetails {
-		return $this->db->table('nanos')
+		return $this->db->table(Nano::getTable())
 			->where('crystal_id', $disc->crystal_id)
 			->select(['location', 'professions', 'strain AS nanoline_name'])
 			->asObj(NanoDetails::class)

@@ -141,11 +141,11 @@ class AltsController extends ModuleInstance {
 	)]
 	public function addNonValidatedAsBuddies(ConnectEvent $event): void {
 		$myName = $this->config->main->character;
-		$this->db->table('alts')->where('validated_by_alt', false)->where('added_via', $myName)
+		$this->db->table(Alt::getTable())->where('validated_by_alt', false)->where('added_via', $myName)
 			->asObj(Alt::class)->each(function (Alt $alt) {
 				$this->buddylistManager->addName($alt->alt, static::ALT_VALIDATE);
 			});
-		$this->db->table('alts')->where('validated_by_main', false)->where('added_via', $myName)
+		$this->db->table(Alt::getTable())->where('validated_by_main', false)->where('added_via', $myName)
 			->select('main')->distinct()
 			->pluckStrings('main')
 			->each(function (string $main) {
@@ -509,7 +509,7 @@ class AltsController extends ModuleInstance {
 		$ai = new AltInfo();
 		Registry::injectDependencies($ai);
 		$ai->main = $player;
-		$query = $this->db->table('alts')
+		$query = $this->db->table(Alt::getTable())
 			->where(static function (QueryBuilder $query) use ($includePending, $player) {
 				$query->where('main', $player)
 					->orWhere('main', static function (QueryBuilder $subQuery) use ($player, $includePending) {
@@ -571,12 +571,12 @@ class AltsController extends ModuleInstance {
 	/** This method removes given a $alt from being $main's alt character. */
 	public function remAlt(string $main, string $alt): int {
 		/** @var ?Alt */
-		$old = $this->db->table('alts')
+		$old = $this->db->table(Alt::getTable())
 			->where('alt', $alt)
 			->where('main', $main)
 			->asObj(Alt::class)
 			->first();
-		$deleted = $this->db->table('alts')
+		$deleted = $this->db->table(Alt::getTable())
 			->where('alt', $alt)
 			->where('main', $main)
 			->delete();
@@ -676,7 +676,7 @@ class AltsController extends ModuleInstance {
 			return;
 		}
 
-		$this->db->table('alts')
+		$this->db->table(Alt::getTable())
 			->where('alt', $toValidate)
 			->where('main', $altInfo->main)
 			->update(['validated_by_main' => true]);
@@ -698,7 +698,7 @@ class AltsController extends ModuleInstance {
 			return;
 		}
 
-		$this->db->table('alts')
+		$this->db->table(Alt::getTable())
 			->where('alt', $sender)
 			->where('main', $altInfo->main)
 			->update(['validated_by_alt' => true]);
@@ -736,7 +736,7 @@ class AltsController extends ModuleInstance {
 			$sendto->reply("<highlight>{$toDecline}<end> is already a validated alt of yours.");
 		}
 
-		$this->db->table('alts')
+		$this->db->table(Alt::getTable())
 			->where('alt', $toDecline)
 			->where('main', $altInfo->main)
 			->delete();
@@ -757,7 +757,7 @@ class AltsController extends ModuleInstance {
 			return;
 		}
 
-		$this->db->table('alts')
+		$this->db->table(Alt::getTable())
 			->where('alt', $sender)
 			->where('main', $altInfo->main)
 			->delete();
@@ -778,7 +778,7 @@ class AltsController extends ModuleInstance {
 	}
 
 	protected function removeMainFromBuddyListIfPossible(string $main): void {
-		$hasUnvalidatedAlts = $this->db->table('alts')
+		$hasUnvalidatedAlts = $this->db->table(Alt::getTable())
 			->where('main', $main)->where('validated_by_main', false)->exists();
 		if ($hasUnvalidatedAlts) {
 			return;
@@ -950,7 +950,7 @@ class AltsController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			// remove all the old alt information
-			$this->db->table('alts')->where('main', $altInfo->main)->delete();
+			$this->db->table(Alt::getTable())->where('main', $altInfo->main)->delete();
 
 			// add current main to new main as an alt
 			$this->addAlt($newMain, $altInfo->main, true, true, false);
@@ -989,7 +989,7 @@ class AltsController extends ModuleInstance {
 
 	private function cacheAlts(): void {
 		$this->alts = [];
-		$this->db->table('alts')
+		$this->db->table(Alt::getTable())
 			->where('validated_by_main', true)
 			->where('validated_by_alt', true)
 			->asObj(Alt::class)

@@ -1036,7 +1036,7 @@ class ImportController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all alts');
-			$this->db->table('alts')->truncate();
+			$this->db->table(Alt::getTable())->truncate();
 			foreach ($alts as $altData) {
 				$mainName = $this->characterToName($altData->main);
 				if (!isset($mainName)) {

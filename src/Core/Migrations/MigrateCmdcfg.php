@@ -4,7 +4,7 @@ namespace Nadybot\Core\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\DBSchema\CmdCfg;
+use Nadybot\Core\DBSchema\{CmdCfg, CmdPermission, CmdPermissionSet};
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 
@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class MigrateCmdcfg implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = CmdCfg::getTable();
-		$db->table('cmd_permission_set_<myname>')->insert([
+		$db->table(CmdPermissionSet::getTable())->insert([
 			['name' => 'msg',   'letter' => 'T'],
 			['name' => 'priv',  'letter' => 'P'],
 			['name' => 'guild', 'letter' => 'G'],
@@ -31,7 +31,7 @@ class MigrateCmdcfg implements SchemaMigration {
 		/** @var array<string,bool> */
 		$cmds = [];
 		foreach ($entries as $entry) {
-			$db->table('cmd_permission_<myname>')->insert([
+			$db->table(CmdPermission::getTable())->insert([
 				'permission_set' => (string)$entry->type,
 				'cmd' => (string)$entry->cmd,
 				'enabled' => (bool)$entry->status,

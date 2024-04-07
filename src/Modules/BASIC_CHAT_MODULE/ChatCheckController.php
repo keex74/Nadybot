@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Text,
 };
+use Nadybot\Modules\ONLINE_MODULE\Online;
 
 #[
 	NCA\Instance,
@@ -31,7 +32,7 @@ class ChatCheckController extends ModuleInstance {
 	#[NCA\HandlesCommand('check')]
 	public function checkAllCommand(CmdContext $context): void {
 		/** @var Collection<string> */
-		$data = $this->db->table('online')
+		$data = $this->db->table(Online::getTable())
 			->where('added_by', $this->db->getBotname())
 			->where('channel_type', self::CHANNEL_TYPE)
 			->select('name')

@@ -79,7 +79,7 @@ class EventsController extends ModuleInstance {
 	 */
 	#[NCA\HandlesCommand(self::CMD_EVENT_MANAGE)]
 	public function eventsAddCommand(CmdContext $context, #[NCA\Str('add')] string $action, string $eventName): void {
-		$eventId = $this->db->table('events')
+		$eventId = $this->db->table(EventModel::getTable())
 			->insertGetId([
 				'time_submitted' => time(),
 				'submitter_name' => $context->char->name,
@@ -97,7 +97,7 @@ class EventsController extends ModuleInstance {
 		if ($row === null) {
 			$msg = "Could not find an event with id {$id}.";
 		} else {
-			$this->db->table('events')->where('id', $id)->delete();
+			$this->db->table(EventModel::getTable())->where('id', $id)->delete();
 			$msg = "Event with id {$id} has been deleted.";
 		}
 		$context->reply($msg);
@@ -110,7 +110,7 @@ class EventsController extends ModuleInstance {
 		if ($row === null) {
 			$msg = "Could not find an event with id {$id}.";
 		} else {
-			$this->db->table('events')
+			$this->db->table(EventModel::getTable())
 				->where('id', $id)
 				->update(['event_desc' => $description]);
 			$msg = "Description for event with id {$id} has been updated.";
@@ -136,7 +136,7 @@ class EventsController extends ModuleInstance {
 				$context->reply("'<highlight>{$date}<end>' is not a valid date/time.");
 				return;
 			}
-			$this->db->table('events')
+			$this->db->table(EventModel::getTable())
 				->where('id', $id)
 				->update(['event_date' => $eventDate]);
 			$msg = "Date/Time for event with id {$id} has been updated.";
@@ -145,7 +145,7 @@ class EventsController extends ModuleInstance {
 	}
 
 	public function getEvent(int $id): ?EventModel {
-		return $this->db->table('events')
+		return $this->db->table(EventModel::getTable())
 			->where('id', $id)
 			->asObj(EventModel::class)
 			->first();
@@ -173,7 +173,7 @@ class EventsController extends ModuleInstance {
 			return;
 		}
 		$attendees []= $context->char->name;
-		$this->db->table('events')
+		$this->db->table(EventModel::getTable())
 			->where('id', $id)
 			->update(['event_attendees' => implode(',', $attendees)]);
 		$msg = 'You have been added to the event.';
@@ -201,7 +201,7 @@ class EventsController extends ModuleInstance {
 			return;
 		}
 		$attendees = array_diff($attendees, [$context->char->name]);
-		$this->db->table('events')
+		$this->db->table(EventModel::getTable())
 			->where('id', $id)
 			->update(['event_attendees' => implode(',', $attendees)]);
 		$msg = 'You have been removed from the event.';
@@ -256,7 +256,7 @@ class EventsController extends ModuleInstance {
 	/** @return null|string[] */
 	public function getEvents(): ?array {
 		/** @var Collection<EventModel> */
-		$data = $this->db->table('events')
+		$data = $this->db->table(EventModel::getTable())
 			->orderByDesc('event_date')
 			->limit($this->numEventsShown)
 			->asObj(EventModel::class);
@@ -354,7 +354,7 @@ class EventsController extends ModuleInstance {
 
 	public function hasRecentEvents(): bool {
 		$sevenDays = time() - (86_400 * 7);
-		return $this->db->table('events')
+		return $this->db->table(EventModel::getTable())
 			->where('event_date', '>', $sevenDays)
 			->exists();
 	}
@@ -370,7 +370,7 @@ class EventsController extends ModuleInstance {
 	]
 	public function eventsTile(string $sender): ?string {
 		/** @var Collection<EventModel> */
-		$data = $this->db->table('events')
+		$data = $this->db->table(EventModel::getTable())
 			->whereNull('event_date')
 			->orWhere('event_date', '>', time())
 			->orderBy('event_date')

@@ -1,0 +1,16 @@
+<?php declare(strict_types=1);
+
+namespace Nadybot\Modules\IMPLANT_MODULE;
+
+use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
+use Nadybot\Core\DBRow;
+
+#[Table(name: 'SymbiantClusterMatrix', shared: Shared::Yes)]
+class SymbiantClusterMatrix extends DBRow {
+	public function __construct(
+		#[PK] public int $SymbiantID,
+		#[PK] public int $ClusterID,
+		public int $Amount,
+	) {
+	}
+}

@@ -104,10 +104,10 @@ class CommentController extends ModuleInstance {
 		try {
 			// read all current entries
 			/** @var Comment[] */
-			$comments = $this->db->table('<table:comments>')->asObj(Comment::class)->toArray();
+			$comments = $this->db->table(Comment::getTable())->asObj(Comment::class)->toArray();
 
 			/** @var CommentCategory[] */
-			$cats = $this->db->table('<table:comment_categories>')->asObj(CommentCategory::class)->toArray();
+			$cats = $this->db->table(CommentCategory::getTable())->asObj(CommentCategory::class)->toArray();
 			if ($newValue === '1') {
 				// save new name
 				$newCommentTable = 'comments';
@@ -148,7 +148,7 @@ class CommentController extends ModuleInstance {
 				'new_table' => $newCategoryTable,
 			]);
 			foreach ($cats as $cat) {
-				$exists = $this->db->table('<table:comment_categories>')
+				$exists = $this->db->table(CommentCategory::getTable())
 					->where('name', $cat->name)->exists();
 				if (!$exists) {
 					$this->db->insert($cat);
@@ -159,7 +159,7 @@ class CommentController extends ModuleInstance {
 				'new_table' => $newCommentTable,
 			]);
 			foreach ($comments as $comment) {
-				$exists = $this->db->table('<table:comments>')
+				$exists = $this->db->table(Comment::getTable())
 					->where('category', $comment->category)
 					->where('character', $comment->character)
 					->where('created_by', $comment->created_by)
@@ -185,7 +185,7 @@ class CommentController extends ModuleInstance {
 
 	/** Read a single category by its name */
 	public function getCategory(string $category): ?CommentCategory {
-		return $this->db->table('<table:comment_categories>')
+		return $this->db->table(CommentCategory::getTable())
 			->whereIlike('name', $category)
 			->asObj(CommentCategory::class)->first();
 	}
@@ -201,10 +201,10 @@ class CommentController extends ModuleInstance {
 	 * @return int|null Number of deleted comments or null if the category didn't exist
 	 */
 	public function deleteCategory(string $category): ?int {
-		$deletedComments = $this->db->table('<table:comments>')
+		$deletedComments = $this->db->table(Comment::getTable())
 			->whereIlike('category', $category)
 			->delete();
-		$deletedCategories = $this->db->table('<table:comment_categories>')
+		$deletedCategories = $this->db->table(CommentCategory::getTable())
 			->whereIlike('name', $category)
 			->delete();
 		return $deletedCategories ? $deletedComments : null;
@@ -217,7 +217,7 @@ class CommentController extends ModuleInstance {
 		#[NCA\Str('category', 'categories')] string $action,
 	): void {
 		/** @var CommentCategory[] */
-		$categories = $this->db->table('<table:comment_categories>')
+		$categories = $this->db->table(CommentCategory::getTable())
 			->asObj(CommentCategory::class)->toArray();
 		if (count($categories) === 0) {
 			$context->reply('There are currently no comment categories defined.');
@@ -488,7 +488,7 @@ class CommentController extends ModuleInstance {
 		}
 
 		/** @var Comment[] */
-		$comments = $this->db->table('<table:comments>')
+		$comments = $this->db->table(Comment::getTable())
 			->where('category', $categoryName)
 			->orderBy('created_at')
 			->asObj(Comment::class)->toArray();
@@ -592,7 +592,7 @@ class CommentController extends ModuleInstance {
 		int $id
 	): void {
 		/** @var ?Comment */
-		$comment = $this->db->table('<table:comments>')
+		$comment = $this->db->table(Comment::getTable())
 			->where('id', $id)
 			->asObj(Comment::class)
 			->first();
@@ -609,7 +609,7 @@ class CommentController extends ModuleInstance {
 			$context->reply("You don't have the necessary access level to delete this comment.");
 			return;
 		}
-		$this->db->table('<table:comments>')
+		$this->db->table(Comment::getTable())
 			->where('id', $id)
 			->delete();
 		$context->reply('Comment deleted.');
@@ -621,7 +621,7 @@ class CommentController extends ModuleInstance {
 	 * @return Comment[]
 	 */
 	public function getComments(?CommentCategory $category, string ...$characters): array {
-		$query = $this->db->table('<table:comments>')->orderBy('created_at');
+		$query = $this->db->table(Comment::getTable())->orderBy('created_at');
 		$chars = [];
 		foreach ($characters as $character) {
 			$altInfo = $this->altsController->getAltInfo($character);
@@ -639,7 +639,7 @@ class CommentController extends ModuleInstance {
 
 	/** Count all comments about a list of players or their alts/main, optionally limited to a category */
 	public function countComments(?CommentCategory $category, string ...$characters): int {
-		$query = $this->db->table('<table:comments>');
+		$query = $this->db->table(Comment::getTable());
 		$chars = [];
 		foreach ($characters as $character) {
 			$altInfo = $this->altsController->getAltInfo($character);
@@ -658,7 +658,7 @@ class CommentController extends ModuleInstance {
 	 * @return Comment[]
 	 */
 	public function readCategoryComments(CommentCategory $category): array {
-		return $this->db->table('<table:comments>')
+		return $this->db->table(Comment::getTable())
 			->whereIlike('category', $category->name)
 			->orderBy('created_at')
 			->asObj(Comment::class)

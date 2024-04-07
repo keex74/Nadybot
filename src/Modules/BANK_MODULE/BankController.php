@@ -66,7 +66,7 @@ class BankController extends ModuleInstance {
 	/** List the bank characters in the database: */
 	#[NCA\HandlesCommand('bank')]
 	public function bankBrowseCommand(CmdContext $context, #[NCA\Str('browse')] string $action): void {
-		$characters = $this->db->table('bank')
+		$characters = $this->db->table(Bank::getTable())
 			->orderBy('player')
 			->select('player')->distinct()
 			->pluckStrings('player');
@@ -94,7 +94,7 @@ class BankController extends ModuleInstance {
 		$name = $char();
 
 		/** @var Collection<string,Collection<Bank>> */
-		$data = $this->db->table('bank')
+		$data = $this->db->table(Bank::getTable())
 			->where('player', $name)
 			->orderBy('container')
 			->asObj(Bank::class)
@@ -121,7 +121,7 @@ class BankController extends ModuleInstance {
 		$name = $char();
 		$limit = $this->maxBankItems;
 
-		$data = $this->db->table('bank')
+		$data = $this->db->table(Bank::getTable())
 			->where('player', $name)
 			->where('container_id', $containerId)
 			->orderBy('name')
@@ -164,7 +164,7 @@ class BankController extends ModuleInstance {
 		$search = htmlspecialchars_decode($search);
 		$words = explode(' ', $search);
 		$limit = $this->maxBankItems;
-		$query = $this->db->table('bank')
+		$query = $this->db->table(Bank::getTable())
 			->orderBy('name')
 			->orderBy('ql')
 			->limit($limit);
@@ -259,7 +259,7 @@ class BankController extends ModuleInstance {
 		array_shift($lines);
 
 		$this->db->awaitBeginTransaction();
-		$this->db->table('bank')->truncate();
+		$this->db->table(Bank::getTable())->truncate();
 
 		foreach ($lines as $line) {
 			// this is the order of columns in the CSV file (AOIA v1.1.3.0):

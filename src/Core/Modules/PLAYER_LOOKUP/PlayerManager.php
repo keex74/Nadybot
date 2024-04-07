@@ -102,7 +102,7 @@ class PlayerManager extends ModuleInstance {
 			->finally(function (): void {
 				$this->playerLookupJob?->run();
 				$this->playerLookupJob = null;
-				$this->db->table('players')
+				$this->db->table(Player::getTable())
 					->where('last_update', '<', time() - 5*static::CACHE_GRACE_TIME)
 					->delete();
 			});
@@ -151,7 +151,7 @@ class PlayerManager extends ModuleInstance {
 	/** @return Collection<Player> */
 	public function searchByNames(int $dimension, string ...$names): Collection {
 		$names = array_map('ucfirst', array_map('strtolower', $names));
-		return $this->db->table('players')
+		return $this->db->table(Player::getTable())
 			->where('dimension', $dimension)
 			->whereIn('name', $names)
 			->asObj(Player::class);
@@ -159,7 +159,7 @@ class PlayerManager extends ModuleInstance {
 
 	/** @return Collection<Player> */
 	public function searchByUids(int $dimension, int ...$uids): Collection {
-		return $this->db->table('players')
+		return $this->db->table(Player::getTable())
 			->where('dimension', $dimension)
 			->whereIn('charid', $uids)
 			->asObj(Player::class);
@@ -167,14 +167,14 @@ class PlayerManager extends ModuleInstance {
 
 	/** @return Collection<Player> */
 	public function searchByColumn(int $dimension, string $column, mixed ...$values): Collection {
-		return $this->db->table('players')
+		return $this->db->table(Player::getTable())
 			->where('dimension', $dimension)
 			->whereIn($column, $values)
 			->asObj(Player::class);
 	}
 
 	public function findInDb(string $name, int $dimension): ?Player {
-		$player = $this->db->table('players')
+		$player = $this->db->table(Player::getTable())
 			->whereIlike('name', $name)
 			->where('dimension', $dimension)
 			->limit(1)
@@ -307,7 +307,7 @@ class PlayerManager extends ModuleInstance {
 	 * @throws SQLException On error
 	 */
 	public function searchForPlayers(string $search, ?int $dimension=null): array {
-		$query = $this->db->table('players')->orderBy('name')->limit(100);
+		$query = $this->db->table(Player::getTable())->orderBy('name')->limit(100);
 		$searchTerms = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $searchTerms, 'name');
 

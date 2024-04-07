@@ -46,7 +46,7 @@ class WhatLocksController extends ModuleInstance {
 	/** Search for a list of skills that can be locked and how many items lock it */
 	#[NCA\HandlesCommand('whatlocks')]
 	public function whatLocksCommand(CmdContext $context): void {
-		$query = $this->db->table('what_locks')->groupBy('skill_id');
+		$query = $this->db->table(WhatLocks::getTable())->groupBy('skill_id');
 		$skills = $query->select(['skill_id', $query->rawFunc('COUNT', '*', 'amount')])
 			->get();
 		$skillsById = $this->itemsController->getSkillByIDs(
@@ -117,7 +117,7 @@ class WhatLocksController extends ModuleInstance {
 		}
 
 		/** @var Collection<WhatLocks> */
-		$items = $this->db->table('what_locks')
+		$items = $this->db->table(WhatLocks::getTable())
 			->where('skill_id', $skills->firstOrFail()->id)
 			->orderBy('duration')
 			->asObj(WhatLocks::class);
