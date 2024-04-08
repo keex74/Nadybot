@@ -3,24 +3,23 @@
 namespace Nadybot\Core\Modules\CONFIG;
 
 class ConfigModule {
-	/** Name of the module */
-	public string $name;
-
-	/** How many commands are enabled */
-	public int $num_commands_enabled = 0;
-
-	/** How many commands are disabled */
-	public int $num_commands_disabled = 0;
-
-	/** How many events are enabled */
-	public int $num_events_enabled = 0;
-
-	/** How many events are disabled */
-	public int $num_events_disabled = 0;
-
-	/** How many settings are there? */
-	public int $num_settings = 0;
-
-	/** Description of the module or null if none */
-	public ?string $description = null;
+	/**
+	 * @param string  $name                  Name of the module
+	 * @param int     $num_commands_enabled  How many commands are enabled
+	 * @param int     $num_commands_disabled How many commands are disabled
+	 * @param int     $num_events_enabled    How many events are enabled
+	 * @param int     $num_events_disabled   How many events are disabled
+	 * @param int     $num_settings          How many settings are there?
+	 * @param ?string $description           Description of the module or null if none
+	 */
+	public function __construct(
+		public string $name,
+		public int $num_commands_enabled=0,
+		public int $num_commands_disabled=0,
+		public int $num_events_enabled=0,
+		public int $num_events_disabled=0,
+		public int $num_settings=0,
+		public ?string $description=null,
+	) {
+	}
 }

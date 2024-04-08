@@ -6,6 +6,7 @@ use function Safe\preg_match;
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapper, ObjectMapperUsingReflection};
 use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
@@ -23,7 +24,7 @@ use Nadybot\Core\{
 	Safe,
 	SettingManager,
 };
-use Nadybot\Modules\WEBSERVER_MODULE\{JsonImporter, WebserverController};
+use Nadybot\Modules\WEBSERVER_MODULE\{WebserverController};
 use Nadybot\Modules\{
 	DISCORD_GATEWAY_MODULE\DiscordRelayController,
 	WEBSERVER_MODULE\ApiResponse,
@@ -56,6 +57,15 @@ class ConfigApiController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private DB $db;
+
+	public function __construct(
+		private ObjectMapper $mapper=new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		)
+	) {
+	}
 
 	/** Get a list of available modules to configure */
 	#[
@@ -453,12 +463,11 @@ class ConfigApiController extends ModuleInstance {
 	public function apiConfigPermissionSetCreateEndpoint(Request $request): Response {
 		$set = $request->getAttribute(WebserverController::BODY);
 		try {
-			if (!is_object($set)) {
+			if (!is_array($set)) {
 				throw new Exception('Wrong content body');
 			}
 
-			/** @var CmdPermissionSet */
-			$permSet = JsonImporter::convert(CmdPermissionSet::class, $set);
+			$permSet = $this->mapper->hydrateObject(CmdPermissionSet::class, $set);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -486,12 +495,11 @@ class ConfigApiController extends ModuleInstance {
 	public function apiConfigPermissionSetPatchEndpoint(Request $request, string $name): Response {
 		$set = $request->getAttribute(WebserverController::BODY);
 		try {
-			if (!is_object($set)) {
+			if (!is_array($set)) {
 				throw new Exception('Wrong content body');
 			}
 
-			/** @var CmdPermissionSet */
-			$permSet = JsonImporter::convert(CmdPermissionSet::class, $set);
+			$permSet = $this->mapper->hydrateObject(CmdPermissionSet::class, $set);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -644,13 +652,12 @@ class ConfigApiController extends ModuleInstance {
 		}
 		$body = $request->getAttribute(WebserverController::BODY);
 		try {
-			if (!is_object($body)) {
+			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
+			$body['source'] = $source;
 
-			/** @var CmdSourceMapping */
-			$mapping = JsonImporter::convert(CmdSourceMapping::class, $body);
-			$mapping->source = $source;
+			$mapping = $this->mapper->hydrateObject(CmdSourceMapping::class, $body);
 		} catch (Throwable $e) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -672,14 +679,13 @@ class ConfigApiController extends ModuleInstance {
 		}
 		$body = $request->getAttribute(WebserverController::BODY);
 		try {
-			if (!is_object($body)) {
+			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
 
-			/** @var CmdSourceMapping */
-			$mapping = JsonImporter::convert(CmdSourceMapping::class, $body);
-			$mapping->source = strtolower($source);
-			$mapping->sub_source = null;
+			$body['source'] = strtolower($source);
+			$body['sub_source'] = null;
+			$mapping = $this->mapper->hydrateObject(CmdSourceMapping::class, $body);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -701,14 +707,13 @@ class ConfigApiController extends ModuleInstance {
 		}
 		$body = $request->getAttribute(WebserverController::BODY);
 		try {
-			if (!is_object($body)) {
+			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
 
-			/** @var CmdSourceMapping */
-			$mapping = JsonImporter::convert(CmdSourceMapping::class, $body);
-			$mapping->source = strtolower($source);
-			$mapping->sub_source = strtolower($subSource);
+			$body['source'] = strtolower($source);
+			$body['sub_source'] = strtolower($subSource);
+			$mapping = $this->mapper->hydrateObject(CmdSourceMapping::class, $body);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}

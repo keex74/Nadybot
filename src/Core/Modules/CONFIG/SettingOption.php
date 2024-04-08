@@ -3,11 +3,13 @@
 namespace Nadybot\Core\Modules\CONFIG;
 
 class SettingOption {
-	/** Name of this option for displaying */
-	public string $name;
-
 	/**
-	 * Which value does this option represent?
+	 * @param string     $name  Name of this option for displaying
+	 * @param int|string $value Which value does this option represent?
 	 */
-	public int|string $value;
+	public function __construct(
+		public string $name,
+		public int|string $value,
+	) {
+	}
 }

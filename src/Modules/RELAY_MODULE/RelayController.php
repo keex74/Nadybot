@@ -6,6 +6,7 @@ use function Safe\{glob, json_encode, preg_match, preg_split};
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapper, ObjectMapperUsingReflection};
 use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Event\ConnectEvent;
@@ -35,7 +36,6 @@ use Nadybot\Modules\{
 	RELAY_MODULE\RelayProtocol\RelayProtocolInterface,
 	RELAY_MODULE\Transport\TransportInterface,
 	WEBSERVER_MODULE\ApiResponse,
-	WEBSERVER_MODULE\JsonImporter,
 	WEBSERVER_MODULE\StatsController,
 };
 use Psr\Log\LoggerInterface;
@@ -119,6 +119,15 @@ class RelayController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private EventManager $eventManager;
+
+	public function __construct(
+		private ObjectMapper $mapper=new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		)
+	) {
+	}
 
 	#[NCA\Event(
 		name: ConnectEvent::EVENT_MASK,
@@ -1067,22 +1076,18 @@ class RelayController extends ModuleInstance {
 		if (!isset($oRelay) || !$oRelay->protocolSupportsFeature(RelayProtocolInterface::F_EVENT_SYNC)) {
 			return new Response(status: HttpStatus::NOT_FOUND);
 		}
-		$events = $request->getAttribute(WebserverController::BODY);
-		if (!is_array($events)) {
+		$body = $request->getAttribute(WebserverController::BODY);
+		if (!is_array($body)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 
-		/** @var \stdClass[] $events */
 		try {
-			foreach ($events as &$event2) {
-				/** @var RelayEvent */
-				$event2 = JsonImporter::convert(RelayEvent::class, $event2);
-			}
+			/** @psalm-suppress InternalMethod,PossiblyInvalidArgument */
+			$events = $this->mapper->hydrateObjects(RelayEvent::class, $body)->toArray();
 		} catch (Throwable $e) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 
-		/** @var RelayEvent[] $events */
 		$this->db->awaitBeginTransaction();
 		$oldEvents = $relay->events;
 		try {
@@ -1124,16 +1129,12 @@ class RelayController extends ModuleInstance {
 		if (!isset($oRelay) || !$oRelay->protocolSupportsFeature(RelayProtocolInterface::F_EVENT_SYNC)) {
 			return new Response(status: HttpStatus::NOT_FOUND);
 		}
-		$event = $request->getAttribute(WebserverController::BODY);
-		if (!is_object($event)) {
+		$body = $request->getAttribute(WebserverController::BODY);
+		if (!is_array($body)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 		try {
-			/** @var RelayEvent $event */
-			JsonImporter::convert(RelayEvent::class, $event);
-			if (!isset($event->event)) {
-				throw new Exception('event name not given');
-			}
+			$event = $this->mapper->hydrateObject(RelayEventDiff::class, $body);
 		} catch (Throwable $e) {
 			return new Response(
 				status: HttpStatus::UNPROCESSABLE_ENTITY,
@@ -1196,25 +1197,12 @@ class RelayController extends ModuleInstance {
 		NCA\ApiResult(code: 204, desc: 'Relay created successfully')
 	]
 	public function apiCreateRelay(Request $request): Response {
-		$relay = $request->getAttribute(WebserverController::BODY);
-		if (!is_object($relay)) {
+		$body = $request->getAttribute(WebserverController::BODY);
+		if (!is_array($body)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 		try {
-			/** @var RelayConfig */
-			$relay = JsonImporter::convert(RelayConfig::class, $relay);
-			foreach ($relay->layers as &$layer) {
-				/** @var RelayLayer */
-				$layer = JsonImporter::convert(RelayLayer::class, $layer);
-				foreach ($layer->arguments as &$argument) {
-					$argument = JsonImporter::convert(RelayLayerArgument::class, $argument);
-				}
-			}
-			$relay->events ??= [];
-			foreach ($relay->events as &$event) {
-				/** @var RelayEvent */
-				$event = JsonImporter::convert(RelayEvent::class, $event);
-			}
+			$relay = $this->mapper->hydrateObject(RelayConfig::class, $body);
 		} catch (Throwable $e) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}

@@ -16,17 +16,6 @@ use Nadybot\Core\{
 };
 
 class AltInfo {
-	/** The main char of this character */
-	public string $main;
-
-	/**
-	 * The list of alts for this character
-	 * Format is [name => validated (true) or false]
-	 *
-	 * @var array<string,AltValidationStatus>
-	 */
-	public array $alts = [];
-
 	#[NCA\Inject]
 	private Nadybot $chatBot;
 
@@ -48,10 +37,21 @@ class AltInfo {
 	#[NCA\Inject]
 	private Text $text;
 
-	/** The nickname of this character */
-	private ?string $nick = null;
-
-	private bool $nickFilled = false;
+	/**
+	 * @param string                            $main The nickname of this character
+	 * @param array<string,AltValidationStatus> $alts The list of alts for this character
+	 *                                                Format is [
+	 *                                                name => validated (true) or false
+	 *                                                ]
+	 * @param ?string                           $nick The main char of this character
+	 */
+	public function __construct(
+		public string $main,
+		public array $alts=[],
+		private ?string $nick=null,
+		private bool $nickFilled=false,
+	) {
+	}
 
 	/** Check if $sender is a validated alt or main */
 	public function isValidated(string $sender): bool {

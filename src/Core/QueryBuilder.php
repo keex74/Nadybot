@@ -281,6 +281,14 @@ class QueryBuilder extends Builder {
 				return $obj;
 			}
 		} catch (ReflectionException) {
+		} catch (\Throwable $e) {
+			$this->logger->error('Cannot create instance of {class}: {error}. Given: {data}, constructed from {values}', [
+				'class' => $refClass->name,
+				'error' => $e->getMessage(),
+				'data' => $row,
+				'values' => $values,
+			]);
+			throw $e;
 		}
 		$obj = new $className();
 		foreach ($row as $key => $value) {

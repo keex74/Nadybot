@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\NEWS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, Util};
+use Nadybot\Core\{Attributes as NCA, DBRow, Util};
 
 #[NCA\DB\Table(name: 'news', shared: NCA\DB\Shared::Yes)]
-class News extends NewNews {
+class News extends DBRow {
 	public string $uuid;
 
 	/**
@@ -18,31 +18,14 @@ class News extends NewNews {
 	 * @param ?int   $id      The internal ID of this news entry
 	 */
 	public function __construct(
-		int $time,
-		string $name,
-		string $news,
-		bool $sticky,
-		bool $deleted,
+		public int $time,
+		public string $name,
+		public string $news,
+		public bool $sticky,
+		public bool $deleted,
 		?string $uuid=null,
 		#[NCA\DB\AutoInc] public ?int $id=null,
 	) {
-		parent::__construct(
-			time: $time,
-			name: $name,
-			news: $news,
-			sticky: $sticky,
-			deleted: $deleted,
-		);
 		$this->uuid = $uuid ?? Util::createUUID();
-	}
-
-	public static function fromNewNews(NewNews $news): self {
-		return new self(
-			time: $news->time,
-			name: $news->name,
-			news: $news->news,
-			sticky: $news->sticky,
-			deleted: $news->deleted,
-		);
 	}
 }

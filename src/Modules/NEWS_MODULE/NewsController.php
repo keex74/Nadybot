@@ -6,6 +6,7 @@ use function Safe\preg_split;
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection};
 use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Event\JoinMyPrivEvent;
@@ -22,7 +23,8 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
-use Nadybot\Modules\WEBSERVER_MODULE\{ApiResponse, JsonImporter, WebserverController};
+use Nadybot\Modules\WEBSERVER_MODULE\{ApiResponse, WebserverController};
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
@@ -84,8 +86,8 @@ class NewsController extends ModuleInstance {
 	#[NCA\Inject]
 	private Text $text;
 
-	#[NCA\Inject]
-	private Util $util;
+	#[NCA\Logger]
+	private LoggerInterface $logger;
 
 	/** @return Collection<INews> */
 	public function getNewsItems(string $player): Collection {
@@ -436,27 +438,34 @@ class NewsController extends ModuleInstance {
 	public function apiNewsCreateEndpoint(Request $request): Response {
 		$user = $request->getAttribute(WebserverController::USER) ?? '_';
 		$body = $request->getAttribute(WebserverController::BODY);
+		$this->logger->notice('Body: {body}', ['body' => $body]);
+		$mapper = new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		);
 		try {
-			if (!is_object($body)) {
+			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
 
 			/** @var NewNews */
-			$newNews = JsonImporter::convert(NewNews::class, $body);
+			$newNews = $mapper->hydrateObject(NewNews::class, $body);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-
-		$decoded = News::fromNewNews($newNews);
-		unset($decoded->id);
-		$decoded->time ??= time();
-		$decoded->name = $user;
-		$decoded->sticky ??= false;
-		$decoded->deleted ??= false;
-		$decoded->uuid = Util::createUUID();
-		if (!isset($decoded->news)) {
+		if (!isset($newNews->news)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
+		$decoded = new News(
+			time: $newNews->time ?? time(),
+			name: $user,
+			sticky: $newNews->sticky ?? false,
+			deleted: $newNews->deleted ?? false,
+			uuid: Util::createUUID(),
+			news: $newNews->news,
+		);
+
 		if ($this->db->insert($decoded)) {
 			$event = new SyncNewsEvent(
 				time: $decoded->time,
@@ -480,37 +489,39 @@ class NewsController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'News', desc: 'The news item it is now')
 	]
 	public function apiNewsModifyEndpoint(Request $request, int $id): Response {
-		$result = $this->getNewsItem($id);
-		if (!isset($result)) {
+		$oldItem = $this->getNewsItem($id);
+		if (!isset($oldItem)) {
 			return new Response(status: HttpStatus::NOT_FOUND);
 		}
 		$user = $request->getAttribute(WebserverController::USER) ?? '_';
 		$body = $request->getAttribute(WebserverController::BODY);
+		$mapper = new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		);
 		try {
-			if (!is_object($body)) {
+			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
 
-			/** @var NewNews */
-			$newNews = JsonImporter::convert(NewNews::class, $body);
+			$newNews = $mapper->hydrateObject(NewNews::class, $body);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		$decoded = News::fromNewNews($newNews);
-		$decoded->id = $id;
-		$decoded->name = $user;
-		foreach (get_object_vars($decoded) as $attr => $value) {
+		foreach (get_object_vars($newNews) as $prop => $value) {
 			if (isset($value)) {
-				$result->{$attr} = $value;
+				$oldItem->{$prop} = $value;
 			}
 		}
-		if (!$this->db->update($decoded)) {
+		$oldItem->name = $user;
+		if (!$this->db->update($oldItem)) {
 			$event = new SyncNewsEvent(
-				time: $decoded->time,
-				name: $decoded->name,
-				news: $decoded->news,
-				uuid: $result->uuid,
-				sticky: $decoded->sticky,
+				time: $oldItem->time,
+				name: $oldItem->name,
+				news: $oldItem->news,
+				uuid: $oldItem->uuid,
+				sticky: $oldItem->sticky,
 			);
 			$this->eventManager->fireEvent($event);
 			return new Response(status: HttpStatus::INTERNAL_SERVER_ERROR);

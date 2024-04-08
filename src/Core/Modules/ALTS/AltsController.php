@@ -506,9 +506,8 @@ class AltsController extends ModuleInstance {
 	public function getAltInfo(string $player, bool $includePending=false): AltInfo {
 		$player = ucfirst(strtolower($player));
 
-		$ai = new AltInfo();
+		$ai = new AltInfo(main: $player);
 		Registry::injectDependencies($ai);
-		$ai->main = $player;
 		$query = $this->db->table(Alt::getTable())
 			->where(static function (QueryBuilder $query) use ($includePending, $player) {
 				$query->where('main', $player)
@@ -527,10 +526,11 @@ class AltsController extends ModuleInstance {
 			->filter(static fn (Alt $alt): bool => $alt->alt !== $alt->main)
 			->each(function (Alt $row) use ($ai) {
 				$ai->main = $row->main;
-				$ai->alts[$row->alt] = new AltValidationStatus();
-				$ai->alts[$row->alt]->validated_by_alt = $row->validated_by_alt??false;
-				$ai->alts[$row->alt]->validated_by_main = $row->validated_by_main??false;
-				$ai->alts[$row->alt]->added_via = $row->added_via ?? $this->db->getMyname();
+				$ai->alts[$row->alt] = new AltValidationStatus(
+					validated_by_alt: $row->validated_by_alt??false,
+					validated_by_main: $row->validated_by_main??false,
+					added_via: $row->added_via ?? $this->db->getMyname(),
+				);
 			});
 
 		return $ai;

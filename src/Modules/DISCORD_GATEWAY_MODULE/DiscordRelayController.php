@@ -48,10 +48,10 @@ class DiscordRelayController extends ModuleInstance {
 					if ($subchannel->type !== $subchannel::GUILD_TEXT) {
 						continue;
 					}
-					$option = new SettingOption();
-					$option->value = $subchannel->id;
-					$option->name = "{$guild->name} > {$channel->name} > #{$subchannel->name}";
-					$result []= $option;
+					$result []= new SettingOption(
+						value: $subchannel->id,
+						name: "{$guild->name} > {$channel->name} > #{$subchannel->name}",
+					);
 				}
 			}
 		}

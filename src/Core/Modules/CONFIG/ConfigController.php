@@ -882,27 +882,27 @@ class ConfigController extends ModuleInstance {
 			if ($moduleCmds->isEmpty() && !isset($row)) {
 				continue;
 			}
-			$config = new ConfigModule();
-			$config->name = $module;
-			$config->description = $this->getModuleDescription($config->name);
-			$config->num_commands_enabled = 0;
-			$config->num_commands_disabled = 0;
+			$num_commands_enabled = 0;
+			$num_commands_disabled = 0;
 			if ($moduleCmds->isNotEmpty()) {
-				$config->num_commands_enabled = $moduleCmds
+				$num_commands_enabled = $moduleCmds
 					->reduce(static function (int $enabled, CmdCfg $cfg): int {
 						return $enabled + (new Collection($cfg->permissions))->where('enabled', true)->count();
 					}, 0);
-				$config->num_commands_disabled = $moduleCmds
+				$num_commands_disabled = $moduleCmds
 					->reduce(static function (int $disabled, CmdCfg $cfg): int {
 						return $disabled + (new Collection($cfg->permissions))->where('enabled', false)->count();
 					}, 0);
 			}
-			if (isset($row)) {
-				$config->num_events_disabled = (int)$row->count_events_disabled;
-				$config->num_events_enabled = (int)$row->count_events_enabled;
-				$config->num_settings = (int)$row->count_settings;
-			}
-			$result []= $config;
+			$result []= new ConfigModule(
+				name: $module,
+				description: $this->getModuleDescription($module),
+				num_commands_enabled: $num_commands_enabled,
+				num_commands_disabled: $num_commands_disabled,
+				num_events_disabled: isset($row) ? (int)$row->count_events_disabled : 0,
+				num_events_enabled: isset($row) ? (int)$row->count_events_enabled : 0,
+				num_settings: isset($row) ? (int)$row->count_settings : 0,
+			);
 		}
 		return $result;
 	}
@@ -919,14 +919,16 @@ class ConfigController extends ModuleInstance {
 			if ($accessLevel == 'none') {
 				continue;
 			}
-			$option = new ModuleAccessLevel();
-			$option->name = $this->getAdminDescription($accessLevel);
-			$option->value = $accessLevel;
-			$option->numeric_value = $level;
+			$enabled = true;
 			if (substr($accessLevel, 0, 5) === 'raid_' && !$showRaidAL) {
-				$option->enabled = false;
+				$enabled = false;
 			}
-			$result []= $option;
+			$result []= new ModuleAccessLevel(
+				name: $this->getAdminDescription($accessLevel),
+				value: $accessLevel,
+				numeric_value: $level,
+				enabled: $enabled,
+			);
 		}
 		return $result;
 	}

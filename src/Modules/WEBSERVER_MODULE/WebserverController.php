@@ -31,7 +31,6 @@ use ReflectionClass;
 use ReflectionFunction;
 use Safe\Exceptions\{OpensslException, PcreException, UrlException};
 use Safe\{DateTimeImmutable};
-use stdClass;
 use Throwable;
 
 #[
@@ -479,7 +478,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 		}
 		if (preg_split("/;\s*/", $contentType)[0] === 'application/json') {
 			try {
-				$request->setAttribute(self::BODY, json_decode($body));
+				$request->setAttribute(self::BODY, json_decode($body, true));
 				return null;
 			} catch (Throwable $error) {
 				return new Response(
@@ -490,10 +489,10 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 		}
 		if (preg_split("/;\s*/", $contentType)[0] === 'application/x-www-form-urlencoded') {
 			$parts = explode('&', $body);
-			$result = new stdClass();
+			$result = [];
 			foreach ($parts as $part) {
 				$kv = array_map('urldecode', explode('=', $part, 2));
-				$result->{$kv[0]} = $kv[1] ?? null;
+				$result[$kv[0]] = $kv[1] ?? null;
 			}
 			$request->setAttribute(self::BODY, $result);
 			return null;

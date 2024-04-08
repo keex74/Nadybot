@@ -85,15 +85,15 @@ class HelpManager {
 		$settingsHelp = $this->db->table(Setting::getTable())
 			->where('name', $helpcmd)
 			->where('help', '!=', '')
-			->select('module', 'admin', 'name', 'help AS file');
+			->select('module', 'admin', 'name', 'help AS file', 'description');
 		$hlpHelp = $this->db->table(HlpCfg::getTable())
 			->where('name', $helpcmd)
 			->where('file', '!=', '')
-			->select('module', 'admin', 'name', 'file');
+			->select('module', 'admin', 'name', 'file', 'description');
 		$outerQuery = $this->db->fromSub(
 			$settingsHelp->union($hlpHelp),
 			'foo'
-		)->select('foo.module', 'foo.file', 'foo.name', 'foo.admin AS admin_list');
+		)->select('foo.module', 'foo.file', 'foo.name', 'foo.admin AS admin_list', 'foo.description');
 
 		/** @var HelpTopic[] $data */
 		$data = $outerQuery->asObj(HelpTopic::class)->toArray();

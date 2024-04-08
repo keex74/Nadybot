@@ -2,13 +2,21 @@
 
 namespace Nadybot\Core\Modules\ALTS;
 
-class AltValidationStatus {
-	/** Status if the main character confirmed this to be their alt */
-	public bool $validated_by_main = false;
+use Nadybot\Core\StringableTrait;
+use Stringable;
 
-	/** Status if the alt character confirmed the main to be their main */
-	public bool $validated_by_alt = false;
+class AltValidationStatus implements Stringable {
+	use StringableTrait;
 
-	/** Name of the bot via which the main <-> alt relation was requested */
-	public string $added_via;
+	/**
+	 * @param string $added_via         Name of the bot via which the main <-> alt relation was requested
+	 * @param bool   $validated_by_main Status if the main character confirmed this to be their alt
+	 * @param bool   $validated_by_alt  Status if the alt character confirmed the main to be their main
+	 */
+	public function __construct(
+		public string $added_via,
+		public bool $validated_by_main=false,
+		public bool $validated_by_alt=false,
+	) {
+	}
 }

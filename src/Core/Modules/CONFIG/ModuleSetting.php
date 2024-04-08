@@ -62,10 +62,10 @@ class ModuleSetting {
 				$this->type = static::TYPE_BOOL;
 			} else {
 				for ($i = 0; $i < count($options); $i++) {
-					$option = new SettingOption();
-					$option->name = $options[$i];
-					$option->value = $values[$i];
-					$this->options []= $option;
+					$this->options []= new SettingOption(
+						name: $options[$i],
+						value: $values[$i],
+					);
 				}
 			}
 		}

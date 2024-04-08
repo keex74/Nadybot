@@ -6,6 +6,8 @@ use function Safe\{json_decode, preg_match, preg_split};
 use Amp\File\{FileCache, FilesystemException};
 use Amp\Http\Client\{HttpClientBuilder, Request};
 use Amp\Sync\LocalKeyedMutex;
+use Amp\TimeoutCancellation;
+use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection};
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -23,7 +25,6 @@ use Nadybot\Core\{
 	Text,
 	UserException,
 };
-use Nadybot\Modules\WEBSERVER_MODULE\JsonImporter;
 use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -685,7 +686,7 @@ class PackageController extends ModuleInstance {
 		}
 		$client = $this->builder->build();
 
-		$response = $client->request(new Request(static::API . '/packages'));
+		$response = $client->request(new Request(static::API . '/packages'), new TimeoutCancellation(5));
 		if ($response->getStatus() !== 200) {
 			throw new UserException('There was an error retrieving the list of available packages.');
 		}
@@ -732,19 +733,28 @@ class PackageController extends ModuleInstance {
 	/** @return Package[] */
 	private function parsePackages(string $body): array {
 		try {
-			$data = json_decode($body, false);
+			$data = json_decode($body, true);
 		} catch (JsonException $e) {
 			throw new UserException('Package data contained invalid JSON');
 		}
-		if (!is_array($data)) {
+		if (!is_array($data) || !array_is_list($data)) {
 			throw new UserException('Package data was not in the expected format');
 		}
 
-		/** @var Collection<Package> */
-		$packages = new Collection();
-		foreach ($data as $pack) {
-			$packages []= JsonImporter::convert(Package::class, $pack);
-		}
+		$mapper = new ObjectMapperUsingReflection(
+			new DefinitionProvider(
+				keyFormatter: new KeyFormatterWithoutConversion(),
+			),
+		);
+
+		/**
+		 * @var Collection<Package>
+		 *
+		 * @psalm-suppress InternalMethod
+		 */
+		$packages = new Collection(
+			$mapper->hydrateObjects(Package::class, $data)->toArray()
+		);
 		$packages = $packages->filter(static function (Package $package): bool {
 			return $package->bot_type === 'Nadybot';
 		})->each(function (Package $package): void {

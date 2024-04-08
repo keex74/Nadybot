@@ -251,7 +251,7 @@ class ApiSpecGenerator {
 					if (isset($doc->requestBody)) {
 						$newResult[$path][$method]['requestBody'] = $this->getRequestBodyDefinition($doc->requestBody);
 						if (isset($doc->requestBody->class)) {
-							$this->addSchema($result['components']['schemas'], $doc->requestBody->class);
+							$this->addSchema($result['components']['schemas'], class_basename($doc->requestBody->class));
 						}
 					}
 					if (!empty($doc->tags)) {
@@ -521,9 +521,9 @@ class ApiSpecGenerator {
 		if (in_array($class, ['string', 'bool', 'int', 'float'])) {
 			return ['type' => str_replace(['int', 'bool'], ['integer', 'boolean'], $class)];
 		}
-		if ($class === 'DateTime') {
+		if (is_a($class, \DateTimeInterface::class, true)) {
 			return ['type' => 'integer'];
 		}
-		return ['$ref' => "#/components/schemas/{$class}"];
+		return ['$ref' => '#/components/schemas/' . class_basename($class)];
 	}
 }

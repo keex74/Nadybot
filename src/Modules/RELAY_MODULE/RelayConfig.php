@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\RELAY_MODULE;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\{Attributes as NCA, DBRow};
 
 #[NCA\DB\Table(name: 'relay')]
@@ -15,8 +16,14 @@ class RelayConfig extends DBRow {
 	public function __construct(
 		public string $name,
 		#[NCA\JSON\Ignore] #[NCA\DB\AutoInc] public ?int $id=null,
-		#[NCA\DB\Ignore] public array $layers=[],
-		#[NCA\DB\Ignore] public array $events=[],
+		#[
+			NCA\DB\Ignore,
+			CastListToType(RelayLayer::class)
+		] public array $layers=[],
+		#[
+			NCA\DB\Ignore,
+			CastListToType(RelayEvent::class)
+		] public array $events=[],
 	) {
 	}
 

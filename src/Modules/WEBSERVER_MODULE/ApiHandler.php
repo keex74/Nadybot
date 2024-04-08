@@ -9,19 +9,22 @@ use ReflectionMethod;
 use Throwable;
 
 class ApiHandler {
-	/** @var string[] */
-	public array $allowedMethods = [];
-	public ?string $accessLevelFrom;
-	public ?string $accessLevel;
-	public string $path;
-	public string $route;
-
-	/** @var null|Closure(Request,mixed...):Response */
-	public ?Closure $handler = null;
-	public ReflectionMethod $reflectionMethod;
-
-	/** @var mixed[] */
-	public array $args = [];
+	/**
+	 * @param string[]                            $allowedMethods
+	 * @param ?Closure(Request,mixed...):Response $handler
+	 * @param mixed[]                             $args
+	 */
+	public function __construct(
+		public ?string $accessLevelFrom,
+		public ?string $accessLevel,
+		public string $path,
+		public string $route,
+		public ReflectionMethod $reflectionMethod,
+		public array $allowedMethods=[],
+		public ?Closure $handler=null,
+		public array $args=[],
+	) {
+	}
 
 	public function exec(Request $request): ?Response {
 		$handler = $this->handler;

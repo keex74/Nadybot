@@ -293,16 +293,17 @@ class ApiController extends ModuleInstance {
 	 */
 	public function addApiRoute(array $paths, array $methods, Closure $callback, ?string $alf, ?string $al, ReflectionMethod $refMet): void {
 		foreach ($paths as $path) {
-			$handler = new ApiHandler();
 			$route = $this->webserverController->routeToRegExp($path);
 			$this->logger->info('Adding route to {path}', ['path' => $path]);
-			$handler->path = $path;
-			$handler->route = $route;
-			$handler->allowedMethods = $methods;
-			$handler->reflectionMethod = $refMet;
-			$handler->handler = $callback;
-			$handler->accessLevel = $al;
-			$handler->accessLevelFrom = $alf;
+			$handler = new ApiHandler(
+				path: $path,
+				route: $route,
+				allowedMethods: $methods,
+				reflectionMethod: $refMet,
+				handler: $callback,
+				accessLevel: $al,
+				accessLevelFrom: $alf,
+			);
 			foreach ($methods as $method) {
 				$this->routes[$route][$method] = $handler;
 			}
@@ -326,9 +327,15 @@ class ApiController extends ModuleInstance {
 				continue;
 			}
 			if (!isset($data[$method])) {
-				$handler = new ApiHandler();
-				$handler->allowedMethods = array_keys($data);
-				return $handler;
+				return new ApiHandler(
+					allowedMethods: array_keys($data),
+					accessLevelFrom: 'all',
+					accessLevel: 'all',
+					path: $path,
+					route: '',
+					reflectionMethod: new ReflectionMethod($this, __FUNCTION__),
+					handler: null,
+				);
 			}
 			$handler = clone $data[$method];
 			if (!isset($handler->handler)) {
@@ -367,6 +374,13 @@ class ApiController extends ModuleInstance {
 		if (!$this->api) {
 			return null;
 		}
+		$this->logger->notice('Receiving {method} API-call to {path}. Body is {body}', [
+			'method' => $request->getMethod(),
+			'path' => $path,
+			'body' => $request->hasAttribute(WebserverController::BODY)
+				? $request->getAttribute(WebserverController::BODY)
+				: null,
+		]);
 		$handler = $this->getHandlerForRequest($request);
 		if ($handler === null) {
 			return new Response(status: HttpStatus::NOT_FOUND);
@@ -397,7 +411,11 @@ class ApiController extends ModuleInstance {
 		}
 		try {
 			$response = $handler->exec($request);
-		} catch (Throwable) {
+		} catch (Throwable $e) {
+			$this->logger->error('{error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			$response = null;
 		}
 
@@ -524,19 +542,6 @@ class ApiController extends ModuleInstance {
 		if (JsonImporter::matchesType($reqBody->class, $body)) {
 			return true;
 		}
-		try {
-			if (is_object($body)) {
-				$request->setAttribute(WebserverController::BODY, JsonImporter::convert($reqBody->class, $body));
-			} elseif (is_array($body)) {
-				$newBody = [];
-				foreach ($body as $key => $part) {
-					$newBody[$key] = JsonImporter::convert($reqBody->class, $part);
-				}
-				$request->setAttribute(WebserverController::BODY, $newBody);
-			}
-		} catch (Throwable $e) {
-			return false;
-		}
-		return true;
+		return is_array($body);
 	}
 }
