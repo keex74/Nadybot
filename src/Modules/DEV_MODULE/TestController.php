@@ -299,6 +299,9 @@ class TestController extends ModuleInstance {
 	 */
 	#[NCA\HandlesCommand('msginfo')]
 	public function msgInfoCommand(CmdContext $context, string $cmd): void {
+		if (!isset($context->sendto)) {
+			return;
+		}
 		$context->message = $cmd;
 		$context->sendto = new MessageInfoCommandReply($context->sendto);
 		$this->commandManager->processCmd($context);

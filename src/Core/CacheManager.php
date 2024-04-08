@@ -62,13 +62,13 @@ class CacheManager {
 			$this->remove($groupName, $filename);
 			return null;
 		}
-		$cacheResult = new CacheResult();
-		$cacheResult->data = $data;
-		$cacheResult->cacheAge = $cacheAge;
-		$cacheResult->usedCache = true;
-		$cacheResult->oldCache = false;
-		$cacheResult->success = true;
-		return $cacheResult;
+		return new CacheResult(
+			data: $data,
+			cacheAge: $cacheAge,
+			usedCache: true,
+			oldCache: false,
+			success: true,
+		);
 	}
 
 	/** Store content in the cache */

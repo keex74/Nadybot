@@ -362,14 +362,16 @@ class DiscordSlashCommandController extends ModuleInstance {
 			$this->logger->info('Ignoring unuspported interaction type');
 			return;
 		}
-		$context = new CmdContext($discordUserId);
-		$context->setIsDM(isset($interaction->user));
 		$cmd = $interaction->toCommand();
 		if (!isset($cmd)) {
 			$this->logger->info('No command to execute found in interaction');
 			return;
 		}
-		$context->message = $cmd;
+		$context = new CmdContext(
+			charName: $discordUserId,
+			isDM: isset($interaction->user),
+			message: $cmd,
+		);
 		if (isset($interaction->channel_id)) {
 			$channel = $this->gw->getChannel($interaction->channel_id);
 			if (!isset($channel)) {

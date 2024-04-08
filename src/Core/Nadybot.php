@@ -1154,11 +1154,14 @@ class Nadybot {
 			return;
 		}
 
-		$context = new CmdContext($sender, $senderId);
-		$context->message = $message;
-		$context->source = Source::TELL . "({$sender})";
-		$context->sendto = new PrivateMessageCommandReply($this, $sender, $workerId);
-		$context->setIsDM();
+		$context = new CmdContext(
+			charName: $sender,
+			charId: $senderId,
+			message: $message,
+			source: Source::TELL . "({$sender})",
+			sendto: new PrivateMessageCommandReply($this, $sender, $workerId),
+			isDM: true,
+		);
 		try {
 			$this->limitsController->checkTellExecuteAccess($sender, $message);
 		} catch (UserException $e) {
@@ -1224,10 +1227,13 @@ class Nadybot {
 		}
 		$rMessage->prependPath(new Source(Source::PRIV, $channel, $label));
 		$this->messageHub->handle($rMessage);
-		$context = new CmdContext($sender, $senderId);
-		$context->message = $package->package->message;
-		$context->source = Source::PRIV . "({$channel})";
-		$context->sendto = new PrivateChannelCommandReply($this, $channel);
+		$context = new CmdContext(
+			charName: $sender,
+			charId: $senderId,
+			message: $package->package->message,
+			source: Source::PRIV . "({$channel})",
+			sendto: new PrivateChannelCommandReply($this, $channel),
+		);
 		$this->commandManager->checkAndHandleCmd($context);
 	}
 
@@ -1328,10 +1334,13 @@ class Nadybot {
 			if (!isset($sender)) {
 				return;
 			}
-			$context = new CmdContext($sender, $senderId);
-			$context->source = Source::ORG;
-			$context->message = $package->package->message;
-			$context->sendto = new GuildChannelCommandReply($this);
+			$context = new CmdContext(
+				charName: $sender,
+				charId: $senderId,
+				source: Source::ORG,
+				message: $package->package->message,
+				sendto: new GuildChannelCommandReply($this),
+			);
 			$this->commandManager->checkAndHandleCmd($context);
 		}
 	}

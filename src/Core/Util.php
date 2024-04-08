@@ -414,10 +414,12 @@ class Util {
 			$params []= $param;
 			$i++;
 		}
-		$spec = new ClassSpec($name, $class);
-		$spec->setParameters(...$params);
-		$spec->setDescription($attrObj->description);
-		return $spec;
+		return new ClassSpec(
+			name: $name,
+			class: $class,
+			params: $params,
+			description: $attrObj->description,
+		);
 	}
 
 	/** Create a valid UUID that is unique worldwide */

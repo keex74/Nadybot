@@ -585,11 +585,14 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 		}
 
 		$showSendto = new PrivateMessageCommandReply($this->chatBot, $name);
-		$newContext = new CmdContext($context->char->name, $context->char->id);
-		$newContext->sendto = $showSendto;
-		$newContext->message = $cmd;
-		$newContext->source = $context->source;
-		$newContext->permissionSet = $context->permissionSet;
+		$newContext = new CmdContext(
+			charName: $context->char->name,
+			charId: $context->char->id,
+			sendto: $showSendto,
+			message: $cmd,
+			source: $context->source,
+			permissionSet: $context->permissionSet,
+		);
 		$this->commandManager->processCmd($newContext);
 
 		$context->reply("Command <highlight>{$cmd}<end> has been sent to <highlight>{$name}<end>.");

@@ -3,9 +3,10 @@
 namespace Nadybot\Core;
 
 class ChangeListener {
-	/** @var callable */
-	public $callback;
-
-
-	public mixed $data;
+	/** @param callable $callback */
+	public function __construct(
+		public $callback,
+		public mixed $data,
+	) {
+	}
 }

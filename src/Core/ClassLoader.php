@@ -218,19 +218,22 @@ class ClassLoader {
 			if (!count($instanceAnnos)) {
 				continue;
 			}
-			$instance = new ClassInstance();
-			$instance->className = $className;
+
+			$overwrite = false;
 
 			/** @var NCA\Instance */
 			$instanceAttr = $instanceAnnos[0]->newInstance();
 			if ($instanceAttr->name !== null) {
 				$name = $instanceAttr->name;
-				$instance->overwrite = $instanceAttr->overwrite;
+				$overwrite = $instanceAttr->overwrite;
 			} else {
 				$name = Registry::formatName($className);
 			}
-			$instance->name = $name;
-			$newInstances[$name] = $instance;
+			$newInstances[$name] = new ClassInstance(
+				name: $name,
+				className: $className,
+				overwrite: $overwrite,
+			);
 		}
 		return $newInstances;
 	}

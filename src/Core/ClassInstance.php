@@ -3,7 +3,10 @@
 namespace Nadybot\Core;
 
 class ClassInstance {
-	public string $name;
-	public string $className;
-	public bool $overwrite = false;
+	public function __construct(
+		public string $name,
+		public string $className,
+		public bool $overwrite=false,
+	) {
+	}
 }

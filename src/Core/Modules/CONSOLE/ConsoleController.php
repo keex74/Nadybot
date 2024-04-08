@@ -209,11 +209,14 @@ class ConsoleController extends ModuleInstance {
 			readline_callback_handler_install('> ', fn (?string $line) => $this->processLine($line));
 		}
 
-		$context = new CmdContext($this->config->general->superAdmins[0]??'<no superadmin set>');
-		$context->message = $line;
-		$context->source = Source::CONSOLE;
-		$context->sendto = new ConsoleCommandReply($this->chatBot);
-		Registry::injectDependencies($context->sendto);
+		$sendto = new ConsoleCommandReply($this->chatBot);
+		Registry::injectDependencies($sendto);
+		$context = new CmdContext(
+			charName: $this->config->general->superAdmins[0]??'<no superadmin set>',
+			message: $line,
+			source: Source::CONSOLE,
+			sendto: $sendto,
+		);
 		async($this->processContext(...), $context)->catch(Nadybot::asyncErrorHandler(...));
 	}
 

@@ -358,10 +358,12 @@ class ProfileController extends ModuleInstance {
 		$this->db->awaitBeginTransaction();
 		try {
 			$profileSendTo = new ProfileCommandReply();
-			$context = new CmdContext($sender);
-			$context->char->id = $this->chatBot->getUid($sender);
-			$context->sendto = $profileSendTo;
-			$context->permissionSet = $this->commandManager->getPermissionSets()->firstOrFail()->name;
+			$context = new CmdContext(
+				charName: $sender,
+				charId: $this->chatBot->getUid($sender),
+				sendto: $profileSendTo,
+				permissionSet: $this->commandManager->getPermissionSets()->firstOrFail()->name,
+			);
 			$numSkipped = 0;
 			for ($profileRow=0; $profileRow < count($lines); $profileRow++) {
 				$line = $lines[$profileRow];

@@ -187,14 +187,18 @@ class MgmtInterfaceController extends ModuleInstance {
 		if (trim($line) === '') {
 			return;
 		}
-		$context = new CmdContext($this->config->general->superAdmins[0]??'<no superadmin set>');
-		$context->message = $line;
-		$context->source = Source::CONSOLE;
-		$context->sendto = new SocketCommandReply($socket);
-		Registry::injectDependencies($context->sendto);
-		$uid = $this->chatBot->getUid($context->char->name);
-		$context->char->id = $uid;
-		$context->setIsDM(true);
+		$name = $this->config->general->superAdmins[0]??'<no superadmin set>';
+		$uid = $this->chatBot->getUid($name);
+		$replyTo = new SocketCommandReply($socket);
+		Registry::injectDependencies($replyTo);
+		$context = new CmdContext(
+			charName: $name,
+			charId: $uid,
+			message: $line,
+			source: Source::CONSOLE,
+			sendto: new SocketCommandReply($socket),
+			isDM: true,
+		);
 		$this->commandManager->checkAndHandleCmd($context);
 	}
 }

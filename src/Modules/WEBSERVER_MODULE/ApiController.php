@@ -445,14 +445,16 @@ class ApiController extends ModuleInstance {
 			$set = $this->commandManager->getPermsetMapForSource('api');
 			$handler = new EventCommandReply($uuid);
 			Registry::injectDependencies($handler);
-			$context = new CmdContext($user);
-			$context->source = 'api';
-			$context->setIsDM();
-			$context->permissionSet = isset($set)
-				? $set->permission_set
-				: $this->commandManager->getPermissionSets()->firstOrFail()->name;
-			$context->sendto = $handler;
-			$context->message = $msg;
+			$context = new CmdContext(
+				charName: $user,
+				source: 'api',
+				isDM: true,
+				permissionSet: isset($set)
+					? $set->permission_set
+					: $this->commandManager->getPermissionSets()->firstOrFail()->name,
+				sendto: $handler,
+				message: $msg,
+			);
 			async(function () use ($context): void {
 				$uid = $this->chatBot->getUid($context->char->name);
 				$context->char->id = $uid;

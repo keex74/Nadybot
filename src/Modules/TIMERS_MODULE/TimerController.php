@@ -378,7 +378,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$sendto = $context->sendto;
 		$origin = ($sendto instanceof MessageEmitter) ? $sendto->getChannelName() : null;
 		$msg = $this->addTimer($context->char->name, $name, $runTime, $alertChannel, null, $origin);
-		$sendto->reply($msg);
+		$sendto?->reply($msg);
 		if (preg_match('/has been set for/', $msg)) {
 			$sTimer = new SyncTimerEvent(
 				name: $name,

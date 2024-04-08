@@ -10,27 +10,31 @@ class CmdContext implements CommandReply {
 	/**
 	 * @var array<array<int|float>>
 	 *
-	 * @phpstan-var array{int,float}[]
+	 * @psalm-var array{int,float}[] $cmdStat
 	 */
 	public static array $cmdStats = [];
-	public string $message = '';
-	public ?string $permissionSet = null;
-	public ?string $source = null;
+
 	public Character $char;
-	public CommandReply $sendto;
-
-	/** @var mixed[] */
-	public array $args = [];
-	public bool $forceSync = false;
-	public bool $isDM = false;
-	public ?CmdPermSetMapping $mapping = null;
-
-	/** @var array<Closure> */
-	public array $shutdownFunctions = [];
 
 	private float $started;
 
-	public function __construct(string $charName, ?int $charId=null) {
+	/**
+	 * @param mixed[]   $args
+	 * @param Closure[] $shutdownFunctions
+	 */
+	public function __construct(
+		string $charName,
+		public ?CommandReply $sendto=null,
+		?int $charId=null,
+		public string $message='',
+		public ?string $permissionSet=null,
+		public ?string $source=null,
+		public array $args=[],
+		public bool $forceSync=false,
+		public bool $isDM=false,
+		public ?CmdPermSetMapping $mapping=null,
+		public array $shutdownFunctions=[],
+	) {
 		$this->char = new Character($charName, $charId);
 		$this->started = microtime(true);
 	}
@@ -56,7 +60,7 @@ class CmdContext implements CommandReply {
 		if (isset($this->mapping)) {
 			$msg = str_replace('<symbol>', $this->mapping->symbol, $msg);
 		}
-		$this->sendto->reply($msg);
+		$this->sendto?->reply($msg);
 	}
 
 	/** Check if we received this from a direct message of any form */

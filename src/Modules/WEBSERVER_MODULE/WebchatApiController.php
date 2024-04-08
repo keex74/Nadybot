@@ -97,10 +97,12 @@ class WebchatApiController extends ModuleInstance {
 
 		$sendto = new WebsocketCommandReply();
 		Registry::injectDependencies($sendto);
-		$context = new CmdContext($user);
-		$context->source = Source::WEB;
-		$context->sendto = $sendto;
-		$context->message = $message;
+		$context = new CmdContext(
+			charName: $user,
+			source: Source::WEB,
+			sendto: $sendto,
+			message: $message,
+		);
 		async(function () use ($context): void {
 			$uid = $this->chatBot->getUid($context->char->name);
 			$context->char->id = $uid;

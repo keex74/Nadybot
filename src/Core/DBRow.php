@@ -43,7 +43,7 @@ class DBRow implements Stringable {
 		}
 		$tableName = $tableDefs[0]->newInstance()->getName();
 		if (isset($as)) {
-			$tableName .= "AS {$as}";
+			$tableName .= " AS {$as}";
 		}
 		return $tableName;
 	}

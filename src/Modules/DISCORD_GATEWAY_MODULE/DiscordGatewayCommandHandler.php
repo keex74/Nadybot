@@ -248,9 +248,11 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 	)]
 	public function processDiscordDirectMessage(DiscordMessageEvent $event): void {
 		$discordUserId = $event->discord_message->author->id ?? $event->sender;
-		$context = new CmdContext($discordUserId);
-		$context->source = Source::DISCORD_MSG . "({$discordUserId})";
-		$context->message = $event->message;
+		$context = new CmdContext(
+			charName: $discordUserId,
+			source: Source::DISCORD_MSG . "({$discordUserId})",
+			message: $event->message,
+		);
 		$this->processDiscordMessage($event, $context);
 	}
 
@@ -261,9 +263,11 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 	)]
 	public function processDiscordChannelMessage(DiscordMessageEvent $event): void {
 		$discordUserId = $event->discord_message->author->id ?? $event->sender;
-		$context = new CmdContext($discordUserId);
-		$context->source = Source::DISCORD_PRIV . "({$event->discord_message->channel_id})";
-		$context->message = $event->message;
+		$context = new CmdContext(
+			charName: $discordUserId,
+			source: Source::DISCORD_PRIV . "({$event->discord_message->channel_id})",
+			message: $event->message,
+		);
 		$this->processDiscordMessage($event, $context);
 	}
 

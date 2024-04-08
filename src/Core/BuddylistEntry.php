@@ -7,37 +7,29 @@ use Stringable;
 class BuddylistEntry implements Stringable {
 	use StringableTrait;
 
-	/** User ID of the buddy */
-	public int $uid;
-
-	/** Name of the buddy */
-	public string $name;
-
-	/** Set to true if the buddy was confirmed to be on the list by AO */
-	public bool $known = false;
-
-	/** Online-status of the buddy */
-	public bool $online = false;
-
 	/** Unix timestamp when this entry was added to the buddylist */
 	public int $added;
 
 	/**
-	 * Which worker(s) holds this as their buddy
-	 *
-	 * @var array<int,bool>
+	 * @param int                $uid    User ID of the buddy
+	 * @param string             $name   Name of the buddy
+	 * @param bool               $known  Set to true if the buddy was confirmed
+	 *                                   to be on the list by AO
+	 * @param bool               $online Online-status of the buddy
+	 * @param array<int,bool>    $worker Which worker(s) holds this as their buddy
+	 * @param array<string,bool> $types  Internal list to track, why someone
+	 *                                   is on the buddy-list
 	 */
-	public array $worker = [];
-
-	/**
-	 * Internal list to track, why someone is on the buddy-list
-	 *
-	 * @var array<string,bool>
-	 */
-	public array $types = [];
-
-	public function __construct() {
-		$this->added = time();
+	public function __construct(
+		public int $uid,
+		public string $name,
+		public bool $known=false,
+		public bool $online=false,
+		?int $added=null,
+		public array $worker=[],
+		public array $types=[],
+	) {
+		$this->added = $added ?? time();
 	}
 
 	/** Query if $type is in the reasons, why this person is on the buddy-list */

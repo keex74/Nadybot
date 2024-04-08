@@ -178,10 +178,11 @@ class BuddylistManager {
 		$name = $this->chatBot->getName(uid: $uid, cacheOnly: true) ?? (string)$uid;
 		if (!isset($this->buddyList[$uid])) {
 			// Initialize with an unconfirmed entry
-			$entry = new BuddylistEntry();
-			$entry->uid = $uid;
-			$entry->name = $name;
-			$entry->known = false;
+			$entry = new BuddylistEntry(
+				uid: $uid,
+				name: $name,
+				known: false,
+			);
 			$this->logger->info('{buddy} added', ['buddy' => $entry]);
 			if (!$this->config->proxy?->enabled && count($this->buddyList) > 999) {
 				$this->logger->error("Error adding '{name}' to buddy list: {error}", [
@@ -290,12 +291,12 @@ class BuddylistManager {
 		$sender = $this->chatBot->getName($userId);
 
 		// store buddy info
-		$this->buddyList[$userId] ??= new BuddylistEntry();
-		$this->buddyList[$userId]->uid = $userId;
-		$this->buddyList[$userId]->name = (string)$sender;
-		$this->buddyList[$userId]->online = $status;
-		$this->buddyList[$userId]->known = true;
-		$this->buddyList[$userId]->worker ??= [];
+		$this->buddyList[$userId] ??= new BuddylistEntry(
+			uid: $userId,
+			name: (string)$sender,
+			online: $status,
+			known: true,
+		);
 		$this->buddyList[$userId]->worker[$worker] = true;
 		$this->logger->info('{buddy} entry added', ['buddy' => $this->buddyList[$userId]]);
 	}

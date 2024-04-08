@@ -388,9 +388,10 @@ class SettingManager {
 		}
 		$settingName = strtolower($settingName);
 
-		$listener = new ChangeListener();
-		$listener->callback = $callback;
-		$listener->data = $data;
+		$listener = new ChangeListener(
+			callback: $callback,
+			data: $data,
+		);
 		if (!array_key_exists($settingName, $this->changeListeners)) {
 			$this->changeListeners[$settingName] = [];
 		}
