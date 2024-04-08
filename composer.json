@@ -35,7 +35,6 @@
 		"ext-reflection": "*",
 		"ext-dom": "*",
 		"revolt/event-loop": "^1.0.6",
-		"swaggest/json-schema": "^0.12.31",
 		"illuminate/database": "^8.64",
 		"doctrine/dbal": "^3.0",
 		"kelvinmo/fernet-php": "^1.0",

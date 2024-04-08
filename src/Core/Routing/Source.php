@@ -23,18 +23,17 @@ class Source {
 	public const SYSTEM = 'system';
 	public const CONSOLE = 'console';
 
-	public string $name = '';
-	public ?string $label = null;
-	public string $type = self::ORG;
-	public int $server = 5;
+	public int $server;
 
 	/** @var Collection<RouteHopFormat> */
 	public static Collection $format;
 
-	public function __construct(string $type, string $name, ?string $label=null, ?int $dimension=null) {
-		$this->type = $type;
-		$this->name = $name;
-		$this->label = $label;
+	public function __construct(
+		public string $type,
+		public string $name,
+		public ?string $label=null,
+		?int $dimension=null
+	) {
 		if (!isset($dimension)) {
 			$config = Registry::getInstance(BotConfig::class);
 			$this->server = $config->main->dimension;

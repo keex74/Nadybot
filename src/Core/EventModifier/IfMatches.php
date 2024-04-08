@@ -46,20 +46,15 @@ use Nadybot\Core\{
 	)
 ]
 class IfMatches implements EventModifier {
-	/** @var string[] */
-	protected array $text = [];
-	protected bool $caseSensitive = false;
-	protected bool $isRegexp = false;
-	protected bool $inverse = false;
-
 	/** @param string[] $text */
-	public function __construct(array $text, bool $caseSensitive=false, bool $isRegexp=false, bool $inverse=false) {
-		$this->text = $text;
-		$this->caseSensitive = $caseSensitive;
-		$this->inverse = $inverse;
-		$this->isRegexp = $isRegexp;
+	public function __construct(
+		protected array $text,
+		protected bool $caseSensitive=false,
+		protected bool $isRegexp=false,
+		protected bool $inverse=false
+	) {
 		foreach ($text as $match) {
-		// @phpstan-ignore-next-line
+			// @phpstan-ignore-next-line
 			if ($isRegexp && @\preg_match(chr(1) . $match . chr(1) . 'si', '') === false) {
 				$error = error_get_last()['message'] ?? 'Unknown error';
 				$error = Safe::pregReplace("/^preg_match\(\): (Compilation failed: )?/", '', $error);

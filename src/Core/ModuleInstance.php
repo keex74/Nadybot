@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-class ModuleInstance implements ModuleInstanceInterface {
+abstract class ModuleInstance implements ModuleInstanceInterface {
 	/** Set when registering the module */
 	public string $moduleName = '';
 

@@ -388,30 +388,23 @@ class Util {
 		$params = [];
 		$i = 1;
 		foreach ($reflection->getAttributes(NCA\Param::class) as $paramAttr) {
-			/** @var NCA\Param */
 			$paramObj = $paramAttr->newInstance();
-			$param = new FunctionParameter();
-			$param->name = $paramObj->name;
-			$param->description = $paramObj->description??null;
-			$param->required = $paramObj->required ?: false;
-			switch ($paramObj->type) {
-				case $param::TYPE_BOOL:
-				case $param::TYPE_SECRET:
-				case $param::TYPE_STRING:
-				case $param::TYPE_INT:
-				case $param::TYPE_STRING_ARRAY:
-					$param->type = $paramObj->type;
-					break;
-				case 'integer':
-					$param->type = $param::TYPE_INT;
-					break;
-				case 'boolean':
-					$param->type = $param::TYPE_BOOL;
-					break;
-				default:
-					throw new Exception("Unknown parameter type {$paramObj->type} in {$class}");
-			}
-			$params []= $param;
+			$paramType = match ($paramObj->type) {
+				FunctionParameter::TYPE_BOOL,
+				FunctionParameter::TYPE_SECRET,
+				FunctionParameter::TYPE_STRING,
+				FunctionParameter::TYPE_INT,
+				FunctionParameter::TYPE_STRING_ARRAY => $paramObj->type,
+				'integer' => FunctionParameter::TYPE_INT,
+				'boolean' => FunctionParameter::TYPE_BOOL,
+				default => throw new Exception("Unknown parameter type {$paramObj->type} in {$class}"),
+			};
+			$params []= new FunctionParameter(
+				name: $paramObj->name,
+				description: $paramObj->description??null,
+				required: $paramObj->required ?: false,
+				type: $paramType,
+			);
 			$i++;
 		}
 		return new ClassSpec(

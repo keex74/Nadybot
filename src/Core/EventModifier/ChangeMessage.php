@@ -45,21 +45,17 @@ use Nadybot\Core\{
 	)
 ]
 class ChangeMessage implements EventModifier {
-	protected ?string $addPrefix = null;
-	protected ?string $search = null;
-	protected ?string $replace = null;
-	protected bool $isRegExp = false;
-
-	public function __construct(?string $appPrefix=null, ?string $search=null, ?string $replace=null, bool $regexp=false) {
-		$this->addPrefix = $appPrefix;
-		$this->search = $search;
-		$this->replace = $replace;
-		$this->isRegExp = $regexp;
+	public function __construct(
+		protected ?string $addPrefix=null,
+		protected ?string $search=null,
+		protected ?string $replace=null,
+		protected bool $isRegExp=false,
+	) {
 		if (isset($search) && !isset($replace)) {
 			throw new Exception("Missing parameter 'replace'");
 		}
 		// @phpstan-ignore-next-line
-		if (isset($search) && $regexp && @\preg_match(chr(1) . $search . chr(1) . 'si', '') === false) {
+		if (isset($search) && $isRegExp && @\preg_match(chr(1) . $search . chr(1) . 'si', '') === false) {
 			$error = error_get_last()['message']??'Unknown error';
 			$error = Safe::pregReplace("/^preg_match\(\): (Compilation failed: )?/", '', $error);
 			throw new Exception("Invalid regular expression '{$search}': {$error}.");

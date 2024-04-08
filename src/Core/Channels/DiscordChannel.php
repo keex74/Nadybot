@@ -23,9 +23,6 @@ use Nadybot\Core\{
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordGatewayController;
 
 class DiscordChannel implements MessageReceiver {
-	protected string $channel;
-	protected string $id;
-
 	#[NCA\Inject]
 	private DiscordAPIClient $discordAPIClient;
 
@@ -44,9 +41,10 @@ class DiscordChannel implements MessageReceiver {
 	#[NCA\Inject]
 	private SettingManager $settingManager;
 
-	public function __construct(string $channel, string $id) {
-		$this->channel = $channel;
-		$this->id = $id;
+	public function __construct(
+		protected string $channel,
+		protected string $id
+	) {
 	}
 
 	public function getChannelID(): string {

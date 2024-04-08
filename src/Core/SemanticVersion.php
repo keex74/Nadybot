@@ -4,12 +4,13 @@ namespace Nadybot\Core;
 
 use function Safe\preg_match;
 
-class SemanticVersion {
-	protected string $origVersion;
+use Stringable;
+
+class SemanticVersion implements Stringable {
 	protected string $version;
 
-	public function __construct(string $version) {
-		$this->version = $this->normalizeVersion($this->origVersion = $version);
+	public function __construct(protected string $origVersion) {
+		$this->version = $this->normalizeVersion($origVersion);
 	}
 
 	public function __toString(): string {

@@ -55,18 +55,13 @@ use Nadybot\Core\{
 	)
 ]
 class IfHasPrefix implements EventModifier {
-	protected string $prefix = '-';
-	protected bool $trim = true;
-	protected bool $inverse = false;
-	protected bool $forEvents = true;
-	protected bool $forRelays = false;
-
-	public function __construct(string $prefix, bool $forRelays=false, bool $forEvents=true, bool $trim=true, bool $inverse=false) {
-		$this->prefix = $prefix;
-		$this->trim = $trim;
-		$this->forRelays = $forRelays;
-		$this->forEvents = $forEvents;
-		$this->inverse = $inverse;
+	public function __construct(
+		protected string $prefix,
+		protected bool $forRelays=false,
+		protected bool $forEvents=true,
+		protected bool $trim=true,
+		protected bool $inverse=false
+	) {
 	}
 
 	public function modify(?RoutableEvent $event=null): ?RoutableEvent {

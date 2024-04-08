@@ -11,12 +11,12 @@ use Nadybot\Core\{
 };
 
 class ConsoleChannel extends Base {
-	protected ConsoleCommandReply $sendto;
 	#[NCA\Inject]
 	private MessageHub $messageHub;
 
-	public function __construct(ConsoleCommandReply $sendto) {
-		$this->sendto = $sendto;
+	public function __construct(
+		protected ConsoleCommandReply $sendto
+	) {
 	}
 
 	public function getChannelName(): string {

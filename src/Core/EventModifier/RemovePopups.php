@@ -24,10 +24,9 @@ use Nadybot\Core\{
 	)
 ]
 class RemovePopups implements EventModifier {
-	protected bool $removeLinks = false;
-
-	public function __construct(bool $removeLinks=false) {
-		$this->removeLinks = $removeLinks;
+	public function __construct(
+		protected bool $removeLinks=false
+	) {
 	}
 
 	public function modify(?RoutableEvent $event=null): ?RoutableEvent {

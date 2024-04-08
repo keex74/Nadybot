@@ -6,10 +6,10 @@ class CommandHandler {
 	/** @var string[] */
 	public array $files;
 
-	public string $access_level;
-
-	public function __construct(string $admin, string ...$fileName) {
-		$this->access_level = $admin;
+	public function __construct(
+		public string $access_level,
+		string ...$fileName
+	) {
 		$this->files = $fileName;
 	}
 

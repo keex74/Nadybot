@@ -68,9 +68,7 @@ class EventManager {
 			'orgmsg', 'extjoinprivrequest', 'logon', 'logoff', 'towers',
 			'connect', 'setup', 'pong', 'otherleavepriv',
 		] as $event) {
-			$type = new EventType();
-			$type->name = $event;
-			$this->eventTypes[$event] = $type;
+			$this->eventTypes[$event] = new EventType(name: $event);
 		}
 	}
 
@@ -597,9 +595,10 @@ class EventManager {
 			]);
 			return false;
 		}
-		$this->eventTypes[$eventType] = new EventType();
-		$this->eventTypes[$eventType]->name = $eventType;
-		$this->eventTypes[$eventType]->description = $description;
+		$this->eventTypes[$eventType] = new EventType(
+			name: $eventType,
+			description: $description,
+		);
 		return true;
 	}
 

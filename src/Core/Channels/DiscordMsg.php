@@ -23,9 +23,6 @@ use Nadybot\Core\{
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordGatewayController;
 
 class DiscordMsg implements MessageReceiver {
-	protected string $channel;
-	protected string $id;
-
 	#[NCA\Inject]
 	private DiscordAPIClient $discordAPIClient;
 

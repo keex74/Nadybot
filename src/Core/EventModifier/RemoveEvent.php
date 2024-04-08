@@ -34,14 +34,11 @@ use Nadybot\Core\{
 	)
 ]
 class RemoveEvent implements EventModifier {
-	/** @var string[] */
-	protected array $filter = [];
-	protected ?string $from = null;
-
 	/** @param string[] $filter */
-	public function __construct(array $filter, ?string $from=null) {
-		$this->filter = $filter;
-		$this->from = $from;
+	public function __construct(
+		protected array $filter,
+		protected ?string $from=null
+	) {
 	}
 
 	public function modify(?RoutableEvent $event=null): ?RoutableEvent {

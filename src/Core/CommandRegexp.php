@@ -3,11 +3,9 @@
 namespace Nadybot\Core;
 
 class CommandRegexp {
-	public string $match;
-	public ?string $variadicMatch=null;
-
-	public function __construct(string $match, ?string $variadicMatch=null) {
-		$this->match = $match;
-		$this->variadicMatch = $variadicMatch;
+	public function __construct(
+		public string $match,
+		public ?string $variadicMatch=null
+	) {
 	}
 }

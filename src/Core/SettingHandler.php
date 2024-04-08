@@ -6,14 +6,13 @@ use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\DBSchema\Setting;
 
 abstract class SettingHandler {
-	protected Setting $row;
-
 	#[NCA\Inject]
 	protected Text $text;
 
 	/** Construct a new handler out of a given database row */
-	public function __construct(Setting $row) {
-		$this->row = $row;
+	public function __construct(
+		protected Setting $row
+	) {
 	}
 
 	public function isEditable(): bool {

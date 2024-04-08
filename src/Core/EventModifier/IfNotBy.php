@@ -31,12 +31,13 @@ use Nadybot\Core\{
 class IfNotBy implements EventModifier {
 	/** @var string[] */
 	protected array $senders = [];
-	protected bool $inverse;
 
 	/** @param string[] $senders */
-	public function __construct(array $senders, bool $inverse=false) {
+	public function __construct(
+		array $senders,
+		public bool $inverse=false
+	) {
 		$this->senders = array_map('strtolower', $senders);
-		$this->inverse = $inverse;
 	}
 
 	public function modify(?RoutableEvent $event=null): ?RoutableEvent {
