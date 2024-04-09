@@ -27,14 +27,11 @@ class Preferences extends ModuleInstance {
 	private DB $db;
 
 	public function save(string $sender, string $name, string $value): void {
-		$sender = ucfirst(strtolower($sender));
-		$name = strtolower($name);
-
-		$this->db->table(DBSchemaPreferences::getTable())
-			->updateOrInsert(
-				['sender' => $sender, 'name' => $name],
-				['sender' => $sender, 'name' => $name, 'value' => $value],
-			);
+		$this->db->upsert(new DBSchemaPreferences(
+			sender: ucfirst(strtolower($sender)),
+			name: strtolower($name),
+			value: $value
+		));
 	}
 
 	public function get(string $sender, string $name): ?string {

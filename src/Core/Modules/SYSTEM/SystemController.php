@@ -43,6 +43,8 @@ use Nadybot\Core\{
 };
 use Nadybot\Modules\WEBSERVER_MODULE\ApiResponse;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
+use ReflectionObject;
 use Revolt\EventLoop;
 
 /**
@@ -321,29 +323,27 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function getSystemInfo(): SystemInformation {
-		$info = new SystemInformation();
+		$fsObj = $this->fs->getFilesystem();
+		$fs = new ReflectionObject($fsObj);
+		try {
+			$driverProp = $fs->getProperty('driver');
+			$fsClass = $driverProp->getValue($fsObj);
+		} catch (ReflectionException) {
+			$fsClass = 'Unknown';
+		}
 
-		$info->basic = $basicInfo = new BasicSystemInformation();
-		$basicInfo->bot_name = $this->config->main->character;
-		$basicInfo->bot_version = $this->chatBot->runner::getVersion();
-		$basicInfo->db_type = $this->db->getType()->value;
-		$basicInfo->org = strlen($this->config->general->orgName)
-			? $this->config->general->orgName
-			: null;
-		$basicInfo->org_id = $this->config->orgId;
-		$basicInfo->php_version = \PHP_VERSION;
-		$basicInfo->os = php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m');
-		$basicInfo->event_loop = class_basename(EventLoop::getDriver());
-		$basicInfo->fs = class_basename($this->fs);
-
-		$basicInfo->superadmins = $this->config->general->superAdmins;
-
-		$info->memory = $memory = new MemoryInformation();
-		$memory->current_usage = memory_get_usage();
-		$memory->current_usage_real = memory_get_usage(true);
-		$memory->peak_usage = memory_get_peak_usage();
-		$memory->peak_usage_real = memory_get_peak_usage(true);
-
+		$basicInfo = new BasicSystemInformation(
+			bot_name: $this->config->main->character,
+			bot_version: $this->chatBot->runner::getVersion(),
+			db_type: $this->db->getType()->value,
+			org: strlen($this->config->general->orgName) ? $this->config->general->orgName : null,
+			org_id: $this->config->orgId,
+			php_version: \PHP_VERSION,
+			os: php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m'),
+			event_loop: class_basename(EventLoop::getDriver()),
+			fs: class_basename($fsClass),
+			superadmins: $this->config->general->superAdmins,
+		);
 		$memoryLimit = ini_get('memory_limit');
 		if (count($matches = Safe::pregMatch('/^(\d+)([kmg])$/i', $memoryLimit)) === 3) {
 			if (strtolower($matches[2]) === 'm') {
@@ -356,45 +356,60 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 				$memoryLimit = (int)$matches[1];
 			}
 		}
-		$memory->available = (int)$memoryLimit;
 
-		$info->misc = $misc = new MiscSystemInformation();
-		$misc->uptime = time() - $this->chatBot->startup;
-		$misc->using_chat_proxy = $this->config->proxy?->enabled === true;
+		$memoryInfo = new MemoryInformation(
+			current_usage: memory_get_usage(),
+			current_usage_real: memory_get_usage(true),
+			peak_usage: memory_get_peak_usage(),
+			peak_usage_real: memory_get_peak_usage(true),
+			available: (int)$memoryLimit,
+		);
 
-		$info->config = $config = new ConfigStatistics();
-		$config->active_aliases = $numAliases = count($this->commandAlias->getEnabledAliases());
+		$miscInfo = new MiscSystemInformation(
+			uptime: time() - $this->chatBot->startup,
+			using_chat_proxy: $this->config->proxy?->enabled === true,
+		);
+
+		$configStats = new ConfigStatistics();
+		$configStats->active_aliases = $numAliases = count($this->commandAlias->getEnabledAliases());
 		foreach ($this->eventManager->events as $type => $events) {
-			$config->active_events += count($events);
+			$configStats->active_events += count($events);
 		}
 		foreach ($this->commandManager->commands as $channel => $commands) {
-			$chanStat = new ChannelCommandStats();
-			$chanStat->name = $channel;
-			$chanStat->active_commands = count($commands) - $numAliases;
-			$config->active_commands []= $chanStat;
+			$configStats->active_commands []= new ChannelCommandStats(
+				name: $channel,
+				active_commands: count($commands) - $numAliases,
+			);
 		}
-		$config->active_subcommands = count($this->subcommandManager->subcommands);
-		$config->active_help_commands = count($this->helpManager->getAllHelpTopics(null));
+		$configStats->active_subcommands = count($this->subcommandManager->subcommands);
+		$configStats->active_help_commands = count($this->helpManager->getAllHelpTopics(null));
 
-		$info->stats = $stats = new SystemStats();
+		$systemStats = new SystemStats(
+			charinfo_cache_size: $this->db->table(Player::getTable())->count(),
+			buddy_list_size: $this->buddylistManager->countConfirmedBuddies(),
+			max_buddy_list_size: $this->chatBot->getBuddyListSize(),
+			priv_channel_size: count($this->chatBot->chatlist),
+			org_size: count($this->chatBot->guildmembers),
+			chatqueue_length: 0,
+		);
 
-		$stats->charinfo_cache_size = $this->db->table(Player::getTable())->count();
-
-		$stats->buddy_list_size = $this->buddylistManager->countConfirmedBuddies();
-		$stats->max_buddy_list_size = $this->chatBot->getBuddyListSize();
-		$stats->priv_channel_size = count($this->chatBot->chatlist);
-		$stats->org_size = count($this->chatBot->guildmembers);
-		$stats->chatqueue_length = 0;
-
+		$channels = [];
 		foreach ($this->chatBot->getGroups() as $name => $group) {
-			$channel = new ChannelInfo();
-			$channel->class = $group->id->type->value;
-			$channel->id = $group->id->number;
-			$channel->name = $group->name;
-			$info->channels []= $channel;
+			$channels []= new ChannelInfo(
+				class: $group->id->type->value,
+				id: $group->id->number,
+				name: $group->name,
+			);
 		}
 
-		return $info;
+		return new SystemInformation(
+			basic: $basicInfo,
+			memory: $memoryInfo,
+			misc: $miscInfo,
+			config: $configStats,
+			stats: $systemStats,
+			channels: $channels,
+		);
 	}
 
 	/** Get an overview of the bot system */

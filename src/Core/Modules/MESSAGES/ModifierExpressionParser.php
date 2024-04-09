@@ -9,7 +9,7 @@ use ParserGenerator\Parser;
 use ParserGenerator\SyntaxTreeNode\Branch;
 
 class ModifierExpressionParser {
-	protected Parser $parser;
+	private ?Parser $parser=null;
 
 	public function getParser(): Parser {
 		if (!isset($this->parser)) {
@@ -49,9 +49,9 @@ class ModifierExpressionParser {
 		$expr = $parser->parse($input);
 		if ($expr === false) {
 			$error = $parser->getError();
-			$posData = $this->parser::getLineAndCharacterFromOffset($input, $error['index']);
+			$posData = $parser::getLineAndCharacterFromOffset($input, $error['index']);
 
-			$expected = implode('<end> or <highlight>', $this->parser->generalizeErrors($error['expected']));
+			$expected = implode('<end> or <highlight>', $parser->generalizeErrors($error['expected']));
 			$foundLength = 20;
 			$found = substr($input, $error['index']);
 			if (strlen($found) > $foundLength) {

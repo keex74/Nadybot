@@ -3,9 +3,12 @@
 namespace Nadybot\Core\Modules\USAGE;
 
 class UsageStats {
-	public string $id;
-	public int $version = 2;
-	public bool $debug = false;
-	public object $commands;
-	public SettingsUsageStats $settings;
+	public function __construct(
+		public string $id,
+		public object $commands,
+		public SettingsUsageStats $settings,
+		public int $version=2,
+		public bool $debug=false,
+	) {
+	}
 }

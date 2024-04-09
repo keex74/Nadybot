@@ -4,11 +4,14 @@ namespace Nadybot\Core\Modules\CONFIG;
 
 class ModuleSubcommandChannel {
 	/**
-	 * The access level you need to have
-	 * in order to be allowed to use this command in this channel
+	 * @param string $access_level The access level you need to have
+	 *                             in order to be allowed to use this command
+	 *                             in this channel
+	 * @param bool   $enabled      Can this command be used in this channel?
 	 */
-	public string $access_level;
-
-	/** Can this command be used in this channel? */
-	public bool $enabled;
+	public function __construct(
+		public string $access_level,
+		public bool $enabled,
+	) {
+	}
 }

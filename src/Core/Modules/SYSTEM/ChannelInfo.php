@@ -8,12 +8,15 @@ class ChannelInfo {
 	public const NEWS = 12;
 	public const OOC = 135;
 
-	/** The name of the public channel */
-	public string $name;
-
-	/** The ID the game uses for this channel */
-	public int $id;
-
-	/** The class of the channel (OOC, towers, etc.) */
-	public int $class;
+	/**
+	 * @param string $name  The name of the public channel
+	 * @param int    $id    The ID the game uses for this channel
+	 * @param int    $class The class of the channel (OOC, towers, etc.)
+	 */
+	public function __construct(
+		public string $name,
+		public int $id,
+		public int $class,
+	) {
+	}
 }

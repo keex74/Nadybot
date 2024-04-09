@@ -290,40 +290,40 @@ class UsageController extends ModuleInstance {
 				return $carry;
 			}, new stdClass());
 
-		$settings = new SettingsUsageStats();
-		$settings->dimension               = $this->config->main->dimension;
-		$settings->is_guild_bot            = strlen($this->config->general->orgName) > 0;
-		$settings->guildsize               = $this->getGuildSizeClass(count($this->chatBot->guildmembers));
-		$settings->using_chat_proxy        = $this->config->proxy?->enabled === true;
-		$settings->db_type                 = $this->db->getType()->value;
-		$settings->bot_version             = BotRunner::getVersion();
-		$settings->using_git               = $this->fs->exists(BotRunner::getBasedir() . '/.git');
-		$settings->os                      = BotRunner::isWindows() ? 'Windows' : php_uname('s');
-		$settings->symbol                  = $this->settingManager->getString('symbol')??'!';
-		$settings->num_relays              = $this->db->table(RelayConfig::getTable())->count();
-		$settings->relay_protocols         = $this->db->table(RelayLayer::getTable())
-			->orderBy('relay_id')->orderByDesc('id')->asObj(RelayLayer::class)
-			->groupBy('relay_id')
-			->map(static function (Collection $group): string {
-				return $group->first()->layer;
-			})->flatten()->unique()->toArray();
-		$settings->first_and_last_alt_only = $this->settingManager->getBool('first_and_last_alt_only')??false;
-		$settings->aodb_db_version         = $this->settingManager->getString('aodb_db_version')??'unknown';
-		$settings->max_blob_size           = $this->settingManager->getInt('max_blob_size')??0;
-		$settings->online_show_org_guild   = $this->settingManager->getInt('online_show_org_guild')??-1;
-		$settings->online_show_org_priv    = $this->settingManager->getInt('online_show_org_priv')??-1;
-		$settings->online_admin            = $this->settingManager->getBool('online_admin')??false;
-		$settings->tower_attack_spam       = $this->settingManager->getInt('tower_attack_spam')??-1;
-		$settings->http_server_enable      = $this->eventManager->getKeyForCronEvent(60, 'httpservercontroller.startHTTPServer') !== null;
+		$settings = new SettingsUsageStats(
+			dimension              : $this->config->main->dimension,
+			is_guild_bot           : strlen($this->config->general->orgName) > 0,
+			guildsize              : $this->getGuildSizeClass(count($this->chatBot->guildmembers)),
+			using_chat_proxy       : $this->config->proxy?->enabled === true,
+			db_type                : $this->db->getType()->value,
+			bot_version            : BotRunner::getVersion(),
+			using_git              : $this->fs->exists(BotRunner::getBasedir() . '/.git'),
+			os                     : BotRunner::isWindows() ? 'Windows' : php_uname('s'),
+			symbol                 : $this->settingManager->getString('symbol')??'!',
+			num_relays             : $this->db->table(RelayConfig::getTable())->count(),
+			relay_protocols        : $this->db->table(RelayLayer::getTable())
+				->orderBy('relay_id')->orderByDesc('id')->asObj(RelayLayer::class)
+				->groupBy('relay_id')
+				->map(static function (Collection $group): string {
+					return $group->first()->layer;
+				})->flatten()->unique()->toArray(),
+			first_and_last_alt_only: $this->settingManager->getBool('first_and_last_alt_only')??false,
+			aodb_db_version        : $this->settingManager->getString('aodb_db_version')??'unknown',
+			max_blob_size          : $this->settingManager->getInt('max_blob_size')??0,
+			online_show_org_guild  : $this->settingManager->getInt('online_show_org_guild')??-1,
+			online_show_org_priv   : $this->settingManager->getInt('online_show_org_priv')??-1,
+			online_admin           : $this->settingManager->getBool('online_admin')??false,
+			tower_attack_spam      : $this->settingManager->getInt('tower_attack_spam')??-1,
+			http_server_enable     : $this->eventManager->getKeyForCronEvent(60, 'httpservercontroller.startHTTPServer') !== null,
+		);
 
-		$obj = new UsageStats();
-		$obj->id       = sha1($botid . $this->config->main->character . $this->config->main->dimension);
-		$obj->version  = 2;
-		$obj->debug    = $debug;
-		$obj->commands = $commands;
-		$obj->settings = $settings;
-
-		return $obj;
+		return new UsageStats(
+			id: sha1($botid . $this->config->main->character . $this->config->main->dimension),
+			version: 2,
+			debug: $debug,
+			commands: $commands,
+			settings: $settings,
+		);
 	}
 
 	public function getGuildSizeClass(int $size): string {

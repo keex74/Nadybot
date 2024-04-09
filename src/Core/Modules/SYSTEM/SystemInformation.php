@@ -3,25 +3,21 @@
 namespace Nadybot\Core\Modules\SYSTEM;
 
 class SystemInformation {
-	/** Basic information like OS */
-	public BasicSystemInformation $basic;
-
-	/** Memory statistics */
-	public MemoryInformation $memory;
-
-	/** Information not fitting any other category */
-	public MiscSystemInformation $misc;
-
-	/** Statistics about some configurations */
-	public ConfigStatistics $config;
-
-	/** General bot statistics */
-	public SystemStats $stats;
-
 	/**
-	 * Which channels is the bot listening to
-	 *
-	 * @var ChannelInfo[]
+	 * @param BasicSystemInformation $basic    Basic information like OS
+	 * @param MemoryInformation      $memory   Memory statistics
+	 * @param MiscSystemInformation  $misc     Information not fitting any other category
+	 * @param ConfigStatistics       $config   Statistics about some configurations
+	 * @param SystemStats            $stats    General bot statistics
+	 * @param ChannelInfo[]          $channels Which channels is the bot listening to
 	 */
-	public array $channels = [];
+	public function __construct(
+		public BasicSystemInformation $basic,
+		public MemoryInformation $memory,
+		public MiscSystemInformation $misc,
+		public ConfigStatistics $config,
+		public SystemStats $stats,
+		public array $channels=[],
+	) {
+	}
 }

@@ -101,11 +101,11 @@ class ProfileApiController extends ModuleInstance {
 	public function loadProfileEndpoint(Request $request, string $profile): Response {
 		$user = $request->getAttribute(WebserverController::USER) ?? '_';
 		$body = $request->getAttribute(WebserverController::BODY);
-		if (!is_object($body) || !isset($body->op)) {
+		if (!is_array($body) || !isset($body['op'])) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 
-		$op = $body->op;
+		$op = $body['op'];
 		if ($op !== 'load') {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}

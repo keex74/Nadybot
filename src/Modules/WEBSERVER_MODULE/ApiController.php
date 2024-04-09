@@ -406,9 +406,6 @@ class ApiController extends ModuleInstance {
 		if ($this->checkBodyFormat($request, $handler) === false) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		if ($this->checkBodyIsComplete($request, $handler) === false) {
-			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
-		}
 		try {
 			$response = $handler->exec($request);
 		} catch (Throwable $e) {
@@ -511,17 +508,6 @@ class ApiController extends ModuleInstance {
 			return false;
 		}
 		return $this->accessManager->checkAccess($user, $cmdHandler->access_level);
-	}
-
-	protected function checkBodyIsComplete(Request $request, ApiHandler $apiHandler): bool {
-		if (!in_array($request->getMethod(), ['PUT', 'POST'])) {
-			return true;
-		}
-		$body = $request->getAttribute(WebserverController::BODY);
-		if ($body === null || !is_object($body)) {
-			return true;
-		}
-		return true;
 	}
 
 	protected function checkBodyFormat(Request $request, ApiHandler $apiHandler): bool {

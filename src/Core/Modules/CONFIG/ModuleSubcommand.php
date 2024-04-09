@@ -8,13 +8,15 @@ class ModuleSubcommand extends CmdCfg {
 	public const TYPE_COMMAND = 'cmd';
 	public const TYPE_SUBCOMMAND = 'subcmd';
 
-	public function __construct(CmdCfg $src) {
-		$this->module = $src->module;
-		$this->cmdevent = $src->cmdevent;
-		$this->file = $src->file;
-		$this->cmd = $src->cmd;
-		$this->description = $src->description;
-		$this->verify = $src->verify;
-		$this->dependson = $src->dependson;
+	public static function fromCmdCfg(CmdCfg $src): static {
+		return new static(
+			module: $src->module,
+			cmdevent: $src->cmdevent,
+			file: $src->file,
+			cmd: $src->cmd,
+			description: $src->description,
+			verify: $src->verify,
+			dependson: $src->dependson,
+		);
 	}
 }

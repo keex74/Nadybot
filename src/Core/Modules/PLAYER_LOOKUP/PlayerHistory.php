@@ -2,11 +2,13 @@
 
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
+
 class PlayerHistory {
-	/** @param \Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerHistoryData[] $data */
+	/** @param PlayerHistoryData[] $data */
 	public function __construct(
 		public string $name,
-		public array $data=[],
+		#[CastListToType(PlayerHistoryData::class)] public array $data=[],
 	) {
 	}
 }

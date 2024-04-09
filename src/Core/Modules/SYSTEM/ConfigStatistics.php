@@ -4,21 +4,18 @@ namespace Nadybot\Core\Modules\SYSTEM;
 
 class ConfigStatistics {
 	/**
-	 * Number of commands activated for each channel
-	 *
-	 * @var ChannelCommandStats[]
+	 * @param ChannelCommandStats[] $active_commands      Number of commands activated for each channel
+	 * @param int                   $active_subcommands   Number of subcommands activated
+	 * @param int                   $active_aliases       Number of aliases
+	 * @param int                   $active_events        Number of currently active events
+	 * @param int                   $active_help_commands Number of active help texts for commands
 	 */
-	public array $active_commands = [];
-
-	/** Number of subcommands activated */
-	public int $active_subcommands = 0;
-
-	/** Number of aliases */
-	public int $active_aliases = 0;
-
-	/** Number of currently active events */
-	public int $active_events = 0;
-
-	/** Number of active help texts for commands */
-	public int $active_help_commands = 0;
+	public function __construct(
+		public array $active_commands=[],
+		public int $active_subcommands=0,
+		public int $active_aliases=0,
+		public int $active_events=0,
+		public int $active_help_commands=0,
+	) {
+	}
 }

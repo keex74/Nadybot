@@ -91,10 +91,10 @@ class ConfigApiController extends ModuleInstance {
 	]
 	public function toggleEventStatusEndpoint(Request $request, string $module, string $event, string $handler): Response {
 		$body = $request->getAttribute(WebserverController::BODY);
-		if (!is_object($body) || !isset($body->op)) {
+		if (!is_array($body) || !isset($body['op'])) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		$op = $body->op;
+		$op = $body['op'];
 		if (!in_array($op, ['enable', 'disable'], true)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -140,7 +140,7 @@ class ConfigApiController extends ModuleInstance {
 		if (!isset($settingHandler)) {
 			return new Response(status: HttpStatus::INTERNAL_SERVER_ERROR);
 		}
-		$modSet = new ModuleSetting($oldSetting);
+		$modSet = ModuleSetting::fromSetting($oldSetting);
 		$value = $request->getAttribute(WebserverController::BODY);
 		if (!is_string($value) && !is_int($value) && !is_bool($value)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
@@ -249,7 +249,7 @@ class ConfigApiController extends ModuleInstance {
 		if (!isset($cmd) || $cmd->module !== $module) {
 			return new Response(status: HttpStatus::NOT_FOUND);
 		}
-		$moduleCommand = new ModuleCommand($cmd);
+		$moduleCommand = ModuleCommand::fromCmdCfg($cmd);
 		return ApiResponse::create($moduleCommand);
 	}
 
@@ -266,11 +266,11 @@ class ConfigApiController extends ModuleInstance {
 	public function toggleCommandStatusEndpoint(Request $request, string $module, string $command): Response {
 		$user = $request->getAttribute(WebserverController::USER) ?? '_';
 		$body = $request->getAttribute(WebserverController::BODY);
-		if (!is_object($body) || !isset($body->op)) {
+		if (!is_array($body) || !isset($body['op'])) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 
-		$op = $body->op;
+		$op = $body['op'];
 		if (!in_array($op, ['enable', 'disable'], true)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -281,7 +281,7 @@ class ConfigApiController extends ModuleInstance {
 				if (!isset($cmd) || $cmd->module !== $module) {
 					return new Response(status: HttpStatus::NOT_FOUND);
 				}
-				return ApiResponse::create(new ModuleSubcommand($cmd));
+				return ApiResponse::create(ModuleSubcommand::fromCmdCfg($cmd));
 			}
 		} catch (InsufficientAccessException) {
 			return new Response(status: HttpStatus::FORBIDDEN);
@@ -304,11 +304,11 @@ class ConfigApiController extends ModuleInstance {
 	]
 	public function toggleModuleStatusEndpoint(Request $request, string $module): Response {
 		$body = $request->getAttribute(WebserverController::BODY);
-		if (!is_object($body) || !isset($body->op)) {
+		if (!is_array($body) || !isset($body['op'])) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 
-		$op = $body->op;
+		$op = $body['op'];
 		if (!in_array($op, ['enable', 'disable'], true)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
@@ -351,7 +351,7 @@ class ConfigApiController extends ModuleInstance {
 		$settings = $this->configController->getModuleSettings($module);
 		$result = [];
 		foreach ($settings as $setting) {
-			$modSet = new ModuleSetting($setting->getData());
+			$modSet = ModuleSetting::fromSetting($setting->getData());
 			if (strlen($modSet->description??'') > 0) {
 				$modSet->description = $this->webChatConverter->parseAOFormat(trim($modSet->description))->message;
 				$modSet->description = str_replace('<br />', ' ', $modSet->description);
@@ -388,7 +388,7 @@ class ConfigApiController extends ModuleInstance {
 			->where('module', $module)
 			->asObj(EventCfg::class)
 			->map(static function (EventCfg $event): ModuleEventConfig {
-				return new ModuleEventConfig($event);
+				return ModuleEventConfig::fromEventCfg($event);
 			});
 		return ApiResponse::create($events->toArray());
 	}
@@ -407,9 +407,9 @@ class ConfigApiController extends ModuleInstance {
 		$result = [];
 		foreach ($cmds as $cmd) {
 			if ($cmd->cmdevent === 'cmd') {
-				$result[$cmd->cmd] = new ModuleCommand($cmd);
+				$result[$cmd->cmd] = ModuleCommand::fromCmdCfg($cmd);
 			} else {
-				$result[$cmd->dependson]->subcommands []= new ModuleSubcommand($cmd);
+				$result[$cmd->dependson]->subcommands []= ModuleSubcommand::fromCmdCfg($cmd);
 			}
 		}
 		return ApiResponse::create(array_values($result));

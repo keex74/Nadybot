@@ -32,7 +32,6 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 	public function __construct(
 		private Nadybot $chatBot
 	) {
-		$this->chatBot = $chatBot;
 	}
 
 	public function getChannelName(): string {

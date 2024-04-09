@@ -16,38 +16,30 @@ class ModuleSetting {
 	public const TYPE_INT_OPTIONS = 'int_options';
 	public const TYPE_RANK = 'rank';
 
-	/** The type of this setting (bool, number, options, etc) */
-	public string $type = self::TYPE_TEXT;
-
-	/** The name of the setting */
-	public string $name;
-
 	/**
-	 * The current value
-	 *
-	 * @var null|int|string|bool|int[]|string[]
+	 * @param string                              $name        The name of the setting
+	 * @param null|int|string|bool|int[]|string[] $value       The current value
+	 * @param SettingOption[]                     $options     A list of predefined options to pick from
+	 * @param bool                                $editable    Is this a fixed setting (like database version) or can it be changed?
+	 * @param string                              $description A description of what this setting is for
 	 */
-	public null|int|string|bool|array $value = null;
+	public function __construct(
+		public string $name,
+		public string $type=self::TYPE_TEXT,
+		public null|int|string|bool|array $value=null,
+		public array $options=[],
+		public bool $editable=true,
+		public string $description='Description missing',
+		public ?string $help=null,
+	) {
+	}
 
-	/**
-	 * A list of predefined options to pick from
-	 *
-	 * @var SettingOption[]
-	 */
-	public array $options = [];
-
-	/** Is this a fixed setting (like database version) or can it be changed? */
-	public bool $editable = true;
-
-	/** A description of what this setting is for */
-	public string $description = 'Description missing';
-
-	public ?string $help = null;
-
-	public function __construct(Setting $setting) {
-		$this->editable = $setting->mode === SettingMode::Edit;
-		$this->description = $setting->description??'No description given';
-		$this->name = $setting->name;
+	public static function fromSetting(Setting $setting): self {
+		$result = new self(
+			editable: $setting->mode === SettingMode::Edit,
+			description: $setting->description??'No description given',
+			name: $setting->name
+		);
 		if (strlen($setting->options??'')) {
 			$options = explode(';', $setting->options??'');
 			$values = $options;
@@ -59,62 +51,63 @@ class ModuleSetting {
 				}
 			}
 			if ($options === ['true', 'false'] && $values === [1, 0]) {
-				$this->type = static::TYPE_BOOL;
+				$result->type = static::TYPE_BOOL;
 			} else {
 				for ($i = 0; $i < count($options); $i++) {
-					$this->options []= new SettingOption(
+					$result->options []= new SettingOption(
 						name: $options[$i],
 						value: $values[$i],
 					);
 				}
 			}
 		}
-		$this->description = $setting->description??'No description given';
+		$result->description = $setting->description??'No description given';
 		switch ($setting->type) {
 			case 'number':
-				$this->type = static::TYPE_NUMBER;
-				$this->value = (int)$setting->value;
+				$result->type = static::TYPE_NUMBER;
+				$result->value = (int)$setting->value;
 				break;
 			case 'color':
-				$this->type = static::TYPE_COLOR;
-				$this->value = (string)$setting->value;
+				$result->type = static::TYPE_COLOR;
+				$result->value = (string)$setting->value;
 				break;
 			case 'text':
-				$this->type = static::TYPE_TEXT;
-				$this->value = (string)$setting->value;
+				$result->type = static::TYPE_TEXT;
+				$result->value = (string)$setting->value;
 				break;
 			case 'time':
-				$this->type = static::TYPE_TIME;
-				$this->value = (int)$setting->value;
+				$result->type = static::TYPE_TIME;
+				$result->value = (int)$setting->value;
 				break;
 			case 'discord_channel':
-				$this->type = static::TYPE_DISCORD_CHANNEL;
-				$this->value = (string)$setting->value;
+				$result->type = static::TYPE_DISCORD_CHANNEL;
+				$result->value = (string)$setting->value;
 				break;
 			case 'bool':
-				$this->type = static::TYPE_BOOL;
-				$this->value = (bool)$setting->value;
+				$result->type = static::TYPE_BOOL;
+				$result->value = (bool)$setting->value;
 				break;
 			case 'options':
-				if ($this->type === static::TYPE_BOOL) {
-					$this->value = (bool)$setting->value;
+				if ($result->type === static::TYPE_BOOL) {
+					$result->value = (bool)$setting->value;
 				} else {
-					$this->type = static::TYPE_OPTIONS;
-					$this->value = (string)$setting->value;
+					$result->type = static::TYPE_OPTIONS;
+					$result->value = (string)$setting->value;
 					if (strlen($setting->intoptions??'')) {
-						$this->type = static::TYPE_INT_OPTIONS;
-						$this->value = (int)$setting->value;
+						$result->type = static::TYPE_INT_OPTIONS;
+						$result->value = (int)$setting->value;
 					}
 				}
 				break;
 			case 'rank':
-				$this->type = static::TYPE_RANK;
-				$this->value = (string)$setting->value;
+				$result->type = static::TYPE_RANK;
+				$result->value = (string)$setting->value;
 				break;
 			default:
-				$this->type = static::TYPE_TEXT;
-				$this->value = (string)$setting->value;
+				$result->type = static::TYPE_TEXT;
+				$result->value = (string)$setting->value;
 				break;
 		}
+		return $result;
 	}
 }

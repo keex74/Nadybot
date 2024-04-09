@@ -3,9 +3,13 @@
 namespace Nadybot\Core\Modules\SYSTEM;
 
 class ChannelCommandStats {
-	/** Name of the channel */
-	public string $name;
-
-	/** Number of active commands in this channel */
-	public int $active_commands;
+	/**
+	 * @param string $name            Name of the channel
+	 * @param int    $active_commands Number of active commands in this channel
+	 */
+	public function __construct(
+		public string $name,
+		public int $active_commands,
+	) {
+	}
 }

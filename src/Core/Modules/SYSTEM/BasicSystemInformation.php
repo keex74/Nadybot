@@ -3,37 +3,29 @@
 namespace Nadybot\Core\Modules\SYSTEM;
 
 class BasicSystemInformation {
-	/** Name of the bot character in AO */
-	public string $bot_name;
-
 	/**
-	 * Name(s) of the character(s) running the bot, empty if not set
-	 *
-	 * @var string[]
+	 * @param string   $bot_name    Name of the bot character in AO
+	 * @param string[] $superadmins Name(s) of the character(s) running the bot, empty if not set
+	 * @param ?string  $org         Name of the org this bot is in or null if not in an org
+	 * @param ?int     $org_id      ID of the org this bot is in or null if not in an org
+	 * @param string   $bot_version Which Nadybot version are we running?
+	 * @param string   $php_version Which PHP version are we running?
+	 * @param string   $event_loop  Which event loop driver are we running?
+	 * @param string   $fs          Which file system driver are we running?
+	 * @param string   $os          Which operating system/kernel are we running?
+	 * @param string   $db_type     Which database type (mysql/sqlite) are we using?
 	 */
-	public array $superadmins;
-
-	/** Name of the org this bot is in or null if not in an org */
-	public ?string $org;
-
-	/** ID of the org this bot is in or null if not in an org */
-	public ?int $org_id;
-
-	/** Which Nadybot version are we running? */
-	public string $bot_version;
-
-	/** Which PHP version are we running? */
-	public string $php_version;
-
-	/** Which event loop driver are we running? */
-	public string $event_loop;
-
-	/** Which file system driver are we running? */
-	public string $fs;
-
-	/** Which operating system/kernel are we running? */
-	public string $os;
-
-	/** Which database type (mysql/sqlite) are we using? */
-	public string $db_type;
+	public function __construct(
+		public string $bot_name,
+		public array $superadmins,
+		public ?string $org,
+		public ?int $org_id,
+		public string $bot_version,
+		public string $php_version,
+		public string $event_loop,
+		public string $fs,
+		public string $os,
+		public string $db_type,
+	) {
+	}
 }

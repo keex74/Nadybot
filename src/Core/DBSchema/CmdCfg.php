@@ -15,7 +15,7 @@ class CmdCfg extends DBRow {
 	#[NCA\JSON\Map('array_values')]
 	public array $permissions = [];
 
-	public function __construct(
+	final public function __construct(
 		#[NCA\JSON\Ignore] public string $module,
 		#[NCA\JSON\Ignore] public string $cmdevent,
 		#[NCA\JSON\Ignore] public string $file,
