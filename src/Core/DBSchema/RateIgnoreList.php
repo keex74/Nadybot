@@ -3,10 +3,10 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'rateignorelist', shared: Shared::Yes)]
-class RateIgnoreList extends DBRow {
+class RateIgnoreList extends DBTable {
 	public function __construct(
 		#[PK] public string $name,
 		public string $added_by,

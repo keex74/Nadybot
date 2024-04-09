@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\GUILD_MODULE;
 
 use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'org_members')]
-class OrgMember extends DBRow {
+class OrgMember extends DBTable {
 	public function __construct(
 		public string $name,
 		public ?string $mode=null,

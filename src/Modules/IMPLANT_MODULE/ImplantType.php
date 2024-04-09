@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'ImplantType', shared: Shared::Yes)]
-class ImplantType extends DBRow {
+class ImplantType extends DBTable {
 	public function __construct(
 		#[PK] public int $ImplantTypeID,
 		public string $Name,

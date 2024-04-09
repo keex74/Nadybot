@@ -3,10 +3,10 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\Shared;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'last_online', shared: Shared::Yes)]
-class LastOnline extends DBRow {
+class LastOnline extends DBTable {
 	/**
 	 * @param int    $uid  uid of the character
 	 * @param string $name name of the character

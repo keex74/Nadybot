@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RELAY_MODULE;
 
 use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'relay_layer')]
-class RelayLayer extends DBRow {
+class RelayLayer extends DBTable {
 	/**
 	 * @param string               $layer     Which relay stack layer does this represent?
 	 * @param ?int                 $id        The id of the relay layer. Lower id means higher priority

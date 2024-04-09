@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\ORGLIST_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{DBRow, Faction, Government};
+use Nadybot\Core\{DBTable, Faction, Government};
 
 #[Table(name: 'organizations', shared: Shared::Yes)]
-class Organization extends DBRow {
+class Organization extends DBTable {
 	public function __construct(
 		#[PK] public int $id,
 		public string $name='Illegal Org',

@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'eventcfg')]
-class EventCfg extends DBRow {
+class EventCfg extends DBTable {
 	public function __construct(
 		#[NCA\DB\PK] public string $module,
 		#[NCA\DB\PK] public string $type,

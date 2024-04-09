@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'route')]
-class Route extends DBRow {
+class Route extends DBTable {
 	/**
 	 * @param string          $source         The source channel for this route
 	 * @param string          $destination    The destination channel for this route

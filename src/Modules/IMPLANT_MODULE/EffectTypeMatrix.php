@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'EffectTypeMatrix', shared: Shared::Yes)]
-class EffectTypeMatrix extends DBRow {
+class EffectTypeMatrix extends DBTable {
 	public function __construct(
 		#[PK] public int $ID,
 		public string $Name,

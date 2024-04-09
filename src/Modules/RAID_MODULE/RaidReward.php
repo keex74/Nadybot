@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'raid_reward')]
-class RaidReward extends DBRow {
+class RaidReward extends DBTable {
 	/**
 	 * @param string $name   The primary name how to address this reward
 	 * @param int    $points How many points does this reward give

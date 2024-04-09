@@ -3,10 +3,10 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\{PK, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'admin')]
-class Admin extends DBRow {
+class Admin extends DBTable {
 	public function __construct(
 		#[PK] public string $name,
 		public ?int $adminlevel=0,

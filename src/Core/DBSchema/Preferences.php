@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'preferences')]
-class Preferences extends DBRow {
+class Preferences extends DBTable {
 	public function __construct(
 		#[DB\PK] public string $sender,
 		#[DB\PK] public string $name,

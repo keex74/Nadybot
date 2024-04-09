@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\DISC_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{AOItem, DBRow};
+use Nadybot\Core\{AOItem, DBTable};
 
 #[Table(name: 'discs', shared: Shared::Yes)]
-class Disc extends DBRow implements AOItem {
+class Disc extends DBTable implements AOItem {
 	public function __construct(
 		#[PK] public int $disc_id,
 		public int $crystal_id,

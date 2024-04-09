@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\ITEMS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'boss_lootdb', shared: NCA\DB\Shared::Yes)]
-class BossLootdb extends DBRow {
+class BossLootdb extends DBTable {
 	/**
 	 * @param int    $bossid   The internal ID of the boss for this loot
 	 * @param string $itemname Full name of this item

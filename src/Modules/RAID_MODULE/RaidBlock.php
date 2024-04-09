@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RAID_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'raid_block')]
-class RaidBlock extends DBRow {
+class RaidBlock extends DBTable {
 	public int $time;
 
 	public function __construct(

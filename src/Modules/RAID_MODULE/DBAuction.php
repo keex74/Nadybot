@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'auction')]
-class DBAuction extends DBRow {
+class DBAuction extends DBTable {
 	/**
 	 * @param string  $item       Item that was auctioned
 	 * @param string  $auctioneer Person auctioning the item

@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'notes', shared: NCA\DB\Shared::Yes)]
-class Note extends DBRow {
+class Note extends DBTable {
 	public const REMIND_NONE = 0;
 	public const REMIND_SELF = 1;
 	public const REMIND_ALL = 2;

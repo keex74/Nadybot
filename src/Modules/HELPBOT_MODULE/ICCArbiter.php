@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
 use DateTimeInterface;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'icc_arbiter', shared: NCA\DB\Shared::Yes)]
-class ICCArbiter extends DBRow {
+class ICCArbiter extends DBTable {
 	public function __construct(
 		public string $type,
 		public DateTimeInterface $start,

@@ -3,11 +3,11 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use Nadybot\Core\Attributes\DB\{ColName, Table};
-use Nadybot\Core\{DBRow, Faction, Playfield, Profession};
+use Nadybot\Core\{DBTable, Faction, Playfield, Profession};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\{Attacker, AttackerOrg, Coordinates, DefenderOrg, TowerAttack};
 
 #[Table(name: 'nw_attacks')]
-class DBTowerAttack extends DBRow {
+class DBTowerAttack extends DBTable {
 	public function __construct(
 		public int $timestamp,
 		#[ColName('playfield_id')] public Playfield $playfield,

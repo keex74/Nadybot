@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow, SettingMode};
+use Nadybot\Core\{Attributes as NCA, DBTable, SettingMode};
 
 #[NCA\DB\Table(name: 'settings')]
-class Setting extends DBRow {
+class Setting extends DBTable {
 	public function __construct(
 		#[NCA\DB\PK] public string $name,
 		public SettingMode $mode,

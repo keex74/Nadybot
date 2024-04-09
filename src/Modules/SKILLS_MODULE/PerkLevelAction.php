@@ -2,11 +2,11 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
 #[DB\Table(name: 'perk_level_actions', shared: DB\Shared::Yes)]
-class PerkLevelAction extends DBRow {
+class PerkLevelAction extends DBTable {
 	public function __construct(
 		#[DB\Ignore] public ?int $perk_level,
 		public int $action_id,

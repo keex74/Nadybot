@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'pocketboss', shared: Shared::Yes)]
-class Pocketboss extends DBRow {
+class Pocketboss extends DBTable {
 	public function __construct(
 		#[PK] public int $id,
 		public string $pb,

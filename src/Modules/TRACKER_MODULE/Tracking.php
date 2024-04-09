@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\TRACKER_MODULE;
 
 use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'tracking')]
-class Tracking extends DBRow {
+class Tracking extends DBTable {
 	public function __construct(
 		public int $uid,
 		public int $dt,

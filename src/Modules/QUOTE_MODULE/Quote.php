@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\QUOTE_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'quote', shared: NCA\DB\Shared::Yes)]
-class Quote extends DBRow {
+class Quote extends DBTable {
 	public function __construct(
 		public string $poster,
 		public int $dt,

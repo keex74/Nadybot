@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\TRICKLE_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Ignore, PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'trickle', shared: Shared::Yes)]
-class Trickle extends DBRow {
+class Trickle extends DBTable {
 	public function __construct(
 		#[PK] public readonly int $id,
 		public readonly int $skill_id,

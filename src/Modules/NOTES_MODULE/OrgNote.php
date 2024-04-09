@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'org_notes', shared: NCA\DB\Shared::Yes)]
-class OrgNote extends DBRow {
+class OrgNote extends DBTable {
 	public int $added_on;
 
 	public function __construct(

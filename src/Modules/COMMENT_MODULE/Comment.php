@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\COMMENT_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: '<table:comments>')]
-class Comment extends DBRow {
+class Comment extends DBTable {
 	/** Unix timestamp when the comment was created */
 	public int $created_at;
 

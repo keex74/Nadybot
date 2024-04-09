@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\EVENTS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[Table(name: 'events', shared: Shared::Yes)]
-class EventModel extends DBRow {
+class EventModel extends DBTable {
 	public function __construct(
 		public int $time_submitted,
 		public string $submitter_name,

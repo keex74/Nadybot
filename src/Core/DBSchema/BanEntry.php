@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'banlist')]
-class BanEntry extends DBRow {
+class BanEntry extends DBTable {
 	#[NCA\DB\Ignore] public ?string $name=null;
 
 	/**

@@ -3,11 +3,11 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use Nadybot\Core\Attributes\DB\{ColName, PK, Table};
-use Nadybot\Core\{DBRow, Faction, Playfield};
+use Nadybot\Core\{DBTable, Faction, Playfield};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\TowerOutcome;
 
 #[Table(name: 'nw_outcomes')]
-class DBOutcome extends DBRow {
+class DBOutcome extends DBTable {
 	public function __construct(
 		#[PK] #[ColName('playfield_id')] public Playfield $playfield,
 		#[PK] public int $site_id,

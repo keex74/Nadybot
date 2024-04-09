@@ -3,10 +3,10 @@
 namespace Nadybot\Core\DBSchema;
 
 use function Safe\{json_encode, preg_match};
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'route_modifier_argument')]
-class RouteModifierArgument extends DBRow {
+class RouteModifierArgument extends DBTable {
 	/**
 	 * @param string $name              The name of the argument
 	 * @param string $value             The value of the argument

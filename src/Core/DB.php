@@ -421,13 +421,13 @@ class DB {
 	/**
 	 * Insert a DBRow $row into the database
 	 *
-	 * @param DBRow|DBRow[] $row
+	 * @param DBTable|DBTable[] $row
 	 */
-	public function insert(array|DBRow $row, ?string $table=null): int {
+	public function insert(array|DBTable $row, ?string $table=null): int {
 		if (is_array($row)) {
 			return array_reduce(
 				$row,
-				function (int $carry, DBRow $row) use ($table): int {
+				function (int $carry, DBTable $row) use ($table): int {
 					return $this->insert($row, $table) * $carry;
 				},
 				0
@@ -478,7 +478,7 @@ class DB {
 		return $this->table($table)->insertGetId($data, $sequence);
 	}
 
-	public function upsert(DBRow $row, ?string $table=null): int {
+	public function upsert(DBTable $row, ?string $table=null): int {
 		$table ??= $row::tryGetTable();
 		if (!isset($table)) {
 			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): $table missing');
@@ -527,12 +527,12 @@ class DB {
 	/**
 	 * Update a DBRow $row in the database table $table, using property $key in the where
 	 *
-	 * @param DBRow                $row The data to update
+	 * @param DBTable              $row The data to update
 	 * @param null|string|string[] $key Name of the primary key or array of the primary keys
 	 *
 	 * @return int Number of updates records
 	 */
-	public function update(DBRow $row, null|string|array $key=null): int {
+	public function update(DBTable $row, null|string|array $key=null): int {
 		$table = $row->tryGetTable();
 		if ($table === null) {
 			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): unable to derive a table to update');

@@ -4,10 +4,10 @@ namespace Nadybot\Modules\TIMERS_MODULE;
 
 use function Safe\json_decode;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'timers')]
-class Timer extends DBRow {
+class Timer extends DBTable {
 	public int $settime;
 
 	/**

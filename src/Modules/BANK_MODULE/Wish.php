@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\BANK_MODULE;
 
 use Illuminate\Support\Collection;
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'wishlist', shared: DB\Shared::Yes)]
-class Wish extends DBRow {
+class Wish extends DBTable {
 	public int $created_on;
 
 	/** @var Collection<WishFulfilment> */

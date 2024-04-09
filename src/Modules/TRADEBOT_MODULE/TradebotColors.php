@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\TRADEBOT_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'tradebot_colors')]
-class TradebotColors extends DBRow {
+class TradebotColors extends DBTable {
 	/**
 	 * @param string $tradebot Name of the tradebnot (Darknet/Lightnet)
 	 * @param string $channel  The channel mask (wtb, *, wt?, ...)

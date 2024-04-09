@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\BANK_MODULE;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'wishlist_fulfilment', shared: DB\Shared::Yes)]
-class WishFulfilment extends DBRow {
+class WishFulfilment extends DBTable {
 	public int $fulfilled_on;
 
 	public function __construct(

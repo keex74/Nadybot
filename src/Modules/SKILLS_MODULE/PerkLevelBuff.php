@@ -2,11 +2,11 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 use Nadybot\Modules\ITEMS_MODULE\Skill;
 
 #[DB\Table(name: 'perk_level_buffs', shared: DB\Shared::Yes)]
-class PerkLevelBuff extends DBRow {
+class PerkLevelBuff extends DBTable {
 	#[DB\Ignore]
 	public ?Skill $skill=null;
 

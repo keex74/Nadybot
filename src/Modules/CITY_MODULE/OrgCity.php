@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\CITY_MODULE;
 
 use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'org_city')]
-class OrgCity extends DBRow {
+class OrgCity extends DBTable {
 	public function __construct(
 		public int $time,
 		public string $action,

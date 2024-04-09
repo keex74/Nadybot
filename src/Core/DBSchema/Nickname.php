@@ -3,10 +3,10 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'nickname', shared: Shared::Yes)]
-class Nickname extends DBRow {
+class Nickname extends DBTable {
 	public function __construct(
 		#[PK] public string $main,
 		public string $nick,

@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RELAY_MODULE;
 
 use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'relay')]
-class RelayConfig extends DBRow {
+class RelayConfig extends DBTable {
 	/**
 	 * @param string       $name   The name of this relay
 	 * @param ?int         $id     The unique ID of this relay config

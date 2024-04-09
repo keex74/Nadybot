@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\LEVEL_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'levels', shared: Shared::Yes)]
-class Level extends DBRow {
+class Level extends DBTable {
 	public function __construct(
 		#[PK] public int $level,
 		public int $mob_min,

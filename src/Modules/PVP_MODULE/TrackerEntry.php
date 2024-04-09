@@ -2,12 +2,12 @@
 
 namespace Nadybot\Modules\PVP_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow, MessageEmitter};
+use Nadybot\Core\{Attributes as NCA, DBTable, MessageEmitter};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 use Nadybot\Modules\PVP_MODULE\Handlers\Base;
 
 #[NCA\DB\Table(name: 'nw_tracker')]
-class TrackerEntry extends DBRow implements MessageEmitter {
+class TrackerEntry extends DBTable implements MessageEmitter {
 	/** Timestamp when the entry was created */
 	public int $created_on;
 

@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\BANK_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{AOItem, DBRow};
+use Nadybot\Core\{AOItem, DBTable};
 
 #[Table(name: 'bank', shared: Shared::Yes)]
-class Bank extends DBRow implements AOItem {
+class Bank extends DBTable implements AOItem {
 	public function __construct(
 		public ?string $name,
 		public ?int $lowid,

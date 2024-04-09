@@ -3,10 +3,10 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'cmd_alias')]
-class CmdAlias extends DBRow {
+class CmdAlias extends DBTable {
 	public function __construct(
 		public string $cmd,
 		public string $alias,

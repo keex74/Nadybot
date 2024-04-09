@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\GUILD_MODULE;
 
 use Nadybot\Core\Attributes\DB\{AutoInc, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'org_history', shared: Shared::Yes)]
-class OrgHistory extends DBRow {
+class OrgHistory extends DBTable {
 	/**
 	 * @param ?string $actor        The person doing the action
 	 * @param ?string $actee        Optional, the person the actor is acting on

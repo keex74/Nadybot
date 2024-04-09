@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use Nadybot\Core\{AOItem, Attributes as NCA, DBRow};
+use Nadybot\Core\{AOItem, Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'Symbiant', shared: NCA\DB\Shared::Yes)]
-class Symbiant extends DBRow implements AOItem {
+class Symbiant extends DBTable implements AOItem {
 	public function __construct(
 		#[NCA\DB\PK] public int $ID,
 		public string $Name,

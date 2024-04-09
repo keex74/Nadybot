@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'route_hop_color')]
-class RouteHopColor extends DBRow {
+class RouteHopColor extends DBTable {
 	/**
 	 * @param string  $hop        The hop mask (discord, *, aopriv, ...)
 	 * @param ?string $where      The channel for which to apply these colors or null for all

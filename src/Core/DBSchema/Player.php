@@ -6,7 +6,7 @@ use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
 	Attributes\JSON,
-	DBRow,
+	DBTable,
 	Faction,
 	Profession,
 	Registry,
@@ -18,7 +18,7 @@ use Nadybot\Core\{
  * @package Nadybot\Core\DBSchema
  */
 #[Table(name: 'players', shared: Shared::Yes)]
-class Player extends DBRow {
+class Player extends DBTable {
 	/**
 	 * In which dimension (RK server) is this character?
 	 * 4 for test, 5 for RK5, 6 for RK19

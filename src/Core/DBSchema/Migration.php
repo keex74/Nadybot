@@ -3,11 +3,11 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\Shared;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 use Safe\DateTimeImmutable;
 
 #[NCA\DB\Table(name: 'migrations', shared: Shared::Both)]
-class Migration extends DBRow {
+class Migration extends DBTable {
 	public function __construct(
 		public string $module,
 		public string $migration,

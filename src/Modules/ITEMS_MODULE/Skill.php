@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\ITEMS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'skills', shared: Shared::Yes)]
-class Skill extends DBRow {
+class Skill extends DBTable {
 	public function __construct(
 		#[PK] public int $id,
 		public string $name,

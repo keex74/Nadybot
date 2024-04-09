@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\SPIRITS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'spiritsdb', shared: Shared::Yes)]
-class Spirit extends DBRow {
+class Spirit extends DBTable {
 	public function __construct(
 		#[PK] public int $id,
 		public string $name,

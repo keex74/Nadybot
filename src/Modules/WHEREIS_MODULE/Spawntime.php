@@ -4,10 +4,10 @@ namespace Nadybot\Modules\WHEREIS_MODULE;
 
 use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes\DB\{Ignore, PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'spawntime', shared: Shared::Yes)]
-class Spawntime extends DBRow {
+class Spawntime extends DBTable {
 	/** @var Collection<Whereis> */
 	#[Ignore] public Collection $coordinates;
 

@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow, Playfield};
+use Nadybot\Core\{Attributes as NCA, DBTable, Playfield};
 
 #[NCA\DB\Table(name: 'dyna_db', shared: NCA\DB\Shared::Yes)]
-class DynaDB extends DBRow {
+class DynaDB extends DBTable {
 	public function __construct(
 		#[NCA\DB\ColName('playfield_id')] public Playfield $playfield,
 		public string $mob,

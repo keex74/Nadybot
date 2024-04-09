@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\ONLINE_MODULE;
 
 use DateTimeInterface;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 use Safe\DateTimeImmutable;
 
 /**
@@ -12,7 +12,7 @@ use Safe\DateTimeImmutable;
  * @package Nadybot\Modules\ONLINE_MODULE
  */
 #[NCA\DB\Table(name: 'online_hide')]
-class OnlineHide extends DBRow {
+class OnlineHide extends DBTable {
 	/** Time and date when this mask was created */
 	public DateTimeInterface $created_on;
 

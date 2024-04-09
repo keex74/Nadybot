@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'playfield', shared: Shared::Yes)]
-class Playfield extends DBRow {
+class Playfield extends DBTable {
 	/** @var array<string,string|int|null> */
 	public const EXAMPLE_TOKENS = [
 		'pf-id' => 551,

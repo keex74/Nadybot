@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'perk_level', shared: DB\Shared::Yes)]
-class PerkLevel extends DBRow {
+class PerkLevel extends DBTable {
 	/**
 	 * @param int                   $perk_id          The internal ID of the perk line
 	 * @param int                   $perk_level       Which level of $perk_id does this represent?

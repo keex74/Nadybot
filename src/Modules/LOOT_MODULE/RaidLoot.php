@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Nadybot\Modules\LOOT_MODULE;
 
 use Nadybot\Core\Attributes\DB;
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
 #[DB\Table(name: 'raid_loot', shared: DB\Shared::Yes)]
-class RaidLoot extends DBRow {
+class RaidLoot extends DBTable {
 	public function __construct(
 		#[DB\PK] public int $id,
 		public string $raid,

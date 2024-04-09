@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\NEWS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow, Util};
+use Nadybot\Core\{Attributes as NCA, DBTable, Util};
 
 #[NCA\DB\Table(name: 'news', shared: NCA\DB\Shared::Yes)]
-class News extends DBRow {
+class News extends DBTable {
 	public string $uuid;
 
 	/**

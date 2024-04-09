@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'cmdcfg')]
-class CmdCfg extends DBRow {
+class CmdCfg extends DBTable {
 	/**
 	 * @var array<string,CmdPermission>
 	 *

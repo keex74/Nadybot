@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'cmd_permission')]
-class CmdPermission extends DBRow {
+class CmdPermission extends DBTable {
 	/**
 	 * @param string $permission_set The name of the permission-set
 	 * @param string $access_level   The access-level (member,admin,guest,all,etc)

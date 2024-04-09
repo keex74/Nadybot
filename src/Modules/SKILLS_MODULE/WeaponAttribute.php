@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\SKILLS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'weapon_attributes', shared: Shared::Yes)]
-class WeaponAttribute extends DBRow {
+class WeaponAttribute extends DBTable {
 	public function __construct(
 		#[PK] public int $id,
 		public int $attack_time,

@@ -3,11 +3,11 @@
 namespace Nadybot\Modules\ALIEN_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{AOItemSpec, DBRow, Profession, WearSlot};
+use Nadybot\Core\{AOItemSpec, DBTable, Profession, WearSlot};
 use Nadybot\Modules\ITEMS_MODULE\AODBItem;
 
 #[Table(name: 'ofabarmor', shared: Shared::Yes)]
-class OfabArmor extends DBRow implements AOItemSpec {
+class OfabArmor extends DBTable implements AOItemSpec {
 	public function __construct(
 		public Profession $profession,
 		public string $name,

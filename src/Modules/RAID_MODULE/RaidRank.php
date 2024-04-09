@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RAID_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'raid_rank')]
-class RaidRank extends DBRow {
+class RaidRank extends DBTable {
 	public function __construct(
 		#[PK] public string $name,
 		public int $rank,

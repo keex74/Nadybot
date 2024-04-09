@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\Modules\BAN;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'banned_orgs')]
-class BannedOrg extends DBRow {
+class BannedOrg extends DBTable {
 	/**
 	 * @param int    $org_id    The ID of the org that is or was banned
 	 * @param string $org_name  The name of the org that is or was banned

@@ -4,11 +4,11 @@ namespace Nadybot\Modules\WEBSERVER_MODULE;
 
 use DateTimeInterface;
 use Nadybot\Core\Attributes\DB\{AutoInc, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 use Safe\DateTimeImmutable;
 
 #[Table(name: 'api_key')]
-class ApiKey extends DBRow {
+class ApiKey extends DBTable {
 	public DateTimeInterface $created;
 
 	public function __construct(

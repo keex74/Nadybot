@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\RELAY_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'relay_event')]
-class RelayEvent extends DBRow {
+class RelayEvent extends DBTable {
 	/**
 	 * @param int    $relay_id The id of the relay where this layer belongs to
 	 * @param string $event    Which event is this for?

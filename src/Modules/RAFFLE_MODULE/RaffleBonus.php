@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RAFFLE_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'raffle_bonus')]
-class RaffleBonus extends DBRow {
+class RaffleBonus extends DBTable {
 	public function __construct(
 		#[PK] public string $name,
 		public int $bonus,

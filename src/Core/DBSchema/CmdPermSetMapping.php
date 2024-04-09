@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'cmd_permission_set_mapping')]
-class CmdPermSetMapping extends DBRow {
+class CmdPermSetMapping extends DBTable {
 	/**
 	 * @param string $permission_set  The permission set to map $source to
 	 * @param string $source          The command source to map

@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RECIPE_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'arulsaba_buffs', shared: Shared::Yes)]
-class ArulSabaBuffs extends DBRow {
+class ArulSabaBuffs extends DBTable {
 	public function __construct(
 		#[PK] public string $name,
 		#[PK] public int $min_level,

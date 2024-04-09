@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'perk_level_resistances', shared: DB\Shared::Yes)]
-class PerkLevelResistance extends DBRow {
+class PerkLevelResistance extends DBTable {
 	#[DB\Ignore] public int $perk_level;
 
 	#[DB\Ignore] public ?string $nanoline=null;

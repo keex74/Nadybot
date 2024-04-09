@@ -3,11 +3,11 @@
 namespace Nadybot\Core\DBSchema;
 
 use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 use Safe\DateTimeImmutable;
 
 #[Table(name: 'audit')]
-class Audit extends DBRow {
+class Audit extends DBTable {
 	/**
 	 * @param string            $actor  The person doing something
 	 * @param string            $action What did the actor do

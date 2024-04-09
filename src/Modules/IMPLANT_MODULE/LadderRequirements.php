@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'implant_requirements', shared: Shared::Yes)]
-class LadderRequirements extends DBRow {
+class LadderRequirements extends DBTable {
 	public function __construct(
 		#[PK] public int $ql,
 		public int $treatment,

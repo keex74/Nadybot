@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\WHOMPAH_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{DBRow, Faction};
+use Nadybot\Core\{DBTable, Faction};
 
 #[Table(name: 'whompah_cities', shared: Shared::Yes)]
-class WhompahCity extends DBRow {
+class WhompahCity extends DBTable {
 	public function __construct(
 		#[PK] public int $id,
 		public string $city_name,

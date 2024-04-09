@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'hlpcfg')]
-class HlpCfg extends DBRow {
+class HlpCfg extends DBTable {
 	public function __construct(
 		public string $name,
 		public string $module,

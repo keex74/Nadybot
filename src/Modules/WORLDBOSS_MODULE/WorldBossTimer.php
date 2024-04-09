@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Ignore, PK, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'worldboss_timers')]
-class WorldBossTimer extends DBRow {
+class WorldBossTimer extends DBTable {
 	public int $time_submitted;
 
 	public function __construct(

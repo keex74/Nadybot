@@ -2,10 +2,10 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'route_modifier')]
-class RouteModifier extends DBRow {
+class RouteModifier extends DBTable {
 	/**
 	 * @param string                  $modifier  The name of the modifier
 	 * @param ?int                    $id        The id of the route modifier. Lower id means higher priority

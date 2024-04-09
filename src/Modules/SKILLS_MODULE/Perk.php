@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\SKILLS_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes as NCA, DBTable};
 
 #[NCA\DB\Table(name: 'perk', shared: NCA\DB\Shared::Yes)]
-class Perk extends DBRow {
+class Perk extends DBTable {
 	/**
 	 * @param string               $name        Name of the perk
 	 * @param string               $expansion   The expansion needed for this perk

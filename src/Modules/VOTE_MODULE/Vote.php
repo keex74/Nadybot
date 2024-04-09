@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\VOTE_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Table};
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'votes')]
-class Vote extends DBRow {
+class Vote extends DBTable {
 	public function __construct(
 		#[PK] public int $poll_id,
 		#[PK] public string $author,

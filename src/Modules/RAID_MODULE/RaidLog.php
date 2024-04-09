@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\RAID_MODULE;
 
 use Nadybot\Core\Attributes\DB\Table;
-use Nadybot\Core\DBRow;
+use Nadybot\Core\DBTable;
 
 #[Table(name: 'raid_log')]
-class RaidLog extends DBRow {
+class RaidLog extends DBTable {
 	/**
 	 * @param int     $raid_id           The ID of the raid to which this belongs
 	 * @param ?string $description       The raid description of the raid

@@ -3,10 +3,10 @@
 namespace Nadybot\Modules\ITEMS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{AOIcon, AOItemSpec, DBRow};
+use Nadybot\Core\{AOIcon, AOItemSpec, DBTable};
 
 #[Table(name: 'aodb', shared: Shared::Yes)]
-class AODBEntry extends DBRow implements AOItemSpec, AOIcon {
+class AODBEntry extends DBTable implements AOItemSpec, AOIcon {
 	public function __construct(
 		public int $lowid,
 		public int $highid,

@@ -2,10 +2,10 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use Nadybot\Core\{Attributes\DB, DBRow};
+use Nadybot\Core\{Attributes\DB, DBTable};
 
 #[DB\Table(name: 'raid_member')]
-class RaidMember extends DBRow {
+class RaidMember extends DBTable {
 	/** UNIX Timestamp when they joined the raid */
 	public int $joined;
 
