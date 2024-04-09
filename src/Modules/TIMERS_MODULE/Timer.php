@@ -42,14 +42,18 @@ class Timer extends DBRow {
 			return [];
 		}
 		$alertsData = json_decode($alerts);
-		$result = [];
-		foreach ($alertsData as $alertData) {
-			$alert = new Alert();
-			foreach ($alertData as $key => $value) {
-				$alert->{$key} = $value;
-			}
-			$result []= $alert;
-		}
-		return $result;
+		return array_map(
+			static function (\stdClass $alertData): Alert {
+				$alert = new Alert(
+					message: $alertData->message,
+					time: $alertData->time,
+				);
+				foreach (get_object_vars($alertData) as $key => $value) {
+					$alert->{$key} = $value;
+				}
+				return $alert;
+			},
+			$alertsData
+		);
 	}
 }

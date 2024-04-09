@@ -3,14 +3,14 @@
 namespace Nadybot\Modules\BANK_MODULE;
 
 use Illuminate\Support\Collection;
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'wishlist', shared: NCA\DB\Shared::Yes)]
+#[DB\Table(name: 'wishlist', shared: DB\Shared::Yes)]
 class Wish extends DBRow {
 	public int $created_on;
 
 	/** @var Collection<WishFulfilment> */
-	#[NCA\DB\Ignore]
+	#[DB\Ignore]
 	public Collection $fulfilments;
 
 	public function __construct(
@@ -21,7 +21,7 @@ class Wish extends DBRow {
 		public int $amount=1,
 		public ?string $from=null,
 		public bool $fulfilled=false,
-		#[NCA\DB\AutoInc] public ?int $id=null,
+		#[DB\AutoInc] public ?int $id=null,
 	) {
 		$this->created_on = $created_on ?? time();
 		$this->fulfilments = new Collection();

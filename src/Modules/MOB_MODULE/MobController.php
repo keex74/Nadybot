@@ -233,7 +233,7 @@ class MobController extends ModuleInstance {
 		/** @var Collection<string> */
 		$blobs = (new Collection(array_values($this->mobs[Mob::T_PRISONER]??[])))
 			->sortBy('name')
-			->map(Closure::fromCallable([$this, 'renderMob']));
+			->map(Closure::fromCallable($this->renderMob(...)));
 		if ($blobs->isEmpty()) {
 			$context->reply('There is currently no data for any prisoner. Maybe the API is down.');
 			return;
@@ -275,7 +275,7 @@ class MobController extends ModuleInstance {
 		$blobs = $factions->map(function (Collection $hags, string $faction): string {
 			return ((array)$this->text->makeBlob(
 				ucfirst($faction) . ' hags (' . $hags->count() . ')',
-				$hags->map(Closure::fromCallable([$this, 'renderMob']))->join("\n\n")
+				$hags->map(Closure::fromCallable($this->renderMob(...)))->join("\n\n")
 			))[0];
 		});
 		$msg = 'Status of all ' . $blobs->join(' and ') . '.';
@@ -323,7 +323,7 @@ class MobController extends ModuleInstance {
 		$blobs = $factions->map(function (Collection $dreads, string $faction): string {
 			return ((array)$this->text->makeBlob(
 				ucfirst($faction) . ' Dreadloch camps (' . $dreads->count() . ')',
-				$dreads->map(Closure::fromCallable([$this, 'renderMob']))->join("\n\n")
+				$dreads->map(Closure::fromCallable($this->renderMob(...)))->join("\n\n")
 			))[0];
 		});
 		$msg = 'Status of all ' . $blobs->join(' and ') . '.';
@@ -344,7 +344,7 @@ class MobController extends ModuleInstance {
 					? -1
 					: ($b->key === 'jack' ? 1 : 0);
 			})
-			->map(Closure::fromCallable([$this, 'renderMob']));
+			->map(Closure::fromCallable($this->renderMob(...)));
 		if ($blobs->isEmpty()) {
 			$context->reply('There is currently no data for Jack Legchopper or his clones. Maybe the API is down.');
 			return;

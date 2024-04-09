@@ -189,14 +189,13 @@ class CityWaveController extends ModuleInstance implements MessageEmitter {
 			$time = Util::parseTime($alertTime);
 			$lastTime += $time;
 
-			$alert = new WaveAlert();
-			$alert->message = "Wave {$wave} incoming.";
-			if ($wave === 9) {
-				$alert->message = 'General Incoming.';
-			}
-			$alert->time = $lastTime;
-			$alert->wave = $wave;
-			$alerts []= $alert;
+			$alerts []= new WaveAlert(
+				message: ($wave === 9)
+					? 'General Incoming.'
+					: "Wave {$wave} incoming.",
+				time: $lastTime,
+				wave: $wave,
+			);
 
 			$wave++;
 		}

@@ -8,9 +8,13 @@ class DiscordVoiceLeaveEvent extends DiscordVoiceEvent {
 	public const EVENT_MASK = 'discord_voice_leave';
 
 	public function __construct(
-		public DiscordChannel $discord_channel,
-		public GuildMember $member,
+		DiscordChannel $discord_channel,
+		GuildMember $member,
 	) {
-		$this->type = self::EVENT_MASK;
+		parent::__construct(
+			discord_channel: $discord_channel,
+			member: $member,
+			type: self::EVENT_MASK,
+		);
 	}
 }

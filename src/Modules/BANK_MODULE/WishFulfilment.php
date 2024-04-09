@@ -2,9 +2,9 @@
 
 namespace Nadybot\Modules\BANK_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBRow};
+use Nadybot\Core\{Attributes\DB, DBRow};
 
-#[NCA\DB\Table(name: 'wishlist_fulfilment', shared: NCA\DB\Shared::Yes)]
+#[DB\Table(name: 'wishlist_fulfilment', shared: DB\Shared::Yes)]
 class WishFulfilment extends DBRow {
 	public int $fulfilled_on;
 
@@ -13,7 +13,7 @@ class WishFulfilment extends DBRow {
 		public string $fulfilled_by,
 		public int $amount=1,
 		?int $fulfilled_on=null,
-		#[NCA\DB\AutoInc] public ?int $id=null,
+		#[DB\AutoInc] public ?int $id=null,
 	) {
 		$this->fulfilled_on = $fulfilled_on ?? time();
 	}

@@ -175,15 +175,15 @@ class RelayController extends ModuleInstance {
 		$types = [
 			'RelayProtocol' => [
 				NCA\RelayProtocol::class,
-				[$this, 'registerRelayProtocol'],
+				$this->registerRelayProtocol(...),
 			],
 			'Layer' => [
 				NCA\RelayStackMember::class,
-				[$this, 'registerStackElement'],
+				$this->registerStackElement(...),
 			],
 			'Transport' => [
 				NCA\RelayTransport::class,
-				[$this, 'registerTransport'],
+				$this->registerTransport(...),
 			],
 		];
 		foreach ($types as $dir => $data) {

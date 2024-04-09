@@ -31,7 +31,7 @@ class MobFeedHandler extends ModuleInstance implements EventFeedHandler {
 	public function setup(): void {
 		$this->eventManager->subscribe(
 			'event-feed-reconnect',
-			Closure::fromCallable([$this, 'handleReconnect'])
+			Closure::fromCallable($this->handleReconnect(...))
 		);
 	}
 

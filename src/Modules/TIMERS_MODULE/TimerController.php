@@ -449,22 +449,20 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 			$time = Util::parseTime($alertTime);
 			$timeString = Util::unixtimeToReadable($time);
 			if ($endTime - $time > time()) {
-				$alert = new Alert();
-				$alert->message = "Reminder: Timer <highlight>{$name}<end> has <highlight>{$timeString}<end> left. [set by <highlight>{$sender}<end>]";
-				$alert->time = $endTime - $time;
-				$alerts []= $alert;
+				$alerts []= new Alert(
+					message: "Reminder: Timer <highlight>{$name}<end> has <highlight>{$timeString}<end> left. [set by <highlight>{$sender}<end>]",
+					time: $endTime - $time,
+				);
 			}
 		}
 
 		if ($endTime > time()) {
-			$alert = new Alert();
-			if ($name === $sender) {
-				$alert->message = "<highlight>{$sender}<end>, your timer has gone off.";
-			} else {
-				$alert->message = "<highlight>{$sender}<end>, your timer named <highlight>{$name}<end> has gone off.";
-			}
-			$alert->time = $endTime;
-			$alerts []= $alert;
+			$alerts []= new Alert(
+				message: ($name === $sender)
+					? "<highlight>{$sender}<end>, your timer has gone off."
+					: "<highlight>{$sender}<end>, your timer named <highlight>{$name}<end> has gone off.",
+				time: $endTime
+			);
 		}
 
 		return $alerts;

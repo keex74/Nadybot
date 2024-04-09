@@ -153,7 +153,7 @@ class PermissionSetController extends ModuleInstance {
 	#[NCA\HandlesCommand('permset')]
 	public function permsetListCommand(CmdContext $context): void {
 		$sets = $this->cmdManager->getExtPermissionSets();
-		$blocks = $sets->map(Closure::fromCallable([$this, 'renderPermissionSet']));
+		$blocks = $sets->map(Closure::fromCallable($this->renderPermissionSet(...)));
 		$blob = $blocks->join("\n\n<pagebreak>");
 		$context->reply(
 			$this->text->makeBlob('Permission sets (' . $blocks->count() . ')', $blob)

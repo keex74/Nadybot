@@ -75,11 +75,11 @@ class PrivateChannel implements TransportInterface, StatusProvider {
 	}
 
 	public function deinit(callable $callback): array {
-		$this->eventManager->unsubscribe('extpriv', [$this, 'receiveMessage']);
-		$this->eventManager->unsubscribe(ExtJoinPrivRequest::EVENT_MASK, [$this, 'receiveInvite']);
-		$this->eventManager->unsubscribe('extJoinPriv', [$this, 'joinedPrivateChannel']);
-		$this->eventManager->unsubscribe('otherLeavePriv', [$this, 'receiveLeave']);
-		$this->eventManager->unsubscribe('extLeavePriv', [$this, 'leftPrivateChannel']);
+		$this->eventManager->unsubscribe('extpriv', $this->receiveMessage(...));
+		$this->eventManager->unsubscribe(ExtJoinPrivRequest::EVENT_MASK, $this->receiveInvite(...));
+		$this->eventManager->unsubscribe('extJoinPriv', $this->joinedPrivateChannel(...));
+		$this->eventManager->unsubscribe('otherLeavePriv', $this->receiveLeave(...));
+		$this->eventManager->unsubscribe('extLeavePriv', $this->leftPrivateChannel(...));
 		$callback();
 		return [];
 	}
@@ -139,10 +139,10 @@ class PrivateChannel implements TransportInterface, StatusProvider {
 	}
 
 	public function init(callable $callback): array {
-		$this->eventManager->subscribe('extpriv', [$this, 'receiveMessage']);
-		$this->eventManager->subscribe('extJoinPrivRequest', [$this, 'receiveInvite']);
-		$this->eventManager->subscribe('otherLeavePriv', [$this, 'receiveLeave']);
-		$this->eventManager->subscribe('extLeavePriv', [$this, 'leftPrivateChannel']);
+		$this->eventManager->subscribe('extpriv', $this->receiveMessage(...));
+		$this->eventManager->subscribe('extJoinPrivRequest', $this->receiveInvite(...));
+		$this->eventManager->subscribe('otherLeavePriv', $this->receiveLeave(...));
+		$this->eventManager->subscribe('extLeavePriv', $this->leftPrivateChannel(...));
 		if (!isset($this->chatBot->privateChats[$this->channel])) {
 			$this->status = new RelayStatus(
 				RelayStatus::INIT,
@@ -150,7 +150,7 @@ class PrivateChannel implements TransportInterface, StatusProvider {
 			);
 			// In case we have a race condition and received the invite before
 			$this->initCallback = $callback;
-			$this->eventManager->subscribe('extJoinPriv', [$this, 'joinedPrivateChannel']);
+			$this->eventManager->subscribe('extJoinPriv', $this->joinedPrivateChannel(...));
 			if (null !== ($uid = $this->chatBot->getUid($this->channel))) {
 				$this->chatBot->sendPackage(
 					package: new Package\Out\PrivateChannelJoin(channelId: $uid),

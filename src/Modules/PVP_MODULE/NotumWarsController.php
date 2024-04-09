@@ -1646,31 +1646,31 @@ class NotumWarsController extends ModuleInstance {
 			$siteDetails,
 			"{$siteShort} ({$site->name})",
 		))[0];
-		$alert = new Alert();
-		$alert->time = time();
 		$duration = Util::unixtimeToReadable($timestamp - time());
-		$alert->message = "Started {$duration} countdown for planting {$siteLink}";
-		$alerts []= $alert;
+		$alerts []= new Alert(
+			message: "Started {$duration} countdown for planting {$siteLink}",
+			time: time(),
+		);
 
 		if ($timestamp - 60 > time()) {
-			$alert = new Alert();
-			$alert->time = $timestamp - 60;
-			$alert->message = "<highlight>1 minute<end> remaining to plant {$siteLink}";
-			$alerts []= $alert;
+			$alerts []= new Alert(
+				time: $timestamp - 60,
+				message: "<highlight>1 minute<end> remaining to plant {$siteLink}",
+			);
 		}
 
 		$countdown = [3, 2, 1];
 		foreach ($countdown as $remaining) {
-			$alert = new Alert();
-			$alert->time = $timestamp - $remaining;
-			$alert->message = "Plant {$siteShort} in <highlight>{$remaining}s<end>";
-			$alerts []= $alert;
+			$alerts []= new Alert(
+				time: $timestamp - $remaining,
+				message: "Plant {$siteShort} in <highlight>{$remaining}s<end>",
+			);
 		}
 
-		$alertPlant = new Alert();
-		$alertPlant->time = $timestamp;
-		$alertPlant->message = "Plant {$siteShort} <highlight>NOW<end>!";
-		$alerts []= $alertPlant;
+		$alerts []= new Alert(
+			time: $timestamp,
+			message: "Plant {$siteShort} <highlight>NOW<end>!",
+		);
 
 		$modes = [];
 		if ($this->plantTimerChannel & 1) {

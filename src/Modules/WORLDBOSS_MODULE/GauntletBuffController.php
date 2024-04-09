@@ -227,18 +227,16 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		];
 		foreach ($alertTimes as $alertTime) {
 			if (($time - $alertTime) > time()) {
-				$alert = new Alert();
-				$alert->time = $time - $alertTime;
 				if ($alertTime === 0) {
-					$alert->message = Text::renderPlaceholders($this->gauntletExpiredNotification, $tokens);
+					$alertMessage = Text::renderPlaceholders($this->gauntletExpiredNotification, $tokens);
 				} else {
 					$tokens['expiry'] = $this->tmTime($time);
 					$tokens['duration'] = Util::unixtimeToReadable($alertTime);
 					$tokens['c-expiry'] = '<highlight>' . $tokens['expiry'] . '<end>';
 					$tokens['c-duration'] = '<highlight>' . $tokens['duration'] . '<end>';
-					$alert->message = Text::renderPlaceholders($this->gauntletExpiryWarning, $tokens);
+					$alertMessage = Text::renderPlaceholders($this->gauntletExpiryWarning, $tokens);
 				}
-				$alerts []= $alert;
+				$alerts []= new Alert(message: $alertMessage, time: $time - $alertTime);
 			}
 		}
 		$data = [];

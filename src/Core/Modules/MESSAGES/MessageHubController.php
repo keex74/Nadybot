@@ -316,8 +316,8 @@ class MessageHubController extends ModuleInstance {
 		$count = count($emitters);
 		ksort($emitters);
 		$emitters = new Collection($emitters);
-		$blob = $emitters->groupBy([$this, 'getEmitterType'])
-			->map([$this, 'renderEmitterGroup'])
+		$blob = $emitters->groupBy($this->getEmitterType(...))
+			->map($this->renderEmitterGroup(...))
 			->join("\n\n");
 		$msg = $this->text->makeBlob("Message sources ({$count})", $blob);
 		$context->reply($msg);
@@ -334,8 +334,8 @@ class MessageHubController extends ModuleInstance {
 		$count = count($receivers);
 		ksort($receivers);
 		$receivers = new Collection($receivers);
-		$blob = $receivers->groupBy([$this, 'getEmitterType'])
-			->map([$this, 'renderEmitterGroup'])
+		$blob = $receivers->groupBy($this->getEmitterType(...))
+			->map($this->renderEmitterGroup(...))
 			->join("\n\n");
 		$msg = $this->text->makeBlob("Message targets ({$count})", $blob);
 		$context->reply($msg);

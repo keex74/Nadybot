@@ -7,22 +7,12 @@ use Safe\DateTimeImmutable;
 class CallerBackup {
 	public DateTimeImmutable $time;
 
-	/**
-	 * Names of all callers
-	 *
-	 * @var array<string,CallerList>
-	 */
-	public array $callers = [];
-
-	public string $changer;
-
-	public string $command;
-
-	/** @param array<string,CallerList> $callers */
-	public function __construct(string $changer, string $command, array $callers) {
+	/** @param array<string,CallerList> $callers Names of all callers */
+	public function __construct(
+		public string $changer,
+		public string $command,
+		public array $callers=[],
+	) {
 		$this->time = new DateTimeImmutable();
-		$this->changer = $changer;
-		$this->command = $command;
-		$this->callers = $callers;
 	}
 }

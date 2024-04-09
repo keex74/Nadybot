@@ -322,9 +322,9 @@ class AOUController extends ModuleInstance {
 	private function processInput(string $input): string {
 		$input = Safe::pregReplace("/(\[size.+?\])\[b\]/i", '[b]$1', $input);
 		$input = Safe::pregReplace("/(\[color.+?\])\[b\]/i", '[b]$1', $input);
-		$input = preg_replace_callback("/\[(item|itemname|itemicon)( nolink)?\](\d+)\[\/(item|itemname|itemicon)\]/i", [$this, 'replaceItem'], $input);
-		$input = preg_replace_callback("/\[waypoint ([^\]]+)\]([^\]]*)\[\/waypoint\]/", [$this, 'replaceWaypoint'], $input);
-		$input = preg_replace_callback("/\[(localurl|url)=([^ \]]+)\]([^\[]+)\[\/(localurl|url)\]/", [$this, 'replaceGuideLinks'], $input);
+		$input = preg_replace_callback("/\[(item|itemname|itemicon)( nolink)?\](\d+)\[\/(item|itemname|itemicon)\]/i", $this->replaceItem(...), $input);
+		$input = preg_replace_callback("/\[waypoint ([^\]]+)\]([^\]]*)\[\/waypoint\]/", $this->replaceWaypoint(...), $input);
+		$input = preg_replace_callback("/\[(localurl|url)=([^ \]]+)\]([^\[]+)\[\/(localurl|url)\]/", $this->replaceGuideLinks(...), $input);
 		$input = Safe::pregReplace("/\[img\](.*?)\[\/img\]/", '-image-', $input);
 		$input = Safe::pregReplace("/\[color=#([0-9A-F]+)\]/", '<font color=#$1>', $input);
 		$input = Safe::pregReplace("/\[color=(.+?)\]/", '<$1>', $input);

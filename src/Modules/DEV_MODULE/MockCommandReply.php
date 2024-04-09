@@ -9,9 +9,6 @@ use Nadybot\Core\{Attributes as NCA, CommandReply, Safe};
 use Psr\Log\LoggerInterface;
 
 class MockCommandReply implements CommandReply {
-	public ?string $logFile;
-	public string $command;
-
 	/** @var string[] */
 	public array $output = [];
 
@@ -21,9 +18,10 @@ class MockCommandReply implements CommandReply {
 	#[NCA\Inject]
 	private Filesystem $fs;
 
-	public function __construct(string $command, ?string $logFile=null) {
-		$this->logFile = $logFile;
-		$this->command = $command;
+	public function __construct(
+		public string $command,
+		public ?string $logFile=null
+	) {
 	}
 
 	public function __destruct() {

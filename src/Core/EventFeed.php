@@ -61,11 +61,11 @@ class EventFeed {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		$this->eventManager->subscribe('event-feed(hello)', Closure::fromCallable([$this, 'handleHello']));
-		$this->eventManager->subscribe('event-feed(error)', Closure::fromCallable([$this, 'handleError']));
-		$this->eventManager->subscribe('event-feed(success)', Closure::fromCallable([$this, 'handleSuccess']));
-		$this->eventManager->subscribe('event-feed(room-info)', Closure::fromCallable([$this, 'handleRoomInfo']));
-		$this->eventManager->subscribe('event-feed(message)', Closure::fromCallable([$this, 'handleMessage']));
+		$this->eventManager->subscribe('event-feed(hello)', Closure::fromCallable($this->handleHello(...)));
+		$this->eventManager->subscribe('event-feed(error)', Closure::fromCallable($this->handleError(...)));
+		$this->eventManager->subscribe('event-feed(success)', Closure::fromCallable($this->handleSuccess(...)));
+		$this->eventManager->subscribe('event-feed(room-info)', Closure::fromCallable($this->handleRoomInfo(...)));
+		$this->eventManager->subscribe('event-feed(message)', Closure::fromCallable($this->handleMessage(...)));
 
 		$instances = Registry::getAllInstances();
 		foreach ($instances as $instance) {

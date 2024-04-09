@@ -3,18 +3,17 @@
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
 class CallerList {
-	/** Name of this list of callers, e.g. "RI1", "east", or empty string if default */
-	public string $name;
-
-	/** Name of the character who created this list */
-	public string $creator;
-
 	/**
-	 * List of the characters who are callers
-	 *
-	 * @var Caller[]
+	 * @param string   $name    Name of this list of callers, e.g. "RI1", "east", or empty string if default
+	 * @param string   $creator Name of the character who created this list
+	 * @param Caller[] $callers List of the characters who are callers
 	 */
-	public array $callers = [];
+	public function __construct(
+		public string $name,
+		public string $creator,
+		public array $callers=[],
+	) {
+	}
 
 	/** @return string[] */
 	public function getNames(): array {

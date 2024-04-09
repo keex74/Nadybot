@@ -319,7 +319,7 @@ class BuffPerksController extends ModuleInstance {
 		}
 
 		/** @var PerkAggregate[] */
-		$perks = array_map([$this, 'aggregatePerk'], $perks);
+		$perks = array_map($this->aggregatePerk(...), $perks);
 		if (empty($perks)) {
 			$msg = "Could not find any perks for level {$level} {$profession->value}.";
 			$sendto->reply($msg);

@@ -117,22 +117,25 @@ class FightController extends ModuleInstance {
 			'with a Funcom petition' => 'patience damage',
 			'with a froob-sent Funcom petition' => 'extra patience damage',
 		];
-		$fighter = new Fighter();
-		$fighter->name = $name;
 		if ($this->isChuckNorris($name)) {
-			$fighter->weapon = 'with a round house kick';
-			$fighter->damageType = 'otherworldly damage';
-			$fighter->minDamage = 4_001;
-			$fighter->maxDamage = 6_000;
-			$fighter->hp = 20_000;
-		} else {
-			$fighter->weapon = Util::randomArrayValue(array_keys($weaponNames));
-			$fighter->damageType = $weaponNames[$fighter->weapon];
-			$fighter->minDamage = 1_000;
-			$fighter->maxDamage = 4_000;
-			$fighter->hp = 20_000;
+			return new Fighter(
+				name: $name,
+				weapon: 'with a round house kick',
+				damageType: 'otherworldly damage',
+				minDamage: 4_001,
+				maxDamage: 6_000,
+				hp: 20_000,
+			);
 		}
-		return $fighter;
+		$weapon = array_rand($weaponNames);
+		return new Fighter(
+			name: $name,
+			weapon: $weapon,
+			damageType: $weaponNames[$weapon],
+			minDamage: 1_000,
+			maxDamage: 4_000,
+			hp: 20_000,
+		);
 	}
 
 	public function doAttack(Fighter $attacker, Fighter $defender): string {

@@ -539,14 +539,11 @@ class CommentController extends ModuleInstance {
 	 * @param Comment[] $comments
 	 */
 	public function formatComments(array $comments, bool $groupByMain, bool $addCategory=false): FormattedComments {
-		$result = new FormattedComments();
-		$result->numComments = count($comments);
 		$chars = [];
 		foreach ($comments as $comment) {
 			$chars[$comment->character] ??= [];
 			$chars[$comment->character] []= $comment;
 		}
-		$result->numChars = count($chars);
 		if ($groupByMain) {
 			$grouped = [];
 			foreach ($chars as $char => $comments) {
@@ -557,21 +554,24 @@ class CommentController extends ModuleInstance {
 		} else {
 			$grouped = $chars;
 		}
-		$result->numMains = count($grouped);
 		$blob = '';
 		foreach ($grouped as $main => $comments) {
 			$blob .= "<pagebreak><header2>{$main}<end>\n";
 			$blob .= '<tab>' . implode(
 				"\n<tab>",
 				array_map(
-					[$this, 'formatComment'],
+					$this->formatComment(...),
 					$comments,
 					array_fill(0, count($comments), $addCategory)
 				)
 			) . "\n\n";
 		}
-		$result->blob = $blob;
-		return $result;
+		return new FormattedComments(
+			numChars: count($chars),
+			numComments: count($comments),
+			numMains: count($grouped),
+			blob: $blob,
+		);
 	}
 
 	/** Format a single comment */

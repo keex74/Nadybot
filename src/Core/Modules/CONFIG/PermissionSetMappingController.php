@@ -63,7 +63,7 @@ class PermissionSetMappingController extends ModuleInstance {
 			}
 			return true;
 		});
-		$blocks = $maps->map(Closure::fromCallable([$this, 'renderPermSetMapping']));
+		$blocks = $maps->map(Closure::fromCallable($this->renderPermSetMapping(...)));
 		$blob = $blocks->join("\n\n<pagebreak>");
 		if ($unusedSrcs->isNotEmpty()) {
 			if (strlen($blob)) {

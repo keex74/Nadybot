@@ -70,9 +70,9 @@ class WebChatConverter extends ModuleInstance {
 	 */
 	public function convertMessages(array $msgs): array {
 		return array_map(
-			[$this, 'toXML'],
+			$this->toXML(...),
 			$this->tryToUnbreakPopups(
-				array_map([$this, 'parseAOFormat'], $msgs)
+				array_map($this->parseAOFormat(...), $msgs)
 			)
 		);
 	}

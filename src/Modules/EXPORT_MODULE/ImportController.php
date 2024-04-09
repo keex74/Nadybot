@@ -804,16 +804,16 @@ class ImportController extends ModuleInstance {
 					settime: $timer->startTime ?? time(),
 				);
 				foreach ($timer->alerts??[] as $alert) {
-					$alertEntry = new Alert();
-					$alertEntry->message = $alert->message ?? "Timer <highlight>{$entry->name}<end> has gone off.";
-					$alertEntry->time = $alert->time;
-					$entry->alerts []= $alertEntry;
+					$entry->alerts []= new Alert(
+						message: $alert->message ?? "Timer <highlight>{$entry->name}<end> has gone off.",
+						time: $alert->time,
+					);
 				}
 				if (!count($entry->alerts)) {
-					$alertEntry = new Alert();
-					$alertEntry->message = "Timer <highlight>{$entry->name}<end> has gone off.";
-					$alertEntry->time = $timer->endTime;
-					$entry->alerts []= $alertEntry;
+					$entry->alerts []= new Alert(
+						message: "Timer <highlight>{$entry->name}<end> has gone off.",
+						time: $timer->endTime,
+					);
 				}
 				$this->db->insert($entry);
 				$timerNum++;

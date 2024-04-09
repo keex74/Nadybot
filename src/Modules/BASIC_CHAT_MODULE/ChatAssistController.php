@@ -117,7 +117,11 @@ class ChatAssistController extends ModuleInstance {
 		if (strtolower($commands[0]) === 'assist') {
 			$commands[0] = 'callers';
 		}
-		return new CallerBackup($sender, implode(' ', $commands), $lastCallers);
+		return new CallerBackup(
+			changer: $sender,
+			command: implode(' ', $commands),
+			callers: $lastCallers
+		);
 	}
 
 	/** Return the total amount of callers */
@@ -371,10 +375,11 @@ class ChatAssistController extends ModuleInstance {
 		);
 		$backup = $this->backupCallers($context->char->name, $context->message);
 		$groupKey = strtolower($groupName);
-		$this->callers[$groupKey] = new CallerList();
-		$this->callers[$groupKey]->creator = $context->char->name;
-		$this->callers[$groupKey]->name = $groupName;
-		$this->callers[$groupKey]->callers = $newCallers;
+		$this->callers[$groupKey] = new CallerList(
+			creator: $context->char->name,
+			name: $groupName,
+			callers: $newCallers,
+		);
 		$this->storeBackup($backup);
 
 		$blob = (array)$this->text->makeBlob('list of callers', $this->getAssistMessage());
@@ -424,10 +429,11 @@ class ChatAssistController extends ModuleInstance {
 		}
 		$backup = $this->backupCallers($context->char->name, $context->message);
 		if (!isset($this->callers[$groupKey])) {
-			$this->callers[$groupKey] = new CallerList();
-			$this->callers[$groupKey]->creator = $context->char->name;
-			$this->callers[$groupKey]->name = $assistList;
-			$this->callers[$groupKey]->callers = [new Caller($name, $context->char->name)];
+			$this->callers[$groupKey] = new CallerList(
+				creator: $context->char->name,
+				name: $assistList,
+				callers: [new Caller($name, $context->char->name)],
+			);
 			$msg = "Added <highlight>{$name}<end> to the new list of callers";
 			if (strlen($assistList)) {
 				$msg .= " \"<highlight>{$assistList}<end>\"";
@@ -580,10 +586,11 @@ class ChatAssistController extends ModuleInstance {
 
 		$backup = $this->backupCallers($context->char->name, $context->message);
 		$this->callers = [];
-		$this->callers[''] = new CallerList();
-		$this->callers['']->creator = $context->char->name;
-		$this->callers['']->name = '';
-		$this->callers['']->callers = $pickedCallers;
+		$this->callers[''] = new CallerList(
+			creator: $context->char->name,
+			name: '',
+			callers: $pickedCallers,
+		);
 		$callers = Text::arraySprintf('<highlight>%s<end>', ...$callerNames);
 		$msg = 'Set ' . Text::enumerate(...$callers) . ' to be the new callers';
 		$this->storeBackup($backup);

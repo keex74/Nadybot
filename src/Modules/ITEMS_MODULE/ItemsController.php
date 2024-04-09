@@ -690,7 +690,7 @@ class ItemsController extends ModuleInstance {
 		return trim(
 			array_reduce(
 				$words,
-				[$this, 'getLongestCommonString'],
+				$this->getLongestCommonString(...),
 				array_shift($words)
 			)
 		);

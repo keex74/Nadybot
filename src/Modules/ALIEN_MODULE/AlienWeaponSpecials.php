@@ -2,13 +2,13 @@
 
 namespace Nadybot\Modules\ALIEN_MODULE;
 
-use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
+use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBRow;
 
 #[Table(name: 'alienweaponspecials', shared: Shared::Yes)]
 class AlienWeaponSpecials extends DBRow {
 	public function __construct(
-		#[PK] public int $type=0,
+		public int $type=0,
 		public string $specials='',
 	) {
 	}

@@ -5,11 +5,11 @@ namespace Nadybot\Modules\DEV_MODULE;
 use Nadybot\Core\CommandReply;
 
 class MessageInfoCommandReply implements CommandReply {
-	private CommandReply $sendto;
 	private float $startTime;
 
-	public function __construct(CommandReply $sendto) {
-		$this->sendto = $sendto;
+	public function __construct(
+		private CommandReply $sendto
+	) {
 		$this->startTime = microtime(true);
 	}
 

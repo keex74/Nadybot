@@ -5,14 +5,11 @@ namespace Nadybot\Modules\DEV_MODULE;
 use Nadybot\Core\{CommandReply, Safe};
 
 class DemoResponseCommandReply implements CommandReply {
-	private CommandReply $sendto;
-	private string $source;
-	private string $botname;
-
-	public function __construct(string $source, CommandReply $sendto, string $botname) {
-		$this->source = $source;
-		$this->sendto = $sendto;
-		$this->botname = $botname;
+	public function __construct(
+		private string $source,
+		private CommandReply $sendto,
+		private string $botname
+	) {
 	}
 
 	public function reply($msg): void {

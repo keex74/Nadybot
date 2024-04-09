@@ -22,9 +22,6 @@ use Nadybot\Core\{
 };
 
 class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
-	protected string $channelId;
-	protected bool $isDirectMsg;
-	protected ?DiscordMessageIn $message;
 	#[NCA\Inject]
 	private DiscordAPIClient $discordAPIClient;
 
@@ -43,10 +40,11 @@ class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 	#[NCA\Inject]
 	private BotConfig $config;
 
-	public function __construct(string $channelId, bool $isDirectMsg=false, ?DiscordMessageIn $message=null) {
-		$this->channelId = $channelId;
-		$this->isDirectMsg = $isDirectMsg;
-		$this->message = $message;
+	public function __construct(
+		private string $channelId,
+		private bool $isDirectMsg=false,
+		private ?DiscordMessageIn $message=null
+	) {
 	}
 
 	public function getChannelName(): string {

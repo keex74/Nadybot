@@ -531,7 +531,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		}
 		$blob = "<header2>Currently active filters<end>\n".
 			$this->filters
-				->map(Closure::fromCallable([$this, 'renderFilter']))
+				->map(Closure::fromCallable($this->renderFilter(...)))
 				->join("\n");
 		$msg = $this->text->makeBlob(
 			'Highnet filters (' . $this->filters->count() . ')',

@@ -8,6 +8,11 @@ use Nadybot\Core\Modules\DISCORD\{DiscordChannel, GuildMember};
 abstract class DiscordVoiceEvent extends Event {
 	public const EVENT_MASK = '*';
 
-	public DiscordChannel $discord_channel;
-	public GuildMember $member;
+	public function __construct(
+		public DiscordChannel $discord_channel,
+		public GuildMember $member,
+		string $type,
+	) {
+		$this->type = $type;
+	}
 }

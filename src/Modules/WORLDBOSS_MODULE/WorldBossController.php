@@ -652,7 +652,7 @@ class WorldBossController extends ModuleInstance {
 			$timers[$i] = clone $timers[$i];
 		}
 		$this->addNextDates($timers);
-		$messages = array_map([$this, 'formatWorldBossMessage'], $timers);
+		$messages = array_map($this->formatWorldBossMessage(...), $timers);
 		$msg = $messages[0];
 		if (count($messages) > 1) {
 			$msg = "I'm currently monitoring the following bosses:\n".

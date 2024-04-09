@@ -10,7 +10,7 @@ class IdentifyPacket implements Stringable {
 	use ReducedStringableTrait;
 
 	/** presence structure for initial presence information */
-	public ?UpdateStatus $presence;
+	public ?UpdateStatus $presence=null;
 
 	public ConnectionProperties $properties;
 

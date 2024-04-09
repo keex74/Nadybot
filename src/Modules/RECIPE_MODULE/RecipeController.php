@@ -148,7 +148,7 @@ class RecipeController extends ModuleInstance {
 
 	public function formatRecipeText(string $input): string {
 		$input = str_replace('\\n', "\n", $input);
-		$input = preg_replace_callback('/#L "([^"]+)" "([0-9]+)"/', [$this, 'replaceItem'], $input);
+		$input = preg_replace_callback('/#L "([^"]+)" "([0-9]+)"/', $this->replaceItem(...), $input);
 		$input = Safe::pregReplace('/#L "([^"]+)" "([^"]+)"/', "<a href='chatcmd://\\2'>\\1</a>", $input);
 
 		// we can't use <myname> in the sql since that will get converted on load,
