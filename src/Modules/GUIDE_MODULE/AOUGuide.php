@@ -3,7 +3,10 @@
 namespace Nadybot\Modules\GUIDE_MODULE;
 
 class AOUGuide {
-	public int $id;
-	public string $name;
-	public string $description;
+	public function __construct(
+		public int $id,
+		public string $name,
+		public string $description,
+	) {
+	}
 }

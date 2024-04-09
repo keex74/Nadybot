@@ -3,7 +3,10 @@
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
 class Timezone {
-	public string $name;
-	public float $offset;
-	public string $time;
+	public function __construct(
+		public string $name,
+		public float $offset,
+		public string $time,
+	) {
+	}
 }

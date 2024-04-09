@@ -350,32 +350,29 @@ class ImplantController extends ModuleInstance {
 	 * @param int    $ql   The QL of the implant you want to build
 	 */
 	public function getImplantQLSpecs(string $type, int $ql): ImplantSpecs {
-		$specs = new ImplantSpecs();
-		$specs->ql = $ql;
 
 		$treatmentBreakpoints = $this->getBreakpoints($type, self::TREATMENT);
 		$attributeBreakpoints = $this->getBreakpoints($type, self::ATTRIBUTE);
 		$tlBreakpoints = $this->getBreakpoints($type, self::TITLE_LEVEL);
 
-		$requirements = new ImplantRequirements();
-		$requirements->treatment = $this->calcStatFromQL($treatmentBreakpoints, $ql)??0;
-		$requirements->abilities = $this->calcStatFromQL($attributeBreakpoints, $ql)??0;
-		$requirements->titleLevel = $this->calcStatFromQL($tlBreakpoints, $ql)??1;
-		$specs->requirements = $requirements;
-
-		$skills = new ImplantBonusTypes();
-		$skills->faded  = $this->getBonusStatsForType('skills', self::FADED, $ql);
-		$skills->bright = $this->getBonusStatsForType('skills', self::BRIGHT, $ql);
-		$skills->shiny  = $this->getBonusStatsForType('skills', self::SHINY, $ql);
-		$specs->skills = $skills;
-
-		$abilities = new ImplantBonusTypes();
-		$abilities->faded  = $this->getBonusStatsForType('abilities', self::FADED, $ql);
-		$abilities->bright = $this->getBonusStatsForType('abilities', self::BRIGHT, $ql);
-		$abilities->shiny  = $this->getBonusStatsForType('abilities', self::SHINY, $ql);
-		$specs->abilities = $abilities;
-
-		return $specs;
+		return new ImplantSpecs(
+			ql: $ql,
+			requirements: new ImplantRequirements(
+				treatment: $this->calcStatFromQL($treatmentBreakpoints, $ql)??0,
+				abilities: $this->calcStatFromQL($attributeBreakpoints, $ql)??0,
+				titleLevel: $this->calcStatFromQL($tlBreakpoints, $ql)??1,
+			),
+			skills: new ImplantBonusTypes(
+				faded: $this->getBonusStatsForType('skills', self::FADED, $ql),
+				bright: $this->getBonusStatsForType('skills', self::BRIGHT, $ql),
+				shiny: $this->getBonusStatsForType('skills', self::SHINY, $ql),
+			),
+			abilities: new ImplantBonusTypes(
+				faded: $this->getBonusStatsForType('abilities', self::FADED, $ql),
+				bright: $this->getBonusStatsForType('abilities', self::BRIGHT, $ql),
+				shiny: $this->getBonusStatsForType('abilities', self::SHINY, $ql),
+			)
+		);
 	}
 
 	/**
@@ -438,13 +435,14 @@ class ImplantController extends ModuleInstance {
 		if (!isset($buff)) {
 			throw new Exception("Cannot calculate stats for ql {$ql}");
 		}
-		$stats = new ImplantBonusStats($slot);
-		$stats->buff = $buff;
 		$range = $this->getBonusQLRange($type, $slot, $buff);
 		if (!isset($range)) {
 			throw new Exception("Cannot calculate QL for giving +{$buff}");
 		}
-		$stats->range = $range;
-		return $stats;
+		return new ImplantBonusStats(
+			slot: $slot,
+			range: $range,
+			buff: $buff,
+		);
 	}
 }

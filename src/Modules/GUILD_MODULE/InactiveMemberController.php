@@ -52,9 +52,14 @@ class InactiveMemberController extends ModuleInstance {
 		$members = $this->db->table(OrgMember::getTable())
 			->where('mode', '!=', 'del')
 			->orderByDesc('logged_off')
-			->asObj(RecentOrgMember::class)
-			->each(function (RecentOrgMember $member): void {
-				$member->main = $this->altsController->getMainOf($member->name);
+			->asObj(OrgMember::class)
+			->map(function (OrgMember $member): RecentOrgMember {
+				return new RecentOrgMember(
+					main: $this->altsController->getMainOf($member->name),
+					name: $member->name,
+					mode: $member->mode,
+					logged_off: $member->logged_off,
+				);
 			})
 			->groupBy('main')
 			->sortKeys();

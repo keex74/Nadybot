@@ -3,9 +3,10 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 class ImplantBonusTypes {
-	public ImplantBonusStats $faded;
-
-	public ImplantBonusStats $bright;
-
-	public ImplantBonusStats $shiny;
+	public function __construct(
+		public ImplantBonusStats $faded,
+		public ImplantBonusStats $bright,
+		public ImplantBonusStats $shiny,
+	) {
+	}
 }

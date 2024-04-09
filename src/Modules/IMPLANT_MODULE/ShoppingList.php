@@ -3,15 +3,17 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 class ShoppingList {
-	/** @var string[] */
-	public array $implants = [];
-
-	/** @var string[] */
-	public array $shinyClusters = [];
-
-	/** @var string[] */
-	public array $brightClusters = [];
-
-	/** @var string[] */
-	public array $fadedClusters = [];
+	/**
+	 * @param string[] $implants
+	 * @param string[] $shinyClusters
+	 * @param string[] $brightClusters
+	 * @param string[] $fadedClusters
+	 */
+	public function __construct(
+		public array $implants=[],
+		public array $shinyClusters=[],
+		public array $brightClusters=[],
+		public array $fadedClusters=[],
+	) {
+	}
 }

@@ -120,11 +120,11 @@ class TimeController extends ModuleInstance {
 		if (isset($obj)) {
 			return $obj;
 		}
-		$obj = new Timezone();
-		$obj->name = $tz;
-		$obj->offset = 0;
-		$obj->time = '&lt;unknown&gt;';
-		return $obj;
+		return new Timezone(
+			name: $tz,
+			offset: 0,
+			time: '&lt;unknown&gt;',
+		);
 	}
 
 	public function getTimezone(string $tz): ?Timezone {
@@ -266,10 +266,10 @@ class TimeController extends ModuleInstance {
 				return null;
 		}
 
-		$obj = new Timezone();
-		$obj->name = $name;
-		$obj->offset = $offset;
-		$obj->time = date($time_format, (int)($time + $offset));
-		return $obj;
+		return new Timezone(
+			name: $name,
+			offset: $offset,
+			time: date($time_format, (int)($time + $offset)),
+		);
 	}
 }

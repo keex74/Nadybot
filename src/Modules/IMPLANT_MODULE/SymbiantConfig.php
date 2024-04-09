@@ -22,7 +22,6 @@ class SymbiantConfig {
 	public array $larm = [];
 
 	/** @var Symbiant[] */
-	/** @var Symbiant[] */
 	public array $rwrist = [];
 
 	/** @var Symbiant[] */

@@ -3,13 +3,13 @@
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
 class ArbiterEvent {
-	public int $start;
-
-	public int $end;
-
-	public string $shortName;
-
-	public string $longName;
+	public function __construct(
+		public int $start,
+		public int $end,
+		public string $shortName,
+		public string $longName,
+	) {
+	}
 
 	/** Check if this event is active during the given timestamp */
 	public function isActiveOn(int $time): bool {

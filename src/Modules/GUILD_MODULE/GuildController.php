@@ -325,10 +325,15 @@ class GuildController extends ModuleInstance {
 			->where('mode', '!=', 'del')
 			->where('logged_off', '>', $time)
 			->orderByDesc('logged_off')
-			->asObj(RecentOrgMember::class);
-		$members->each(function (RecentOrgMember $member): void {
-			$member->main = $this->altsController->getMainOf($member->name);
-		});
+			->asObj(OrgMember::class)
+			->map(function (OrgMember $member): RecentOrgMember {
+				return new RecentOrgMember(
+					main: $this->altsController->getMainOf($member->name),
+					name: $member->name,
+					mode: $member->mode,
+					logged_off: $member->logged_off,
+				);
+			});
 
 		if ($members->count() === 0) {
 			$context->reply('No members recorded.');

@@ -3,9 +3,10 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 class ImplantRequirements {
-	public int $treatment;
-
-	public int $abilities;
-
-	public int $titleLevel;
+	public function __construct(
+		public int $treatment,
+		public int $abilities,
+		public int $titleLevel,
+	) {
+	}
 }

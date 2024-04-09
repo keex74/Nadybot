@@ -272,11 +272,11 @@ class AOUController extends ModuleInstance {
 	}
 
 	private function getGuideObject(DOMElement $guide): AOUGuide {
-		$obj = new AOUGuide();
-		$obj->id = (int)$guide->getElementsByTagName('id')->item(0)->nodeValue;
-		$obj->name = $guide->getElementsByTagName('name')->item(0)->nodeValue;
-		$obj->description = $guide->getElementsByTagName('desc')->item(0)->nodeValue;
-		return $obj;
+		return new AOUGuide(
+			id: (int)$guide->getElementsByTagName('id')->item(0)->nodeValue,
+			name: $guide->getElementsByTagName('name')->item(0)->nodeValue,
+			description: $guide->getElementsByTagName('desc')->item(0)->nodeValue,
+		);
 	}
 
 	/** @param string[] $arr */

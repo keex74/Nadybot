@@ -3,5 +3,12 @@
 namespace Nadybot\Modules\GUILD_MODULE;
 
 class RecentOrgMember extends OrgMember {
-	public string $main;
+	public function __construct(
+		public string $main,
+		string $name,
+		?string $mode=null,
+		?int $logged_off=0,
+	) {
+		parent::__construct(name: $name, mode: $mode, logged_off: $logged_off);
+	}
 }

@@ -49,9 +49,6 @@ class ArbiterController extends ModuleInstance {
 
 	/** Calculate the next (or current) times for an event */
 	public function getNextForType(string $type, ?int $time=null): ArbiterEvent {
-		$event = new ArbiterEvent();
-		$event->shortName = $type;
-		$event->longName = $this->getLongName($event->shortName);
 		$time ??= time();
 
 		/** @var ?ICCArbiter */
@@ -62,16 +59,21 @@ class ArbiterController extends ModuleInstance {
 		if (!isset($entry)) {
 			throw new Exception("No arbiter data found for {$type}.");
 		}
-		$event->start = $entry->start->getTimestamp();
-		$event->end = $entry->end->getTimestamp();
-		$cycles = intdiv($time - $event->start, static::CYCLE_LENGTH);
-		$event->start += $cycles * static::CYCLE_LENGTH;
-		$event->end += $cycles * static::CYCLE_LENGTH;
-		if ($event->end <= $time) {
-			$event->start += static::CYCLE_LENGTH;
-			$event->end += static::CYCLE_LENGTH;
+		$start = $entry->start->getTimestamp();
+		$end = $entry->end->getTimestamp();
+		$cycles = intdiv($time - $start, static::CYCLE_LENGTH);
+		$start += $cycles * static::CYCLE_LENGTH;
+		$end += $cycles * static::CYCLE_LENGTH;
+		if ($end <= $time) {
+			$start += static::CYCLE_LENGTH;
+			$end += static::CYCLE_LENGTH;
 		}
-		return $event;
+		return new ArbiterEvent(
+			shortName: $type,
+			longName: $this->getLongName($type),
+			start: $start,
+			end: $end,
+		);
 	}
 
 	/** Calculate the next (or current) times for DIO */
