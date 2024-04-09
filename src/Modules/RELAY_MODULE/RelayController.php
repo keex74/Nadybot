@@ -1134,7 +1134,9 @@ class RelayController extends ModuleInstance {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 		try {
-			$event = $this->mapper->hydrateObject(RelayEventDiff::class, $body);
+			$oldData = $this->mapper->serializeObject($relay);
+			$update = Util::mergeArraysRecursive($oldData, $body);
+			$event = $this->mapper->hydrateObject(RelayEvent::class, $update);
 		} catch (Throwable $e) {
 			return new Response(
 				status: HttpStatus::UNPROCESSABLE_ENTITY,

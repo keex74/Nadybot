@@ -448,36 +448,25 @@ class NewsController extends ModuleInstance {
 			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
+			$default = [
+				'time' => time(),
+				'name' => $user,
+				'sticky' => false,
+				'deleted' => false,
+				'uuid' => Util::createUUID(),
+			];
+			$data = Util::mergeArraysRecursive($default, $body);
 
-			/** @var NewNews */
-			$newNews = $mapper->hydrateObject(NewNews::class, $body);
+			$news = $mapper->hydrateObject(News::class, $data);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		if (!isset($newNews->news)) {
-			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
-		}
-		$decoded = new News(
-			time: $newNews->time ?? time(),
-			name: $user,
-			sticky: $newNews->sticky ?? false,
-			deleted: $newNews->deleted ?? false,
-			uuid: Util::createUUID(),
-			news: $newNews->news,
-		);
 
-		if ($this->db->insert($decoded)) {
-			$event = new SyncNewsEvent(
-				time: $decoded->time,
-				name: $decoded->name,
-				news: $decoded->news,
-				uuid: $decoded->uuid,
-				sticky: $decoded->sticky,
-			);
-			$this->eventManager->fireEvent($event);
-			return new Response(status: HttpStatus::NO_CONTENT);
+		if ($this->db->insert($news) === 0) {
+			return new Response(status: HttpStatus::INTERNAL_SERVER_ERROR);
 		}
-		return new Response(status: HttpStatus::INTERNAL_SERVER_ERROR);
+		$this->eventManager->fireEvent(SyncNewsEvent::fromNews($news));
+		return new Response(status: HttpStatus::NO_CONTENT);
 	}
 
 	/** Modify an existing news item */
@@ -504,28 +493,17 @@ class NewsController extends ModuleInstance {
 			if (!is_array($body)) {
 				throw new Exception('Wrong content body');
 			}
-
-			$newNews = $mapper->hydrateObject(NewNews::class, $body);
+			$oldData = $mapper->serializeObject($oldItem);
+			$data = Util::mergeArraysRecursive($oldData, $body);
+			$news = $mapper->hydrateObject(News::class, $data);
 		} catch (Throwable) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		foreach (get_object_vars($newNews) as $prop => $value) {
-			if (isset($value)) {
-				$oldItem->{$prop} = $value;
-			}
-		}
-		$oldItem->name = $user;
-		if (!$this->db->update($oldItem)) {
-			$event = new SyncNewsEvent(
-				time: $oldItem->time,
-				name: $oldItem->name,
-				news: $oldItem->news,
-				uuid: $oldItem->uuid,
-				sticky: $oldItem->sticky,
-			);
-			$this->eventManager->fireEvent($event);
+		$news->name = $user;
+		if ($this->db->update($news) === 0) {
 			return new Response(status: HttpStatus::INTERNAL_SERVER_ERROR);
 		}
+		$this->eventManager->fireEvent(SyncNewsEvent::fromNews($news));
 		return ApiResponse::create($this->getNewsItem($id));
 	}
 

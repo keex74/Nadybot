@@ -440,4 +440,25 @@ class Util {
 	public static function enumToValue(BackedEnum $enum): int|string {
 		return $enum->value;
 	}
+
+	/**
+	 * @param array<string,mixed> $a
+	 * @param array<string,mixed> $b
+	 *
+	 * @return array<string,mixed>
+	 */
+	public static function mergeArraysRecursive(array $a, array $b): array {
+		foreach ($b as $key => $value) {
+			if (!array_key_exists($key, $a)) {
+				$a[$key] = $value;
+			} elseif (!is_array($value) || array_is_list($value)) {
+				$a[$key] = $value;
+			} elseif (!is_array($a[$key]) || array_is_list($a[$key])) {
+				$a[$key] = $value;
+			} else {
+				$a[$key] = self::mergeArraysRecursive($a[$key], $value);
+			}
+		}
+		return $a;
+	}
 }
