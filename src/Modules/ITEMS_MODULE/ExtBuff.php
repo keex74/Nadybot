@@ -3,6 +3,9 @@
 namespace Nadybot\Modules\ITEMS_MODULE;
 
 class ExtBuff {
-	public Skill $skill;
-	public int $amount;
+	public function __construct(
+		public Skill $skill,
+		public int $amount,
+	) {
+	}
 }

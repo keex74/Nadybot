@@ -6,9 +6,10 @@ class AuctionStartEvent extends AuctionStatusEvent {
 	public const EVENT_MASK = 'auction(start)';
 
 	public function __construct(
-		public Auction $auction,
-		public ?string $sender=null,
+		Auction $auction,
+		?string $sender=null,
 	) {
+		parent::__construct(auction: $auction, sender: $sender);
 		$this->type = self::EVENT_MASK;
 	}
 }

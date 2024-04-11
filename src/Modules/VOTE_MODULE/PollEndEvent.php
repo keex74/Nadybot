@@ -7,9 +7,10 @@ class PollEndEvent extends PollEvent {
 
 	/** @param Vote[] $votes */
 	public function __construct(
-		public Poll $poll,
-		public array $votes,
+		Poll $poll,
+		array $votes,
 	) {
+		parent::__construct(poll: $poll, votes: $votes);
 		$this->type = self::EVENT_MASK;
 	}
 }

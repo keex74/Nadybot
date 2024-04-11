@@ -40,8 +40,6 @@ class OrglistController extends ModuleInstance {
 	#[NCA\Setting\Boolean]
 	public bool $orglistShowOffline = true;
 
-	protected ?Orglist $orglist = null;
-
 	/** @var array<string,string[]> */
 	protected array $orgrankmap = [
 		'Anarchism'  => ['Anarchist'],
@@ -173,7 +171,6 @@ class OrglistController extends ModuleInstance {
 			$todo []= $member->name;
 		}
 
-		$onlineStates = [];
 		$numThreads = min($this->getFreeBuddylistSlots() - 5, count($org->members));
 		if (count($org->members) > 100 && $numThreads < 10) {
 			throw new UserException(

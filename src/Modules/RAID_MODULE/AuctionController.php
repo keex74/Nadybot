@@ -201,11 +201,11 @@ class AuctionController extends ModuleInstance {
 			$context->reply("There's already an auction running.");
 			return;
 		}
-		$auction = new Auction();
-		$auction->item = new RaffleItem();
-		$auction->item->fromString($item);
-		$auction->auctioneer = $context->char->name;
-		$auction->end = time() + $this->auctionDuration;
+		$auction = new Auction(
+			item: RaffleItem::fromString($item),
+			auctioneer: $context->char->name,
+			end: time() + $this->auctionDuration,
+		);
 		$this->startAuction($auction);
 	}
 

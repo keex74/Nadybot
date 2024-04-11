@@ -30,6 +30,7 @@ class LinksController extends ModuleInstance {
 	/** Enable full urls in the link list output */
 	#[NCA\Setting\Boolean]
 	public bool $showfullurls = false;
+
 	#[NCA\Inject]
 	private DB $db;
 

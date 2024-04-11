@@ -124,8 +124,7 @@ class PackageController extends ModuleInstance {
 		foreach ($packages as $package) {
 			$pGroup = $groupedPackages[$package->name] ?? null;
 			if (!isset($pGroup)) {
-				$pGroup = new PackageGroup();
-				$pGroup->name = $package->name;
+				$pGroup = new PackageGroup(name: $package->name);
 				$groupedPackages[$package->name] = $pGroup;
 			}
 			$pGroup->highest ??= $package;
@@ -373,10 +372,13 @@ class PackageController extends ModuleInstance {
 			);
 			return;
 		}
-		$cmd = new PackageAction($package(), PackageAction::INSTALL);
-		$cmd->version = isset($version) ? new SemanticVersion($version) : null;
-		$cmd->sender = $context->char->name;
-		$cmd->sendto = $context;
+		$cmd = new PackageAction(
+			package: $package(),
+			action: PackageAction::INSTALL,
+			version: isset($version) ? new SemanticVersion($version) : null,
+			sender: $context->char->name,
+			sendto: $context,
+		);
 		$packages = $this->getPackage($package());
 		if (!count($packages)) {
 			$context->reply("{$package} is not compatible with Nadybot.");
@@ -404,10 +406,13 @@ class PackageController extends ModuleInstance {
 			);
 			return;
 		}
-		$cmd = new PackageAction($package(), PackageAction::UPGRADE);
-		$cmd->version = isset($version) ? new SemanticVersion($version) : null;
-		$cmd->sender = $context->char->name;
-		$cmd->sendto = $context;
+		$cmd = new PackageAction(
+			package: $package(),
+			action: PackageAction::UPGRADE,
+			version: isset($version) ? new SemanticVersion($version) : null,
+			sender: $context->char->name,
+			sendto: $context,
+		);
 		$packages = $this->getPackage($package());
 		if (!count($packages)) {
 			$context->reply("{$package} is not compatible with Nadybot.");

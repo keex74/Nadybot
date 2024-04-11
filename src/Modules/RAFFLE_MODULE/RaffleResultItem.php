@@ -3,13 +3,11 @@
 namespace Nadybot\Modules\RAFFLE_MODULE;
 
 class RaffleResultItem {
-	public string $player;
 	public int $points = 500;
 	public int $bonus_points = 0;
 	public bool $won = false;
 
-	public function __construct(string $player) {
-		$this->player = $player;
+	public function __construct(public string $player) {
 	}
 
 	public function decreasePoints(): int {

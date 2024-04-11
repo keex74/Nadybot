@@ -137,9 +137,8 @@ class BankController extends ModuleInstance {
 		$blob = '<header2>Items in ' . $data[0]->container . "<end>\n";
 		foreach ($data as $row) {
 			/** @var Bank $row */
-			$item = new RaffleItem();
 			$itemLink = $row->getLink();
-			$item->fromString($itemLink);
+			$item = RaffleItem::fromString($itemLink);
 			$itemLink = $item->toString();
 			$compactItemLink = str_replace("'", '', $itemLink);
 			$askLink = Text::makeChatcmd('ask', "/tell <myname> wish from {$name} {$compactItemLink} from {$data[0]->container}");
@@ -191,8 +190,7 @@ class BankController extends ModuleInstance {
 		foreach ($foundItems as $item) {
 			/** @var Bank $item */
 			$itemLink = $item->getLink();
-			$item2 = new RaffleItem();
-			$item2->fromString($itemLink);
+			$item2 = RaffleItem::fromString($itemLink);
 			$itemLink = $item2->toString();
 			$compactItemLink = str_replace("'", '', $itemLink);
 			$askLink = Text::makeChatcmd('ask', "/tell <myname> wish from {$item->player} {$compactItemLink} from {$item->container}");

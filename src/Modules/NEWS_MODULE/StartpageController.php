@@ -465,9 +465,12 @@ class StartpageController extends ModuleInstance {
 				"{$funcName} cannot be made into a closure."
 			);
 		}
-		$tile = new NewsTile($name, $closure);
-		$tile->description = $attrObj->description;
-		$tile->example = $attrObj->example;
+		$tile = new NewsTile(
+			name: $name,
+			callback: $closure,
+			description: $attrObj->description,
+			example: $attrObj->example,
+		);
 		$this->registerNewsTile($tile);
 	}
 

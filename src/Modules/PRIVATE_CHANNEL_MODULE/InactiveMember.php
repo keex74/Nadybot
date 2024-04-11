@@ -5,6 +5,9 @@ namespace Nadybot\Modules\PRIVATE_CHANNEL_MODULE;
 use Nadybot\Core\DBSchema\LastOnline;
 
 class InactiveMember {
-	public string $name;
-	public ?LastOnline $last_online=null;
+	public function __construct(
+		public string $name,
+		public ?LastOnline $last_online=null,
+	) {
+	}
 }

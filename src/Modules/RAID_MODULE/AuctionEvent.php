@@ -7,6 +7,9 @@ use Nadybot\Core\Event;
 abstract class AuctionEvent extends Event {
 	public const EVENT_MASK = 'auction(*)';
 
-	/** The auction */
-	public Auction $auction;
+	/** @param Auction $auction The auction */
+	public function __construct(
+		public Auction $auction,
+	) {
+	}
 }

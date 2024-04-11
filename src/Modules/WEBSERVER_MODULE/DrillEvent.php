@@ -8,5 +8,9 @@ use Nadybot\Core\Event;
 class DrillEvent extends Event {
 	public const EVENT_MASK = 'drill(*)';
 
-	public WebsocketConnection $client;
+	public function __construct(
+		public WebsocketConnection $client,
+	) {
+		$this->type = self::EVENT_MASK;
+	}
 }

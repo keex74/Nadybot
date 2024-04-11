@@ -18,7 +18,7 @@ class Connection {
 	#[NCA\Inject]
 	private WebserverController $wsCtrl;
 
-	private ?Socket $webClient;
+	private ?Socket $webClient=null;
 
 	public function __construct(
 		public string $uuid,

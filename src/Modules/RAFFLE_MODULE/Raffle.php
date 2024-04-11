@@ -6,32 +6,31 @@ use function Safe\preg_split;
 use Nadybot\Core\{CommandReply, Safe};
 
 class Raffle {
-	/** @var RaffleSlot[] */
-	public array $slots = [];
-
 	/** Timestamp when the raffle was started*/
 	public int $start;
-
-	/** Where to send announcements, etc. to */
-	public CommandReply $sendto;
-
-	/** Name of the character giving away items */
-	public string $raffler;
-
-	/** If set, this is the unix timestamp when the raffle will end */
-	public ?int $end = null;
-
-	/** Interval (in second) between 2 announcements */
-	public ?int $announceInterval = null;
 
 	/** Unix timestamp when the raffle was announced the last time */
 	public ?int $lastAnnounce = null;
 
-	/** Allow someone to join for more than 1 item at a time */
-	public bool $allowMultiJoin = true;
-
-	public function __construct() {
-		$this->start = $this->lastAnnounce = time();
+	/**
+	 * @param CommandReply $sendto           Where to send announcements, etc. to
+	 * @param string       $raffler          Name of the character giving away items
+	 * @param RaffleSlot[] $slots
+	 * @param ?int         $start            Timestamp when the raffle was started
+	 * @param ?int         $end              If set, this is the unix timestamp when the raffle will end
+	 * @param ?int         $announceInterval Interval (in second) between 2 announcements
+	 * @param bool         $allowMultiJoin   Allow someone to join for more than 1 item at a time
+	 */
+	public function __construct(
+		public CommandReply $sendto,
+		public string $raffler,
+		public array $slots=[],
+		?int $start=null,
+		public ?int $end=null,
+		public ?int $announceInterval=null,
+		public bool $allowMultiJoin=true,
+	) {
+		$this->start = $this->lastAnnounce = $start ?? time();
 	}
 
 	public function toString(string $prefix=''): string {

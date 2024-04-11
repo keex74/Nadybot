@@ -3,18 +3,15 @@
 namespace Nadybot\Modules\LOOT_MODULE;
 
 class LootItem {
-	public string $name;
-
-	public ?int $icon;
-
-	public string $added_by;
-
-	public string $display;
-
-	public string $comment = '';
-
-	public int $multiloot = 1;
-
-	/** @var array<string,bool> */
-	public array $users = [];
+	/** @param array<string,bool> $users */
+	public function __construct(
+		public string $name,
+		public string $added_by,
+		public string $display,
+		public ?int $icon=null,
+		public string $comment='',
+		public int $multiloot=1,
+		public array $users=[],
+	) {
+	}
 }

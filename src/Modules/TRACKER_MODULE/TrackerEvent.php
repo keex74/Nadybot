@@ -7,6 +7,10 @@ use Nadybot\Core\Event;
 abstract class TrackerEvent extends Event {
 	public const EVENT_MASK = 'tracker(*)';
 
-	public string $player;
-	public int $uid;
+	public function __construct(
+		public string $player,
+		public int $uid,
+	) {
+		$this->type = self::EVENT_MASK;
+	}
 }

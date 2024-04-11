@@ -7,8 +7,11 @@ use Nadybot\Core\Event;
 class PollEvent extends Event {
 	public const EVENT_MASK = 'poll(*)';
 
-	public Poll $poll;
-
-	/** @var Vote[] */
-	public array $votes;
+	/** @param Vote[] $votes */
+	public function __construct(
+		public Poll $poll,
+		public array $votes,
+	) {
+		$this->type = self::EVENT_MASK;
+	}
 }

@@ -27,9 +27,7 @@ class RaffleSlot {
 		}
 		$items = preg_split("/\s*\+\s*/", $text);
 		foreach ($items as $item) {
-			$itemObj = new RaffleItem();
-			$itemObj->fromString($item);
-			$this->items []= $itemObj;
+			$this->items []= RaffleItem::fromString($item);
 		}
 	}
 

@@ -6,11 +6,12 @@ class VoteChangeEvent extends VoteEvent {
 	public const EVENT_MASK = 'vote(change)';
 
 	public function __construct(
-		public Poll $poll,
-		public string $player,
+		Poll $poll,
+		string $player,
 		public string $vote,
 		public string $oldVote,
 	) {
+		parent::__construct(poll: $poll, player: $player);
 		$this->type = self::EVENT_MASK;
 	}
 }

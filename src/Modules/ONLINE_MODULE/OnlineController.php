@@ -969,11 +969,12 @@ class OnlineController extends ModuleInstance {
 	public function formatData(array $players, int $showOrgInfo, ?int $groupBy=null): OnlineList {
 		$currentGroup = '';
 		$separator = '-';
-		$list = new OnlineList();
-		$list->count = count($players);
-		$list->countMains = 0;
-		$list->mains = [];
-		$list->blob = '';
+		$list = new OnlineList(
+			count: count($players),
+			countMains: 0,
+			mains: [],
+			blob: '',
+		);
 
 		if ($list->count === 0) {
 			return $list;
@@ -1088,9 +1089,10 @@ class OnlineController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'OnlinePlayers', desc: 'A list of online players')
 	]
 	public function apiOnlineEndpoint(Request $request): Response {
-		$result = new OnlinePlayers();
-		$result->org = $this->getPlayers('guild');
-		$result->private_channel = $this->getPlayers('priv');
+		$result = new OnlinePlayers(
+			org: $this->getPlayers('guild'),
+			private_channel: $this->getPlayers('priv'),
+		);
 		return ApiResponse::create($result);
 	}
 

@@ -5,15 +5,16 @@ namespace Nadybot\Modules\ORGLIST_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\ORGLIST_MODULE\Organization;
 use Psr\Log\LoggerInterface;
 
-#[NCA\Migration(order: 2021_12_15_19_39_45, shared: true)]
+#[NCA\Migration(order: 2024_04_10_14_58_00, shared: true)]
 class CreateOrganizationsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'organizations';
+		$table = Organization::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table) {
-			$table->unsignedInteger('id')->index();
+			$table->unsignedInteger('id')->primary();
 			$table->string('name', 40)->index();
 			$table->string('faction', 10);
 			$table->unsignedInteger('num_members');

@@ -68,7 +68,7 @@ class WebsocketCommandReply implements CommandReply, MessageEmitter {
 		}
 		$msgs = $this->webChatConverter->convertMessages($msg);
 		foreach ($msgs as $msg) {
-			$path = new WebSource(Source::WEB, 'Web');
+			$path = new WebSource(type: Source::WEB, name: 'Web', color: '');
 			$path->renderAs = $path->render(null);
 			$hopColor = $this->messageHub->getHopColor($rMessage->path, Source::WEB, new Source(Source::WEB, 'Web'), 'tag_color');
 			if (isset($color, $hopColor->tag_color)) {

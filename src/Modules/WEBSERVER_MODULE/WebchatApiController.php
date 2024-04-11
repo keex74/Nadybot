@@ -63,7 +63,11 @@ class WebchatApiController extends ModuleInstance {
 		if (!is_string($message) || !isset($user)) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
-		$src = new WebSource(Source::WEB, 'Web');
+		$src = new WebSource(
+			type: Source::WEB,
+			name: 'Web',
+			color: '',
+		);
 		$src->renderAs = $src->render(null);
 		$color = $this->messageHub->getHopColor([$src], Source::WEB, new Source(Source::WEB, 'Web'), 'tag_color');
 		if (isset($color, $color->tag_color)) {

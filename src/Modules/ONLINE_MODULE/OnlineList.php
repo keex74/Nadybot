@@ -3,10 +3,12 @@
 namespace Nadybot\Modules\ONLINE_MODULE;
 
 class OnlineList {
-	public int $count;
-	public int $countMains;
-	public string $blob;
-
-	/** @var string[] */
-	public array $mains;
+	/** @param string[] $mains */
+	public function __construct(
+		public int $count,
+		public int $countMains,
+		public string $blob,
+		public array $mains,
+	) {
+	}
 }

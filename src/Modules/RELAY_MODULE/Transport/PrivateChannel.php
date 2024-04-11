@@ -88,9 +88,10 @@ class PrivateChannel implements TransportInterface, StatusProvider {
 		if (strtolower($event->channel) !== strtolower($this->channel)) {
 			return;
 		}
-		$msg = new RelayMessage();
-		$msg->packages []= $event->message;
-		$msg->sender = $event->sender;
+		$msg = new RelayMessage(
+			packages: [$event->message],
+			sender: $event->sender,
+		);
 		$this->relay->receiveFromTransport($msg);
 		throw new StopExecutionException();
 	}

@@ -11,25 +11,21 @@ use ReflectionUnionType;
 use RuntimeException;
 
 class NewsTile {
-	/** The name of this news tile */
-	public string $name;
-
-	/** A description what this news tile shows */
-	public string $description;
-
-	/** An example what this could look like if there was data */
-	public ?string $example;
-
-	/** The callback that returns the news tile data */
-	#[JSON\Ignore]
-	public Closure $callback;
-
-	public function __construct(string $name, callable $callback) {
+	/**
+	 * @param string  $name        The name of this news tile
+	 * @param Closure $callback    A description what this news tile shows
+	 * @param string  $description An example what this could look like if there was data
+	 * @param ?string $example     The callback that returns the news tile data
+	 */
+	public function __construct(
+		public string $name,
+		#[JSON\Ignore] public Closure $callback,
+		public string $description,
+		public ?string $example,
+	) {
 		if (str_contains($name, ';')) {
 			throw new InvalidArgumentException("The news tile {$name} contains a semicolon.");
 		}
-		$this->name = $name;
-		$this->callback = Closure::fromCallable($callback);
 		$ref = new ReflectionFunction($this->callback);
 		$funcHint = 'function';
 		$scopeClass = $ref->getClosureScopeClass();

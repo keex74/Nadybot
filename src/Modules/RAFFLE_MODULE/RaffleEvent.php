@@ -4,8 +4,11 @@ namespace Nadybot\Modules\RAFFLE_MODULE;
 
 use Nadybot\Core\Event;
 
-class RaffleEvent extends Event {
+abstract class RaffleEvent extends Event {
 	public const EVENT_MASK = 'raffle(*)';
 
-	public Raffle $raffle;
+	public function __construct(
+		public Raffle $raffle,
+	) {
+	}
 }

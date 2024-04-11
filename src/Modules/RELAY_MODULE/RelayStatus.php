@@ -7,13 +7,10 @@ class RelayStatus {
 	public const INIT = 'warning';
 	public const READY = 'ready';
 
-	public string $type = self::ERROR;
-
-	public string $text = 'Unknown';
-
-	public function __construct(string $type=self::ERROR, string $text='Unknown') {
-		$this->type = $type;
-		$this->text = $text;
+	public function __construct(
+		public string $type=self::ERROR,
+		public string $text='Unknown',
+	) {
 	}
 
 	public function toString(): string {

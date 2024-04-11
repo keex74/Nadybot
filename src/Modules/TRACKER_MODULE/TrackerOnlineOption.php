@@ -3,7 +3,9 @@
 namespace Nadybot\Modules\TRACKER_MODULE;
 
 class TrackerOnlineOption {
-	public string $type;
-
-	public string $value;
+	public function __construct(
+		public string $type,
+		public string $value,
+	) {
+	}
 }

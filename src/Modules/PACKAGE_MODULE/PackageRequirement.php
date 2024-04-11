@@ -3,9 +3,13 @@
 namespace Nadybot\Modules\PACKAGE_MODULE;
 
 class PackageRequirement {
-	/** Name of the module/extension that's required */
-	public string $name;
-
-	/** The required version */
-	public string $version;
+	/**
+	 * @param string $name    Name of the module/extension that's required
+	 * @param string $version The required version
+	 */
+	public function __construct(
+		public string $name,
+		public string $version,
+	) {
+	}
 }

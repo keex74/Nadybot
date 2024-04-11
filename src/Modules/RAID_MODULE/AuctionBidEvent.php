@@ -6,8 +6,9 @@ class AuctionBidEvent extends AuctionEvent {
 	public const EVENT_MASK = 'auction(bid)';
 
 	public function __construct(
-		public Auction $auction,
+		Auction $auction,
 	) {
+		parent::__construct(auction: $auction);
 		$this->type = self::EVENT_MASK;
 	}
 }

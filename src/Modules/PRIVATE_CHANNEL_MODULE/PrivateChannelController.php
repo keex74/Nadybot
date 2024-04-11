@@ -441,10 +441,10 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		$inactiveMembers = $members->keyBy(function (Member $member): string {
 			return $this->altsController->getMainOf($member->name);
 		})->map(static function (Member $member, string $main) use ($lastOnline): InactiveMember {
-			$result = new InactiveMember();
-			$result->name = $member->name;
-			$result->last_online = $lastOnline->get($main, null);
-			return $result;
+			return new InactiveMember(
+				name: $member->name,
+				last_online: $lastOnline->get($main, null),
+			);
 		})->filter(static function (InactiveMember $member) use ($time): bool {
 			return $member->last_online?->dt < $time;
 		})->sortKeys()
@@ -779,11 +779,11 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 
 		/** @var Collection<OrgCount> */
 		$orgStats = $byOrg->map(static function (Collection $chars, string $orgName): OrgCount {
-			$result = new OrgCount();
-			$result->avgLevel = $chars->avg('level');
-			$result->numPlayers = $chars->count();
-			$result->orgName = strlen($orgName) ? $orgName : null;
-			return $result;
+			return new OrgCount(
+				avgLevel: $chars->avg('level'),
+				numPlayers: $chars->count(),
+				orgName: strlen($orgName) ? $orgName : null,
+			);
 		})->flatten()->sortByDesc('avgLevel')->sortByDesc('numPlayers');
 
 		$lines = $orgStats->map(static function (OrgCount $org) use ($online): string {

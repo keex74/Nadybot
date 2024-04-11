@@ -46,7 +46,7 @@ class WebChatConverter extends ModuleInstance {
 		$result = [];
 		$lastHop = null;
 		foreach ($path as $hop) {
-			$newHop = new WebSource($hop->type, $hop->name, $hop->label);
+			$newHop = new WebSource(type: $hop->type, name: $hop->name, label: $hop->label, color: '');
 			foreach (get_object_vars($hop) as $key => $value) {
 				$newHop->{$key} = $value;
 			}

@@ -11,6 +11,7 @@ use Nadybot\Core\{
 	MessageReceiver,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
+	Registry,
 	Routing\RoutableEvent,
 	Routing\Source,
 	SettingManager,
@@ -32,34 +33,14 @@ class Relay implements MessageReceiver {
 	public bool $registerAsReceiver = true;
 	public bool $registerAsEmitter = true;
 
-	public MessageQueue $msgQueue;
-
-	/** Name of this relay */
-	protected string $name;
-
-	/**
-	 * @var RelayLayerInterface[]
-	 *
-	 * @psalm-var list<RelayLayerInterface>
-	 */
-	protected array $stack = [];
-
-	/**
-	 * Events that this relay sends and/or receives
-	 *
-	 * @var array<string,RelayEvent>
-	 */
-	protected array $events = [];
-
-	/** The transport  */
-	protected TransportInterface $transport;
-	protected RelayProtocolInterface $relayProtocol;
-
 	/** @var array<string,array<string,OnlinePlayer>> */
-	protected $onlineChars = [];
+	private $onlineChars = [];
 
-	protected bool $initialized = false;
-	protected int $initStep = 0;
+	/** @var array<string,RelayEvent> */
+	private array $events = [];
+
+	private bool $initialized = false;
+	private int $initStep = 0;
 
 	#[NCA\Logger]
 	private LoggerInterface $logger;
@@ -82,9 +63,27 @@ class Relay implements MessageReceiver {
 	private RelayPacketsStats $inboundPackets;
 	private RelayPacketsStats $outboundPackets;
 
-	public function __construct(string $name) {
-		$this->msgQueue = new MessageQueue();
-		$this->name = $name;
+	/**
+	 * @param RelayLayerInterface[] $stack
+	 * @param RelayEvent[]          $events Events that this relay sends and/or receives
+	 */
+	public function __construct(
+		public string $name,
+		private TransportInterface $transport,
+		private RelayProtocolInterface $relayProtocol,
+		private array $stack=[],
+		array $events=[],
+		public MessageQueue $msgQueue=new MessageQueue(),
+	) {
+		foreach ($events as $event) {
+			$this->events[$event->event] = $event;
+		}
+		Registry::injectDependencies($this);
+		$basename = basename(str_replace('\\', '/', $relayProtocol::class));
+		$this->inboundPackets = new RelayPacketsStats($basename, $this->getName(), 'in');
+		$this->outboundPackets = new RelayPacketsStats($basename, $this->getName(), 'out');
+		$this->statsController->registerProvider($this->inboundPackets, 'relay');
+		$this->statsController->registerProvider($this->outboundPackets, 'relay');
 	}
 
 	public function setMessageQueueSize(int $size): void {
@@ -207,23 +206,6 @@ class Relay implements MessageReceiver {
 
 	public function getChannelName(): string {
 		return Source::RELAY . "({$this->name})";
-	}
-
-	/** Set the stack members that make up the stack */
-	public function setStack(
-		TransportInterface $transport,
-		RelayProtocolInterface $relayProtocol,
-		RelayLayerInterface ...$stack
-	): void {
-		/** @var list<RelayLayerInterface> $stack */
-		$this->transport = $transport;
-		$this->relayProtocol = $relayProtocol;
-		$this->stack = $stack;
-		$basename = basename(str_replace('\\', '/', $relayProtocol::class));
-		$this->inboundPackets = new RelayPacketsStats($basename, $this->getName(), 'in');
-		$this->outboundPackets = new RelayPacketsStats($basename, $this->getName(), 'out');
-		$this->statsController->registerProvider($this->inboundPackets, 'relay');
-		$this->statsController->registerProvider($this->outboundPackets, 'relay');
 	}
 
 	public function deinit(?callable $callback=null, int $index=0): void {
@@ -359,7 +341,6 @@ class Relay implements MessageReceiver {
 		$this->prependMainHop($event);
 		$data = $this->relayProtocol->send($event);
 		for ($i = count($this->stack); $i--;) {
-			/** @psalm-suppress InvalidArrayOffset */
 			$data = $this->stack[$i]->send($data);
 		}
 		$this->outboundPackets->inc(count($data));
@@ -371,14 +352,12 @@ class Relay implements MessageReceiver {
 		$i = count($this->stack);
 		if ($member !== $this->relayProtocol) {
 			for ($i = count($this->stack); $i--;) {
-				/** @psalm-suppress InvalidArrayOffset */
 				if ($this->stack[$i] === $member) {
 					break;
 				}
 			}
 		}
 		for ($j = $i; $j--;) {
-			/** @psalm-suppress InvalidArrayOffset */
 			$data = $this->stack[$j]->send($data);
 		}
 		$this->outboundPackets->inc(count($data));

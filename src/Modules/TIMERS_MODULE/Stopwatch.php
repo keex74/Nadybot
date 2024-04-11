@@ -18,8 +18,10 @@ class Stopwatch {
 
 	public ?DateTimeInterface $end = null;
 
-	public function __construct() {
-		$this->start = new DateTimeImmutable();
+	public function __construct(
+		?DateTimeInterface $start=null,
+	) {
+		$this->start = $start ?? new DateTimeImmutable();
 	}
 
 	/** Get a textual representation of the timer */

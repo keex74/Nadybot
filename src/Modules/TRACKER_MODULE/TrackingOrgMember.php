@@ -2,14 +2,14 @@
 
 namespace Nadybot\Modules\TRACKER_MODULE;
 
-use Nadybot\Core\Attributes\DB\{PK, Table};
+use Nadybot\Core\Attributes\DB\{Table};
 use Nadybot\Core\DBTable;
 
 #[Table(name: 'tracking_org_member')]
 class TrackingOrgMember extends DBTable {
 	public function __construct(
-		#[PK] public int $org_id,
-		#[PK] public int $uid,
+		public int $org_id,
+		public int $uid,
 		public string $name,
 		public bool $hidden=false,
 	) {

@@ -19,8 +19,8 @@ class RaidMember extends DBTable {
 	 * @param ?int   $joined           UNIX Timestamp when they joined the raid
 	 */
 	public function __construct(
-		#[DB\PK] public int $raid_id,
-		#[DB\PK] public string $player,
+		public int $raid_id,
+		public string $player,
 		public ?int $left=null,
 		#[DB\Ignore] public int $points=0,
 		#[DB\Ignore] public int $pointsRewarded=0,

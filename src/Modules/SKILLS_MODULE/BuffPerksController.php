@@ -485,15 +485,15 @@ class BuffPerksController extends ModuleInstance {
 	 * of buffs, actions and resistances, losing level-granularity
 	 */
 	protected function aggregatePerk(Perk $perk): PerkAggregate {
-		$result = new PerkAggregate();
-		$result->expansion = $perk->expansion;
-		$result->name = $perk->name;
-		$result->description = $perk->description;
-
 		/** @var int */
 		$minLevel = (new Collection($perk->levels))->keys()->min();
-		$result->professions = $perk->levels[$minLevel]->professions;
-		$result->max_level = (new Collection($perk->levels))->keys()->max();
+		$result = new PerkAggregate(
+			expansion: $perk->expansion,
+			name: $perk->name,
+			description: $perk->description,
+			professions: $perk->levels[$minLevel]->professions,
+			max_level: (new Collection($perk->levels))->keys()->max(),
+		);
 
 		/** @var array<int,int> */
 		$buffs = [];
@@ -727,10 +727,10 @@ class BuffPerksController extends ModuleInstance {
 			if (!isset($skill)) {
 				continue;
 			}
-			$buff = new ExtBuff();
-			$buff->skill = $skill;
-			$buff->amount = $amount;
-			$result []= $buff;
+			$result []= new ExtBuff(
+				skill: $skill,
+				amount: $amount,
+			);
 		}
 		return $result->sort(static function (ExtBuff $b1, ExtBuff $b2): int {
 			return strnatcmp($b1->skill->name, $b2->skill->name);
@@ -749,10 +749,10 @@ class BuffPerksController extends ModuleInstance {
 			if (!isset($nanoline)) {
 				continue;
 			}
-			$resistance = new ExtResistance();
-			$resistance->nanoline = $nanoline;
-			$resistance->amount = $amount;
-			$result []= $resistance;
+			$result []= new ExtResistance(
+				nanoline: $nanoline,
+				amount: $amount,
+			);
 		}
 		return $result->sort(static function (ExtResistance $b1, ExtResistance $b2): int {
 			return strnatcmp($b1->nanoline->name, $b2->nanoline->name);

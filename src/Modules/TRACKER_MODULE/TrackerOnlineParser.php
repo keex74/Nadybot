@@ -70,9 +70,9 @@ class TrackerOnlineParser {
 	}
 
 	protected function parseOption(Branch $option): TrackerOnlineOption {
-		$result = new TrackerOnlineOption();
-		$result->type = $option->getSubnode(0)->getType();
-		$result->value = $option->toString();
-		return $result;
+		return new TrackerOnlineOption(
+			type: $option->getSubnode(0)->getType(),
+			value: $option->toString(),
+		);
 	}
 }

@@ -13,12 +13,12 @@ class Dataset {
 	/** @var ValueProvider[] */
 	private array $providers = [];
 
-	private string $name;
-
-	public function __construct(string $name, string ...$tags) {
+	public function __construct(
+		private string $name,
+		string ...$tags
+	) {
 		sort($tags);
 		$this->tags = $tags;
-		$this->name = $name;
 	}
 
 	public function registerProvider(ValueProvider $provider): void {

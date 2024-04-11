@@ -229,9 +229,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 			while (null !== ($message = $this->client->receive())) {
 				$data = $message->buffer();
 
-				/** @var string $data */
-				$msg = new RelayMessage();
-				$msg->packages = [$data];
+				$msg = new RelayMessage(packages: [$data]);
 				$this->relay->receiveFromTransport($msg);
 			}
 		} catch (Throwable $e) {

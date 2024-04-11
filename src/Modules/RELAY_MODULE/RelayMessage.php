@@ -3,8 +3,10 @@
 namespace Nadybot\Modules\RELAY_MODULE;
 
 class RelayMessage {
-	public ?string $sender = null;
-
-	/** @var string[] */
-	public array $packages = [];
+	/** @param string[] $packages */
+	public function __construct(
+		public ?string $sender=null,
+		public array $packages=[],
+	) {
+	}
 }

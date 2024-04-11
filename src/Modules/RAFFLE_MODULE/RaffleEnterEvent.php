@@ -6,9 +6,10 @@ class RaffleEnterEvent extends RaffleParticipationEvent {
 	public const EVENT_MASK = 'raffle(enter)';
 
 	public function __construct(
-		public Raffle $raffle,
+		Raffle $raffle,
 		public string $player,
 	) {
+		parent::__construct(raffle: $raffle, player: $player);
 		$this->type = self::EVENT_MASK;
 	}
 }

@@ -10,9 +10,10 @@ class DrillPacketEvent extends DrillEvent {
 	public const EVENT_MASK = 'drill(*)';
 
 	public function __construct(
-		public WebsocketConnection $client,
+		WebsocketConnection $client,
 		public Packet\Base $packet,
 	) {
+		parent::__construct(client: $client);
 		$kebabCase = Safe::pregReplace(
 			'/([a-z])([A-Z])/',
 			'$1-$2',

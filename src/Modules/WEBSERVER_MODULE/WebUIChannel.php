@@ -6,10 +6,9 @@ use Nadybot\Core\Routing\{RoutableMessage, Source};
 use Nadybot\Core\{CommandReply, MessageEmitter, MessageHub};
 
 class WebUIChannel implements CommandReply, MessageEmitter {
-	public MessageHub $messageHub;
-
-	public function __construct(MessageHub $hub) {
-		$this->messageHub = $hub;
+	public function __construct(
+		private MessageHub $messageHub
+	) {
 	}
 
 	public function getChannelName(): string {

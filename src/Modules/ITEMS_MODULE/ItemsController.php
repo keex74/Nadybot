@@ -748,10 +748,10 @@ class ItemsController extends ModuleInstance {
 		$buffs = $buffs->groupBy('item_id')
 			->map(static function (Collection $iBuffs, int $itemId) use ($skills): array {
 				return $iBuffs->map(static function (ItemBuff $buff) use ($skills): ExtBuff {
-					$res = new ExtBuff();
-					$res->skill = $skills->get($buff->attribute_id);
-					$res->amount = $buff->amount;
-					return $res;
+					return new ExtBuff(
+						skill: $skills->get($buff->attribute_id),
+						amount: $buff->amount,
+					);
 				})->toArray();
 			});
 		$result = new Collection();

@@ -177,13 +177,16 @@ class RaffleController extends ModuleInstance {
 			$duration = $raffleTime;
 			$raffleString = Safe::pregReplace('/^.+? /', '', $raffleString);
 		}
-		$this->raffle = new Raffle();
+		$start = time();
+		$this->raffle = new Raffle(
+			raffler: $context->char->name,
+			start: $start,
+			end: isset($duration) ? $start + $duration : null,
+			sendto: $context,
+			announceInterval: $this->raffleAnnounceFrequency,
+			allowMultiJoin: $this->raffleAllowMultiJoin,
+		);
 		$this->raffle->fromString($raffleString);
-		$this->raffle->raffler = $context->char->name;
-		$this->raffle->end = isset($duration) ? $this->raffle->start + $duration : null;
-		$this->raffle->sendto = $context;
-		$this->raffle->announceInterval = $this->raffleAnnounceFrequency;
-		$this->raffle->allowMultiJoin = $this->raffleAllowMultiJoin;
 		if ($context->isDM()) {
 			$this->raffle->sendto = new PrivateChannelCommandReply(
 				$this->chatBot,
@@ -233,13 +236,16 @@ class RaffleController extends ModuleInstance {
 			$duration = $raffleTime;
 			$raffleString = Safe::pregReplace('/^.+? /', '', $raffleString);
 		}
-		$raffle = new Raffle();
+		$start = time();
+		$raffle = new Raffle(
+			start: $start,
+			raffler: $context->char->name,
+			end: isset($duration) ? $start + $duration : null,
+			sendto: $context,
+			announceInterval: $this->raffleAnnounceFrequency,
+			allowMultiJoin: $this->raffleAllowMultiJoin,
+		);
 		$raffle->fromString($raffleString);
-		$raffle->raffler = $context->char->name;
-		$raffle->end = isset($duration) ? $raffle->start + $duration : null;
-		$raffle->sendto = $context;
-		$raffle->announceInterval = $this->raffleAnnounceFrequency;
-		$raffle->allowMultiJoin = $this->raffleAllowMultiJoin;
 		if ($context->isDM()) {
 			$raffle->sendto = new PrivateChannelCommandReply(
 				$this->chatBot,

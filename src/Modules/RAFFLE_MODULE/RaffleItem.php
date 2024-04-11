@@ -9,18 +9,22 @@ use Nadybot\Modules\ITEMS_MODULE\ItemsController;
 use Nadybot\Modules\SPIRITS_MODULE\SpiritsController;
 
 class RaffleItem {
-	public int $amount = 1;
-	public string $item;
+	public function __construct(
+		public string $item,
+		public int $amount=1,
+	) {
+	}
 
-	public function fromString(string $text): void {
+	public static function fromString(string $text): self {
+		$amount = 1;
 		if (count($matches = Safe::pregMatch("/^(?<count>\d+)x?\s*[^\/\d]/", $text))) {
-			$this->amount = (int)$matches['count'];
+			$amount = (int)$matches['count'];
 			$text = Safe::pregReplace("/^(\d+)x?\s*/", '', $text);
 		}
 
 		/** @var string */
 		$text = Safe::pregReplace("/['\"](itemref:\/\/\d+\/\d+\/\d+)['\"]/", '$1', $text);
-		$this->item = $text;
+		return new self(amount: $amount, item: $text);
 	}
 
 	public function toString(): string {

@@ -5,6 +5,9 @@ namespace Nadybot\Modules\SKILLS_MODULE;
 use Nadybot\Modules\NANO_MODULE\Nanoline;
 
 class ExtResistance {
-	public Nanoline $nanoline;
-	public int $amount;
+	public function __construct(
+		public Nanoline $nanoline,
+		public int $amount,
+	) {
+	}
 }

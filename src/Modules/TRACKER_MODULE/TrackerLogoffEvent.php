@@ -6,9 +6,10 @@ class TrackerLogoffEvent extends TrackerEvent {
 	public const EVENT_MASK = 'tracker(logoff)';
 
 	public function __construct(
-		public string $player,
-		public int $uid,
+		string $player,
+		int $uid,
 	) {
+		parent::__construct(player: $player, uid: $uid);
 		$this->type = self::EVENT_MASK;
 	}
 }

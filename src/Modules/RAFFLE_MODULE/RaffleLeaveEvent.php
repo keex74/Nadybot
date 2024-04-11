@@ -6,9 +6,10 @@ class RaffleLeaveEvent extends RaffleParticipationEvent {
 	public const EVENT_MASK = 'raffle(leave)';
 
 	public function __construct(
-		public Raffle $raffle,
-		public string $player,
+		Raffle $raffle,
+		string $player,
 	) {
+		parent::__construct(raffle: $raffle, player: $player);
 		$this->type = self::EVENT_MASK;
 	}
 }

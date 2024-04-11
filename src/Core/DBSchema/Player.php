@@ -49,7 +49,7 @@ class Player extends DBTable {
 	 * @param string      $source        Sourceof the information
 	 * @param ?int        $last_update   Unix timestamp of the last update of these data
 	 */
-	final public function __construct(
+	public function __construct(
 		public int $charid,
 		#[PK] public string $name,
 		?int $dimension=null,

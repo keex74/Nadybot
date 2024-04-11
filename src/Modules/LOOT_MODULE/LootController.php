@@ -413,20 +413,14 @@ class LootController extends ModuleInstance {
 				$key = 1;
 			}
 
-			$item = new LootItem();
-
-			$item->name = $loot->name;
-			$item->icon = null;
-			$item->added_by = $context->char->name;
-			$item->display = $loot->name;
-			if (isset($loot->item)) {
-				$item->display = $loot->item->getLink($loot->ql, $loot->name);
-				$item->icon = $loot->item->icon;
-			}
-			$item->comment = $loot->comment;
-			$item->multiloot = $loot->multiloot;
-
-			$this->loot[$key] = $item;
+			$this->loot[$key] = $item = new LootItem(
+				name: $loot->name,
+				icon: $loot->item?->icon,
+				added_by: $context->char->name,
+				display: $loot->item?->getLink($loot->ql, $loot->name) ?? $loot->name,
+				comment: $loot->comment,
+				multiloot: $loot->multiloot,
+			);
 		}
 
 		$msg = "{$context->char->name} added <highlight>{$item->name}<end> (x{$item->multiloot}). To add use <symbol>add {$key}.";
@@ -558,19 +552,15 @@ class LootController extends ModuleInstance {
 				$key = 1;
 			}
 
-			$item = new LootItem();
-
-			$item->name = $itemName;
-			$item->icon = $looticon??null;
-			$item->added_by = $sender;
-			$item->multiloot = $multiloot;
-
-			if (isset($itemHighID)) {
-				$item->display = Text::makeItem($itemLowID??$itemHighID, $itemHighID, $itemQL??1, $itemName);
-			} else {
-				$item->display = $itemName;
-			}
-			$this->loot[$key] = $item;
+			$this->loot[$key] = $item = new LootItem(
+				name: $itemName,
+				icon: $looticon??null,
+				added_by: $sender,
+				multiloot: $multiloot,
+				display: isset($itemHighID)
+					? Text::makeItem($itemLowID??$itemHighID, $itemHighID, $itemQL??1, $itemName)
+					: $itemName,
+			);
 		}
 
 		$msg = "{$sender} added <highlight>{$item->display}<end> (x{$item->multiloot}) to Slot <highlight>#{$key}<end>.";
@@ -973,22 +963,21 @@ class LootController extends ModuleInstance {
 		});
 
 		foreach ($data as $row) {
-			$lootItem = new LootItem();
-			$lootItem->comment = $row->comment;
-			$lootItem->icon = $row->item->icon ?? null;
-			$lootItem->multiloot = $row->multiloot;
-			$lootItem->name = $row->name;
-			$lootItem->added_by = $addedBy;
 			$item = $row->name;
 			if (isset($row->item)) {
 				$item = $row->item->getLink($row->ql);
 			}
-			if (empty($row->comment)) {
-				$lootItem->display = $item;
-			} else {
-				$lootItem->display = $item . " ({$row->comment})";
-			}
-			$this->loot[$count] = $lootItem;
+			$this->loot[$count] = new LootItem(
+				comment: $row->comment,
+				icon: $row->item->icon ?? null,
+				multiloot: $row->multiloot,
+				name: $row->name,
+				added_by: $addedBy,
+				display: empty($row->comment)
+					? $item
+					: $item . " ({$row->comment})",
+			);
+
 			$count++;
 		}
 

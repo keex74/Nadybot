@@ -1377,8 +1377,6 @@ class RelayController extends ModuleInstance {
 	}
 
 	protected function createRelayFromDB(RelayConfig $conf): Relay {
-		$relay = new Relay($conf->name);
-		Registry::injectDependencies($relay);
 		if (count($conf->layers) < 2) {
 			throw new Exception(
 				'Every relay must have at least 1 transport and 1 protocol.'
@@ -1443,9 +1441,13 @@ class RelayController extends ModuleInstance {
 		);
 
 		/** @var RelayLayerInterface[] $stack */
-		$relay->setStack($transportLayer, $protocolLayer, ...$stack);
-		$relay->setEvents($conf->events);
-		return $relay;
+		return new Relay(
+			name: $conf->name,
+			transport: $transportLayer,
+			relayProtocol: $protocolLayer,
+			stack: $stack,
+			events: $conf->events,
+		);
 	}
 
 	/** Return the textualrepresentation with status for a single relay */

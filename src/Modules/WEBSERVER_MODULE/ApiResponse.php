@@ -6,6 +6,10 @@ use Amp\Http\HttpStatus;
 use Amp\Http\Server\Response;
 
 class ApiResponse {
+	final private function __construct() {
+		throw new \Error(__CLASS__ . ' does not support instantiating');
+	}
+
 	public static function create(mixed $args=null): Response {
 		$response = new Response(status: HttpStatus::OK);
 		if (isset($args)) {

@@ -78,15 +78,16 @@ class TrackerArgumentParser {
 	}
 
 	protected function parseArgument(Branch $argument): TrackerArgument {
-		$result = new TrackerArgument();
-		$result->name = $argument->findFirst('key')->toString();
 		$value = $argument->findFirst('value');
 		if ($value->getDetailType() === 'string') {
-			$result->value = json_decode($value->toString());
+			$rValue = json_decode($value->toString());
 		} else {
-			$result->value = $value->toString();
+			$rValue = $value->toString();
 		}
-		return $result;
+		return new TrackerArgument(
+			name: $argument->findFirst('key')->toString(),
+			value: $rValue,
+		);
 	}
 
 	protected function parseEvent(Branch $event): string {

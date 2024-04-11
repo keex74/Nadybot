@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\StringableTrait;
 
 class Properties {
@@ -10,7 +11,7 @@ class Properties {
 	/** @param Timeseries[] $timeseries */
 	public function __construct(
 		public Meta $meta,
-		public array $timeseries=[],
+		#[CastListToType(Timeseries::class)] public array $timeseries=[],
 	) {
 	}
 }

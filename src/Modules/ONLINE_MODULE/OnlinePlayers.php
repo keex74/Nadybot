@@ -9,16 +9,12 @@ namespace Nadybot\Modules\ONLINE_MODULE;
  */
 class OnlinePlayers {
 	/**
-	 * All players online in the org
-	 *
-	 * @var OnlinePlayer[]
+	 * @param OnlinePlayer[] $org             All players online in the org
+	 * @param OnlinePlayer[] $private_channel All players online in the private channel
 	 */
-	public array $org = [];
-
-	/**
-	 * All players online in the private channel
-	 *
-	 * @var OnlinePlayer[]
-	 */
-	public array $private_channel = [];
+	public function __construct(
+		public array $org=[],
+		public array $private_channel=[],
+	) {
+	}
 }

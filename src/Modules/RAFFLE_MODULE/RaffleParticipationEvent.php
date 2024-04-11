@@ -6,9 +6,10 @@ abstract class RaffleParticipationEvent extends RaffleEvent {
 	public const EVENT_MASK = 'raffle(*)';
 
 	public function __construct(
-		public Raffle $raffle,
+		Raffle $raffle,
 		public string $player,
 	) {
+		parent::__construct(raffle: $raffle);
 		$this->type = self::EVENT_MASK;
 	}
 }
