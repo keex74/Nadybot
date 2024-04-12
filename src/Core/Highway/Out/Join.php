@@ -7,7 +7,6 @@ class Join extends OutPackage {
 		public string $room,
 		null|int|string $id=null,
 	) {
-		$this->type = self::JOIN;
-		parent::__construct($id);
+		parent::__construct(self::JOIN, $id);
 	}
 }

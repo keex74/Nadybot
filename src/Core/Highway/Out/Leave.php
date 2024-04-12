@@ -7,7 +7,6 @@ class Leave extends OutPackage {
 		public string $room,
 		null|int|string $id=null,
 	) {
-		$this->type = self::LEAVE;
-		parent::__construct($id);
+		parent::__construct(self::LEAVE, $id);
 	}
 }
