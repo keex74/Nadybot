@@ -174,9 +174,12 @@ class HelpController extends ModuleInstance {
 			$blobs []= "<pagebreak><header2>{$module}<end>\n<tab>".
 				implode("\n<tab>", explode("\n", $description));
 		}
-		$blob = 'Use <highlight><symbol>config &lt;module name&gt;<end> to configure '.
-			"a module's settings, events and commands.\n\n".
-			implode("\n\n", $blobs);
+		$blob = '';
+		if ($this->commandManager->couldRunCommand($context, 'config HELP')) {
+			$blob = 'Use <highlight><symbol>config &lt;module name&gt;<end> to configure '.
+				"a module's settings, events and commands.\n\n";
+		}
+		$blob .= implode("\n\n", $blobs);
 		$msg = $this->text->makeBlob('Help', $blob);
 		$context->reply($msg);
 	}
