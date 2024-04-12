@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 
 use EventSauce\ObjectHydrator\MapFrom;
-use Nadybot\Core\{Playfield, StringableTrait};
+use Nadybot\Core\{StringableTrait, Types\Playfield};
 
 class GasUpdate {
 	use StringableTrait;

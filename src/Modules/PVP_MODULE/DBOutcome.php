@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use Nadybot\Core\Attributes\DB\{ColName, PK, Table};
-use Nadybot\Core\{DBTable, Faction, Playfield};
+use Nadybot\Core\{DBTable, Types\Faction, Types\Playfield};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\TowerOutcome;
 
 #[Table(name: 'nw_outcomes')]

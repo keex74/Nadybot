@@ -6,16 +6,15 @@ use function Safe\json_decode;
 use Amp\Http\Client\{HttpClientBuilder, Request};
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
 use Illuminate\Support\Collection;
-use Nadybot\Core\Attributes\HandlesCommand;
-use Nadybot\Core\ParamClass\PItem;
 use Nadybot\Core\{
-	AOIcon,
-	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
 	Exceptions\UserException,
 	ModuleInstance,
+	ParamClass\PItem,
 	Text,
+	Types\AOIcon,
+	Types\AOItemSpec,
 	Util,
 };
 use Safe\Exceptions\JsonException;
@@ -86,21 +85,21 @@ class GmiController extends ModuleInstance {
 	}
 
 	/** Check prices on GMI for an item */
-	#[HandlesCommand('gmi')]
+	#[NCA\HandlesCommand('gmi')]
 	public function gmiIdCommand(CmdContext $context, int $itemId): void {
 		$entry = $this->itemsController->findById($itemId);
 		$this->gmiCommand($context, $entry);
 	}
 
 	/** Check prices on GMI for an item */
-	#[HandlesCommand('gmi')]
+	#[NCA\HandlesCommand('gmi')]
 	public function gmiItemCommand(CmdContext $context, PItem $item): void {
 		$entry = $this->itemsController->findById($item->lowID);
 		$this->gmiCommand($context, $entry, $item->ql);
 	}
 
 	/** Check prices on GMI for an item */
-	#[HandlesCommand('gmi')]
+	#[NCA\HandlesCommand('gmi')]
 	public function gmiSearchCommand(CmdContext $context, string $search): void {
 		$matches = $this->itemsController->findItemsFromLocal($search, null);
 		$perfectMatches = array_filter(

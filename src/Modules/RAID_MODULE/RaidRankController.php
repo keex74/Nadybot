@@ -8,13 +8,11 @@ use Illuminate\Support\Collection;
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
 use Nadybot\Core\{
-	AccessLevelProvider,
 	AccessManager,
 	Attributes as NCA,
 	BuddylistManager,
 	CmdContext,
 	CommandAlias,
-	CommandReply,
 	DB,
 	DBSchema\Audit,
 	ModuleInstance,
@@ -24,6 +22,8 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	SettingManager,
 	Text,
+	Types\AccessLevelProvider,
+	Types\CommandReply,
 };
 use Psr\Log\LoggerInterface;
 

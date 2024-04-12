@@ -16,8 +16,8 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PRemove,
 	ParamClass\PWord,
-	Profession,
 	Text,
+	Types\Profession,
 	Util,
 };
 use Nadybot\Modules\RAID_MODULE\RaidController;

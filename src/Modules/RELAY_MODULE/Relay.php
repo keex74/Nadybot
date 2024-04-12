@@ -3,19 +3,19 @@
 namespace Nadybot\Modules\RELAY_MODULE;
 
 use function Amp\async;
-use Nadybot\Core\DBSchema\Player;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
+	DBSchema\Player,
+	Events\SyncEvent,
 	MessageHub,
-	MessageReceiver,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
 	Registry,
 	Routing\RoutableEvent,
 	Routing\Source,
 	SettingManager,
-	SyncEvent,
+	Types\MessageReceiver,
 };
 use Nadybot\Modules\{
 	ONLINE_MODULE\OnlinePlayer,

@@ -7,17 +7,17 @@ use Closure;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
-	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
 	CommandManager,
-	CommandReply,
 	DB,
 	ModuleInstance,
 	ParamClass\PWord,
-	Profession,
 	QueryBuilder,
 	Text,
+	Types\AOItemSpec,
+	Types\CommandReply,
+	Types\Profession,
 	Util,
 };
 

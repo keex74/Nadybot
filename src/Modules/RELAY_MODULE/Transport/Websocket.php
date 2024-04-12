@@ -24,8 +24,8 @@ use Exception;
 use League\Uri\Uri;
 use Nadybot\Core\{
 	Attributes as NCA,
-	LogWrapInterface,
 	Nadybot,
+	Types\LogWrapInterface,
 };
 use Nadybot\Modules\RELAY_MODULE\{
 	Relay,

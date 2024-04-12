@@ -9,7 +9,7 @@ use Nadybot\Core\{
 	DBSchema\Setting,
 	Routing\Source,
 	SchemaMigration,
-	SettingMode,
+	Types\SettingMode,
 };
 use Nadybot\Modules\GSP_MODULE\GSPController;
 use Psr\Log\LoggerInterface;

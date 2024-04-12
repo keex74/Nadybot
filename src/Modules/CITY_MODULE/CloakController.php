@@ -3,14 +3,14 @@
 namespace Nadybot\Modules\CITY_MODULE;
 
 use Illuminate\Support\Collection;
-use Nadybot\Core\Events\GuildChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	Event,
 	EventManager,
-	LogonEvent,
+	Events\Event,
+	Events\GuildChannelMsgEvent,
+	Events\LogonEvent,
 	MessageHub,
 	ModuleInstance,
 	Modules\ALTS\AltsController,

@@ -4,16 +4,16 @@ namespace Nadybot\Modules\RELAY_MODULE\Transport;
 
 use function Amp\async;
 use AO\Package;
-use Nadybot\Core\Events\RecvMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BuddylistManager,
 	EventManager,
+	Events\LogoffEvent,
+	Events\LogonEvent,
+	Events\PackageEvent,
+	Events\RecvMsgEvent,
 	Exceptions\StopExecutionException,
-	LogoffEvent,
-	LogonEvent,
 	Nadybot,
-	PackageEvent,
 };
 use Nadybot\Modules\RELAY_MODULE\{
 	Relay,

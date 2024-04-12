@@ -7,10 +7,8 @@ use Amp\File\{FilesystemException};
 use AO\Package;
 use Exception;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Routing\Events\Base;
 use Nadybot\Core\{
-	AccessLevelProvider,
 	AccessManager,
 	Attributes as NCA,
 	BuddylistManager,
@@ -23,10 +21,12 @@ use Nadybot\Core\{
 	DBSchema\Member,
 	DBSchema\Player,
 	EventManager,
-	Event\JoinMyPrivEvent,
-	Event\LeaveMyPrivEvent,
+	Events\ConnectEvent,
+	Events\JoinMyPrivEvent,
+	Events\LeaveMyPrivEvent,
+	Events\LogonEvent,
+	Events\SyncEvent,
 	Filesystem,
-	LogonEvent,
 	MessageHub,
 	ModuleInstance,
 	Modules\ALTS\AltInfo,
@@ -38,7 +38,6 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PDuration,
 	ParamClass\PRemove,
-	Profession,
 	Registry,
 	Routing\Character,
 	Routing\Events\Online,
@@ -47,9 +46,10 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
-	SettingMode,
-	SyncEvent,
 	Text,
+	Types\AccessLevelProvider,
+	Types\Profession,
+	Types\SettingMode,
 	Util,
 };
 use Nadybot\Modules\RAID_MODULE\RaidController;

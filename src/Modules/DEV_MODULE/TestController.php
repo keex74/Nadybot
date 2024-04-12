@@ -9,14 +9,14 @@ use AO\Client\{Basic, WorkerPackage};
 use AO\Package;
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
-use Nadybot\Core\Events\PrivateChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	CommandManager,
 	Config\BotConfig,
-	Event,
 	EventManager,
+	Events\Event,
+	Events\PrivateChannelMsgEvent,
 	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
@@ -26,10 +26,10 @@ use Nadybot\Core\{
 	ParamClass\PFaction,
 	ParamClass\PPlayfield,
 	ParamClass\PWord,
-	Playfield,
 	Registry,
 	SettingManager,
 	Text,
+	Types\Playfield,
 	Util,
 };
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordMessageEvent;

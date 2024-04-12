@@ -8,8 +8,8 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
-	Playfield,
 	Text,
+	Types\Playfield,
 };
 use Nadybot\Modules\WHEREIS_MODULE\{
 	Whereis,

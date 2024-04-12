@@ -4,7 +4,7 @@ namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 
 use EventSauce\ObjectHydrator\MapFrom;
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\{Playfield, StringableTrait};
+use Nadybot\Core\{StringableTrait, Types\Playfield};
 
 class TowerAttack {
 	use StringableTrait;

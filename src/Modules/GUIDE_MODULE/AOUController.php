@@ -11,8 +11,6 @@ use DOMDocument;
 use DOMElement;
 use Exception;
 use Nadybot\Core\{
-	AOIcon,
-	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
 	Config\BotConfig,
@@ -20,6 +18,8 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Safe,
 	Text,
+	Types\AOIcon,
+	Types\AOItemSpec,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
 	ItemsController,

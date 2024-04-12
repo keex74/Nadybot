@@ -4,7 +4,7 @@ namespace Nadybot\Modules\PVP_MODULE;
 
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{Event as CoreEvent, EventFeedHandler, EventManager, ModuleInstance};
+use Nadybot\Core\{EventManager, Events\Event as CoreEvent, ModuleInstance, Types\EventFeedHandler};
 use Nadybot\Modules\PVP_MODULE\Event\{GasUpdateEvent, SiteUpdateEvent, TowerAttackEvent, TowerOutcomeEvent};
 use Psr\Log\LoggerInterface;
 

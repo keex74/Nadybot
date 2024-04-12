@@ -7,7 +7,6 @@ use Nadybot\Core\Modules\DISCORD\DiscordMessageReference;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\DiscordChannel as ChannelsDiscordChannel,
-	CommandReply,
 	Config\BotConfig,
 	MessageHub,
 	Modules\DISCORD\DiscordAPIClient,
@@ -18,6 +17,7 @@ use Nadybot\Core\{
 	Routing\Character,
 	Routing\RoutableMessage,
 	Routing\Source,
+	Types\CommandReply,
 	Types\MessageEmitter,
 };
 

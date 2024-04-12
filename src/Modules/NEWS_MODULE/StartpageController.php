@@ -12,21 +12,21 @@ use DateInterval;
 use DateTimeZone;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
 	CmdContext,
-	CommandReply,
-	LogonEvent,
+	Events\JoinMyPrivEvent,
+	Events\LogonEvent,
 	ModuleInstance,
 	Modules\BAN\BanController,
 	Nadybot,
 	ParamClass\PRemove,
 	Registry,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\CommandReply,
+	Types\SettingMode,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\{ApiResponse, WebChatConverter, WebserverController};
 use ReflectionClass;

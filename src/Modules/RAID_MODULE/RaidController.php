@@ -10,7 +10,6 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Events\{MyPrivateChannelMsgEvent, SendPrivEvent};
 use Nadybot\Core\{
-	AccessManager,
 	Attributes as NCA,
 	CmdContext,
 	CommandManager,
@@ -38,7 +37,6 @@ use Nadybot\Modules\{
 	BASIC_CHAT_MODULE\ChatAssistController,
 	COMMENT_MODULE\CommentCategory,
 	COMMENT_MODULE\CommentController,
-	ONLINE_MODULE\OnlineController,
 	WEBSERVER_MODULE\StatsController,
 };
 use Psr\Log\LoggerInterface;
@@ -149,9 +147,6 @@ class RaidController extends ModuleInstance {
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private DB $db;
 
 	#[NCA\Inject]
@@ -170,9 +165,6 @@ class RaidController extends ModuleInstance {
 	private AltsController $altsController;
 
 	#[NCA\Inject]
-	private AccessManager $accessManager;
-
-	#[NCA\Inject]
 	private CommandManager $commandManager;
 
 	#[NCA\Inject]
@@ -180,12 +172,6 @@ class RaidController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private RaidPointsController $raidPointsController;
-
-	#[NCA\Inject]
-	private RaidRankController $raidRankController;
-
-	#[NCA\Inject]
-	private OnlineController $onlineController;
 
 	#[NCA\Inject]
 	private ChatAssistController $chatAssistController;

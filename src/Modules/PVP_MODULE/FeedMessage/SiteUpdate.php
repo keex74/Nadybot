@@ -5,7 +5,7 @@ namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 use DateTimeImmutable;
 use EventSauce\ObjectHydrator\MapFrom;
 use EventSauce\ObjectHydrator\PropertyCasters\CastToDateTimeImmutable;
-use Nadybot\Core\{Faction, Playfield, StringableTrait, Util};
+use Nadybot\Core\{StringableTrait, Types\Faction, Types\Playfield, Util};
 use Nadybot\Modules\PVP_MODULE\Attributes\CastToTiming;
 use Nadybot\Modules\PVP_MODULE\Timing;
 

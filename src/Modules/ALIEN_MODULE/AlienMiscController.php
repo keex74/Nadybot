@@ -9,8 +9,8 @@ use Nadybot\Core\{
 	DB,
 	ModuleInstance,
 	ParamClass\PWord,
-	Profession,
 	Text,
+	Types\Profession,
 };
 use Nadybot\Modules\ITEMS_MODULE\ItemsController;
 use Throwable;

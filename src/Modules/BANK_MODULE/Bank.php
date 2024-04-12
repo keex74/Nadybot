@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\BANK_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{AOItem, DBTable};
+use Nadybot\Core\{DBTable, Types\AOItem};
 
 #[Table(name: 'bank', shared: Shared::Yes)]
 class Bank extends DBTable implements AOItem {

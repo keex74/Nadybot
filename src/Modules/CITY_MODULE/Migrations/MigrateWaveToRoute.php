@@ -9,7 +9,7 @@ use Nadybot\Core\{
 	DBSchema\Setting,
 	Routing\Source,
 	SchemaMigration,
-	SettingMode,
+	Types\SettingMode,
 };
 use Nadybot\Modules\CITY_MODULE\CityWaveController;
 use Psr\Log\LoggerInterface;

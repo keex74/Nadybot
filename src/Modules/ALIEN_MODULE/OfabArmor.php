@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\ALIEN_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{AOItemSpec, DBTable, Profession, WearSlot};
+use Nadybot\Core\{DBTable, Types\AOItemSpec, Types\Profession, Types\WearSlot};
 use Nadybot\Modules\ITEMS_MODULE\AODBItem;
 
 #[Table(name: 'ofabarmor', shared: Shared::Yes)]

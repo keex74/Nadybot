@@ -4,7 +4,7 @@ namespace Nadybot\Modules\ONLINE_MODULE;
 
 use Nadybot\Core\Attributes\JSON;
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\{Faction, Profession};
+use Nadybot\Core\Types\{Faction, Profession};
 
 /**
  * This represents a single player in the online list

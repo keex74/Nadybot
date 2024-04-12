@@ -6,11 +6,11 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	ImplantSlot,
 	ModuleInstance,
-	Profession,
 	QueryBuilder,
 	Text,
+	Types\ImplantSlot,
+	Types\Profession,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
 	Skill,

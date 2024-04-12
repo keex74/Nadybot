@@ -4,7 +4,6 @@ namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
 use Nadybot\Core\Events\{LeaveMyPrivEvent, MyPrivateChannelMsgEvent};
 use Nadybot\Core\{
-	AccessLevelProvider,
 	AccessManager,
 	Attributes as NCA,
 	CmdContext,
@@ -13,8 +12,9 @@ use Nadybot\Core\{
 	Nadybot,
 	ParamClass\PCharacter,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\AccessLevelProvider,
+	Types\SettingMode,
 };
 
 #[

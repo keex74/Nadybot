@@ -4,12 +4,12 @@ namespace Nadybot\Modules\EVENTS_MODULE;
 
 use function Safe\strtotime;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	LogonEvent,
+	Events\JoinMyPrivEvent,
+	Events\LogonEvent,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\PLAYER_LOOKUP\PlayerManager,

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\HELPBOT_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBTable, Playfield};
+use Nadybot\Core\{Attributes as NCA, DBTable, Types\Playfield};
 
 #[NCA\DB\Table(name: 'dyna_db', shared: NCA\DB\Shared::Yes)]
 class DynaDB extends DBTable {

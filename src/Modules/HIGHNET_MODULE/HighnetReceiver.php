@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\HIGHNET_MODULE;
 
 use Nadybot\Core\Routing\RoutableEvent;
-use Nadybot\Core\{Attributes as NCA, MessageReceiver, Safe};
+use Nadybot\Core\{Attributes as NCA, Safe, Types\MessageReceiver};
 
 use Psr\Log\LoggerInterface;
 

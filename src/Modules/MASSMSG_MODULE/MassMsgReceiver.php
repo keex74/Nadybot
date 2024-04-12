@@ -6,11 +6,11 @@ use function Amp\async;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	MessageReceiver,
 	Nadybot,
 	Routing\Events\Base,
 	Routing\RoutableEvent,
 	Routing\Source,
+	Types\MessageReceiver,
 };
 
 /**

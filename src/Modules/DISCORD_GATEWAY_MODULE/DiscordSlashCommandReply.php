@@ -5,7 +5,6 @@ namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 use function Amp\async;
 use Nadybot\Core\{
 	Attributes as NCA,
-	CommandReply,
 	Config\BotConfig,
 	MessageHub,
 	Modules\DISCORD\DiscordAPIClient,
@@ -15,6 +14,7 @@ use Nadybot\Core\{
 	Routing\Character,
 	Routing\RoutableMessage,
 	Routing\Source,
+	Types\CommandReply,
 };
 
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\{

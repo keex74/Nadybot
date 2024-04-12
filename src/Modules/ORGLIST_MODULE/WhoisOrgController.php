@@ -11,8 +11,8 @@ use Nadybot\Core\{
 	Modules\PLAYER_LOOKUP\GuildManager,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	ParamClass\PCharacter,
-	Profession,
 	Text,
+	Types\Profession,
 };
 
 /**

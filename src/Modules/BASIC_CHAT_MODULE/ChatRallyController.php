@@ -2,20 +2,20 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
-	CommandReply,
 	EventManager,
+	Events\JoinMyPrivEvent,
 	ModuleInstance,
 	Nadybot,
 	ParamClass\PWord,
-	Playfield,
 	Safe,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\CommandReply,
+	Types\Playfield,
+	Types\SettingMode,
 };
 
 /**

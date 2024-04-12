@@ -4,7 +4,6 @@ namespace Nadybot\Modules\BANK_MODULE;
 
 use function Safe\preg_split;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Modules\ALTS\AltsController;
 use Nadybot\Core\ParamClass\{PCharacter, PDuration, PQuantity, PRemove};
 use Nadybot\Core\{
@@ -13,8 +12,9 @@ use Nadybot\Core\{
 	CmdContext,
 	CommandManager,
 	DB,
+	Events\ConnectEvent,
+	Events\LogonEvent,
 	Exceptions\UserException,
-	LogonEvent,
 	ModuleInstance,
 	Nadybot,
 	QueryBuilder,

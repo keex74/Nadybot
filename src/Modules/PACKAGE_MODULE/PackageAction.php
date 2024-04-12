@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PACKAGE_MODULE;
 
-use Nadybot\Core\{CommandReply, SemanticVersion};
+use Nadybot\Core\{SemanticVersion, Types\CommandReply};
 
 class PackageAction {
 	public const INSTALL = 1;

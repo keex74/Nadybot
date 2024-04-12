@@ -10,7 +10,21 @@ use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;
 use Nadybot\Core\ParamClass\{PDuration, PTowerSite};
 use Nadybot\Core\Routing\{RoutableMessage, Source};
-use Nadybot\Core\{Attributes as NCA, CmdContext, Config\BotConfig, DB, EventManager, Faction, MessageHub, ModuleInstance, Nadybot, Playfield, Safe, Text, Util};
+use Nadybot\Core\{
+	Attributes as NCA,
+	CmdContext,
+	Config\BotConfig,
+	DB,
+	EventManager,
+	MessageHub,
+	ModuleInstance,
+	Nadybot,
+	Safe,
+	Text,
+	Types\Faction,
+	Types\Playfield,
+	Util
+};
 use Nadybot\Modules\LEVEL_MODULE\LevelController;
 use Nadybot\Modules\PVP_MODULE\Event\TowerAttackInfoEvent;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\{TowerAttack, TowerOutcome};

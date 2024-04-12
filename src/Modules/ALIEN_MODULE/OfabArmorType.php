@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\ALIEN_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{DBTable, Profession};
+use Nadybot\Core\{DBTable, Types\Profession};
 
 #[Table(name: 'ofabarmortype', shared: Shared::Yes)]
 class OfabArmorType extends DBTable {

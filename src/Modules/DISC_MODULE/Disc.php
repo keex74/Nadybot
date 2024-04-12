@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\DISC_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{AOItem, DBTable};
+use Nadybot\Core\{DBTable, Types\AOItem};
 
 #[Table(name: 'discs', shared: Shared::Yes)]
 class Disc extends DBTable implements AOItem {

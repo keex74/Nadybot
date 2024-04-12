@@ -4,7 +4,7 @@ namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 
 use function Safe\date;
 use EventSauce\ObjectHydrator\MapFrom;
-use Nadybot\Core\{Faction, Playfield, StringableTrait, Util};
+use Nadybot\Core\{StringableTrait, Types\Faction, Types\Playfield, Util};
 
 class TowerOutcome {
 	use StringableTrait;

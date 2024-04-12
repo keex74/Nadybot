@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 
-use Nadybot\Core\{Faction, Profession, StringableTrait};
+use Nadybot\Core\{StringableTrait, Types\Faction, Types\Profession};
 
 class Attacker {
 	use StringableTrait;

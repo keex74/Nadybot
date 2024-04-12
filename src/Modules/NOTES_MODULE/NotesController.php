@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
-use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -11,7 +10,8 @@ use Nadybot\Core\{
 	CommandAlias,
 	CommandManager,
 	DB,
-	LogonEvent,
+	Events\JoinMyPrivEvent,
+	Events\LogonEvent,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\PREFERENCES\Preferences,

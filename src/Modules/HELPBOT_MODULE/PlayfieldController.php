@@ -9,9 +9,9 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
-	Playfield as CorePlayfield,
 	Safe,
 	Text,
+	Types\Playfield as CorePlayfield,
 };
 
 /**

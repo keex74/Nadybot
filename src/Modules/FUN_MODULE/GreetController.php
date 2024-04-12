@@ -13,7 +13,7 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	LogonEvent,
+	Events\LogonEvent,
 	ModuleInstance,
 	Nadybot,
 	Text,

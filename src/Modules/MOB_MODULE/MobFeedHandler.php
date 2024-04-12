@@ -5,7 +5,7 @@ namespace Nadybot\Modules\MOB_MODULE;
 use Closure;
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\{EventFeedHandler, EventManager, ModuleInstance};
+use Nadybot\Core\{EventManager, ModuleInstance, Types\EventFeedHandler};
 use Nadybot\Modules\MOB_MODULE\FeedMessage\Spawn;
 use Psr\Log\LoggerInterface;
 use Throwable;

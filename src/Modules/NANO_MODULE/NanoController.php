@@ -8,7 +8,6 @@ use function Safe\preg_split;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;
-use Nadybot\Core\ParamClass\PProfession;
 
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -17,9 +16,10 @@ use Nadybot\Core\{
 	DB,
 	Exceptions\UserException,
 	ModuleInstance,
-	Profession,
+	ParamClass\PProfession,
 	SettingManager,
 	Text,
+	Types\Profession,
 };
 
 /**

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PVP_MODULE\FeedMessage;
 
-use Nadybot\Core\{Faction, StringableTrait};
+use Nadybot\Core\{StringableTrait, Types\Faction};
 
 class DefenderOrg {
 	use StringableTrait;

@@ -8,7 +8,6 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	CommandAlias,
-	CommandReply,
 	Config\BotConfig,
 	DB,
 	EventManager,
@@ -20,6 +19,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	Text,
+	Types\CommandReply,
 	Util,
 };
 use Nadybot\Modules\RAFFLE_MODULE\RaffleItem;

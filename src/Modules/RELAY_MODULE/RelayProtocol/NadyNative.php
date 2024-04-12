@@ -10,13 +10,13 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	EventManager,
+	Events\SyncEvent,
 	Routing\Character,
 	Routing\Events\Base,
 	Routing\Events\Online,
 	Routing\RoutableEvent,
 	Routing\Source,
 	SettingManager,
-	SyncEvent,
 	SyncEventFactory,
 };
 use Nadybot\Modules\RELAY_MODULE\RelayProtocol\Nadybot\RelayCharacter;

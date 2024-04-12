@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\DEV_MODULE;
 
-use Nadybot\Core\{CommandReply, Safe};
+use Nadybot\Core\{Safe, Types\CommandReply};
 
 class DemoResponseCommandReply implements CommandReply {
 	public function __construct(

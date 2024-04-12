@@ -11,7 +11,7 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	EventManager,
-	LogonEvent,
+	Events\LogonEvent,
 	MessageHub,
 	ModuleInstance,
 	Nadybot,

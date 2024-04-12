@@ -6,8 +6,6 @@ use function Safe\preg_match;
 
 use Amp\Http\Server\{Request, Response};
 use Illuminate\Support\Collection;
-use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\Events\{GuildChannelMsgEvent, MyPrivateChannelMsgEvent};
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -15,22 +13,25 @@ use Nadybot\Core\{
 	CmdContext,
 	Config\BotConfig,
 	DB,
-	Event,
+	DBSchema\Player,
 	EventManager,
+	Events\Event,
+	Events\GuildChannelMsgEvent,
+	Events\LogoffEvent,
+	Events\LogonEvent,
+	Events\MyPrivateChannelMsgEvent,
 	Exceptions\StopExecutionException,
-	LogoffEvent,
-	LogonEvent,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\ALTS\NickController,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
-	Profession,
 	QueryBuilder,
 	Registry,
 	Safe,
 	SettingManager,
 	Text,
+	Types\Profession,
 	Util,
 };
 use Nadybot\Modules\{

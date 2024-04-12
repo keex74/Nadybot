@@ -4,11 +4,9 @@ namespace Nadybot\Modules\GUILD_MODULE;
 
 use Exception;
 use Nadybot\Core\{
-	AccessLevelProvider,
 	AccessManager,
 	Attributes as NCA,
 	CmdContext,
-	CommandReply,
 	Config\BotConfig,
 	DB,
 	ModuleInstance,
@@ -18,6 +16,8 @@ use Nadybot\Core\{
 	ParamClass\PRemove,
 	ParamClass\PWord,
 	Text,
+	Types\AccessLevelProvider,
+	Types\CommandReply,
 };
 
 /**

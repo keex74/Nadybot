@@ -24,15 +24,15 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	EventFeed,
-	EventFeedHandler,
 	EventManager,
+	Events\LowLevelEventFeedEvent,
 	Highway,
-	LowLevelEventFeedEvent,
 	MessageHub,
 	ModuleInstance,
 	Nadybot,
 	Registry,
 	Text,
+	Types\EventFeedHandler,
 	Util,
 };
 use Psr\Log\LoggerInterface;

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PVP_MODULE;
 
-use Nadybot\Core\{Attributes as NCA, DBTable, MessageEmitter};
+use Nadybot\Core\{Attributes as NCA, DBTable, Types\MessageEmitter};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 use Nadybot\Modules\PVP_MODULE\Handlers\Base;
 

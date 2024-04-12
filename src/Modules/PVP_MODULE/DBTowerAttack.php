@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use Nadybot\Core\Attributes\DB\{ColName, Table};
-use Nadybot\Core\{DBTable, Faction, Playfield, Profession};
+use Nadybot\Core\{DBTable, Types\Faction, Types\Playfield, Types\Profession};
 use Nadybot\Modules\PVP_MODULE\FeedMessage\{Attacker, AttackerOrg, Coordinates, DefenderOrg, TowerAttack};
 
 #[Table(name: 'nw_attacks')]

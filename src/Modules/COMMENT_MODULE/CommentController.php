@@ -18,8 +18,8 @@ use Nadybot\Core\{
 	ParamClass\PRemove,
 	ParamClass\PWord,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\SettingMode,
 	Util,
 };
 use Psr\Log\LoggerInterface;

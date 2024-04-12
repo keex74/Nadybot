@@ -4,7 +4,6 @@ namespace Nadybot\Modules\GUILD_MODULE;
 
 use function Amp\async;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Events\{ConnectEvent, OrgMsgChannelMsgEvent};
 use Nadybot\Core\Modules\ALTS\AltInfo;
 use Nadybot\Core\{
 	AccessManager,
@@ -14,9 +13,11 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	DBSchema\Player,
-	Event,
-	LogoffEvent,
-	LogonEvent,
+	Events\ConnectEvent,
+	Events\Event,
+	Events\LogoffEvent,
+	Events\LogonEvent,
+	Events\OrgMsgChannelMsgEvent,
 	MessageHub,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
@@ -35,8 +36,8 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\SettingMode,
 	Util,
 };
 use Nadybot\Modules\ONLINE_MODULE\{Online as DBOnline, OnlineController};

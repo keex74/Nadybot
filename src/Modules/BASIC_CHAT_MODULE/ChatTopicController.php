@@ -2,17 +2,17 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	EventManager,
-	LogonEvent,
+	Events\JoinMyPrivEvent,
+	Events\LogonEvent,
 	ModuleInstance,
 	Nadybot,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\SettingMode,
 	Util,
 };
 

@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\ALIEN_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{DBTable, Profession};
+use Nadybot\Core\{DBTable, Types\Profession};
 
 #[Table(name: 'leprocs', shared: Shared::Yes)]
 class LEProc extends DBTable {

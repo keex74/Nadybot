@@ -3,12 +3,26 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use Illuminate\Support\Collection;
-use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\Events\OrgMsgChannelMsgEvent;
 use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;
 use Nadybot\Core\ParamClass\{PDuration, PNonGreedy, PTowerSite};
-use Nadybot\Core\Routing\{RoutableMessage, Source};
-use Nadybot\Core\{Attributes as NCA, CmdContext, Config\BotConfig, DB, Faction, MessageHub, ModuleInstance, Playfield, QueryBuilder, Safe, Text, Util};
+use Nadybot\Core\{
+	Attributes as NCA,
+	CmdContext,
+	Config\BotConfig,
+	DB,
+	DBSchema\Player,
+	Events\OrgMsgChannelMsgEvent,
+	MessageHub,
+	ModuleInstance,
+	QueryBuilder,
+	Routing\RoutableMessage,
+	Routing\Source,
+	Safe,
+	Text,
+	Types\Faction,
+	Types\Playfield,
+	Util
+};
 
 use Nadybot\Modules\LEVEL_MODULE\LevelController;
 use Nadybot\Modules\PVP_MODULE\Event\TowerAttackInfoEvent;

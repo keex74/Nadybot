@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\RAFFLE_MODULE;
 
 use function Safe\preg_split;
-use Nadybot\Core\{CommandReply, Safe};
+use Nadybot\Core\{Safe, Types\CommandReply};
 
 class Raffle {
 	/** Timestamp when the raffle was started*/

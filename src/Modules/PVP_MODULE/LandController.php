@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use Nadybot\Core\ParamClass\{PPlayfield, PTowerSite};
-use Nadybot\Core\{Attributes as NCA, CmdContext, ModuleInstance, Playfield, Text};
+use Nadybot\Core\{Attributes as NCA, CmdContext, ModuleInstance, Text, Types\Playfield};
 use Throwable;
 
 #[

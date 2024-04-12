@@ -8,10 +8,10 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	ImplantSlot,
 	ModuleInstance,
 	ParamClass\PWord,
 	Text,
+	Types\ImplantSlot,
 };
 
 /**

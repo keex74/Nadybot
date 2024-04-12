@@ -10,9 +10,9 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	ParamClass\PWord,
-	Profession,
 	Safe,
 	Text,
+	Types\Profession,
 	Util,
 };
 
