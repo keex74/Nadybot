@@ -13,6 +13,8 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DBSchema\EventCfg,
+	Exceptions\SQLException,
+	Exceptions\StopExecutionException,
 	Modules\MESSAGES\MessageHubController,
 };
 use Psr\Log\LoggerInterface;

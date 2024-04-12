@@ -23,11 +23,11 @@ use Nadybot\Core\{
 	CmdContext,
 	CommandManager,
 	Config\BotConfig,
+	Exceptions\UserException,
 	ModuleInstance,
 	Nadybot,
 	Registry,
 	Routing\Source,
-	UserException,
 };
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop;

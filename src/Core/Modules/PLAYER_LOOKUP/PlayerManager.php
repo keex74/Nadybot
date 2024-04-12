@@ -21,13 +21,13 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	DBSchema\Player,
+	Exceptions\SQLException,
 	Faction,
 	Filesystem,
 	ModuleInstance,
 	Nadybot,
 	Profession,
 	Registry,
-	SQLException,
 };
 use Psr\Log\LoggerInterface;
 use Safe\Exceptions\JsonException;

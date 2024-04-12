@@ -9,11 +9,11 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	BuddylistManager,
 	EventManager,
+	Exceptions\StopExecutionException,
 	LogoffEvent,
 	LogonEvent,
 	Nadybot,
 	PackageEvent,
-	StopExecutionException,
 };
 use Nadybot\Modules\RELAY_MODULE\{
 	Relay,

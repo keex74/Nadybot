@@ -7,8 +7,8 @@ use Nadybot\Core\Event\{ExtJoinPrivRequest, JoinPrivEvent, LeavePrivEvent, Other
 use Nadybot\Core\{
 	Attributes as NCA,
 	EventManager,
+	Exceptions\StopExecutionException,
 	Nadybot,
-	StopExecutionException,
 };
 use Nadybot\Modules\RELAY_MODULE\{
 	Relay,

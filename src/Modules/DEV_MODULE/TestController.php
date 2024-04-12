@@ -17,6 +17,7 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	Event,
 	EventManager,
+	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
 	Modules\DISCORD\DiscordMessageIn,
@@ -29,7 +30,6 @@ use Nadybot\Core\{
 	Registry,
 	SettingManager,
 	Text,
-	UserException,
 	Util,
 };
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordMessageEvent;

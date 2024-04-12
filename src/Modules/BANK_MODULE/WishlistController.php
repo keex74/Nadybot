@@ -13,13 +13,13 @@ use Nadybot\Core\{
 	CmdContext,
 	CommandManager,
 	DB,
+	Exceptions\UserException,
 	LogonEvent,
 	ModuleInstance,
 	Nadybot,
 	QueryBuilder,
 	Safe,
 	Text,
-	UserException,
 	Util,
 };
 use Throwable;

@@ -12,8 +12,8 @@ use Nadybot\Core\{
 	DB,
 	DBSchema\CmdPermission,
 	DBSchema\CommandSearchResult,
+	Exceptions\SQLException,
 	ModuleInstance,
-	SQLException,
 	Text,
 };
 

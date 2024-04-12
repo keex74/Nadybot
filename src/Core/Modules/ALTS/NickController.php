@@ -10,8 +10,8 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	Exceptions\UserException,
 	ModuleInstance,
-	UserException,
 };
 
 /**

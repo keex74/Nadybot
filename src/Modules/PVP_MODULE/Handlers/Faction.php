@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PVP_MODULE\Handlers;
 
-use Nadybot\Core\UserException;
+use Nadybot\Core\Exceptions\UserException;
 use Nadybot\Modules\PVP_MODULE\Attributes\Argument;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 

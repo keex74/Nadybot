@@ -17,6 +17,7 @@ use Nadybot\Core\{
 	DB,
 	Event,
 	EventManager,
+	Exceptions\StopExecutionException,
 	LogoffEvent,
 	LogonEvent,
 	ModuleInstance,
@@ -29,7 +30,6 @@ use Nadybot\Core\{
 	Registry,
 	Safe,
 	SettingManager,
-	StopExecutionException,
 	Text,
 	Util,
 };

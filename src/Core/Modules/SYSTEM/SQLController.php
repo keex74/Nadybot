@@ -8,8 +8,8 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	Exceptions\SQLException,
 	ModuleInstance,
-	SQLException,
 	Text,
 };
 

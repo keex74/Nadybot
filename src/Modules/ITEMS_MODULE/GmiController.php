@@ -13,9 +13,9 @@ use Nadybot\Core\{
 	AOItemSpec,
 	Attributes as NCA,
 	CmdContext,
+	Exceptions\UserException,
 	ModuleInstance,
 	Text,
-	UserException,
 	Util,
 };
 use Safe\Exceptions\JsonException;

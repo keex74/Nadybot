@@ -17,10 +17,10 @@ use Nadybot\Core\{
 	DBSchema\CmdPermissionSet,
 	DBSchema\EventCfg,
 	DBSchema\Setting,
+	Exceptions\InsufficientAccessException,
+	Exceptions\SQLException,
 	HelpManager,
-	InsufficientAccessException,
 	ModuleInstance,
-	SQLException,
 	Safe,
 	SettingManager,
 };

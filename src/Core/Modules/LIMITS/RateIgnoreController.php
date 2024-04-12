@@ -7,10 +7,10 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	DBSchema\RateIgnoreList,
+	Exceptions\SQLException,
 	ModuleInstance,
 	ParamClass\PCharacter,
 	ParamClass\PRemove,
-	SQLException,
 	Text,
 	Util,
 };

@@ -3,6 +3,7 @@
 namespace Nadybot\Core;
 
 use Exception;
+use Nadybot\Core\Exceptions\SQLException;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,

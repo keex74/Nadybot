@@ -19,14 +19,14 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	Event,
+	Exceptions\SQLException,
+	Exceptions\UserException,
 	Faction,
 	Filesystem,
 	Government,
 	ModuleInstance,
-	SQLException,
 	Safe,
 	Text,
-	UserException,
 };
 use Psr\Log\LoggerInterface;
 use Throwable;

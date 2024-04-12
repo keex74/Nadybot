@@ -15,11 +15,11 @@ use Nadybot\Core\{
 	CmdContext,
 	CommandAlias,
 	DB,
+	Exceptions\UserException,
 	ModuleInstance,
 	Profession,
 	SettingManager,
 	Text,
-	UserException,
 };
 
 /**

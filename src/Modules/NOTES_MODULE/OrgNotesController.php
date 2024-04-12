@@ -9,7 +9,7 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	EventManager,
-	InsufficientAccessException,
+	Exceptions\InsufficientAccessException,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	ParamClass\PRemove,

@@ -2,8 +2,9 @@
 
 namespace Nadybot\Modules\PVP_MODULE\Handlers;
 
+use Nadybot\Core\Exceptions\UserException;
 use Nadybot\Core\ParamClass\PPlayfield;
-use Nadybot\Core\{Playfield, UserException};
+use Nadybot\Core\Playfield;
 use Nadybot\Modules\PVP_MODULE\Attributes\Argument;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 

@@ -13,6 +13,7 @@ use Nadybot\Core\{
 	CommandManager,
 	DB,
 	DBSchema\CmdCfg,
+	Exceptions\UserException,
 	MessageHub,
 	ModuleInstance,
 	Modules\DISCORD\DiscordAPIClient,
@@ -25,7 +26,6 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Text,
-	UserException,
 };
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\Interaction;
 use Psr\Log\LoggerInterface;

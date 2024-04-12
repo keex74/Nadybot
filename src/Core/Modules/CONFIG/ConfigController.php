@@ -13,6 +13,7 @@ use Nadybot\Core\DBSchema\{
 	EventCfg,
 	Setting,
 };
+use Nadybot\Core\Exceptions\InsufficientAccessException;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\{
 	AccessManager,
@@ -23,7 +24,6 @@ use Nadybot\Core\{
 	DB,
 	EventManager,
 	HelpManager,
-	InsufficientAccessException,
 	ModuleInstance,
 	ModuleInstanceInterface,
 	Nadybot,

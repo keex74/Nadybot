@@ -13,10 +13,10 @@ use Nadybot\Core\{
 	DBSchema\CmdPermSetMapping,
 	DBSchema\CmdPermissionSet,
 	DBSchema\Setting,
+	Exceptions\SQLException,
 	ModuleInstance,
 	ParamClass\PRemove,
 	ParamClass\PWord,
-	SQLException,
 	SettingManager,
 	Text,
 };

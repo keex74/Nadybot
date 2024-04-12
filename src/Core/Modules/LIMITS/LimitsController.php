@@ -21,13 +21,13 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DBSchema\Audit,
 	DBSchema\Player,
+	Exceptions\UserException,
 	MessageHub,
 	ModuleInstance,
 	Modules\BAN\BanController,
 	Nadybot,
 	Routing\RoutableMessage,
 	Routing\Source,
-	UserException,
 	Util,
 };
 use Psr\Log\LoggerInterface;

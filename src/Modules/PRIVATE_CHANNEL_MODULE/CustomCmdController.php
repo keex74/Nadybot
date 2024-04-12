@@ -12,11 +12,11 @@ use Nadybot\Core\{
 	CmdContext,
 	CommandManager,
 	DB,
+	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
 	SettingEvent,
 	Text,
-	UserException,
 };
 
 use Psr\Log\LoggerInterface;

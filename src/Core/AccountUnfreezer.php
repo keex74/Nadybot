@@ -11,6 +11,7 @@ use Amp\{CancelledException, TimeoutCancellation};
 
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Config\BotConfig;
+use Nadybot\Core\Exceptions\{UnfreezeFatalException, UnfreezeTmpException};
 use Revolt\EventLoop;
 use Safe\Exceptions\JsonException;
 use Throwable;

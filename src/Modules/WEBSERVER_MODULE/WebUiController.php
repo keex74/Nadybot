@@ -9,12 +9,14 @@ use Amp\File\{FilesystemException};
 use Amp\Http\Client\{HttpClientBuilder, Request, Response};
 use ErrorException;
 use Exception;
+use Nadybot\Core\Exceptions\UserException as ExceptionsUserException;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BotRunner,
 	CmdContext,
 	Config\BotConfig,
 	EventManager,
+	Exceptions\UserException,
 	Filesystem,
 	MessageEmitter,
 	MessageHub,
@@ -24,7 +26,6 @@ use Nadybot\Core\{
 	Safe,
 	SettingManager,
 	SettingMode,
-	UserException,
 };
 use Psr\Log\LoggerInterface;
 use Safe\DateTimeImmutable;
@@ -257,7 +258,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 
 		$response = $client->request(new Request($uri));
 		if ($response->getStatus() === 404) {
-			throw new UserException("No release found for <highlight>{$channel}<end>.");
+			throw new ExceptionsUserException("No release found for <highlight>{$channel}<end>.");
 		} elseif ($response->getStatus() !== 200) {
 			throw new UserException("Error retrieving {$uri}, code " . $response->getStatus());
 		}

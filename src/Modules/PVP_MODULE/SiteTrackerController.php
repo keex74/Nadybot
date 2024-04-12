@@ -7,12 +7,26 @@ namespace Nadybot\Modules\PVP_MODULE;
 use function Safe\glob;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\MESSAGES\MessageHubController;
-use Nadybot\Core\ParamClass\PRemove;
-use Nadybot\Core\Routing\{RoutableMessage, Source};
-use Nadybot\Core\{Attributes as NCA, CmdContext, Config\BotConfig, DB, MessageHub, ModuleInstance, Safe, Text, UserException, Util};
-use Nadybot\Modules\PVP_MODULE\Attributes\Argument;
-use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
-use Nadybot\Modules\PVP_MODULE\Handlers\Base;
+use Nadybot\Core\{
+	Attributes as NCA,
+	CmdContext,
+	Config\BotConfig,
+	DB,
+	Exceptions\UserException,
+	MessageHub,
+	ModuleInstance,
+	ParamClass\PRemove,
+	Routing\RoutableMessage,
+	Routing\Source,
+	Safe,
+	Text,
+	Util
+};
+use Nadybot\Modules\PVP_MODULE\{
+	Attributes\Argument,
+	FeedMessage\SiteUpdate,
+	Handlers\Base,
+};
 use ReflectionClass;
 
 use Throwable;

@@ -9,6 +9,7 @@ use Illuminate\Database\Query\{Builder, Expression};
 use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Attributes\DB\ColName;
+use Nadybot\Core\Exceptions\SQLException;
 use PDO;
 use PDOException;
 use PDOStatement;

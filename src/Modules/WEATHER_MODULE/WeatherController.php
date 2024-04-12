@@ -10,10 +10,10 @@ use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
+	Exceptions\UserException,
 	ModuleInstance,
 	Safe,
 	Text,
-	UserException,
 };
 use Safe\Exceptions\JsonException;
 

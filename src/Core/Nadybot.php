@@ -36,6 +36,10 @@ use Nadybot\Core\Event\{
 	SendPrivEvent,
 	TowersChannelMsgEvent
 };
+use Nadybot\Core\Exceptions\{
+	StopExecutionException,
+	UserException
+};
 use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\PrivateChannel,

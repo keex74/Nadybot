@@ -14,6 +14,7 @@ use Nadybot\Core\{
 	ColorSettingHandler,
 	Config\BotConfig,
 	DB,
+	Exceptions\StopExecutionException,
 	LogonEvent,
 	MessageHub,
 	ModuleInstance,
@@ -24,7 +25,6 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Safe,
-	StopExecutionException,
 	Text,
 };
 use Nadybot\Modules\COMMENT_MODULE\CommentController;

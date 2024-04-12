@@ -13,7 +13,17 @@ use Amp\Websocket\WebsocketClosedException;
 use Amp\{CancelledException, DeferredFuture, TimeoutCancellation, TimeoutException};
 
 use Nadybot\Core\Event\{ConnectEvent, RecvMsgEvent};
-use Nadybot\Core\{Attributes as NCA, Config\BotConfig, EventManager, ModuleInstance, Nadybot, Registry, Safe, StopExecutionException, UserException};
+use Nadybot\Core\{
+	Attributes as NCA,
+	Config\BotConfig,
+	EventManager,
+	Exceptions\StopExecutionException,
+	Exceptions\UserException,
+	ModuleInstance,
+	Nadybot,
+	Registry,
+	Safe,
+};
 use Psr\Log\LoggerInterface;
 use Throwable;
 

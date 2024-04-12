@@ -17,6 +17,7 @@ use Nadybot\Core\{
 	DBSchema\Player,
 	Event,
 	EventManager,
+	Exceptions\SQLException,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\PLAYER_LOOKUP\GuildManager,
@@ -25,7 +26,6 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PDuration,
 	ParamClass\PRemove,
-	SQLException,
 	Text,
 	Util,
 };

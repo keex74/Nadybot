@@ -10,12 +10,12 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
 	ParamClass\PItem,
 	Safe,
 	Text,
-	UserException,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
 	AODBItem,

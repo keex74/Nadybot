@@ -12,11 +12,11 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
 	ParamClass\PCharacter,
 	Text,
-	UserException,
 };
 use Nadybot\Modules\RAFFLE_MODULE\RaffleItem;
 

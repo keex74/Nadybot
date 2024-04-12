@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	BuddylistManager,
 	CmdContext,
 	DBSchema\Player,
+	Exceptions\UserException,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\Guild,
 	Modules\PLAYER_LOOKUP\GuildManager,
@@ -17,7 +18,6 @@ use Nadybot\Core\{
 	Nadybot,
 	ParamClass\PNonGreedy,
 	Text,
-	UserException,
 };
 use Psr\Log\LoggerInterface;
 use stdClass;

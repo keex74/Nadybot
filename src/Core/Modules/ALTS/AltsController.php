@@ -16,6 +16,7 @@ use Nadybot\Core\{
 	DBSchema\Alt,
 	DBSchema\Audit,
 	EventManager,
+	Exceptions\SQLException,
 	LogonEvent,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerManager,
@@ -24,7 +25,6 @@ use Nadybot\Core\{
 	ParamClass\PRemove,
 	QueryBuilder,
 	Registry,
-	SQLException,
 	Text,
 };
 

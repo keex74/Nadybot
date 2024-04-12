@@ -10,6 +10,11 @@ use Amp\TimeoutCancellation;
 use Directory;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Config\BotConfig;
+use Nadybot\Core\Exceptions\{
+	IntegratedIntoBaseException,
+	InvalidCodeException,
+	InvalidVersionException
+};
 use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

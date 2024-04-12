@@ -16,6 +16,7 @@ use Nadybot\Core\{
 	CmdContext,
 	Config\BotConfig,
 	DB,
+	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
 	Nadybot,
@@ -23,7 +24,6 @@ use Nadybot\Core\{
 	Safe,
 	SemanticVersion,
 	Text,
-	UserException,
 };
 use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;

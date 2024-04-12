@@ -15,6 +15,7 @@ use Nadybot\Core\{
 	DB,
 	Event,
 	EventManager,
+	Exceptions\UserException,
 	MessageHub,
 	ModuleInstance,
 	ParamClass\PDuration,
@@ -25,7 +26,6 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	Text,
-	UserException,
 	Util,
 };
 use Psr\Log\LoggerInterface;
