@@ -5,7 +5,7 @@ namespace Nadybot\Modules\PVP_MODULE;
 use ArrayAccess;
 use Exception;
 use Iterator;
-use Nadybot\Core\Playfield;
+use Nadybot\Core\Types\Playfield;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 
 /**

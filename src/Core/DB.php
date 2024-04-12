@@ -24,6 +24,8 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DBSchema\Migration,
 	Migration as CoreMigration,
+	Types\ModuleInstanceInterface,
+	Types\SettingMode,
 };
 use PDO;
 use PDOException;

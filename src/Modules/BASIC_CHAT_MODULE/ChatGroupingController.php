@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Nadybot\Core\Event\{LeaveMyPrivEvent};
+use Nadybot\Core\Events\{LeaveMyPrivEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,

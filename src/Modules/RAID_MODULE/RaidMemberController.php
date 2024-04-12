@@ -6,7 +6,7 @@ use function Amp\async;
 use function Amp\Future\await;
 
 use AO\Package;
-use Nadybot\Core\Event\LeaveMyPrivEvent;
+use Nadybot\Core\Events\LeaveMyPrivEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,

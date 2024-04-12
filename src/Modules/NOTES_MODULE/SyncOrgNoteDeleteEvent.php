@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
-use Nadybot\Core\SyncEvent;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncOrgNoteDeleteEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(orgnote-delete)';

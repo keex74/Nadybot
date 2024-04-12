@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\MOB_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 abstract class MobEvent extends Event {
 	public const EVENT_MASK = 'mob-*';

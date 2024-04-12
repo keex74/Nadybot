@@ -7,7 +7,6 @@ use function Amp\Future\await;
 
 use AO\Package;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\TimerEvent as EventTimerEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -17,13 +16,14 @@ use Nadybot\Core\{
 	DB,
 	DBSchema\Audit,
 	DBSchema\Player,
-	Event,
+	Events\Event,
+	Events\PackageEvent,
+	Events\TimerEvent,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\BAN\BanController,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
-	PackageEvent,
 	ParamClass\PCharacter,
 	Safe,
 	Text,
@@ -167,7 +167,7 @@ class WhoisController extends ModuleInstance {
 	public function lookupIdCommand(CmdContext $context, int $charID): void {
 		$name = $this->chatBot->getName($charID);
 		if (isset($name)) {
-			$this->saveCharIds(new EventTimerEvent(60));
+			$this->saveCharIds(new TimerEvent(60));
 		}
 
 		/** @var NameHistory[] */

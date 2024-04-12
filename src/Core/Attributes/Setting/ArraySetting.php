@@ -5,7 +5,7 @@ namespace Nadybot\Core\Attributes\Setting;
 use Attribute;
 
 use Nadybot\Core\Attributes\DefineSetting;
-use Nadybot\Core\SettingMode;
+use Nadybot\Core\Types\SettingMode;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ArraySetting extends DefineSetting {

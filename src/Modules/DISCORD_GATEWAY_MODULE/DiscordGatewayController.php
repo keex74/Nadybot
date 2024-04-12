@@ -14,7 +14,7 @@ use Amp\Websocket\Client\{Rfc6455Connector, WebsocketConnectException, Websocket
 use Amp\Websocket\{WebsocketCloseCode, WebsocketClosedException, WebsocketCount};
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
 use Illuminate\Support\{Collection, ItemNotFoundException};
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\Modules\DISCORD\{
 	Activity,

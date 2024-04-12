@@ -2,8 +2,8 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use Nadybot\Core\ImplantSlot;
 use Nadybot\Core\ParamClass\Base;
+use Nadybot\Core\Types\ImplantSlot;
 
 class PImplantSlot extends Base {
 	protected static string $regExp = 'eyes?|ocular'.

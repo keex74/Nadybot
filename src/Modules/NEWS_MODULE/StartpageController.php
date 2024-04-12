@@ -12,7 +12,7 @@ use DateInterval;
 use DateTimeZone;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Nadybot\Core\Event\JoinMyPrivEvent;
+use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,

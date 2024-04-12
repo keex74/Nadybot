@@ -4,7 +4,7 @@ namespace Nadybot\Modules\EVENTS_MODULE;
 
 use function Safe\strtotime;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\JoinMyPrivEvent;
+use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,

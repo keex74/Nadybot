@@ -12,11 +12,11 @@ use Exception;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\WebChannel,
-	Event,
 	EventManager,
+	Events\Event,
+	Events\PackageEvent,
 	MessageHub,
 	ModuleInstance,
-	PackageEvent,
 	Registry,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\{

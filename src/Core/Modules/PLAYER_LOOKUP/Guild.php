@@ -3,7 +3,7 @@
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\{Faction, Government};
+use Nadybot\Core\Types\{Faction, Government};
 use Safe\DateTimeImmutable;
 
 class Guild {

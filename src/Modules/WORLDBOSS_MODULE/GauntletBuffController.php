@@ -7,15 +7,14 @@ use function Safe\{json_decode, json_encode};
 use Amp\Http\Client\{HttpClientBuilder, Request};
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
-use Nadybot\Core\Event\{ConnectEvent, JoinMyPrivEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	Config\BotConfig,
 	EventManager,
-	Faction,
-	LogonEvent,
-	MessageEmitter,
+	Events\ConnectEvent,
+	Events\JoinMyPrivEvent,
+	Events\LogonEvent,
 	MessageHub,
 	ModuleInstance,
 	Nadybot,
@@ -23,6 +22,8 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Text,
+	Types\Faction,
+	Types\MessageEmitter,
 	Util,
 };
 use Nadybot\Modules\TIMERS_MODULE\{

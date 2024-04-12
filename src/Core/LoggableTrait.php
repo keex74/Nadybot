@@ -4,6 +4,7 @@ namespace Nadybot\Core;
 
 use function Safe\json_encode;
 use EventSauce\ObjectHydrator\DoNotSerialize;
+use Nadybot\Core\Types\Loggable;
 use ReflectionClass;
 
 use Safe\Exceptions\JsonException;

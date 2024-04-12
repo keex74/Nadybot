@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\GSP_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 abstract class GSPEvent extends Event {
 	public const EVENT_MASK = 'gsp(*)';

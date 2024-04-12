@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\ALTS;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 abstract class AltEvent extends Event {
 	public const EVENT_MASK = 'alt(*)';

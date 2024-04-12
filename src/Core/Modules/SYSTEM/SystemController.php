@@ -9,7 +9,7 @@ use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\{
 	AccessManager,
@@ -22,10 +22,9 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	DBSchema\Setting,
-	Event,
 	EventManager,
+	Events\Event,
 	HelpManager,
-	MessageEmitter,
 	MessageHub,
 	ModuleInstance,
 	Modules\BAN\BanController,
@@ -36,9 +35,10 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
-	SettingMode,
 	SubcommandManager,
 	Text,
+	Types\MessageEmitter,
+	Types\SettingMode,
 	Util,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\ApiResponse;

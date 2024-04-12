@@ -13,7 +13,8 @@ use Amp\Websocket\{PeriodicHeartbeatQueue, WebsocketCloseCode, WebsocketClosedEx
 use AssertionError;
 use Closure;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\Event\{EventFeedConnect, EventFeedReconnect};
+use Nadybot\Core\Events\{EventFeedConnect, EventFeedReconnect, LowLevelEventFeedEvent};
+use Nadybot\Core\Types\EventFeedHandler;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Safe\Exceptions\JsonException;

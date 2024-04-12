@@ -9,7 +9,6 @@ use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
 	MessageHub,
-	MessageReceiver,
 	Modules\DISCORD\DiscordAPIClient,
 	Modules\DISCORD\DiscordController,
 	Routing\Events\Base,
@@ -19,6 +18,7 @@ use Nadybot\Core\{
 	Safe,
 	SettingManager,
 	Text,
+	Types\MessageReceiver,
 };
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\DiscordGatewayController;
 

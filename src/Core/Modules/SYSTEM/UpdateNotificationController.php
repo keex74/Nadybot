@@ -6,12 +6,12 @@ use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BotRunner,
-	EventFeedHandler,
 	MessageHub,
 	ModuleInstance,
 	Routing\RoutableMessage,
 	Routing\Source,
 	SemanticVersion,
+	Types\EventFeedHandler,
 };
 
 #[

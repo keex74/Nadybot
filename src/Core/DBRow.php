@@ -4,7 +4,7 @@ namespace Nadybot\Core;
 
 use Stringable;
 
-class DBRow implements Stringable {
+abstract class DBRow implements Stringable {
 	use StringableTrait;
 
 	public function __get(string $value): mixed {

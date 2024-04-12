@@ -4,6 +4,7 @@ namespace Nadybot\Core;
 
 use Monolog\Processor\ProcessorInterface;
 use Monolog\Utils;
+use Nadybot\Core\Types\Loggable;
 
 /**
  * Processes a record's message according to PSR-3 rules

@@ -3,6 +3,7 @@
 namespace Nadybot\Core;
 
 use Nadybot\Core\Routing\Source;
+use Nadybot\Core\Types\{CommandReply, MessageEmitter};
 
 class PrivateChannelCommandReply implements CommandReply, MessageEmitter {
 	public function __construct(

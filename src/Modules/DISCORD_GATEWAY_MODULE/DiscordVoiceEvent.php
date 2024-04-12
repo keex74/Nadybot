@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 use Nadybot\Core\Modules\DISCORD\{DiscordChannel, GuildMember};
 
 abstract class DiscordVoiceEvent extends Event {

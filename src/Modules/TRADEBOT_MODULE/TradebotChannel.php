@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\TRADEBOT_MODULE;
 
-use Nadybot\Core\MessageEmitter;
+use Nadybot\Core\Types\MessageEmitter;
 
 class TradebotChannel implements MessageEmitter {
 	public function __construct(private string $bot) {

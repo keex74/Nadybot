@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\TRACKER_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 abstract class TrackerEvent extends Event {
 	public const EVENT_MASK = 'tracker(*)';

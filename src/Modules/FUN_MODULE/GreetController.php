@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\FUN_MODULE;
 
 use function Amp\delay;
-use Nadybot\Core\Event\JoinMyPrivEvent;
+use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\Modules\ALTS\{AltNewMainEvent, AltsController};
 
 use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;

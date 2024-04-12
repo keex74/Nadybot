@@ -12,7 +12,6 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\DiscordChannel,
 	CmdContext,
-	ColorSettingHandler,
 	Config\BotConfig,
 	DB,
 	DBSchema\Route,
@@ -20,7 +19,6 @@ use Nadybot\Core\{
 	DBSchema\RouteHopFormat,
 	DBSchema\RouteModifier,
 	DBSchema\RouteModifierArgument,
-	MessageEmitter,
 	MessageHub,
 	MessageRoute,
 	ModuleInstance,
@@ -28,7 +26,9 @@ use Nadybot\Core\{
 	ParamClass\PRemove,
 	Routing\Source,
 	Safe,
+	SettingHandlers\ColorSettingHandler,
 	Text,
+	Types\MessageEmitter,
 	Util,
 };
 use Psr\Log\LoggerInterface;

@@ -6,7 +6,8 @@ use Attribute;
 use Exception;
 
 use Nadybot\Core\Attributes\DefineSetting;
-use Nadybot\Core\{Safe, SettingMode};
+use Nadybot\Core\Safe;
+use Nadybot\Core\Types\SettingMode;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Color extends DefineSetting {

@@ -7,9 +7,9 @@ use Exception;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	EventModifier,
 	Routing\RoutableEvent,
 	Safe,
+	Types\EventModifier,
 };
 
 #[

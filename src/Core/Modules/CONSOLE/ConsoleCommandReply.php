@@ -4,9 +4,7 @@ namespace Nadybot\Core\Modules\CONSOLE;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	CommandReply,
 	Config\BotConfig,
-	MessageEmitter,
 	MessageHub,
 	Modules\COLORS\ColorsController,
 	Nadybot,
@@ -14,6 +12,8 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Safe,
+	Types\CommandReply,
+	Types\MessageEmitter,
 };
 
 class ConsoleCommandReply implements CommandReply, MessageEmitter {

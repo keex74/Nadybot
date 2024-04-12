@@ -4,18 +4,18 @@ namespace Nadybot\Modules\CITY_MODULE;
 
 use function Safe\preg_match;
 use Exception;
-use Nadybot\Core\Event\GuildChannelMsgEvent;
+use Nadybot\Core\Events\GuildChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	CommandAlias,
 	Config\BotConfig,
 	EventManager,
-	MessageEmitter,
 	MessageHub,
 	ModuleInstance,
 	Routing\RoutableMessage,
 	Routing\Source,
+	Types\MessageEmitter,
 	Util,
 };
 use Nadybot\Modules\TIMERS_MODULE\{

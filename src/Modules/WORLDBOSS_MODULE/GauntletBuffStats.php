@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
-use Nadybot\Core\Faction;
+use Nadybot\Core\Types\Faction;
 use Nadybot\Modules\WEBSERVER_MODULE\Interfaces\GaugeProvider;
 
 class GauntletBuffStats implements GaugeProvider {

@@ -5,9 +5,9 @@ namespace Nadybot\Core\Modules\CONSOLE;
 use Amp\Socket\ResourceSocket;
 use Nadybot\Core\{
 	Attributes as NCA,
-	CommandReply,
 	Config\BotConfig,
 	Safe,
+	Types\CommandReply,
 };
 
 use Throwable;

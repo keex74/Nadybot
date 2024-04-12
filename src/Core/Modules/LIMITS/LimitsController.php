@@ -5,7 +5,7 @@ namespace Nadybot\Core\Modules\LIMITS;
 use function Safe\preg_match;
 
 use AO\Package;
-use Nadybot\Core\Event\SuccessCmdEvent;
+use Nadybot\Core\Events\SuccessCmdEvent;
 
 use Nadybot\Core\Modules\PLAYER_LOOKUP\{
 	PlayerHistory,
@@ -16,11 +16,11 @@ use Nadybot\Core\Modules\PLAYER_LOOKUP\{
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
-	CmdEvent,
 	CommandHandler,
 	Config\BotConfig,
 	DBSchema\Audit,
 	DBSchema\Player,
+	Events\CmdEvent,
 	Exceptions\UserException,
 	MessageHub,
 	ModuleInstance,

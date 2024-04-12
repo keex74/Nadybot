@@ -19,27 +19,33 @@ use Nadybot\Core\DBSchema\{
 	LastOnline,
 	Setting,
 };
-use Nadybot\Core\Event\{
+use Nadybot\Core\Events\{
 	ExtJoinPrivRequest,
 	GuildChannelMsgEvent,
 	JoinMyPrivEvent,
 	JoinPrivEvent,
 	LeaveMyPrivEvent,
 	LeavePrivEvent,
+	LogoffEvent,
+	LogonEvent,
 	MyPrivateChannelMsgEvent,
 	OrgMsgChannelMsgEvent,
 	OtherLeavePrivEvent,
+	PackageEvent,
+	PongEvent,
 	PrivateChannelMsgEvent,
 	RecvMsgEvent,
 	SendGuildEvent,
 	SendMsgEvent,
 	SendPrivEvent,
+	SettingEvent,
 	TowersChannelMsgEvent
 };
 use Nadybot\Core\Exceptions\{
 	StopExecutionException,
 	UserException
 };
+use Nadybot\Core\Types\ModuleInstanceInterface;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\PrivateChannel,
@@ -50,7 +56,7 @@ use Nadybot\Core\{
 	Routing\Character,
 	Routing\RoutableMessage,
 	Routing\Source,
-	SettingHandler as CoreSettingHandler,
+	SettingHandlers\SettingHandler,
 };
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -1422,7 +1428,7 @@ class Nadybot {
 	}
 
 	public function registerSettingHandlers(string $class): void {
-		if (!is_subclass_of($class, CoreSettingHandler::class)) {
+		if (!is_subclass_of($class, SettingHandler::class)) {
 			return;
 		}
 		$reflection = new ReflectionClass($class);

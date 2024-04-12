@@ -12,7 +12,7 @@ use Amp\Http\{Client, HttpStatus};
 use Amp\TimeoutCancellation;
 use Closure;
 use Exception;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,

@@ -2,6 +2,8 @@
 
 namespace Nadybot\Core;
 
+use Nadybot\Core\Types\ModuleInstanceInterface;
+
 abstract class ModuleInstance implements ModuleInstanceInterface {
 	/** Set when registering the module */
 	public string $moduleName = '';

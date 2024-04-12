@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\RAFFLE_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 class RaffleCancelEvent extends Event {
 	public const EVENT_MASK = 'raffle(cancel)';

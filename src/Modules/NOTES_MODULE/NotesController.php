@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
-use Nadybot\Core\Event\JoinMyPrivEvent;
+use Nadybot\Core\Events\JoinMyPrivEvent;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
 use Nadybot\Core\{
 	Attributes as NCA,

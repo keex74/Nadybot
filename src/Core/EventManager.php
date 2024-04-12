@@ -8,11 +8,14 @@ use function Safe\preg_match;
 
 use Closure;
 use Exception;
-use Nadybot\Core\Event\{ConnectEvent, SetupEvent, TimerEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DBSchema\EventCfg,
+	Events\ConnectEvent,
+	Events\Event,
+	Events\SetupEvent,
+	Events\TimerEvent,
 	Exceptions\SQLException,
 	Exceptions\StopExecutionException,
 	Modules\MESSAGES\MessageHubController,

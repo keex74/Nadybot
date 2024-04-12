@@ -6,6 +6,7 @@ use function Safe\{json_decode, json_encode};
 
 use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection};
 use InvalidArgumentException;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncEventFactory {
 	/**

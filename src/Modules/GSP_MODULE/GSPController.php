@@ -12,7 +12,6 @@ use Nadybot\Core\{
 	CmdContext,
 	EventManager,
 	LogonEvent,
-	MessageEmitter,
 	MessageHub,
 	ModuleInstance,
 	Nadybot,
@@ -20,6 +19,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	Text,
+	Types\MessageEmitter,
 };
 use Safe\DateTimeImmutable;
 use Throwable;

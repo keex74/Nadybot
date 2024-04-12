@@ -3,7 +3,8 @@
 namespace Nadybot\Modules\ORGLIST_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{DBTable, Faction, Government};
+use Nadybot\Core\DBTable;
+use Nadybot\Core\Types\{Faction, Government};
 
 #[Table(name: 'organizations', shared: Shared::Yes)]
 class Organization extends DBTable {

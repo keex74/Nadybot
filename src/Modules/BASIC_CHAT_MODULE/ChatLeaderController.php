@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Nadybot\Core\Event\{LeaveMyPrivEvent, MyPrivateChannelMsgEvent};
+use Nadybot\Core\Events\{LeaveMyPrivEvent, MyPrivateChannelMsgEvent};
 use Nadybot\Core\{
 	AccessLevelProvider,
 	AccessManager,

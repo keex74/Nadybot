@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\Payload;
 
 class DiscordGatewayEvent extends Event {

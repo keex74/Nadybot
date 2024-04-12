@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 abstract class AuctionEvent extends Event {
 	public const EVENT_MASK = 'auction(*)';

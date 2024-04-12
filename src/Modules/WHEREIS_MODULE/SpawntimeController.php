@@ -10,9 +10,9 @@ use Nadybot\Core\{
 	CmdContext,
 	DB,
 	ModuleInstance,
-	Playfield,
 	Safe,
 	Text,
+	Types\Playfield,
 };
 use Safe\DateTimeImmutable;
 

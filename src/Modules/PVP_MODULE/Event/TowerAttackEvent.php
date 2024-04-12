@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PVP_MODULE\Event;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 use Nadybot\Modules\PVP_MODULE\FeedMessage;
 
 class TowerAttackEvent extends Event {

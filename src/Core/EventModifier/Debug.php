@@ -6,11 +6,11 @@ use function Safe\json_encode;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	EventModifier,
 	MessageHub,
 	Routing\RoutableEvent,
 	Routing\RoutableMessage,
 	Text,
+	Types\EventModifier,
 };
 
 #[

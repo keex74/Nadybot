@@ -4,7 +4,7 @@ namespace Nadybot\Modules\PVP_MODULE\Handlers;
 
 use Nadybot\Core\Exceptions\UserException;
 use Nadybot\Core\ParamClass\PTowerSite;
-use Nadybot\Core\Playfield;
+use Nadybot\Core\Types\Playfield;
 use Nadybot\Modules\PVP_MODULE\Attributes\Argument;
 use Nadybot\Modules\PVP_MODULE\FeedMessage\SiteUpdate;
 

@@ -9,7 +9,7 @@ use AO\Client\{Basic, WorkerPackage};
 use AO\Package;
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
-use Nadybot\Core\Event\PrivateChannelMsgEvent;
+use Nadybot\Core\Events\PrivateChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,

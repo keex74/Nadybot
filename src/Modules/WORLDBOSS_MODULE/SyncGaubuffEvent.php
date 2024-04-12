@@ -3,7 +3,9 @@
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
 use Nadybot\Core\Attributes\{StrFuncIn, StrFuncOut};
-use Nadybot\Core\{Faction, SyncEvent, Util};
+use Nadybot\Core\Events\SyncEvent;
+use Nadybot\Core\Types\Faction;
+use Nadybot\Core\Util;
 
 class SyncGaubuffEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(gaubuff)';

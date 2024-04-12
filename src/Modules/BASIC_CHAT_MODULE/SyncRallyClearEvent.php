@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Nadybot\Core\SyncEvent;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncRallyClearEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(rally-clear)';

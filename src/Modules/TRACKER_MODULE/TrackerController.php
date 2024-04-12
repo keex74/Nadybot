@@ -5,7 +5,7 @@ namespace Nadybot\Modules\TRACKER_MODULE;
 use function Safe\preg_split;
 use Exception;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\TimerEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -14,12 +14,10 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	DBSchema\Player,
-	Event,
 	EventManager,
-	Faction,
-	LogoffEvent,
-	LogonEvent,
-	MessageEmitter,
+	Events\ConnectEvent,
+	Events\LogoffEvent,
+	Events\LogonEvent,
 	MessageHub,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\Guild,
@@ -29,11 +27,13 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PNonNumber,
 	ParamClass\PRemove,
-	Profession,
 	Routing\RoutableMessage,
 	Routing\Source,
 	Safe,
 	Text,
+	Types\Faction,
+	Types\MessageEmitter,
+	Types\Profession,
 	Util,
 };
 use Nadybot\Modules\{
@@ -259,7 +259,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		name: 'timer(24hrs)',
 		description: "Download all tracked orgs' information"
 	)]
-	public function downloadOrgRostersEvent(Event $eventObj): void {
+	public function downloadOrgRostersEvent(TimerEvent $eventObj): void {
 		/** @var Collection<TrackingOrg> */
 		$orgs = $this->db->table(TrackingOrg::getTable())->asObj(TrackingOrg::class);
 		try {

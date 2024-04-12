@@ -12,7 +12,6 @@ use Nadybot\Core\{
 	DB,
 	EventManager,
 	Exceptions\SQLException,
-	MessageEmitter,
 	MessageHub,
 	ModuleInstance,
 	Modules\DISCORD\DiscordController,
@@ -24,6 +23,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	Text,
+	Types\MessageEmitter,
 	Util,
 };
 

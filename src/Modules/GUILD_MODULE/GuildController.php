@@ -4,7 +4,7 @@ namespace Nadybot\Modules\GUILD_MODULE;
 
 use function Amp\async;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\{ConnectEvent, OrgMsgChannelMsgEvent};
+use Nadybot\Core\Events\{ConnectEvent, OrgMsgChannelMsgEvent};
 use Nadybot\Core\Modules\ALTS\AltInfo;
 use Nadybot\Core\{
 	AccessManager,

@@ -5,7 +5,7 @@ namespace Nadybot\Core\Highway;
 use function Safe\json_encode;
 use EventSauce\ObjectHydrator\DoNotSerialize;
 
-use Nadybot\Core\Loggable;
+use Nadybot\Core\Types\Loggable;
 
 class Package implements Loggable {
 	public const HELLO = 'hello';

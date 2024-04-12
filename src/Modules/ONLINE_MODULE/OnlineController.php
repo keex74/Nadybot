@@ -7,7 +7,7 @@ use function Safe\preg_match;
 use Amp\Http\Server\{Request, Response};
 use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\Event\{GuildChannelMsgEvent, MyPrivateChannelMsgEvent};
+use Nadybot\Core\Events\{GuildChannelMsgEvent, MyPrivateChannelMsgEvent};
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,

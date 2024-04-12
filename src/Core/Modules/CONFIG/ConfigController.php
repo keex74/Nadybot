@@ -25,14 +25,14 @@ use Nadybot\Core\{
 	EventManager,
 	HelpManager,
 	ModuleInstance,
-	ModuleInstanceInterface,
 	Nadybot,
 	ParamClass\PWord,
 	Registry,
-	SettingHandler,
+	SettingHandlers\SettingHandler,
 	SettingManager,
 	SubcommandManager,
 	Text,
+	Types\ModuleInstanceInterface,
 };
 use ReflectionClass;
 

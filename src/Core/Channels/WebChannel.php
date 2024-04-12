@@ -6,10 +6,10 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	EventManager,
 	MessageHub,
-	MessageReceiver,
 	Routing\RoutableEvent,
 	Routing\Source,
 	Safe,
+	Types\MessageReceiver,
 };
 
 use Nadybot\Modules\WEBSERVER_MODULE\{AOWebChatEvent, WebChatConverter};

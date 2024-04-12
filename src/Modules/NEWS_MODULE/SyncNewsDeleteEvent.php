@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\NEWS_MODULE;
 
-use Nadybot\Core\SyncEvent;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncNewsDeleteEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(news-delete)';

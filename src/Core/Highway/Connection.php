@@ -9,7 +9,8 @@ use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObjec
 use Exception;
 use Nadybot\Core\Highway\In\InPackage;
 use Nadybot\Core\Highway\Out\OutPackage;
-use Nadybot\Core\{Attributes as NCA, LogWrapInterface, LoggerWrapper, SemanticVersion};
+use Nadybot\Core\Types\LogWrapInterface;
+use Nadybot\Core\{Attributes as NCA, LoggerWrapper, SemanticVersion};
 
 class Connection implements LogWrapInterface {
 	public const SUPPORTED_VERSIONS = ['~0.1.1', '~0.2.0-alpha.1'];

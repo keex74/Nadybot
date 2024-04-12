@@ -9,7 +9,7 @@ use Amp\Http\Server\{Request, Response};
 use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapper, ObjectMapperUsingReflection};
 use Exception;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Routing\{Character, RoutableMessage, Source};
 use Nadybot\Core\{
 	Attributes as NCA,

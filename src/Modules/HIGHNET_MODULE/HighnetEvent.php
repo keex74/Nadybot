@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\HIGHNET_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 class HighnetEvent extends Event {
 	public const EVENT_MASK = 'highnet(*)';

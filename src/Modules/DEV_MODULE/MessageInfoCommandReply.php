@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\DEV_MODULE;
 
-use Nadybot\Core\CommandReply;
+use Nadybot\Core\Types\CommandReply;
 
 class MessageInfoCommandReply implements CommandReply {
 	private float $startTime;

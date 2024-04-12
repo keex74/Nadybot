@@ -4,7 +4,7 @@ namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
 use DateTimeImmutable;
 use EventSauce\ObjectHydrator\PropertyCasters\{CastToDateTimeImmutable, CastToType};
-use Nadybot\Core\Faction;
+use Nadybot\Core\Types\Faction;
 
 class PlayerHistoryData {
 	public function __construct(

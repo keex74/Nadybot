@@ -4,7 +4,7 @@ namespace Nadybot\Modules\RELAY_MODULE\Transport;
 
 use function Amp\async;
 use AO\Package;
-use Nadybot\Core\Event\RecvMsgEvent;
+use Nadybot\Core\Events\RecvMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BuddylistManager,

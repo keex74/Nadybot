@@ -7,10 +7,10 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	Faction,
 	ModuleInstance,
 	ParamClass\PWord,
 	Text,
+	Types\Faction,
 };
 
 /**

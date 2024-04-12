@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\PROFILE;
 
-use Nadybot\Core\CommandReply;
+use Nadybot\Core\Types\CommandReply;
 
 class ProfileCommandReply implements CommandReply {
 	public string $result = '';

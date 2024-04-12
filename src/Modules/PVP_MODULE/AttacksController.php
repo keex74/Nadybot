@@ -4,7 +4,7 @@ namespace Nadybot\Modules\PVP_MODULE;
 
 use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\Event\OrgMsgChannelMsgEvent;
+use Nadybot\Core\Events\OrgMsgChannelMsgEvent;
 use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;
 use Nadybot\Core\ParamClass\{PDuration, PNonGreedy, PTowerSite};
 use Nadybot\Core\Routing\{RoutableMessage, Source};

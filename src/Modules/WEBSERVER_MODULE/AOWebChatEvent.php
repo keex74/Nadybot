@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use Nadybot\Core\Event\AOChatEvent;
+use Nadybot\Core\Events\AOChatEvent;
 
 class AOWebChatEvent extends AOChatEvent {
 	public const EVENT_MASK = 'chat(web)';

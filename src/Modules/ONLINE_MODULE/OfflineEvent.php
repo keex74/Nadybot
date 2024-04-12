@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\ONLINE_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 class OfflineEvent extends Event {
 	public const EVENT_MASK = 'offline(*)';

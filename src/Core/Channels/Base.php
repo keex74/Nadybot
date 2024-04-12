@@ -2,9 +2,10 @@
 
 namespace Nadybot\Core\Channels;
 
+use Nadybot\Core\MessageHub;
 use Nadybot\Core\Routing\Events\Base as EventsBase;
 use Nadybot\Core\Routing\RoutableEvent;
-use Nadybot\Core\{MessageHub, MessageReceiver};
+use Nadybot\Core\Types\MessageReceiver;
 
 abstract class Base implements MessageReceiver {
 	abstract public function getChannelName(): string;

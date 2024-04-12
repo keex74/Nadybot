@@ -3,7 +3,8 @@
 namespace Nadybot\Core\ParamClass;
 
 use InvalidArgumentException;
-use Nadybot\Core\{AOItem, Safe};
+use Nadybot\Core\Safe;
+use Nadybot\Core\Types\AOItem;
 
 class PItem extends Base implements AOItem {
 	public int $lowID;

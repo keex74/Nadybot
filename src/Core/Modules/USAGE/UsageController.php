@@ -20,8 +20,8 @@ use Nadybot\Core\{
 	ParamClass\PDuration,
 	ParamClass\PWord,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\SettingMode,
 	Util,
 };
 use Nadybot\Modules\RELAY_MODULE\{RelayConfig, RelayLayer};

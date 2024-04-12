@@ -6,16 +6,15 @@ use function Amp\async;
 use function Safe\preg_match;
 use AO\Package;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\{ConnectEvent, ExtJoinPrivRequest, PrivateChannelMsgEvent, RecvMsgEvent};
+use Nadybot\Core\Events\{ConnectEvent, ExtJoinPrivRequest, PrivateChannelMsgEvent, RecvMsgEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
 	BuddylistManager,
 	CmdContext,
-	ColorSettingHandler,
 	Config\BotConfig,
 	DB,
+	Events\LogonEvent,
 	Exceptions\StopExecutionException,
-	LogonEvent,
 	MessageHub,
 	ModuleInstance,
 	Nadybot,
@@ -25,6 +24,7 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Safe,
+	SettingHandlers\ColorSettingHandler,
 	Text,
 };
 use Nadybot\Modules\COMMENT_MODULE\CommentController;

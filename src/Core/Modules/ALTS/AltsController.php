@@ -5,19 +5,18 @@ namespace Nadybot\Core\Modules\ALTS;
 use function Amp\async;
 
 use Nadybot\Core\Config\BotConfig;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
 	BuddylistManager,
 	CmdContext,
-	CommandReply,
 	DB,
 	DBSchema\Alt,
 	DBSchema\Audit,
 	EventManager,
+	Events\LogonEvent,
 	Exceptions\SQLException,
-	LogonEvent,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
@@ -26,6 +25,7 @@ use Nadybot\Core\{
 	QueryBuilder,
 	Registry,
 	Text,
+	Types\CommandReply,
 };
 
 /**

@@ -5,8 +5,8 @@ namespace Nadybot\Modules\WATCHDOG_MODULE;
 use function Safe\{getmygid, getmypid, getmyuid, putenv};
 use Nadybot\Core\{
 	Attributes as NCA,
-	Event,
 	EventManager,
+	Events\Event,
 	ModuleInstance,
 };
 

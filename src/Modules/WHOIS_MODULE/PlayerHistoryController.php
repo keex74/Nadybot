@@ -6,12 +6,12 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	Config\BotConfig,
-	Faction,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerHistory,
 	Modules\PLAYER_LOOKUP\PlayerHistoryManager,
 	ParamClass\PCharacter,
 	Text,
+	Types\Faction,
 };
 
 /**

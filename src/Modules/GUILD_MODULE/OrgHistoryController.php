@@ -5,7 +5,7 @@ namespace Nadybot\Modules\GUILD_MODULE;
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\OrgMsgChannelMsgEvent;
+use Nadybot\Core\Events\OrgMsgChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,

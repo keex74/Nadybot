@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\ADMIN;
 
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
 use Nadybot\Core\{
 	AccessManager,
@@ -11,7 +11,6 @@ use Nadybot\Core\{
 	BuddylistManager,
 	CmdContext,
 	CommandAlias,
-	CommandReply,
 	DB,
 	DBSchema\Admin,
 	DBSchema\LastOnline,
@@ -22,6 +21,7 @@ use Nadybot\Core\{
 	ParamClass\PCharacter,
 	ParamClass\PRemove,
 	Text,
+	Types\CommandReply,
 	Util,
 };
 use Psr\Log\LoggerInterface;

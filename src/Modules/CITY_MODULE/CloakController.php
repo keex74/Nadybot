@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\CITY_MODULE;
 
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\GuildChannelMsgEvent;
+use Nadybot\Core\Events\GuildChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -11,7 +11,6 @@ use Nadybot\Core\{
 	Event,
 	EventManager,
 	LogonEvent,
-	MessageEmitter,
 	MessageHub,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
@@ -21,6 +20,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	Text,
+	Types\MessageEmitter,
 	Util,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\StatsController;

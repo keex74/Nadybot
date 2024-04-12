@@ -15,18 +15,18 @@ use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
-	CommandReply,
 	Config\BotConfig,
 	DB,
-	Event,
+	Events\Event,
 	Exceptions\SQLException,
 	Exceptions\UserException,
-	Faction,
 	Filesystem,
-	Government,
 	ModuleInstance,
 	Safe,
 	Text,
+	Types\CommandReply,
+	Types\Faction,
+	Types\Government,
 };
 use Psr\Log\LoggerInterface;
 use Throwable;

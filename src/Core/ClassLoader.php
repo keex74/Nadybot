@@ -15,6 +15,7 @@ use Nadybot\Core\Exceptions\{
 	InvalidCodeException,
 	InvalidVersionException
 };
+use Nadybot\Core\Types\ModuleInstanceInterface;
 use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

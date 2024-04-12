@@ -7,7 +7,7 @@ use Amp\File\{FilesystemException};
 use AO\Package;
 use Exception;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Routing\Events\Base;
 use Nadybot\Core\{
 	AccessLevelProvider,

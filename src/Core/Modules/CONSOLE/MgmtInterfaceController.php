@@ -16,7 +16,7 @@ use Amp\{
 	Socket\ServerSocket,
 };
 use Exception;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\{
 	Attributes as NCA,

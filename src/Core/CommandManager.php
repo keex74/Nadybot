@@ -6,7 +6,6 @@ use function Safe\{preg_match_all, preg_split};
 use Exception;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Nadybot\Core\Event\{ErrorCmdEvent, ForbiddenCmdEvent, HelpCmdEvent, SuccessCmdEvent, UnknownCmdEvent};
 use Nadybot\Core\Modules\SYSTEM\SystemController;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -17,6 +16,11 @@ use Nadybot\Core\{
 	DBSchema\CmdPermissionSet,
 	DBSchema\CommandSearchResult,
 	DBSchema\ExtCmdPermissionSet,
+	Events\ErrorCmdEvent,
+	Events\ForbiddenCmdEvent,
+	Events\HelpCmdEvent,
+	Events\SuccessCmdEvent,
+	Events\UnknownCmdEvent,
 	Exceptions\SQLException,
 	Exceptions\StopExecutionException,
 	Exceptions\UserException,
@@ -29,6 +33,7 @@ use Nadybot\Core\{
 	ParamClass\Base,
 	Routing\RoutableMessage,
 	Routing\Source,
+	Types\MessageEmitter,
 };
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;

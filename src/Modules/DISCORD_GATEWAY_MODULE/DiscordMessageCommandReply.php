@@ -9,7 +9,6 @@ use Nadybot\Core\{
 	Channels\DiscordChannel as ChannelsDiscordChannel,
 	CommandReply,
 	Config\BotConfig,
-	MessageEmitter,
 	MessageHub,
 	Modules\DISCORD\DiscordAPIClient,
 	Modules\DISCORD\DiscordChannel,
@@ -19,6 +18,7 @@ use Nadybot\Core\{
 	Routing\Character,
 	Routing\RoutableMessage,
 	Routing\Source,
+	Types\MessageEmitter,
 };
 
 class DiscordMessageCommandReply implements CommandReply, MessageEmitter {

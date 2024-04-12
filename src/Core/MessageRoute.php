@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\DBSchema\Route;
 use Nadybot\Core\Routing\RoutableEvent;
+use Nadybot\Core\Types\EventModifier;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

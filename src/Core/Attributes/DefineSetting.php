@@ -4,7 +4,7 @@ namespace Nadybot\Core\Attributes;
 
 use Attribute;
 use Exception;
-use Nadybot\Core\SettingMode;
+use Nadybot\Core\Types\SettingMode;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class DefineSetting {

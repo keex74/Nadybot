@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\TIMERS_MODULE;
 
-use Nadybot\Core\SyncEvent;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncTimerEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(timer)';

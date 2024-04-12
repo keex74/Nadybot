@@ -21,12 +21,12 @@ use Nadybot\Core\{
 	DB,
 	DBSchema\Player,
 	EventManager,
-	Faction,
 	Filesystem,
-	Government,
 	ModuleInstance,
 	Nadybot,
-	Profession,
+	Types\Faction,
+	Types\Government,
+	Types\Profession,
 };
 use Psr\Log\LoggerInterface;
 use Safe\DateTimeImmutable;

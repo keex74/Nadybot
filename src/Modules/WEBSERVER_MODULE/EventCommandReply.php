@@ -4,8 +4,8 @@ namespace Nadybot\Modules\WEBSERVER_MODULE;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	CommandReply,
 	EventManager,
+	Types\CommandReply,
 };
 
 class EventCommandReply implements CommandReply {

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\CITY_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 class CloakRaiseEvent extends Event {
 	public const EVENT_MASK = 'cloak(raise)';

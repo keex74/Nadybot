@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
-use Nadybot\Core\Event\AOChatEvent;
+use Nadybot\Core\Events\AOChatEvent;
 use Nadybot\Core\Modules\DISCORD\DiscordMessageIn;
 
 class DiscordMessageEvent extends AOChatEvent {

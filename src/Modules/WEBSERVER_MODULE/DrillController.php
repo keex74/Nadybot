@@ -12,7 +12,7 @@ use Amp\Websocket\Client\{Rfc6455Connector, WebsocketConnectException, Websocket
 use Amp\Websocket\WebsocketClosedException;
 use Amp\{CancelledException, DeferredFuture, TimeoutCancellation, TimeoutException};
 
-use Nadybot\Core\Event\{ConnectEvent, RecvMsgEvent};
+use Nadybot\Core\Events\{ConnectEvent, RecvMsgEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,

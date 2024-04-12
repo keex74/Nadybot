@@ -12,7 +12,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Registry,
 	SettingManager,
-	SettingMode,
+	Types\SettingMode,
 	Util,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\Collector\{

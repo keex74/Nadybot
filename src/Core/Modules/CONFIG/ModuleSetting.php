@@ -3,7 +3,7 @@
 namespace Nadybot\Core\Modules\CONFIG;
 
 use Nadybot\Core\DBSchema\Setting;
-use Nadybot\Core\SettingMode;
+use Nadybot\Core\Types\SettingMode;
 
 class ModuleSetting {
 	public const TYPE_BOOL = 'bool';

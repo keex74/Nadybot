@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
-use Nadybot\Core\MessageEmitter;
+use Nadybot\Core\Types\MessageEmitter;
 
 class WorldBossChannel implements MessageEmitter {
 	public function __construct(private string $bossName) {

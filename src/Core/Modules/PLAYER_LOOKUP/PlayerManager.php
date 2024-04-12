@@ -22,12 +22,12 @@ use Nadybot\Core\{
 	DB,
 	DBSchema\Player,
 	Exceptions\SQLException,
-	Faction,
 	Filesystem,
 	ModuleInstance,
 	Nadybot,
-	Profession,
 	Registry,
+	Types\Faction,
+	Types\Profession,
 };
 use Psr\Log\LoggerInterface;
 use Safe\Exceptions\JsonException;

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\PRIVATE_CHANNEL_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 /** Someone is removed from the member list of the bot */
 class MemberRemoveEvent extends Event {

@@ -9,8 +9,8 @@ use Nadybot\Core\{
 	Modules\ALTS\NickController,
 	Registry,
 	SettingManager,
-	SettingMode,
-	Text
+	Text,
+	Types\SettingMode
 };
 use Nadybot\Modules\ONLINE_MODULE\OnlineController;
 

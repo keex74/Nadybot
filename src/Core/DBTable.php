@@ -7,7 +7,7 @@ use Nadybot\Core\Attributes\DB\Table;
 use ReflectionClass;
 use ValueError;
 
-class DBTable extends DBRow {
+abstract class DBTable extends DBRow {
 	/**
 	 * Get the name of the table represented by this class
 	 *

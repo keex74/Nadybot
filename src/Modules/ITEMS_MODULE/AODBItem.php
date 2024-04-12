@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\ITEMS_MODULE;
 
-use Nadybot\Core\AOItem;
+use Nadybot\Core\Types\AOItem;
 
 class AODBItem extends AODBEntry implements AOItem {
 	public function __construct(

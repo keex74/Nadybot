@@ -5,7 +5,7 @@ namespace Nadybot\Modules\RAID_MODULE;
 use function Amp\async;
 
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
 use Nadybot\Core\{
 	AccessLevelProvider,

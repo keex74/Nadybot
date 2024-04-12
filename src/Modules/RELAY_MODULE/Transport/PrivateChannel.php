@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\RELAY_MODULE\Transport;
 
 use AO\Package;
-use Nadybot\Core\Event\{ExtJoinPrivRequest, JoinPrivEvent, LeavePrivEvent, OtherLeavePrivEvent, PrivateChannelMsgEvent};
+use Nadybot\Core\Events\{ExtJoinPrivRequest, JoinPrivEvent, LeavePrivEvent, OtherLeavePrivEvent, PrivateChannelMsgEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
 	EventManager,

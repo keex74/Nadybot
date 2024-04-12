@@ -2,8 +2,8 @@
 
 namespace Nadybot\Core\Routing;
 
+use Nadybot\Core\Events\{Event, SyncEvent};
 use Nadybot\Core\Routing\Events\Base;
-use Nadybot\Core\{Event, SyncEvent};
 use stdClass;
 
 class RoutableEvent extends Event {

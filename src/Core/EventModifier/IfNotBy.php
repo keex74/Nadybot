@@ -4,8 +4,8 @@ namespace Nadybot\Core\EventModifier;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	EventModifier,
 	Routing\RoutableEvent,
+	Types\EventModifier,
 };
 
 #[

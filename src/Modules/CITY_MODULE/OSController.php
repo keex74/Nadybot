@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\CITY_MODULE;
 
-use Nadybot\Core\Event\OrgMsgChannelMsgEvent;
+use Nadybot\Core\Events\OrgMsgChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,

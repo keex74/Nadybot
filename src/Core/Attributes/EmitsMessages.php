@@ -3,7 +3,7 @@
 namespace Nadybot\Core\Attributes;
 
 use Attribute;
-use Nadybot\Core\MessageEmitter;
+use Nadybot\Core\Types\MessageEmitter;
 
 #[Attribute(Attribute::IS_REPEATABLE|Attribute::TARGET_CLASS)]
 class EmitsMessages implements MessageEmitter {

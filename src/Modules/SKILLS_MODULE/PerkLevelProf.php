@@ -3,7 +3,8 @@
 namespace Nadybot\Modules\SKILLS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
-use Nadybot\Core\{DBTable, Profession};
+use Nadybot\Core\DBTable;
+use Nadybot\Core\Types\Profession;
 
 #[Table(name: 'perk_level_prof', shared: Shared::Yes)]
 class PerkLevelProf extends DBTable {

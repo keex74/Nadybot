@@ -3,6 +3,7 @@
 namespace Nadybot\Core;
 
 use Exception;
+use Nadybot\Core\Types\AccessLevelProvider;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,

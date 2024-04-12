@@ -12,11 +12,11 @@ use Nadybot\Core\{
 	HelpManager,
 	ModuleInstance,
 	ParamClass\PWord,
-	SettingHandler,
+	SettingHandlers\SettingHandler,
+	SettingHandlers\TemplateSettingHandler,
 	SettingManager,
-	SettingMode,
-	TemplateSettingHandler,
 	Text,
+	Types\SettingMode,
 };
 
 #[

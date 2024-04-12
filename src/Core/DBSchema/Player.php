@@ -7,9 +7,9 @@ use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
 	Attributes\JSON,
 	DBTable,
-	Faction,
-	Profession,
 	Registry,
+	Types\Faction,
+	Types\Profession,
 };
 
 /**

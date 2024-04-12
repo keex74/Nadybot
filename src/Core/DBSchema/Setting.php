@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\DBSchema;
 
-use Nadybot\Core\{Attributes as NCA, DBTable, SettingMode};
+use Nadybot\Core\{Attributes as NCA, DBTable, Types\SettingMode};
 
 #[NCA\DB\Table(name: 'settings')]
 class Setting extends DBTable {

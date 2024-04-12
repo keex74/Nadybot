@@ -2,8 +2,9 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
+use Nadybot\Core\MessageHub;
 use Nadybot\Core\Routing\{RoutableMessage, Source};
-use Nadybot\Core\{CommandReply, MessageEmitter, MessageHub};
+use Nadybot\Core\Types\{CommandReply, MessageEmitter};
 
 class WebUIChannel implements CommandReply, MessageEmitter {
 	public function __construct(

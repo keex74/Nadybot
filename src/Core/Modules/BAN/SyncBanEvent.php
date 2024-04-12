@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\BAN;
 
-use Nadybot\Core\SyncEvent;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncBanEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(ban)';

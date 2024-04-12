@@ -6,7 +6,7 @@ use function Amp\async;
 
 use AO\Package\Out\PrivateChannelKick;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\ConnectEvent;
+use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -15,8 +15,8 @@ use Nadybot\Core\{
 	DBSchema\Audit,
 	DBSchema\BanEntry,
 	DBSchema\Player,
-	Event,
 	EventManager,
+	Events\Event,
 	Exceptions\SQLException,
 	ModuleInstance,
 	Modules\ALTS\AltsController,

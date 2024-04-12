@@ -8,7 +8,7 @@ use function Amp\Future\await;
 use Amp\Pipeline\Pipeline;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Event\{MyPrivateChannelMsgEvent, SendPrivEvent};
+use Nadybot\Core\Events\{MyPrivateChannelMsgEvent, SendPrivEvent};
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,

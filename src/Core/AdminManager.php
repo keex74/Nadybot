@@ -9,6 +9,7 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DBSchema\Admin,
 	DBSchema\Audit,
+	Types\AccessLevelProvider,
 };
 
 /**

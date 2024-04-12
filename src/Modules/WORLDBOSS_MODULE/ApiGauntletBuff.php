@@ -4,8 +4,8 @@ namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	Faction,
-	StringableTrait
+	StringableTrait,
+	Types\Faction
 };
 use Stringable;
 

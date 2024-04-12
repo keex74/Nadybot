@@ -19,6 +19,9 @@ use Nadybot\Core\{
 	Modules\MESSAGES\MessageHubController,
 	Routing\RoutableEvent,
 	Routing\Source,
+	Types\EventModifier,
+	Types\MessageEmitter,
+	Types\MessageReceiver,
 };
 use Psr\Log\LoggerInterface;
 use ReflectionClass;

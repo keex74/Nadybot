@@ -22,7 +22,6 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	CommandManager,
-	CommandReply,
 	Config\BotConfig,
 	DB,
 	Filesystem,
@@ -35,6 +34,7 @@ use Nadybot\Core\{
 	SettingManager,
 	SubcommandManager,
 	Text,
+	Types\CommandReply,
 };
 use Nadybot\Modules\RELAY_MODULE\RelayController;
 use Psr\Log\LoggerInterface;

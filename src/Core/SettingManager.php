@@ -8,6 +8,9 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
 	DBSchema\Setting,
+	Events\SettingEvent,
+	SettingHandlers\SettingHandler,
+	Types\SettingMode,
 };
 use Psr\Log\LoggerInterface;
 

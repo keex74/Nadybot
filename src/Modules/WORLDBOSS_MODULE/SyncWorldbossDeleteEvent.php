@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WORLDBOSS_MODULE;
 
-use Nadybot\Core\SyncEvent;
+use Nadybot\Core\Events\SyncEvent;
 
 class SyncWorldbossDeleteEvent extends SyncEvent {
 	public const EVENT_MASK = 'sync(worldboss-delete)';

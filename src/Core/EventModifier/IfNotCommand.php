@@ -4,10 +4,10 @@ namespace Nadybot\Core\EventModifier;
 
 use Nadybot\Core\{
 	Attributes as NCA,
-	EventModifier,
 	Nadybot,
 	Routing\RoutableEvent,
 	SettingManager,
+	Types\EventModifier,
 };
 
 #[

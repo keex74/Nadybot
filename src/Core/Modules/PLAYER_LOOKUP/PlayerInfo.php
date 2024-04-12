@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use EventSauce\ObjectHydrator\MapFrom;
 use EventSauce\ObjectHydrator\PropertyCasters\CastToDateTimeImmutable;
 use Nadybot\Core\DBSchema\Player;
-use Nadybot\Core\{Faction, Profession};
+use Nadybot\Core\Types\{Faction, Profession};
 
 /**
  * This represents the data the highway feed gives for a player

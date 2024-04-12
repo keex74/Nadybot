@@ -5,9 +5,7 @@ namespace Nadybot\Modules\WEBSOCKET_MODULE;
 use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
 	Attributes as NCA,
-	CommandReply,
 	EventManager,
-	MessageEmitter,
 	MessageHub,
 	Nadybot,
 	Routing\Character,
@@ -15,6 +13,8 @@ use Nadybot\Core\{
 	Routing\Source,
 	Safe,
 	SettingManager,
+	Types\CommandReply,
+	Types\MessageEmitter,
 };
 
 use Nadybot\Modules\WEBSERVER_MODULE\{

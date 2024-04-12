@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 class CommandReplyEvent extends Event {
 	public const EVENT_MASK = 'cmdreply';

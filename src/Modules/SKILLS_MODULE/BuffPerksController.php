@@ -12,17 +12,17 @@ use Nadybot\Core\Filesystem;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
-	CommandReply,
 	DB,
 	ModuleInstance,
 	Modules\PLAYER_LOOKUP\PlayerManager,
 	Nadybot,
 	ParamClass\PNonNumberWord,
-	Profession,
 	Safe,
 	SettingManager,
-	SettingMode,
 	Text,
+	Types\CommandReply,
+	Types\Profession,
+	Types\SettingMode,
 };
 use Nadybot\Modules\ITEMS_MODULE\{
 	ExtBuff,

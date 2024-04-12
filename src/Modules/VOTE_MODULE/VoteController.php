@@ -3,14 +3,13 @@
 namespace Nadybot\Modules\VOTE_MODULE;
 
 use function Safe\{json_decode, json_encode, preg_split};
+use Nadybot\Core\Events\TimerEvent;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
 	CmdContext,
 	DB,
-	Event,
 	EventManager,
-	MessageEmitter,
 	MessageHub,
 	ModuleInstance,
 	ParamClass\PDuration,
@@ -18,6 +17,7 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Text,
+	Types\MessageEmitter,
 	Util,
 };
 
@@ -118,7 +118,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		name: 'timer(2sec)',
 		description: 'Checks polls and periodically updates chat with time left'
 	)]
-	public function checkVote(Event $eventObj): void {
+	public function checkVote(TimerEvent $eventObj): void {
 		if (count($this->polls) === 0) {
 			return;
 		}

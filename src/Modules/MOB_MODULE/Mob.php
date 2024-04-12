@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\MOB_MODULE;
 
 use EventSauce\ObjectHydrator\MapFrom;
-use Nadybot\Core\Playfield;
+use Nadybot\Core\Types\Playfield;
 
 class Mob {
 	public const T_PRISONER = 'prisoner';

@@ -3,7 +3,8 @@
 namespace Nadybot\Modules\WHOMPAH_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
-use Nadybot\Core\{DBTable, Faction};
+use Nadybot\Core\DBTable;
+use Nadybot\Core\Types\Faction;
 
 #[Table(name: 'whompah_cities', shared: Shared::Yes)]
 class WhompahCity extends DBTable {

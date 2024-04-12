@@ -5,6 +5,7 @@ namespace Nadybot\Core;
 use Closure;
 use Nadybot\Core\DBSchema\CmdPermSetMapping;
 use Nadybot\Core\Routing\Character;
+use Nadybot\Core\Types\CommandReply;
 
 class CmdContext implements CommandReply {
 	/**

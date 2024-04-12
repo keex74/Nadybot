@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\VOTE_MODULE;
 
-use Nadybot\Core\Event;
+use Nadybot\Core\Events\Event;
 
 abstract class VoteEvent extends Event {
 	public const EVENT_MASK = 'vote(*)';

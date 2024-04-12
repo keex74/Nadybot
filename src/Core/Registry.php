@@ -6,6 +6,7 @@ use function Safe\preg_match;
 
 use Exception;
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\Types\LogWrapInterface;
 use ReflectionClass;
 use ReflectionNamedType;
 
