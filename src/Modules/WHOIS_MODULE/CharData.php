@@ -3,6 +3,9 @@
 namespace Nadybot\Modules\WHOIS_MODULE;
 
 class CharData {
-	public string $name;
-	public int $charid;
+	public function __construct(
+		public string $name,
+		public int $charid,
+	) {
+	}
 }

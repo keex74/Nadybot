@@ -8,8 +8,8 @@ use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 
 #[DB\Table(name: 'what_locks', shared: DB\Shared::Yes)]
 class WhatLocks extends DBTable {
-	#[DB\PK] public int $item_id;
-	#[DB\PK] public int $skill_id;
+	public int $item_id;
+	public int $skill_id;
 	public int $duration;
 
 	#[DB\Ignore] public ?AODBEntry $item = null;

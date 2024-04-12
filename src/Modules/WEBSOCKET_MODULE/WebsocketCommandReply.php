@@ -43,9 +43,6 @@ class WebsocketCommandReply implements CommandReply, MessageEmitter {
 	#[NCA\Inject]
 	private BotConfig $config;
 
-	public function __construct() {
-	}
-
 	public function getChannelName(): string {
 		return Source::WEB;
 	}

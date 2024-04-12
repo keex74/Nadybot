@@ -153,16 +153,13 @@ class WhoisController extends ModuleInstance {
 			($packet instanceof Package\In\CharacterName)
 			|| ($packet instanceof Package\In\CharacterLookupResult)
 		);
-		if (!Util::isValidSender($packet->charId)) {
+		if ($packet->charId > 0 && $packet->charId >= 4_294_967_295) {
 			return;
 		}
-		$charData = new CharData();
-		$charData->charid = $packet->charId;
-		$charData->name = $packet->name;
-		if ($charData->charid === -1 || $charData->charid === 4_294_967_295) {
-			return;
-		}
-		$this->nameHistoryCache []= $charData;
+		$this->nameHistoryCache []= new CharData(
+			charid: $packet->charId,
+			name: $packet->name,
+		);
 	}
 
 	/** Show the name(s) for a character id */
