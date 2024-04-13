@@ -2,11 +2,13 @@
 
 namespace Nadybot\Modules\DEV_MODULE;
 
+use function Amp\async;
 use function Safe\json_encode;
 
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\{Attributes as NCA, Safe, Types\CommandReply};
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class MockCommandReply implements CommandReply {
 	/** @var string[] */
@@ -28,19 +30,29 @@ class MockCommandReply implements CommandReply {
 		if (!isset($this->logFile)) {
 			return;
 		}
-		try {
-			$file = $this->fs->openFile($this->logFile, 'a');
-			$file->write(
-				json_encode([
-					'command' => $this->command,
-					'output' => $this->output,
-				], \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE|\JSON_UNESCAPED_UNICODE) . \PHP_EOL,
-			);
-		} finally {
-			if (isset($file)) {
-				$file->close();
-			}
-		}
+		$logEntry = json_encode(
+			[
+				'command' => $this->command,
+				'output' => $this->output,
+			],
+			\JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE|\JSON_UNESCAPED_UNICODE
+		) . \PHP_EOL;
+		async(
+			static function (string $logFile, Filesystem $fs, string $logEntry): void {
+				try {
+					$file = $fs->openFile($logFile, 'a');
+					$file->write($logEntry);
+				} catch (Throwable) {
+				} finally {
+					if (isset($file)) {
+						$file->close();
+					}
+				}
+			},
+			$this->logFile,
+			$this->fs,
+			$logEntry,
+		)->ignore();
 	}
 
 	/** @param string|string[] $msg */

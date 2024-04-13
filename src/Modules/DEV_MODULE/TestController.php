@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\DEV_MODULE;
 
-use function Amp\async;
 use function Safe\{date};
 use Amp\File\{FilesystemException};
 use AO\Client\{SingleClient, WorkerPackage};
@@ -109,8 +108,7 @@ class TestController extends ModuleInstance {
 		}
 		$testContext->message = substr($line, 1);
 		$this->commandManager->processCmd($testContext);
-		async($this->runTests(...), $commands, $context, $logFile)
-			->catch(Nadybot::asyncErrorHandler(...));
+		$this->runTests($commands, $context, $logFile);
 	}
 
 	/** Pretend that &lt;char&gt; joins your org */

@@ -14,7 +14,7 @@ class BossLootdb extends DBTable {
 	public function __construct(
 		public int $bossid,
 		public string $itemname,
-		public int $aoid,
+		public ?int $aoid=null,
 		#[NCA\DB\Ignore] public ?AODBEntry $item=null,
 	) {
 	}

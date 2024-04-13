@@ -288,7 +288,6 @@ class PlayerManager extends ModuleInstance {
 	public function update(Player $char): void {
 		$save = clone $char;
 		$save->last_update ??= time();
-		$this->logger->notice('Upserting player {name}', ['name' => $char->name]);
 		$this->db->upsert($save);
 	}
 

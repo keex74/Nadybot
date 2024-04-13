@@ -8,7 +8,15 @@ class Credentials {
 		public string $password,
 		public string $character,
 		public int $dimension,
+		public ?string $webLogin=null,
+		public ?string $webPassword=null,
 	) {
 		$this->character = ucfirst(strtolower($this->character));
+		if ($this->webLogin === '') {
+			$this->webLogin = null;
+		}
+		if ($this->webPassword === '') {
+			$this->webPassword = null;
+		}
 	}
 }

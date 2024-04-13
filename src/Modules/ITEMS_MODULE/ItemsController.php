@@ -589,7 +589,8 @@ class ItemsController extends ModuleInstance {
 			->orderByDesc('highid');
 		if ($ql !== null) {
 			$query->where('lowql', '<=', $ql)->where('highql', '>=', $ql);
-			$query->select(['aodb.*', "{$ql} as ql"]);
+			$query->select('aodb.*');
+			$query->selectRaw("{$ql} " . $query->as('ql'));
 			return $query->asObj(AODBItem::class)->first();
 		}
 		return $query->asObj(AODBEntry::class)->first();

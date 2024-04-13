@@ -2,15 +2,16 @@
 
 namespace Nadybot\Core;
 
-use function Amp\async;
+use function Amp\{async, delay};
 use function Safe\{preg_match, sapi_windows_set_ctrl_handler, unpack};
 
 use Amp\ByteStream\StreamException;
-use Amp\Http\Client\HttpClientBuilder;
+use Amp\Pipeline\Pipeline;
 use AO\Client\{MultiClient, WorkerConfig, WorkerPackage};
+use AO\Exceptions\AccountsFrozenException;
 use AO\Group\{GroupId, GroupType};
 use AO\Package\OutPackage;
-use AO\{Group, Package, Utils};
+use AO\{FrozenAccount, Group, Package, Utils};
 use Exception;
 use Nadybot\Core\Attributes\Setting\ArraySetting;
 use Nadybot\Core\DBSchema\{
@@ -182,28 +183,16 @@ class Nadybot {
 	private EventManager $eventManager;
 
 	#[NCA\Inject]
-	private HelpManager $helpManager;
-
-	#[NCA\Inject]
 	private SettingManager $settingManager;
 
 	#[NCA\Inject]
 	private BanController $banController;
 
 	#[NCA\Inject]
-	private AccountUnfreezer $accountUnfreezer;
-
-	#[NCA\Inject]
 	private Text $text;
 
 	#[NCA\Inject]
-	private Util $util;
-
-	#[NCA\Inject]
 	private EventFeed $eventFeed;
-
-	#[NCA\Inject]
-	private HttpClientBuilder $http;
 
 	#[NCA\Inject]
 	private LimitsController $limitsController;
@@ -434,7 +423,37 @@ class Nadybot {
 			mainCharacter: $this->config->main->character,
 			logger: new LoggerWrapper('Core/Multi'),
 		);
-		$this->aoClient->login();
+		do {
+			$loggedIn = false;
+			try {
+				$this->aoClient->login();
+				$loggedIn = true;
+			} catch (AccountsFrozenException $e) {
+				$unfreezers = array_map(
+					static function (FrozenAccount $account): AccountUnfreezer {
+						$unfreezer = new AccountUnfreezer($account);
+						Registry::injectDependencies($unfreezer);
+						return $unfreezer;
+					},
+					$e->getAccounts(),
+				);
+				try {
+					Pipeline::fromIterable($unfreezers)
+						->concurrent(5)
+						->forEach(static function (AccountUnfreezer $unfreezer): void {
+							$unfreezer->unfreeze();
+						});
+				} catch (\Throwable $e) {
+					$this->logger->error('{error}', [
+						'error' => $e->getMessage(),
+					]);
+				}
+				$this->logger->notice('Waiting {delay}s before retrying logging in', [
+					'delay' => 5,
+				]);
+				delay(5);
+			}
+		} while (!$loggedIn);
 		$this->char = new Character(
 			name: $this->config->main->character,
 			id: $this->getUid($this->config->main->character),

@@ -8,15 +8,14 @@ use Amp\Http\Client\Interceptor\SetRequestHeader;
 use Amp\Http\Client\{HttpClient, HttpClientBuilder, Request, SocketException, TimeoutException};
 use Amp\Http\Tunnel\Http1TunnelConnector;
 use Amp\{CancelledException, TimeoutCancellation};
-
+use AO\FrozenAccount;
+use Exception;
 use Nadybot\Core\Attributes as NCA;
-use Nadybot\Core\Config\BotConfig;
+use Nadybot\Core\Config\{BotConfig, Credentials};
 use Nadybot\Core\Exceptions\{UnfreezeFatalException, UnfreezeTmpException};
-use Revolt\EventLoop;
 use Safe\Exceptions\JsonException;
 use Throwable;
 
-#[NCA\Instance]
 class AccountUnfreezer {
 	public const LOGIN_URL = 'https://account.anarchy-online.com/';
 	public const ACCOUNT_URL = 'https://account.anarchy-online.com/account/';
@@ -44,9 +43,16 @@ class AccountUnfreezer {
 	#[NCA\Inject]
 	private HttpClientBuilder $http;
 
-	public function unfreeze(?int $subscriptionId): bool {
+	public function __construct(
+		private FrozenAccount $account,
+	) {
+	}
+
+	public function unfreeze(): bool {
 		$result = false;
-		$this->logger->warning('Account frozen, trying to unfreeze');
+		$this->logger->warning('Account {account} frozen, trying to unfreeze', [
+			'account' => $this->account->username,
+		]);
 
 		$client = $this->getUnfreezeClient();
 
@@ -54,24 +60,32 @@ class AccountUnfreezer {
 			$lastResult = self::UNFREEZE_TEMP_ERROR;
 			$proxyText = $this->config->autoUnfreeze?->useNadyproxy ? 'Proxy' : 'Unfreezing';
 			try {
-				$lastResult = $this->unfreezeWithClient($client, $subscriptionId);
+				$lastResult = $this->unfreezeWithClient($client);
 			} catch (CancelledException) {
-				$this->logger->notice("{$proxyText} not working or too slow. Retrying.");
+				$this->logger->notice("{$proxyText} for {account} not working or too slow. Retrying.", [
+					'account' => $this->account->username,
+				]);
 			} catch (SocketException) {
-				$this->logger->notice("{$proxyText} not working. Retrying.");
+				$this->logger->notice("{$proxyText} for {account} not working. Retrying.", [
+					'account' => $this->account->username,
+				]);
 			} catch (TimeoutException) {
-				$this->logger->notice("{$proxyText} not working. Retrying.");
+				$this->logger->notice("{$proxyText} for {account} not working. Retrying.", [
+					'account' => $this->account->username,
+				]);
 			} catch (Throwable $e) {
-				$this->logger->notice("{$proxyText} giving an error: {error}.", [
+				$this->logger->notice("{$proxyText} for {account} giving an error: {error}.", [
+					'account' => $this->account->username,
 					'error' => $e->getMessage(),
 				]);
 			}
 		} while ($lastResult === self::UNFREEZE_TEMP_ERROR);
 		if ($lastResult === self::UNFREEZE_SUCCESS) {
-			$this->logger->notice('Account unfrozen successfully.');
+			$this->logger->notice('Account {account} unfrozen successfully.', [
+				'account' => $this->account->username,
+			]);
 			$result = true;
 		}
-		EventLoop::run();
 		return $result;
 	}
 
@@ -101,9 +115,19 @@ class AccountUnfreezer {
 	}
 
 	protected function loginToAccount(HttpClient $client, string $cookie): void {
-		$login = strtolower($this->config->main->login);
-		$user = strtolower($this->config->autoUnfreeze?->login ?? $login);
-		$password = $this->config->autoUnfreeze?->password ?? $this->config->main->password;
+		$creds = [$this->config->main, ...$this->config->worker];
+		$accountCreds = array_filter(
+			$creds,
+			function (Credentials $creds) {
+				return strtolower($creds->login) === strtolower($this->account->username);
+			}
+		);
+		if (empty($accountCreds)) {
+			throw new Exception('Cannot find frozen account credentials, please unfreeze manually.');
+		}
+		$frozenAccount = array_shift($accountCreds);
+		$user = strtolower($frozenAccount->webLogin ?? $frozenAccount->login);
+		$password = $frozenAccount->webPassword ?? $frozenAccount->password;
 		$request = new Request(self::LOGIN_URL, 'POST');
 		$request->setBody(http_build_query([
 			'nickname' => $user,
@@ -217,15 +241,18 @@ class AccountUnfreezer {
 		}
 	}
 
-	protected function unfreezeWithClient(HttpClient $client, ?int $subscriptionId): int {
+	protected function unfreezeWithClient(HttpClient $client): int {
 		try {
 			$sessionCookie = $this->getSessionCookie($client);
 			$this->loginToAccount($client, $sessionCookie);
 
 			$accountId = $this->getSubscriptionId($client, $sessionCookie);
-			if (isset($subscriptionId) && $accountId !== $subscriptionId) {
+			if (
+				isset($this->account->subscriptionId)
+				&& $accountId !== $this->account->subscriptionId
+			) {
 				$this->logger->error('Subscription {subscription} is not managed via given login.', [
-					'subscription' => $subscriptionId,
+					'subscription' => $this->account->subscriptionId,
 				]);
 				return self::UNFREEZE_FAILURE;
 			}

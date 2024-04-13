@@ -244,6 +244,9 @@ class BankController extends ModuleInstance {
 			return $response->getBody()->buffer();
 		}
 		try {
+			if (!$this->fs->exists($location)) {
+				throw new UserException("The file {$location} does not exist.");
+			}
 			return $this->fs->read($location);
 		} catch (FilesystemException $e) {
 			$msg = "Could not open file '{$location}': " . $e->getMessage();
