@@ -5,7 +5,7 @@ namespace Nadybot\Modules\DEV_MODULE;
 use function Amp\async;
 use function Safe\{date};
 use Amp\File\{FilesystemException};
-use AO\Client\{Basic, WorkerPackage};
+use AO\Client\{SingleClient, WorkerPackage};
 use AO\Package;
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
@@ -615,7 +615,7 @@ class TestController extends ModuleInstance {
 		$this->sendGroupMsg('All Towers', 0, $message);
 	}
 
-	private function getWorker(): Basic {
+	private function getWorker(): SingleClient {
 		$worker = $this->chatBot->aoClient->getBestWorker($this->config->main->character);
 		if (!isset($worker)) {
 			throw new UserException('Cannot find a usable AO client.');

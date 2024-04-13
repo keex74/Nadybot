@@ -7,7 +7,9 @@ use function Safe\{preg_match, sapi_windows_set_ctrl_handler, unpack};
 
 use Amp\ByteStream\StreamException;
 use Amp\Http\Client\HttpClientBuilder;
-use AO\Client\{Multi, WorkerConfig, WorkerPackage};
+use AO\Client\{MultiClient, WorkerConfig, WorkerPackage};
+use AO\Group\{GroupId, GroupType};
+use AO\Package\OutPackage;
 use AO\{Group, Package, Utils};
 use Exception;
 use Nadybot\Core\Attributes\Setting\ArraySetting;
@@ -78,7 +80,7 @@ class Nadybot {
 	public const PING_IDENTIFIER = 'Nadybot';
 	public const UNKNOWN_ORG = 'Clan (name unknown)';
 
-	public Multi $aoClient;
+	public MultiClient $aoClient;
 
 	public BotRunner $runner;
 
@@ -147,7 +149,7 @@ class Nadybot {
 	/**
 	 * A lookup cache for group name => id
 	 *
-	 * @var array<string,Group\Id>
+	 * @var array<string,GroupId>
 	 */
 	public array $groupNameToId = [];
 
@@ -383,18 +385,18 @@ class Nadybot {
 		return $this->aoClient->getGroup($group);
 	}
 
-	public function getGroupById(string|Group\Id $groupId): ?Group {
+	public function getGroupById(string|GroupId $groupId): ?Group {
 		if (is_string($groupId)) {
 			$parts = unpack('Ctype/Nid', $groupId);
-			$groupId = new Group\Id(
-				type: Group\Type::from($parts['type']),
+			$groupId = new GroupId(
+				type: GroupType::from($parts['type']),
 				number: $parts['id'],
 			);
 		}
 		return $this->aoClient->getGroup($groupId);
 	}
 
-	public function sendPackage(Package\Out $package, ?string $worker=null): void {
+	public function sendPackage(OutPackage $package, ?string $worker=null): void {
 		try {
 			$this->aoClient->write(package: $package, worker: $worker);
 		} catch (StreamException $e) {
@@ -427,8 +429,7 @@ class Nadybot {
 			);
 		}
 
-		// LegacyLogger::tempLogLevelOrderride('Core/Multi', 'debug');
-		$this->aoClient = new Multi(
+		$this->aoClient = new MultiClient(
 			workers: $workers,
 			mainCharacter: $this->config->main->character,
 			logger: new LoggerWrapper('Core/Multi'),
@@ -836,7 +837,7 @@ class Nadybot {
 		$this->logger->info('Handling {packet}', ['packet' => $package->package]);
 		$this->groupIdToName[$groupId->toBinary()] = $groupName;
 		$this->groupNameToId[$groupName] = $groupId;
-		if ($groupId->type === Group\Type::Org) {
+		if ($groupId->type === GroupType::Org) {
 			$this->orgGroup = new Group(
 				id: $groupId,
 				name: $groupName,
@@ -1271,7 +1272,7 @@ class Nadybot {
 
 		$this->logger->info('Handling {package}', ['package' => $package->package]);
 
-		$isOrgMessage = $channel->id->type === Group\Type::Org;
+		$isOrgMessage = $channel->id->type === GroupType::Org;
 
 		// Route public messages not from the bot itself
 		if ($sender !== $this->config->main->character) {

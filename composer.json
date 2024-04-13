@@ -62,6 +62,10 @@
 	"repositories": [
 		{
 			"type": "git",
+			"url": "https://github.com/Nadybot/Nadystyle.git"
+		},
+		{
+			"type": "git",
 			"url": "https://github.com/Nadybot/IMEX.git"
 		},
 		{
@@ -91,6 +95,7 @@
 		}
 	},
 	"require-dev": {
+		"nadybot/nadystyle": "dev-main",
 		"squizlabs/php_codesniffer": "^3.9.0",
 		"composer/composer": "^2.0.0",
 		"composer-phar/phpstan": "^1.10.59",

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\DEV_MODULE;
 
-use AO\MMDB\AsyncClient;
+use AO\MMDB\{AsyncMMDBClient};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -29,7 +29,7 @@ class MdbController extends ModuleInstance {
 	/** Get a list of categories from the MDB */
 	#[NCA\HandlesCommand('mdb')]
 	public function mdbCommand(CmdContext $context): void {
-		$client = AsyncClient::createDefault();
+		$client = AsyncMMDBClient::createDefault();
 		$categories = $client->getCategories();
 		if (!isset($categories)) {
 			$context->reply('Cannot find any categories.');
@@ -49,7 +49,7 @@ class MdbController extends ModuleInstance {
 	/** Get a list of instances for an MDB category */
 	#[NCA\HandlesCommand('mdb')]
 	public function mdbCategoryCommand(CmdContext $context, int $categoryId): void {
-		$client = AsyncClient::createDefault();
+		$client = AsyncMMDBClient::createDefault();
 		$instances = $client->findAllInstancesInCategory($categoryId);
 		if (!isset($instances)) {
 			$context->reply("Cannot find category <highlight>{$categoryId}<end>.");
@@ -69,7 +69,7 @@ class MdbController extends ModuleInstance {
 	/** See an MDB by category and instance */
 	#[NCA\HandlesCommand('mdb')]
 	public function mdbInstanceCommand(CmdContext $context, int $categoryId, int $instanceId): void {
-		$client = AsyncClient::createDefault();
+		$client = AsyncMMDBClient::createDefault();
 		$messageString = $client->getMessageString($categoryId, $instanceId) ?? '- not found -';
 		$msg = "Unable to find MDB string category <highlight>{$categoryId}<end>, ".
 			"instance <highlight>{$instanceId}<end>.";

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE\Collector;
 
-use AO\Package;
+use AO\Package\PackageType;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Nadybot,
@@ -17,11 +17,11 @@ class AoPackets extends Dataset {
 		$lines = ['# TYPE ao_packets counter'];
 		foreach ($this->chatBot->aoClient->getStatistics()->packagesRead as $type => $count) {
 			$lines []= 'ao_packets{direction="in",type="'.
-				(Package\Type::tryFrom($type)?->name ?? $type) . "\"} {$count}";
+				(PackageType::tryFrom($type)?->name ?? $type) . "\"} {$count}";
 		}
 		foreach ($this->chatBot->aoClient->getStatistics()->packagesWritten as $type => $count) {
 			$lines []= 'ao_packets{direction="out",type="'.
-				(Package\Type::tryFrom($type)?->name ?? $type) . "\"} {$count}";
+				(PackageType::tryFrom($type)?->name ?? $type) . "\"} {$count}";
 		}
 		return $lines;
 	}

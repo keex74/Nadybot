@@ -4,6 +4,7 @@ namespace Nadybot\Modules\RELAY_MODULE\Transport;
 
 use function Amp\async;
 use AO\Package;
+use AO\Package\PackageType;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BuddylistManager,
@@ -143,14 +144,14 @@ class Tell implements TransportInterface {
 				if ($name === $this->bot) {
 					$this->buddylistManager->updateRemoved($uid);
 					$this->eventManager->unsubscribe(
-						'packet(' . Package\Type::BuddyRemove->value . ')',
+						'packet(' . PackageType::BuddyRemove->value . ')',
 						$waitForRemoval
 					);
 					$callback();
 				}
 			};
 			$this->eventManager->subscribe(
-				'packet(' . Package\Type::BuddyRemove->value . ')',
+				'packet(' . PackageType::BuddyRemove->value . ')',
 				$waitForRemoval
 			);
 		} else {
