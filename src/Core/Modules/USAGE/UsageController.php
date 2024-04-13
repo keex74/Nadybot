@@ -290,12 +290,22 @@ class UsageController extends ModuleInstance {
 				return $carry;
 			}, new stdClass());
 
+		$fsObj = $this->fs->getFilesystem();
+		$fs = new \ReflectionObject($fsObj);
+		try {
+			$driverProp = $fs->getProperty('driver');
+			$fsClass = class_basename($driverProp->getValue($fsObj));
+		} catch (\ReflectionException) {
+			$fsClass = 'Unknown';
+		}
+
 		$settings = new SettingsUsageStats(
 			dimension              : $this->config->main->dimension,
 			is_guild_bot           : strlen($this->config->general->orgName) > 0,
 			guildsize              : $this->getGuildSizeClass(count($this->chatBot->guildmembers)),
-			using_chat_proxy       : $this->config->proxy?->enabled === true,
+			num_workers            : 1 + count($this->config->worker),
 			db_type                : $this->db->getType()->value,
+			fs_type                : $fsClass,
 			bot_version            : BotRunner::getVersion(),
 			using_git              : $this->fs->exists(BotRunner::getBasedir() . '/.git'),
 			os                     : BotRunner::isWindows() ? 'Windows' : php_uname('s'),
@@ -307,13 +317,11 @@ class UsageController extends ModuleInstance {
 				->map(static function (Collection $group): string {
 					return $group->first()->layer;
 				})->flatten()->unique()->toArray(),
-			first_and_last_alt_only: $this->settingManager->getBool('first_and_last_alt_only')??false,
 			aodb_db_version        : $this->settingManager->getString('aodb_db_version')??'unknown',
 			max_blob_size          : $this->settingManager->getInt('max_blob_size')??0,
 			online_show_org_guild  : $this->settingManager->getInt('online_show_org_guild')??-1,
 			online_show_org_priv   : $this->settingManager->getInt('online_show_org_priv')??-1,
 			online_admin           : $this->settingManager->getBool('online_admin')??false,
-			tower_attack_spam      : $this->settingManager->getInt('tower_attack_spam')??-1,
 			http_server_enable     : $this->eventManager->getKeyForCronEvent(60, 'httpservercontroller.startHTTPServer') !== null,
 		);
 
