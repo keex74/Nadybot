@@ -185,7 +185,7 @@ class CommandAlias {
 	 *
 	 * @param string $command The command to check
 	 *
-	 * @return Collection<CmdAlias>
+	 * @return Collection<int,CmdAlias>
 	 */
 	public function findAliasesByCommand(string $command): Collection {
 		return $this->db->table(CmdAlias::getTable())

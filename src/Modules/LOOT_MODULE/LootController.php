@@ -175,7 +175,6 @@ class LootController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('history')] string $action,
 	): void {
-		/** @var Collection<LootHistory> */
 		$items = $this->db->table(LootHistory::getTable())
 			->orderByDesc('dt')
 			->orderBy('pos')
@@ -223,7 +222,6 @@ class LootController extends ModuleInstance {
 		}
 		$roll = (int)$number;
 
-		/** @var Collection<LootHistory> */
 		$items = $this->db->table(LootHistory::getTable())
 			->where('roll', $roll)
 			->orderBy('pos')
@@ -321,7 +319,6 @@ class LootController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<LootHistory> */
 		$items = $this->db->table(LootHistory::getTable())
 			->whereIlike('display', "%{$search}%")
 			->orderByDesc('dt')
@@ -944,7 +941,6 @@ class LootController extends ModuleInstance {
 		$this->loot = [];
 		$count = 1;
 
-		/** @var Collection<RaidLoot> */
 		$data = $this->db->table(RaidLoot::getTable())
 			->where(['raid' => $raid, 'category' => $category])
 			->asObj(RaidLoot::class);
@@ -1053,15 +1049,15 @@ class LootController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Collection<LootHistory> $items
+	 * @param Collection<int,LootHistory> $items
 	 *
-	 * @return Collection<LootHistory>
+	 * @return Collection<int,LootHistory>
 	 */
 	private function compressLootHistory(Collection $items): Collection {
 		$lastRoll = 0;
 		$lastPos = 0;
 
-		/** @var Collection<LootHistory> */
+		/** @var Collection<int,LootHistory> */
 		$compressedList = new Collection();
 		foreach ($items as $item) {
 			if ($lastRoll === $item->roll && $lastPos === $item->pos) {

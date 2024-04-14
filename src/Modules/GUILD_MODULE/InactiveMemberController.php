@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\GUILD_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -75,10 +74,8 @@ class InactiveMemberController extends ModuleInstance {
 			"<header2>Inactive org members<end>\n";
 
 		foreach ($members as $mainName => $altsLink) {
-			/** @var Collection<RecentOrgMember> $altsLink */
-			$alt = $altsLink->first();
+			$alt = $altsLink->firstOrFail();
 
-			/** @var RecentOrgMember $alt */
 			if ($alt->logged_off >= $time) {
 				continue;
 			}

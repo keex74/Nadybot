@@ -93,7 +93,7 @@ class BankController extends ModuleInstance {
 	): void {
 		$name = $char();
 
-		/** @var Collection<string,Collection<Bank>> */
+		/** @var Collection<string,Collection<int,Bank>> */
 		$data = $this->db->table(Bank::getTable())
 			->where('player', $name)
 			->orderBy('container')
@@ -178,7 +178,6 @@ class BankController extends ModuleInstance {
 		}
 		$this->db->addWhereFromParams($query, $words, 'name');
 
-		/** @var Collection<Bank> */
 		$foundItems = $query->asObj(Bank::class);
 
 		$blob = '';

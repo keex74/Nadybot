@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\FUN_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -87,15 +86,14 @@ class FunController extends ModuleInstance {
 	}
 
 	public function getFunItem(string $type, string $sender, ?int $number=null): string {
-		/** @var Collection<Fun> */
 		$data = $this->db->table(Fun::getTable())
 			->whereIn('type', explode(',', $type))
 			->asObj(Fun::class);
 		if ($number === null) {
-			/** @var Fun */
+			/** @var ?Fun */
 			$row = $data->random();
 		} else {
-			$row = $data[$number];
+			$row = $data[$number] ?? null;
 		}
 
 		if ($row === null) {

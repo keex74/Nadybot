@@ -238,7 +238,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$query->join(Tracking::getTable() . ' as ev', 'ev.uid', '=', 't.uid')
 			->where('ev.event', 'logon')
 			->groupBy('ev.uid')
-			->select(['ev.uid', $query->colFunc('max', 'ev.dt', 'dt')])
+			->select(['ev.uid', $query->raw($query->colFunc('max', 'ev.dt', 'dt'))])
 			->asObj(LastLogin::class)
 			->each(function (LastLogin $row) use (&$users): void {
 				$age = time() - $row->dt;
@@ -260,7 +260,6 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		description: "Download all tracked orgs' information"
 	)]
 	public function downloadOrgRostersEvent(TimerEvent $eventObj): void {
-		/** @var Collection<TrackingOrg> */
 		$orgs = $this->db->table(TrackingOrg::getTable())->asObj(TrackingOrg::class);
 		try {
 			foreach ($orgs as $org) {
@@ -470,7 +469,6 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	/** See the list of users on the track list */
 	#[NCA\HandlesCommand('track')]
 	public function trackListCommand(CmdContext $context): void {
-		/** @var Collection<TrackedUser> */
 		$users = $this->db->table(TrackedUser::getTable())
 			->select(['added_dt', 'added_by', 'name', 'uid'])
 			->asObj(TrackedUser::class)
@@ -690,7 +688,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$blob = "<header2>Matching orgs<end>\n";
 		foreach ($orgs as $org) {
 			$addLink = Text::makeChatcmd('track', "/tell <myname> track addorg {$org->id}");
-			$blob .= "<tab>{$org->name} (<{$org->faction}>{$org->faction}<end>), ".
+			$blob .= "<tab>{$org->name} ({$org->faction->inColor()}), ".
 				"ID {$org->id} - <highlight>{$org->num_members}<end> members ".
 				"[{$addLink}]\n";
 		}
@@ -838,7 +836,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			})
 			->toArray();
 
-		/** @var Collection<OnlineTrackedUser> */
+		/** @var Collection<int,OnlineTrackedUser> */
 		$data = $this->playerManager->searchByNames($this->config->main->dimension, ...$trackedUsers)
 			->sortBy('name')
 			->map(static function (Player $p) use ($hiddenChars): OnlineTrackedUser {
@@ -1164,7 +1162,6 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$hidden = $user->hidden;
 		}
 
-		/** @var Collection<Tracking> */
 		$events = $this->db->table(Tracking::getTable())
 			->where('uid', $uid)
 			->orderByDesc('dt')
@@ -1255,7 +1252,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		}
 
 		// Save the current members in a hash for easy access
-		/** @var Collection<TrackingOrgMember> */
+		/** @var Collection<int,TrackingOrgMember> */
 		$oldMembers = $this->db->table(TrackingOrgMember::getTable())
 			->where('org_id', $org->guild_id)
 			->asObj(TrackingOrgMember::class)
@@ -1341,10 +1338,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	}
 
 	/**
-	 * @param Collection<OnlineTrackedUser> $data
-	 * @param array<string,string[]>        $filters
+	 * @param Collection<int,OnlineTrackedUser> $data
+	 * @param array<string,string[]>            $filters
 	 *
-	 * @return Collection<OnlineTrackedUser>
+	 * @return Collection<int,OnlineTrackedUser>
 	 */
 	private function filterOnlineList(Collection $data, array $filters): Collection {
 		if (isset($filters['profession'])) {

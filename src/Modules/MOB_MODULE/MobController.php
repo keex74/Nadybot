@@ -230,7 +230,7 @@ class MobController extends ModuleInstance {
 	]
 	/** Show which of the prisoners in Milky Way is up or down */
 	public function showPrisonersCommand(CmdContext $context): void {
-		/** @var Collection<string> */
+		/** @var Collection<int,string> */
 		$blobs = (new Collection(array_values($this->mobs[Mob::T_PRISONER]??[])))
 			->sortBy('name')
 			->map(Closure::fromCallable($this->renderMob(...)));
@@ -254,7 +254,7 @@ class MobController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\StrChoice('clan', 'omni')] ?string $type
 	): void {
-		/** @var Collection<string> */
+		/** @var Collection<string,Collection<int,Mob>> */
 		$factions = (new Collection(array_values($this->mobs[Mob::T_HAG]??[])))
 			->sortBy('name')
 			->groupBy(static function (Mob $mob): string {
@@ -262,6 +262,7 @@ class MobController extends ModuleInstance {
 			});
 
 		if (isset($type)) {
+			/** @var Collection<string,Collection<int,Mob>> */
 			$factions = new Collection([$type => $factions->get($type)]);
 			if ($factions->get($type)->isEmpty()) {
 				$context->reply("There is currently no data for any {$type} hags. Maybe the API is down.");
@@ -272,10 +273,11 @@ class MobController extends ModuleInstance {
 			return;
 		}
 
+		/** @param Collection<int,Mob> $hags */
 		$blobs = $factions->map(function (Collection $hags, string $faction): string {
 			return ((array)$this->text->makeBlob(
 				ucfirst($faction) . ' hags (' . $hags->count() . ')',
-				$hags->map(Closure::fromCallable($this->renderMob(...)))->join("\n\n")
+				$hags->map($this->renderMob(...))->join("\n\n")
 			))[0];
 		});
 		$msg = 'Status of all ' . $blobs->join(' and ') . '.';
@@ -304,13 +306,14 @@ class MobController extends ModuleInstance {
 			'cthunder' => 'clan',
 		];
 
-		/** @var Collection<string> */
+		/** @var Collection<string,Collection<int,Mob>> */
 		$factions = (new Collection(array_values($this->mobs[Mob::T_DREAD]??[])))
 			->sortBy('name')
 			->groupBy(static function (Mob $mob) use ($sides): string {
 				return $sides[$mob->key] ?? 'unknown';
 			});
 		if (isset($type)) {
+			/** @var Collection<string,Collection<int,Mob>> */
 			$factions = new Collection([$type => $factions->get($type)]);
 			if ($factions->get($type)->isEmpty()) {
 				$context->reply("There is currently no data for any {$type} Dreadloch camp. Maybe the API is down.");
@@ -336,7 +339,7 @@ class MobController extends ModuleInstance {
 	]
 	/** Show which of Jack's clones is currently up */
 	public function showLegchopperCommand(CmdContext $context): void {
-		/** @var Collection<string> */
+		/** @var Collection<int,string> */
 		$blobs = (new Collection(array_values($this->mobs[Mob::T_LEGCHOPPER]??[])))
 			->sortBy('name')
 			->sort(static function (Mob $a, Mob $b): int {

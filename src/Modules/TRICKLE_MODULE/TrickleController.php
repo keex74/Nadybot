@@ -126,7 +126,6 @@ class TrickleController extends ModuleInstance {
 	#[NCA\HandlesCommand('trickle')]
 	#[NCA\Help\Example('<symbol>trickle treatment')]
 	public function trickleSkillCommand(CmdContext $context, string $skill): void {
-		/** @var Collection<Trickle> */
 		$data = $this->db->table(Trickle::getTable())
 			->whereIlike('name', '%' . str_replace(' ', '%', $skill) . '%')
 			->asObj(Trickle::class);

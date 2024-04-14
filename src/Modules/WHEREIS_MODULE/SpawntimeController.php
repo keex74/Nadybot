@@ -92,7 +92,7 @@ class SpawntimeController extends ModuleInstance {
 		$timeLines = $this->spawntimesToLines($spawnTimes);
 		$count = $timeLines->count();
 		if ($count === 1) {
-			$msg = $timeLines->first();
+			$msg = $timeLines->firstOrFail();
 		} elseif ($count < 4) {
 			$msg = "Spawntimes matching <highlight>{$search}<end>:\n".
 				$timeLines->join("\n");
@@ -149,9 +149,9 @@ class SpawntimeController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Collection<Spawntime> $spawnTimes
+	 * @param Collection<int,Spawntime> $spawnTimes
 	 *
-	 * @return Collection<string>
+	 * @return Collection<int,string>
 	 */
 	protected function spawntimesToLines(Collection $spawnTimes): Collection {
 		$mobs = $this->whereisController->getAll();
@@ -164,7 +164,6 @@ class SpawntimeController extends ModuleInstance {
 		});
 		$displayDirectly = $spawnTimes->count() < 4;
 
-		/** @var Collection<string> */
 		$result = $spawnTimes->map(function (Spawntime $spawn) use ($displayDirectly): string {
 			return $this->getMobLine($spawn, $displayDirectly);
 		});

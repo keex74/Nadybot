@@ -721,9 +721,8 @@ class ConfigApiController extends ModuleInstance {
 		return $this->modifyCmdSourceMapping($mapping);
 	}
 
-	/** @return Collection<CmdSourceMapping> */
+	/** @return Collection<int,CmdSourceMapping> */
 	protected function getCmdSourceMappings(?string $source=null): Collection {
-		/** @var Collection<CmdSourceMapping> */
 		$maps = $this->commandManager->getPermSetMappings()
 			->map([CmdSourceMapping::class, 'fromPermSetMapping']);
 		if (isset($source)) {

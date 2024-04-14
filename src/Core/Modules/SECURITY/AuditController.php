@@ -237,8 +237,8 @@ class AuditController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Collection<Audit>   $data
-	 * @param array<string,mixed> $params
+	 * @param Collection<int,Audit> $data
+	 * @param array<string,mixed>   $params
 	 *
 	 * @return string[]
 	 *

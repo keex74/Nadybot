@@ -9,7 +9,7 @@ use Nadybot\Core\{Attributes\DB, DBTable};
 class Wish extends DBTable {
 	public int $created_on;
 
-	/** @var Collection<WishFulfilment> */
+	/** @var Collection<int,WishFulfilment> */
 	#[DB\Ignore]
 	public Collection $fulfilments;
 

@@ -2,7 +2,6 @@
 
 namespace Nadybot\Core\Modules\ALTS;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\Alt;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -247,7 +246,6 @@ class AltInfo {
 		$blob .= $this->formatOnlineStatus($online);
 		$blob .= "\n";
 
-		/** @var Collection<AltPlayer> */
 		$alts = $this->db->table(Alt::getTable(), 'a')
 			->where('a.main', $this->main)
 			->asObj(AltPlayer::class)

@@ -575,9 +575,10 @@ class NotumWarsController extends ModuleInstance {
 	/**
 	 * Get a flat collection of all enable tower sites
 	 *
-	 * @return Collection<FeedMessage\SiteUpdate>
+	 * @return Collection<int,FeedMessage\SiteUpdate>
 	 */
 	public function getEnabledSites(): Collection {
+		/** @var Collection<int,FeedMessage\SiteUpdate> */
 		$result = new Collection();
 		foreach ($this->state as $pfId => $sites) {
 			foreach ($sites as $siteId => $site) {
@@ -1157,7 +1158,7 @@ class NotumWarsController extends ModuleInstance {
 		}
 		$blob = $this->renderOrgSites(...$matches->toArray());
 		$msg = $this->text->makeBlob(
-			'All tower sites of ' . $matches->firstOrFail()?->org_name,
+			'All tower sites of ' . ($matches->firstOrFail()->org_name ?? 'Unknown Org'),
 			$blob
 		);
 		$context->reply($msg);
@@ -1728,8 +1729,9 @@ class NotumWarsController extends ModuleInstance {
 			->sortBy('org_name')
 			->groupBy('org_name');
 
+		/** @param Collection<int,FeedMessage\SiteUpdate> $sites */
 		$blob = $matches->map(function (Collection $sites, string $orgName): string {
-			$faction = strtolower($sites->first()?->org_faction ?? 'unknown');
+			$faction = strtolower($sites->first()->org_faction?->value ?? 'unknown');
 			$ctPts = $sites->pluck('ql')->sum() * 2;
 			return "<{$faction}>{$orgName}<end> (QL {$ctPts} contracts)\n\n".
 				$sites->map(function (FeedMessage\SiteUpdate $site): string {

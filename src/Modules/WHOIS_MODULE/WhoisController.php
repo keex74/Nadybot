@@ -316,24 +316,27 @@ class WhoisController extends ModuleInstance {
 	/**
 	 * Determine the breakpoints where the audits indicate a new member was added/removed
 	 *
-	 * @param Collection<Audit> $audits
+	 * @param Collection<int,Audit> $audits
 	 *
-	 * @return Collection<Audit>
+	 * @return Collection<int,Audit>
 	 */
 	private function getAuditBreakpoints(Collection $audits): Collection {
-		/** @var Collection<string,Collection<Audit>> */
+		/** @var Collection<string,Collection<int,Audit>> */
 		$auditGroups = $audits->groupBy(static function (Audit $audit): string {
 			return (string)$audit->time->getTimestamp();
 		});
 		$rank = [];
 
-		/** @var Collection<Audit> */
+		/** @var Collection<int,Audit> */
 		$result = new Collection();
 		foreach ($auditGroups as $time => $audits) {
 			$wasMember = count($rank) > 0;
 			$addAction = null;
 			$delAction = null;
 			foreach ($audits as $audit) {
+				if (!isset($audit->value)) {
+					continue;
+				}
 				if (!count($matches = Safe::pregMatch("/\((.+?)\)/", $audit->value))) {
 					continue;
 				}
@@ -346,9 +349,9 @@ class WhoisController extends ModuleInstance {
 				}
 			}
 			$isMember = count($rank) > 0;
-			if (!$wasMember && $isMember) {
+			if (!$wasMember && $isMember && isset($addAction)) {
 				$result->push($addAction);
-			} elseif ($wasMember && !$isMember) {
+			} elseif ($wasMember && !$isMember && isset($delAction)) {
 				$result->push($delAction);
 			}
 		}
@@ -425,7 +428,6 @@ class WhoisController extends ModuleInstance {
 		}
 		$main = $this->altsController->getMainOf($name);
 		if ($main === $name) {
-			/** @var Collection<Audit> */
 			$audits = $this->db->table(Audit::getTable())
 				->where('actee', $name)
 				->whereIn('action', [

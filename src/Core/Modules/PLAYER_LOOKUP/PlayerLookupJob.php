@@ -35,7 +35,7 @@ class PlayerLookupJob {
 	/**
 	 * Get a list of character names in need of updates
 	 *
-	 * @return Collection<Player>
+	 * @return Collection<int,Player>
 	 */
 	public function getOudatedCharacters(): Collection {
 		return $this->db->table(Player::getTable())
@@ -46,10 +46,9 @@ class PlayerLookupJob {
 	/**
 	 * Get a list of character names who are alts without info
 	 *
-	 * @return Collection<MissingAlt>
+	 * @return Collection<int,MissingAlt>
 	 */
 	public function getMissingAlts(): Collection {
-		/** @var Collection<MissingAlt> */
 		$result = $this->db->table(Alt::getTable())
 			->whereNotExists(static function (QueryBuilder $query): void {
 				$query->from('players')
@@ -73,7 +72,7 @@ class PlayerLookupJob {
 			return;
 		}
 
-		/** @var Collection<MissingAlt|Player> */
+		/** @var Collection<array-key,MissingAlt|Player> */
 		$toUpdate = $this->getMissingAlts()
 			->concat($this->getOudatedCharacters());
 		if ($toUpdate->isEmpty()) {

@@ -61,7 +61,7 @@ class OrgNotesController extends ModuleInstance {
 	/**
 	 * Get all org notes
 	 *
-	 * @return Collection<OrgNote>
+	 * @return Collection<int,OrgNote>
 	 */
 	public function getOrgNotes(): Collection {
 		return $this->db->table(OrgNote::getTable())

@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\LEVEL_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -116,7 +115,6 @@ class LevelController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<Level> */
 		$data = $this->db->table(Level::getTable())
 			->where('level', '>=', $startLevel)
 			->where('level', '<', $endLevel)

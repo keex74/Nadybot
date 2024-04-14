@@ -211,30 +211,37 @@ class DB {
 			$this->sqlCreateReplacements[' INT,'] = ' INTEGER,';
 			// SQLite 3.37.0 adds strict tables. These do actual type checking
 			$strictGrammar = new class () extends \Illuminate\Database\Schema\Grammars\SQLiteGrammar {
+				// @phpstan-ignore-next-line
 				public function compileCreate(\Illuminate\Database\Schema\Blueprint $blueprint, \Illuminate\Support\Fluent $command) {
 					return parent::compileCreate($blueprint, $command) . ' strict';
 				}
 
+				// @phpstan-ignore-next-line
 				protected function typeChar(\Illuminate\Support\Fluent $column) {
 					return 'text';
 				}
 
+				// @phpstan-ignore-next-line
 				protected function typeString(\Illuminate\Support\Fluent $column) {
 					return 'text';
 				}
 
+				// @phpstan-ignore-next-line
 				protected function typeFloat(\Illuminate\Support\Fluent $column) {
 					return 'real';
 				}
 
+				// @phpstan-ignore-next-line
 				protected function typeDouble(\Illuminate\Support\Fluent $column) {
 					return 'real';
 				}
 
+				// @phpstan-ignore-next-line
 				protected function typeBoolean(\Illuminate\Support\Fluent $column) {
 					return 'integer';
 				}
 
+				// @phpstan-ignore-next-line
 				protected function typeDecimal(\Illuminate\Support\Fluent $column) {
 					return 'text';
 				}
@@ -827,7 +834,7 @@ class DB {
 					$op = 'like';
 				}
 				$query->whereRaw(
-					$query->colFunc('LOWER', $column) . " {$op} ?",
+					'LOWER(' . $query->grammar->wrap($column) . ") {$op} ?",
 					'%' . strtolower($value) . '%'
 				);
 			}
@@ -838,7 +845,7 @@ class DB {
 	/**
 	 * Get a list of all DB migrations that were already applied in $module
 	 *
-	 * @return Collection<Migration>
+	 * @return Collection<int,Migration>
 	 */
 	protected function getAppliedMigrations(string $module): Collection {
 		$ownQuery = $this->table('migrations_<myname>')
@@ -849,7 +856,7 @@ class DB {
 			->orderBy('migration')->asObj(Migration::class);
 	}
 
-	/** @return Collection<CoreMigration> */
+	/** @return Collection<int,CoreMigration> */
 	private function getMigrationFiles(object $instance): Collection {
 		$migrations = new Collection();
 		$ref = new ReflectionClass($instance);
@@ -904,9 +911,9 @@ class DB {
 	}
 
 	/**
-	 * @param Collection<CoreMigration> $migrations
+	 * @param Collection<int,CoreMigration> $migrations
 	 *
-	 * @return Collection<CoreMigration>
+	 * @return Collection<int,CoreMigration>
 	 */
 	private function filterAppliedMigrations(string $module, Collection $migrations): Collection {
 		$applied = $this->getAppliedMigrations($module);

@@ -115,7 +115,7 @@ class WishlistController extends ModuleInstance {
 			})
 			->asObj(Wish::class);
 
-		/** @var Collection<string,Collection<Wish>> */
+		/** @var Collection<string,Collection<int,Wish>> */
 		$wishlistGrouped = $this->addFulfilments($wishlist)
 			->groupBy(function (Wish $wish): string {
 				return $this->altsController->getMainOf($wish->created_by);
@@ -204,7 +204,7 @@ class WishlistController extends ModuleInstance {
 		$altsWishlist = $altsQuery->asObj(Wish::class);
 		$wishlist = $sendersWishlist->concat($altsWishlist);
 
-		/** @var Collection<string,Collection<Wish>> */
+		/** @var Collection<string,Collection<int,Wish>> */
 		$wishlistGrouped = $this->addFulfilments($wishlist)->groupBy('created_by');
 		if ($wishlistGrouped->isEmpty()) {
 			$context->reply('Your wishlist is empty.');
@@ -273,7 +273,7 @@ class WishlistController extends ModuleInstance {
 	 * Get a list of items other people need that they requested from one
 	 * of the given chars
 	 *
-	 * @return Collection<string,Collection<Wish>>
+	 * @return Collection<string,Collection<int,Wish>>
 	 */
 	public function getOthersNeeds(string ...$chars): Collection {
 		$wishlist = $this->db->table(Wish::getTable())
@@ -287,7 +287,7 @@ class WishlistController extends ModuleInstance {
 			->orderBy('created_on')
 			->asObj(Wish::class);
 
-		/** @var Collection<string,Collection<Wish>> */
+		/** @var Collection<string,Collection<int,Wish>> */
 		$wishlistGrouped = $this->addFulfilments($wishlist)
 			->groupBy('created_by');
 		return $wishlistGrouped;
@@ -404,9 +404,9 @@ class WishlistController extends ModuleInstance {
 	/**
 	 * Add fulfilments to wishes
 	 *
-	 * @param Collection<Wish> $wishes
+	 * @param Collection<int,Wish> $wishes
 	 *
-	 * @return Collection<Wish>
+	 * @return Collection<int,Wish>
 	 */
 	public function addFulfilments(Collection $wishes): Collection {
 		$enriched = clone $wishes;
@@ -800,7 +800,11 @@ class WishlistController extends ModuleInstance {
 		return $item;
 	}
 
-	/** @return array{int,string} */
+	/**
+	 * @param Collection<string,Collection<int,Wish>> $wishlistGrouped
+	 *
+	 * @return array{int,string}
+	 */
 	private function renderCheckWishlist(Collection $wishlistGrouped, string ...$allChars): array {
 		$numItems = 0;
 

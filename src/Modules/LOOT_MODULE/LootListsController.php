@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\LOOT_MODULE;
 
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -737,7 +736,6 @@ class LootListsController extends ModuleInstance {
 	public function findRaidLoot(string $raid, string $category, CmdContext $context): string {
 		$sender = $context->char->name;
 
-		/** @var Collection<RaidLoot> */
 		$loot = $this->db->table(RaidLoot::getTable(), 'r')
 					->whereIlike('r.raid', $raid)
 					->whereIlike('r.category', $category)

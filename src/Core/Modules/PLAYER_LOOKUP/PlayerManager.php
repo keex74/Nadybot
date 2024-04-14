@@ -148,7 +148,7 @@ class PlayerManager extends ModuleInstance {
 		return $player;
 	}
 
-	/** @return Collection<Player> */
+	/** @return Collection<int,Player> */
 	public function searchByNames(int $dimension, string ...$names): Collection {
 		$names = array_map('ucfirst', array_map('strtolower', $names));
 		return $this->db->table(Player::getTable())
@@ -157,7 +157,7 @@ class PlayerManager extends ModuleInstance {
 			->asObj(Player::class);
 	}
 
-	/** @return Collection<Player> */
+	/** @return Collection<int,Player> */
 	public function searchByUids(int $dimension, int ...$uids): Collection {
 		return $this->db->table(Player::getTable())
 			->where('dimension', $dimension)
@@ -165,7 +165,7 @@ class PlayerManager extends ModuleInstance {
 			->asObj(Player::class);
 	}
 
-	/** @return Collection<Player> */
+	/** @return Collection<int,Player> */
 	public function searchByColumn(int $dimension, string $column, mixed ...$values): Collection {
 		return $this->db->table(Player::getTable())
 			->where('dimension', $dimension)

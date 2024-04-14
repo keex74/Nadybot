@@ -275,7 +275,6 @@ class SiteTrackerController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<SiteUpdate> */
 		$sites = $this->nwCtrl->getEnabledSites()
 			->filter(static fn (SiteUpdate $site): bool => $tracker->matches($site))
 			->sortBy('site_id')

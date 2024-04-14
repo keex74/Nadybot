@@ -155,7 +155,7 @@ class PlayfieldController extends ModuleInstance {
 		$context->reply($reply);
 	}
 
-	/** @return Collection<Playfield> */
+	/** @return Collection<int,Playfield> */
 	public function searchPlayfieldsByName(string $playfieldName): Collection {
 		return $this->db->table(Playfield::getTable())
 			->whereIlike('long_name', $playfieldName)

@@ -4,7 +4,6 @@ namespace Nadybot\Modules\GUILD_MODULE;
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
-use Illuminate\Support\Collection;
 use Nadybot\Core\Events\OrgMsgChannelMsgEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -47,7 +46,6 @@ class OrgHistoryController extends ModuleInstance {
 
 		$blob = '';
 
-		/** @var Collection<OrgHistory> */
 		$data = $this->db->table(OrgHistory::getTable())
 			->orderByDesc('time')
 			->limit($pageSize)
@@ -74,7 +72,6 @@ class OrgHistoryController extends ModuleInstance {
 
 		$blob = '';
 
-		/** @var Collection<OrgHistory> */
 		$data = $this->db->table(OrgHistory::getTable())
 			->whereIlike('actee', $player)
 			->orderByDesc('time')
@@ -85,7 +82,6 @@ class OrgHistoryController extends ModuleInstance {
 			$blob .= $this->formatOrgAction($row);
 		}
 
-		/** @var Collection<OrgHistory> */
 		$data = $this->db->table(OrgHistory::getTable())
 			->whereIlike('actor', $player)
 			->orderByDesc('time')

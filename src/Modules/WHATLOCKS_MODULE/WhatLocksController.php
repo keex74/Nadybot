@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\WHATLOCKS_MODULE;
 
 use DateTimeZone;
-use Illuminate\Support\Collection;
+use Nadybot\Core\Exceptions\UserException;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -47,16 +47,20 @@ class WhatLocksController extends ModuleInstance {
 	#[NCA\HandlesCommand('whatlocks')]
 	public function whatLocksCommand(CmdContext $context): void {
 		$query = $this->db->table(WhatLocks::getTable())->groupBy('skill_id');
-		$skills = $query->select(['skill_id', $query->rawFunc('COUNT', '*', 'amount')])
+		$skills = $query->select(['skill_id', $query->raw($query->rawFunc('COUNT', '*', 'amount'))])
 			->get();
 		$skillsById = $this->itemsController->getSkillByIDs(
 			...$skills->pluck('skill_id')->toArray()
 		)->keyBy('id');
 		$lines = $skills->map(static function (\stdClass $item) use ($skillsById): SkillIdCount {
+			$skill = $skillsById->get($item->skill_id);
+			if (!isset($skill)) {
+				throw new UserException('Unknown skill encountered');
+			}
 			return new SkillIdCount(
 				skill_id: $item->skill_id,
 				amount: $item->amount,
-				skill: $skillsById->get($item->skill_id),
+				skill: $skill,
 			);
 		})->sort(static function (SkillIdCount $s1, SkillIdCount $s2): int {
 			return strnatcmp($s1->skill->name, $s2->skill->name);
@@ -116,7 +120,6 @@ class WhatLocksController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<WhatLocks> */
 		$items = $this->db->table(WhatLocks::getTable())
 			->where('skill_id', $skills->firstOrFail()->id)
 			->orderBy('duration')
@@ -133,8 +136,9 @@ class WhatLocksController extends ModuleInstance {
 		$items->each(static function (WhatLocks $item) use ($itemsById): void {
 			$item->item = $itemsById->get($item->item_id);
 		});
+		assert(null !== $lastItem = $items->last());
 		// Last element has the longest lock time, so determine how many time characters are useless
-		$longestSuperfluous = $this->prettyDuration($items->last()->duration)[0];
+		$longestSuperfluous = $this->prettyDuration($lastItem->duration)[0];
 		$lines = $items->map(function (WhatLocks $item) use ($longestSuperfluous): ?string {
 			if (!isset($item->item)) {
 				return null;

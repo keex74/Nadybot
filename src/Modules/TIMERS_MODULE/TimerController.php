@@ -97,7 +97,6 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 	public function setup(): void {
 		$this->timers = [];
 
-		/** @var Collection<Timer> */
 		$data = $this->readAllTimers();
 		$data->each(function (Timer $timer): void {
 			// remove alerts that have already passed
@@ -112,9 +111,8 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$this->messageHub->registerMessageEmitter($this);
 	}
 
-	/** @return Collection<Timer> */
+	/** @return Collection<int,Timer> */
 	public function readAllTimers(): Collection {
-		/** @var Collection<Timer> */
 		$data = $this->db->table(Timer::getTable())
 			->select(['id', 'name', 'owner', 'mode', 'endtime', 'settime', 'origin'])
 			->addSelect(['callback', 'data', 'alerts'])

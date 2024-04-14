@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\EVENTS_MODULE;
 
 use function Safe\strtotime;
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -255,7 +254,6 @@ class EventsController extends ModuleInstance {
 
 	/** @return null|string[] */
 	public function getEvents(): ?array {
-		/** @var Collection<EventModel> */
 		$data = $this->db->table(EventModel::getTable())
 			->orderByDesc('event_date')
 			->limit($this->numEventsShown)
@@ -369,7 +367,6 @@ class EventsController extends ModuleInstance {
 		)
 	]
 	public function eventsTile(string $sender): ?string {
-		/** @var Collection<EventModel> */
 		$data = $this->db->table(EventModel::getTable())
 			->whereNull('event_date')
 			->orWhere('event_date', '>', time())

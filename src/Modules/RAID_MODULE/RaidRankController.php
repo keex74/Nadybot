@@ -440,7 +440,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 		]);
 	}
 
-	/** @return Collection<RaidStat> */
+	/** @return Collection<int,RaidStat> */
 	protected function getRaidsByStarter(): Collection {
 		$query = $this->db->table(Raid::getTable(), 'r')
 			->join(RaidMember::getTable() . ' AS rm', 'r.raid_id', 'rm.raid_id')
@@ -450,7 +450,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 				'r.raid_id',
 				'r.started',
 				'r.started_by',
-				$query->colFunc('COUNT', '*', 'num_raiders'),
+				$query->raw($query->colFunc('COUNT', '*', 'num_raiders')),
 			])
 			->asObj(RaidStat::class)
 			->each(function (RaidStat $stat): void {
@@ -458,7 +458,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 			});
 	}
 
-	/** @param Collection<RaidStat> $stats */
+	/** @param Collection<int,RaidStat> $stats */
 	protected function renderLeaders(bool $showStats, bool $showOfflineAlts, Collection $stats, string ...$names): string {
 		sort($names);
 		$output = [];

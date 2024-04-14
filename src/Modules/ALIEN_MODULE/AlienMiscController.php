@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\ALIEN_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -100,7 +99,6 @@ class AlienMiscController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<LEProc> */
 		$data = $this->db->table(LEProc::getTable())
 			->whereIlike('profession', $profession->value)
 			->orderBy('proc_type')
@@ -189,14 +187,12 @@ class AlienMiscController extends ModuleInstance {
 			->pluckInts('type')
 			->first();
 
-		/** @var Collection<OfabArmor> */
 		$armors = $this->db->table(OfabArmor::getTable())
 			->where('profession', $profession->value)
 			->orderBy('upgrade')
 			->orderBy('name')
 			->asObj(OfabArmor::class);
 
-		/** @var Collection<OfabArmorCost> */
 		$costBySlot = $this->db->table(OfabArmorCost::getTable())
 			->where('ql', $ql)
 			->asObj(OfabArmorCost::class)
@@ -213,7 +209,6 @@ class AlienMiscController extends ModuleInstance {
 		$typeQl = round(.8 * $ql);
 		$blob .= "Upgrade with {$typeLink} (minimum QL {$typeQl})\n\n";
 
-		/** @var Collection<int> */
 		$qls = $this->db->table(OfabArmorCost::getTable())
 			->orderBy('ql')
 			->select('ql')->distinct()

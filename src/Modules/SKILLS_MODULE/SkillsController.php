@@ -835,7 +835,7 @@ class SkillsController extends ModuleInstance {
 	/**
 	 * @param int|int[] $aoid
 	 *
-	 * @return Collection<WeaponAttribute>
+	 * @return Collection<int,WeaponAttribute>
 	 */
 	public function getWeaponAttributes(null|int|array $aoid): Collection {
 		$query = $this->db->table(WeaponAttribute::getTable());

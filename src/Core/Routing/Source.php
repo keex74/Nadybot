@@ -25,7 +25,7 @@ class Source {
 
 	public int $server;
 
-	/** @var Collection<RouteHopFormat> */
+	/** @var Collection<int,RouteHopFormat> */
 	public static Collection $format;
 
 	public function __construct(

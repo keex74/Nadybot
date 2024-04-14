@@ -37,14 +37,14 @@ class WhereisController extends ModuleInstance {
 		$this->db->loadCSVFile($this->moduleName, __DIR__ . '/whereis.csv');
 	}
 
-	/** @return Collection<Whereis> */
+	/** @return Collection<int,Whereis> */
 	public function getByName(string ...$name): Collection {
 		return $this->db->table(Whereis::getTable())
 			->whereIn('name', $name)
 			->asObj(Whereis::class);
 	}
 
-	/** @return Collection<Whereis> */
+	/** @return Collection<int,Whereis> */
 	public function getAll(): Collection {
 		return $this->db->table(Whereis::getTable())->asObj(Whereis::class);
 	}
@@ -61,7 +61,6 @@ class WhereisController extends ModuleInstance {
 		$this->db->addWhereFromParams($query, $words, 'name');
 		$this->db->addWhereFromParams($query, $words, 'keywords', 'or');
 
-		/** @var Collection<string> */
 		$lines = $query->asObj(Whereis::class)
 			->map(static function (Whereis $npc): string {
 				$line = "<pagebreak><header2>{$npc->name}<end>\n".

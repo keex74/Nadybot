@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -43,7 +42,6 @@ class LinksController extends ModuleInstance {
 	/** Show all links */
 	#[NCA\HandlesCommand('links')]
 	public function linksListCommand(CmdContext $context): void {
-		/** @var Collection<Link> */
 		$links = $this->db->table(Link::getTable())
 			->orderBy('name')
 			->asObj(Link::class);

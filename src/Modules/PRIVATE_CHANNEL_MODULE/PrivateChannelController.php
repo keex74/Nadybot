@@ -366,7 +366,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	#[NCA\HandlesCommand('members')]
 	#[NCA\Help\Group('private-channel')]
 	public function membersCommand(CmdContext $context): void {
-		/** @var Collection<Member> */
 		$members = $this->db->table(Member::getTable())
 			->orderBy('name')
 			->asObj(Member::class);
@@ -411,7 +410,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return;
 		}
 
-		/** @var Collection<Member> */
 		$members = $this->db->table(Member::getTable())->asObj(Member::class);
 		if ($members->isEmpty()) {
 			$context->reply('This bot has no members.');
@@ -437,7 +435,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				return $this->accessManager->checkSingleAccess($main, 'member');
 			});
 
-		/** @var Collection<InactiveMember> */
+		/** @var Collection<int,InactiveMember> */
 		$inactiveMembers = $members->keyBy(function (Member $member): string {
 			return $this->altsController->getMainOf($member->name);
 		})->map(static function (Member $member, string $main) use ($lastOnline): InactiveMember {
@@ -777,7 +775,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 		$byOrg = $online->groupBy('guild');
 
-		/** @var Collection<OrgCount> */
+		/** @var Collection<int,OrgCount> */
 		$orgStats = $byOrg->map(static function (Collection $chars, string $orgName): OrgCount {
 			return new OrgCount(
 				avgLevel: $chars->avg('level'),
@@ -816,7 +814,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return;
 		}
 
-		/** @var Collection<OnlinePlayer> */
+		/** @var Collection<int,OnlinePlayer> */
 		$data = (new Collection($this->onlineController->getPlayers('priv', $this->config->main->character)))
 			->where('profession', $prof->value);
 		if (isset($raidOnly)) {
@@ -1322,7 +1320,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 		$main = $this->altsController->getMainOf($char());
 
-		/** @var Collection<LastOnline> */
 		$lastSeen = $this->db->table(LastOnline::getTable())
 			->whereIn('name', $this->altsController->getAltsOf($main))
 			->orderByDesc('dt')

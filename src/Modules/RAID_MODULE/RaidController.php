@@ -716,14 +716,15 @@ class RaidController extends ModuleInstance {
 			->limit(50)
 			->select(['r.raid_id', 'r.started', 'r.stopped']);
 
-		/** @var Collection<RaidHistoryEntry> */
 		$raids = $query->addSelect([
-			$query->rawFunc(
-				'COUNT',
-				$query->colFunc('DISTINCT', 'username'),
-				'raiders'
+			$query->raw(
+				$query->rawFunc(
+					'COUNT',
+					$query->colFunc('DISTINCT', 'username'),
+					'raiders'
+				)
 			),
-			$query->colFunc('SUM', 'delta', 'points'),
+			$query->raw($query->colFunc('SUM', 'delta', 'points')),
 		])->asObj(RaidHistoryEntry::class);
 		if ($raids->isEmpty()) {
 			$msg = 'No raids have ever been run on <myname>.';
@@ -766,7 +767,7 @@ class RaidController extends ModuleInstance {
 			->where('individual', false)
 			->groupBy('username')
 			->select('username');
-		$query->addSelect($query->colFunc('SUM', 'delta', 'delta'));
+		$query->addSelect($query->raw($query->colFunc('SUM', 'delta', 'delta')));
 
 		$noPoints = $this->db->table(RaidMember::getTable(), 'rm')
 			->leftJoin(RaidPointsLog::getTable() . ' as l', static function (JoinClause $join): void {
@@ -779,7 +780,6 @@ class RaidController extends ModuleInstance {
 			->select('rm.player AS username');
 		$noPoints->selectRaw('0' . $noPoints->as('delta'));
 
-		/** @var Collection<RaidPointsLog> */
 		$raiders = $this->db->fromSub($query->union($noPoints), 'points')
 			->orderBy('username')
 			->asObj(RaidPointsLog::class);
@@ -821,7 +821,6 @@ class RaidController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<RaidPointsLog> */
 		$logs = $this->db->table(RaidPointsLog::getTable())
 			->where('raid_id', $raidId)
 			->where('username', $char())
@@ -840,7 +839,7 @@ class RaidController extends ModuleInstance {
 		$left->selectRaw('0' . $left->as('status'));
 		$events = $joined->union($left)->orderBy('time')->asObj(RaidStatus::class);
 
-		/** @var Collection<RaidStatus|RaidPointsLog> */
+		/** @var Collection<int,RaidStatus|RaidPointsLog> */
 		$allLogs = $logs->concat($events)
 			->sort(static function (RaidStatus|RaidPointsLog $a, RaidStatus|RaidPointsLog $b) {
 				return $a->time <=> $b->time;

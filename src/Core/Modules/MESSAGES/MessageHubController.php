@@ -235,7 +235,6 @@ class MessageHubController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<MessageEmitter> */
 		$senders = new Collection($this->messageHub->getEmitters());
 		$hasSender = $senders->first(static function (MessageEmitter $e) use ($from) {
 			return fnmatch($e->getChannelName(), $from, \FNM_CASEFOLD)
@@ -1111,7 +1110,7 @@ class MessageHubController extends ModuleInstance {
 	/**
 	 * Render a blob for an emitter group
 	 *
-	 * @param Collection<MessageEmitter> $values
+	 * @param Collection<array-key,MessageEmitter> $values
 	 */
 	public function renderEmitterGroup(Collection $values, string $group): string {
 		if ($group === Source::LOG) {

@@ -109,7 +109,6 @@ class WhatBuffsController extends ModuleInstance {
 		$suffix = $froobFriendly ? 'Froob' : '';
 		$blob = "<header2>Choose a skill<end>\n";
 
-		/** @var Collection<Skill> */
 		$skills = $this->db->table(Skill::getTable())
 			->join('item_buffs', 'item_buffs.attribute_id', '=', 'skills.id')
 			->orderBy('skills.name')
@@ -161,7 +160,7 @@ class WhatBuffsController extends ModuleInstance {
 				->orderBy('skills.name')
 				->select([
 					'skills.name AS skill',
-					$query->rawFunc('COUNT', 1, 'num'),
+					$query->raw($query->rawFunc('COUNT', 1, 'num')),
 				]);
 			if ($froobFriendly) {
 				$query->where('buffs.froob_friendly', '=', true);
@@ -217,7 +216,7 @@ class WhatBuffsController extends ModuleInstance {
 				->orderBy('skills.name')
 				->select([
 					'skills.name AS skill',
-					$query->rawFunc('COUNT', 1, 'num'),
+					$query->raw($query->rawFunc('COUNT', 1, 'num')),
 				]);
 			if ($froobFriendly) {
 				$query->where('aodb.froob_friendly', '=', true);
@@ -359,7 +358,7 @@ class WhatBuffsController extends ModuleInstance {
 		$query
 			->groupBy('foo.item_type')
 			->orderBy('foo.item_type')
-			->select(['foo.item_type', $query->rawFunc('COUNT', '*', 'num')]);
+			->select(['foo.item_type', $query->raw($query->rawFunc('COUNT', '*', 'num'))]);
 		$data = $query->asObj(SkillBuffTypeCount::class);
 		if (!$froobFriendly) {
 			$numPerks = $this->buffPerksController->perks->filter(
@@ -418,7 +417,6 @@ class WhatBuffsController extends ModuleInstance {
 				$query->where('b.froob_friendly', true);
 			}
 
-			/** @var Collection<NanoBuffSearchResult> */
 			$data = $query->asObj(NanoBuffSearchResult::class);
 			if ($data->isNotEmpty() && $data->last()->amount < 0) {
 				$data = $data->reverse();
@@ -468,7 +466,7 @@ class WhatBuffsController extends ModuleInstance {
 				})->groupBy([
 					'a.name', 'a.lowql', 'a.highql', 'b.amount', 'b2.amount', 'a.lowid',
 					'a.highid', 'a.icon', 'a.froob_friendly', 'a.slot', 'a.flags', 's.unit',
-				])->orderByDesc($query->colFunc('ABS', 'b.amount'))
+				])->orderByDesc($query->raw($query->colFunc('ABS', 'b.amount')))
 				->orderByDesc('name')
 				->select([
 					'a.*', 'b.amount', 'b2.amount AS low_amount', 's.unit',
@@ -480,7 +478,6 @@ class WhatBuffsController extends ModuleInstance {
 				$query->where('a.in_game', true);
 			}
 
-			/** @var Collection<ItemBuffSearchResult> */
 			$data = $query->asObj(ItemBuffSearchResult::class);
 			$specialsById = $this->skillsController->getWeaponAttributes(
 				aoid: $data->pluck('highid')->toArray()
@@ -531,7 +528,6 @@ class WhatBuffsController extends ModuleInstance {
 	public function searchForSkill(string $skill): array {
 		// check for exact match first, in order to disambiguate
 		// between Bow and Bow special attack
-		/** @var Collection<Skill> */
 		$results = $this->db->table(Skill::getTable())
 			->whereIlike('name', $skill)
 			->select(['id', 'name', 'unit'])

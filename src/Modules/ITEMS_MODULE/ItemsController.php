@@ -167,7 +167,7 @@ class ItemsController extends ModuleInstance {
 	/**
 	 * Get 1 or more items by their IDs
 	 *
-	 * @return Collection<AODBEntry>
+	 * @return Collection<int,AODBEntry>
 	 */
 	public function getByIDs(int ...$ids): Collection {
 		return $this->db->table(AODBEntry::getTable())
@@ -182,7 +182,7 @@ class ItemsController extends ModuleInstance {
 	/**
 	 * Get 1 or more items by their names
 	 *
-	 * @return Collection<AODBEntry>
+	 * @return Collection<int,AODBEntry>
 	 */
 	public function getByNames(string ...$names): Collection {
 		return $this->db->table(AODBEntry::getTable())
@@ -193,7 +193,7 @@ class ItemsController extends ModuleInstance {
 	/**
 	 * Get 1 or more items by a name search
 	 *
-	 * @return Collection<AODBEntry>
+	 * @return Collection<int,AODBEntry>
 	 */
 	public function getBySearch(string $search, ?int $ql=null): Collection {
 		$query = $this->db->table(AODBEntry::getTable());
@@ -290,7 +290,7 @@ class ItemsController extends ModuleInstance {
 			$innerQuery->where('a.lowql', '<=', $ql)
 				->where('a.highql', '>=', $ql);
 		}
-		$innerQuery->groupByRaw($innerQuery->colFunc('COALESCE', ['g.group_id', 'a.lowid'])->getValue())
+		$innerQuery->groupByRaw($innerQuery->colFunc('COALESCE', ['g.group_id', 'a.lowid']))
 			->groupBy('a.lowid', 'a.highid', 'a.lowql', 'a.highql', 'a.name')
 			->groupBy('a.icon', 'a.froob_friendly', 'a.slot', 'a.flags', 'g.group_id')
 			->orderBy('a.name')
@@ -306,18 +306,18 @@ class ItemsController extends ModuleInstance {
 			->leftJoin('aodb AS a1', 'g.item_id', 'a1.lowid')
 			->leftJoin('aodb AS a2', 'g.item_id', 'a2.highid')
 			->orderBy('g.id');
-		$query->selectRaw($query->colFunc('COALESCE', ['a2.name', 'a1.name', 'foo.name'], 'name')->getValue())
+		$query->selectRaw($query->colFunc('COALESCE', ['a2.name', 'a1.name', 'foo.name'], 'name'))
 			->addSelect('n.name AS group_name')
 			->addSelect('foo.icon')
 			->addSelect('foo.in_game')
 			->addSelect('foo.slot')
 			->addSelect('g.group_id')
 			->addSelect('foo.flags')
-			->selectRaw($query->colFunc('COALESCE', ['a1.lowid', 'a2.lowid', 'foo.lowid'], 'lowid')->getValue())
-			->selectRaw($query->colFunc('COALESCE', ['a1.highid', 'a2.highid', 'foo.highid'], 'highid')->getValue())
-			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.highql', 'foo.highql'], 'ql')->getValue())
-			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.lowql', 'foo.lowql'], 'lowql')->getValue())
-			->selectRaw($query->colFunc('COALESCE', ['a1.highql', 'a2.highql', 'foo.highql'], 'highql')->getValue());
+			->selectRaw($query->colFunc('COALESCE', ['a1.lowid', 'a2.lowid', 'foo.lowid'], 'lowid'))
+			->selectRaw($query->colFunc('COALESCE', ['a1.highid', 'a2.highid', 'foo.highid'], 'highid'))
+			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.highql', 'foo.highql'], 'ql'))
+			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.lowql', 'foo.lowql'], 'lowql'))
+			->selectRaw($query->colFunc('COALESCE', ['a1.highql', 'a2.highql', 'foo.highql'], 'highql'));
 		echo("\n\n\n" . $query->toSql() . "\n\n\n");
 		$data = $query->asObj(ItemSearchResult::class);
 		$data = $data->filter(static function (ItemSearchResult $item): bool {
@@ -702,14 +702,14 @@ class ItemsController extends ModuleInstance {
 		return $this->skills[$id] ?? null;
 	}
 
-	/** @return Collection<Skill> */
+	/** @return Collection<int,Skill> */
 	public function getSkillByIDs(int ...$ids): Collection {
 		return $this->db->table(Skill::getTable())
 			->whereIn('id', $ids)
 			->asObj(Skill::class);
 	}
 
-	/** @return Collection<Skill> */
+	/** @return Collection<int,Skill> */
 	public function searchForSkill(string $skillName): Collection {
 		// check for exact match first, in order to disambiguate
 		// between Bow and Bow special attack
@@ -722,7 +722,7 @@ class ItemsController extends ModuleInstance {
 		 *
 		 * @var Collection<Skill>
 		 */
-		$results = $query->where($query->colFunc('LOWER', 'name'), strtolower($skillName))
+		$results = $query->where($query->raw($query->colFunc('LOWER', 'name')), strtolower($skillName))
 			->select('*')->distinct()
 			->asObj(Skill::class);
 		if ($results->containsOneItem()) {
@@ -737,7 +737,7 @@ class ItemsController extends ModuleInstance {
 		return $query->asObj(Skill::class);
 	}
 
-	/** @return Collection<ItemWithBuffs> */
+	/** @return Collection<int,ItemWithBuffs> */
 	public function addBuffs(AODBEntry ...$items): Collection {
 		$buffs = $this->db->table(ItemBuff::getTable())
 			->whereIn('item_id', array_unique([...array_column($items, 'highid'), ...array_column($items, 'lowid')]))

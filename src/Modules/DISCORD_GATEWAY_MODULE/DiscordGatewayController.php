@@ -1904,7 +1904,6 @@ class DiscordGatewayController extends ModuleInstance {
 
 	private function registerEmojis(Guild $guild): void {
 		try {
-			/** @var Collection<DBEmoji> */
 			$registered = $this->db->table(DBEmoji::getTable())
 				->where('guild_id', $guild->id)
 				->asObj(DBEmoji::class);

@@ -300,10 +300,9 @@ class DiscordSlashCommandController extends ModuleInstance {
 			->pluckStrings('cmd')
 			->toArray();
 
-		/** @var Collection<CmdCfg> */
+		/** @var Collection<int,CmdCfg> */
 		$cmds = new Collection($this->cmdManager->getAll(false));
 
-		/** @var Collection<string> */
 		$parts = $cmds
 			->sortBy('module')
 			->filter(static function (CmdCfg $cmd) use ($exposedCmds): bool {
@@ -428,7 +427,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 	/**
 	 * Set the given slash commands without checking if they've changed
 	 *
-	 * @param Collection<ApplicationCommand> $modifiedCommands
+	 * @param Collection<int,ApplicationCommand> $modifiedCommands
 	 */
 	private function setSlashCommands(Collection $modifiedCommands): void {
 		$appId = $this->gw->getID();
@@ -574,8 +573,8 @@ class DiscordSlashCommandController extends ModuleInstance {
 	/**
 	 * Calculate how many commands in $set have change relatively to $live
 	 *
-	 * @param Collection<ApplicationCommand> $live
-	 * @param Collection<ApplicationCommand> $set
+	 * @param Collection<int,ApplicationCommand> $live
+	 * @param Collection<int,ApplicationCommand> $set
 	 */
 	private function getNumChangedSlashCommands(Collection $live, Collection $set): int {
 		$live = $live->keyBy('name');

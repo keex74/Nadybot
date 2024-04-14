@@ -122,7 +122,6 @@ class NanoController extends ModuleInstance {
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $tmp, 'nano_name');
 
-		/** @var Collection<Nano> */
 		$data = $query->asObj(Nano::class);
 
 		$count = $data->count();
@@ -208,7 +207,6 @@ class NanoController extends ModuleInstance {
 			$query->whereNotIn('professions', ['Keeper', 'Shade']);
 		}
 
-		/** @var Collection<string> */
 		$profs = $query->pluckStrings('professions');
 
 		$blob = "<header2>Choose a profession<end>\n";
@@ -262,9 +260,8 @@ class NanoController extends ModuleInstance {
 			->groupBy('location')
 			->orderBy('location')
 			->select('location');
-		$query->addSelect($query->colFunc('COUNT', 'location', 'count'));
+		$query->addSelect($query->raw($query->colFunc('COUNT', 'location', 'count')));
 
-		/** @var Collection<LocationCount> */
 		$data = $query->asObj(LocationCount::class);
 		$nanoCount = [];
 		foreach ($data as $row) {
@@ -314,10 +311,8 @@ class NanoController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<Nano> $nanos */
 		$blob = '';
 		foreach ($nanos as $nano) {
-			/** @var Nano $nano */
 			$nanoLink = $this->makeNanoLink($nano);
 			$gmiLink = ($this->nanoAddGMI && isset($nano->crystal_id))
 				? ' [' . Text::makeChatcmd('GMI', "/tell <myname> gmi {$nano->crystal_id}") . ']'
@@ -400,7 +395,7 @@ class NanoController extends ModuleInstance {
 		return "<a href='itemid://53019/{$nano->nano_id}'>{$nano->nano_name}</a>";
 	}
 
-	/** @return Collection<Nanoline> */
+	/** @return Collection<int,Nanoline> */
 	public function getNanoLinesByIds(int ...$ids): Collection {
 		return $this->db->table(Nanoline::getTable())
 			->whereIn('strain_id', $ids)
@@ -411,7 +406,7 @@ class NanoController extends ModuleInstance {
 		return $this->nanolines[$id] ?? null;
 	}
 
-	/** @return Collection<Nano> */
+	/** @return Collection<int,Nano> */
 	private function getBestNanos(Profession $profession, int $level, bool $froobOnly): Collection {
 		if ($level < 1 || $level > 220) {
 			throw new UserException('Level has to be between 1 and 220.');
@@ -443,7 +438,7 @@ class NanoController extends ModuleInstance {
 		return new Collection($nanos);
 	}
 
-	/** @param Collection<Nano> $nanos */
+	/** @param Collection<int,Nano> $nanos */
 	private function getNanoSkillsNeeded(Collection $nanos): NanoSkillsNeeded {
 		return $nanos->reduce(
 			static function (NanoSkillsNeeded $max, Nano $nano): NanoSkillsNeeded {
@@ -504,7 +499,7 @@ class NanoController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @param Collection<Nano> $nanos */
+	/** @param Collection<int,Nano> $nanos */
 	private function renderBestNanos(Collection $nanos, bool $compact): string {
 		$nanoSkillsNeeded = $this->getNanoSkillsNeeded($nanos);
 		$blob = '<header2>Required Nanoskills<end>'.
@@ -593,7 +588,6 @@ class NanoController extends ModuleInstance {
 			$query->where('froob_friendly', true);
 		}
 
-		/** @var Collection<Nano> */
 		$data = $query->asObj(Nano::class);
 		if ($data->isEmpty()) {
 			$msg = "No nanoline named <highlight>{$nanoline}<end> found.";

@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -31,7 +30,6 @@ class ChatCheckController extends ModuleInstance {
 	/** Checks who in the private channel is in the area */
 	#[NCA\HandlesCommand('check')]
 	public function checkAllCommand(CmdContext $context): void {
-		/** @var Collection<string> */
 		$data = $this->db->table(Online::getTable())
 			->where('added_by', $this->db->getBotname())
 			->where('channel_type', self::CHANNEL_TYPE)

@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\CITY_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -99,7 +98,6 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 	 */
 	#[NCA\HandlesCommand('cloak')]
 	public function cloakCommand(CmdContext $context): void {
-		/** @var Collection<OrgCity> */
 		$data = $this->db->table(OrgCity::getTable())
 			->whereIn('action', ['on', 'off'])
 			->orderByDesc('time')

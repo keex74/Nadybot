@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\RECIPE_MODULE;
 
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -87,7 +86,6 @@ class ArulSabaController extends ModuleInstance {
 	#[NCA\HandlesCommand('arulsaba')]
 	#[NCA\Help\Example('<symbol>arulsaba desert')]
 	public function arulSabaChooseQLCommand(CmdContext $context, PWord $name): void {
-		/** @var Collection<ArulSabaBuffs> */
 		$aruls = $this->db->table(ArulSabaBuffs::getTable())
 			->where('name', ucfirst(strtolower($name())))
 			->orderBy('min_level')

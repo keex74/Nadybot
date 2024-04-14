@@ -5,7 +5,7 @@ namespace Nadybot\Core;
 use function Safe\json_encode;
 use Exception;
 use Illuminate\Database\Connection;
-use Illuminate\Database\Query\{Builder, Expression};
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Attributes\DB\ColName;
@@ -32,7 +32,7 @@ class QueryBuilder extends Builder {
 	 *
 	 * @param class-string<T> $class
 	 *
-	 * @return Collection<T>
+	 * @return Collection<int,T>
 	 */
 	public function asObj(string $class): Collection {
 		return new Collection($this->fetchAll($class, $this->toSql(), ...$this->getBindings()));
@@ -41,7 +41,7 @@ class QueryBuilder extends Builder {
 	/**
 	 * Pluck values as strings
 	 *
-	 * @return Collection<string>
+	 * @return Collection<int,string>
 	 */
 	public function pluckStrings(string $column): Collection {
 		return $this->pluck($column)
@@ -53,7 +53,7 @@ class QueryBuilder extends Builder {
 	/**
 	 * Pluck values as ints
 	 *
-	 * @return Collection<int>
+	 * @return Collection<int,int>
 	 */
 	public function pluckInts(string $column): Collection {
 		return $this->pluck($column)
@@ -85,43 +85,36 @@ class QueryBuilder extends Builder {
 		);
 	}
 
-	public function colFunc(string $function, mixed $column, ?string $as=null): Expression {
+	public function colFunc(string $function, mixed $column, ?string $as=null): string {
 		$function = $this->dbFunc($function);
 		if (!is_array($column)) {
 			$column = [$column];
 		}
 		$column = array_map([$this->grammar, 'wrap'], $column);
 		$cols = implode(', ', $column);
-		return $this->raw(
-			"{$function}({$cols})".
-			(isset($as) ? ' AS ' . $this->grammar->wrap($as) : '')
-		);
+		return "{$function}({$cols})".
+			(isset($as) ? ' AS ' . $this->grammar->wrap($as) : '');
 	}
 
-	public function rawFunc(string $function, mixed $param, ?string $as=null): Expression {
+	public function rawFunc(string $function, mixed $param, ?string $as=null): string {
 		$function = $this->dbFunc($function);
-		return $this->raw(
+		return
 			"{$function}({$param})".
-			(isset($as) ? ' AS ' . $this->grammar->wrap($as) : '')
-		);
+			(isset($as) ? ' AS ' . $this->grammar->wrap($as) : '');
 	}
 
 	public function orWhereIlike(string $column, string $value): self {
 		/**
 		 * @psalm-suppress ImplicitToStringCast
-		 *
-		 * @phpstan-ignore-next-line
 		 */
-		return $this->orWhere($this->colFunc('LOWER', $column), 'like', strtolower($value));
+		return $this->orWhere($this->raw($this->colFunc('LOWER', $column)), 'like', strtolower($value));
 	}
 
 	public function whereIlike(string $column, string $value, string $boolean='and'): self {
 		/**
 		 * @psalm-suppress ImplicitToStringCast
-		 *
-		 * @phpstan-ignore-next-line
 		 */
-		return $this->where($this->colFunc('LOWER', $column), 'like', strtolower($value), $boolean);
+		return $this->where($this->raw($this->colFunc('LOWER', $column)), 'like', strtolower($value), $boolean);
 	}
 
 	public function join($table, $first, $operator=null, $second=null, $type='inner', $where=false): self {
@@ -132,6 +125,7 @@ class QueryBuilder extends Builder {
 	}
 
 	public function crossJoin($table, $first=null, $operator=null, $second=null): self {
+		assert(is_string($table));
 		return parent::crossJoin($this->nadyDB->formatSql($table), $first, $operator, $second);
 	}
 

@@ -5,7 +5,6 @@ namespace Nadybot\Modules\TRADEBOT_MODULE;
 use function Amp\async;
 use function Safe\preg_match;
 use AO\Package;
-use Illuminate\Support\Collection;
 use Nadybot\Core\Events\{ConnectEvent, ExtJoinPrivRequest, PrivateChannelMsgEvent, RecvMsgEvent};
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -288,7 +287,6 @@ class TradebotController extends ModuleInstance {
 	/** List the currently custom defined colors */
 	#[NCA\HandlesCommand('tradecolor')]
 	public function listTradecolorsCommand(CmdContext $context): void {
-		/** @var Collection<TradebotColors> */
 		$colors = $this->db->table(TradebotColors::getTable())
 			->orderBy('tradebot')
 			->orderBy('id')
@@ -462,8 +460,7 @@ class TradebotController extends ModuleInstance {
 		$query = $this->db->table(TradebotColors::getTable())
 			->where('tradebot', $tradeBot);
 
-		/** @var Collection<TradebotColors> */
-		$colorDefs = $query->orderByDesc($query->colFunc('LENGTH', 'channel'))
+		$colorDefs = $query->orderByDesc($query->raw($query->colFunc('LENGTH', 'channel')))
 			->asObj(TradebotColors::class);
 		foreach ($colorDefs as $colorDef) {
 			if (fnmatch($colorDef->channel, $tag, \FNM_CASEFOLD)) {

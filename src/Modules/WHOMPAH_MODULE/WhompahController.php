@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\WHOMPAH_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -42,7 +41,6 @@ class WhompahController extends ModuleInstance {
 	/** Shows a list of whompah cities */
 	#[NCA\HandlesCommand('whompah')]
 	public function whompahListCommand(CmdContext $context): void {
-		/** @var Collection<WhompahCity> */
 		$data = $this->db->table(WhompahCity::getTable())
 			->orderBy('city_name')
 			->asObj(WhompahCity::class);

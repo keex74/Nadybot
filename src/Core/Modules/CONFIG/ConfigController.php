@@ -166,7 +166,6 @@ class ConfigController extends ModuleInstance {
 			$confirmString = 'all ' . $permissionSet;
 		}
 
-		/** @var Collection<CmdCfg> */
 		$data = $query->asObj(CmdCfg::class);
 		$permissions = $permQuery->whereIn('cmd', $data->pluck('cmd')->toArray())
 			->asObj(CmdPermission::class)
@@ -174,7 +173,6 @@ class ConfigController extends ModuleInstance {
 		$updated = [];
 
 		foreach ($data as $row) {
-			/** @var Collection<CmdPermission> */
 			$cmdPerms = $permissions->get($row->cmd, new Collection());
 			foreach ($cmdPerms as $perm) {
 				if (!$this->accessManager->checkAccess($context->char->name, $perm->access_level)) {
@@ -345,7 +343,6 @@ class ConfigController extends ModuleInstance {
 			->where('type', $eventType)
 			->select('*');
 
-		/** @var Collection<EventCfg> */
 		$data = $query->asObj(EventCfg::class);
 		$data->each(function (EventCfg $cfg) use ($enable): void {
 			$this->toggleEventCfg($cfg, $enable);
@@ -867,17 +864,16 @@ class ConfigController extends ModuleInstance {
 			$outerQuery->as('count_settings')
 		);
 
-		/** @var Collection<ModuleStats> */
+		/** @var Collection<string,ModuleStats> */
 		$data = $outerQuery->asObj(ModuleStats::class)->keyBy('module');
 
-		/** @var Collection<string,Collection<CmdCfg>> */
+		/** @var Collection<string,Collection<int,CmdCfg>> */
 		$commands = $this->commandManager->getAll()
 			->groupBy('module');
 		$result = [];
 		foreach ($modules as $module => $dummy) {
 			$row = $data->get($module);
 
-			/** @var Collection<CmdCfg> */
 			$moduleCmds = $commands->get($module, new Collection());
 			if ($moduleCmds->isEmpty() && !isset($row)) {
 				continue;
@@ -1011,7 +1007,6 @@ class ConfigController extends ModuleInstance {
 	private function getSubCommandInfo(string $cmd, string $permSet): string {
 		$subcmdList = '';
 
-		/** @var Collection<CmdCfg> */
 		$commands = $this->db->table(CmdCfg::getTable())
 			->where('dependson', $cmd)
 			->where('cmdevent', 'subcmd')

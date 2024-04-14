@@ -618,19 +618,16 @@ class AttacksController extends ModuleInstance {
 	): void {
 		$from = time() - (isset($duration) ? $duration->toSecs() : 3_600 * 24);
 
-		/** @var Collection<DBTowerAttack> */
 		$attacks = $this->db->table(DBTowerAttack::getTable())
 			->where('timestamp', '>', $from)
 			->whereNotNull('att_faction')
 			->asObj(DBTowerAttack::class);
 
-		/** @var Collection<DBOutcome> */
 		$victories = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>', $from)
 			->whereNotNull('attacker_faction')
 			->asObj(DBOutcome::class);
 
-		/** @var Collection<DBOutcome> */
 		$abandonments = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>', $from)
 			->whereNull('attacker_faction')
@@ -920,10 +917,10 @@ class AttacksController extends ModuleInstance {
 	 * Group a given list of attacks into attack-phases divided
 	 * by victories and 75% phases
 	 *
-	 * @return Collection<string,Collection<DBTowerAttack>>
+	 * @return Collection<string,Collection<int,DBTowerAttack>>
 	 */
 	private function groupAttackList(DBTowerAttack ...$attacks): Collection {
-		/** @var Collection<DBTowerAttack> */
+		/** @var Collection<int,DBTowerAttack> */
 		$attacks = (new Collection($attacks))->sortByDesc('timestamp');
 
 		/**

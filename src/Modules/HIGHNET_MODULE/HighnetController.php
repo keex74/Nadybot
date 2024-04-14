@@ -105,7 +105,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	/** @var string[] */
 	public array $channels = [];
 
-	/** @var Collection<FilterEntry> */
+	/** @var Collection<int,FilterEntry> */
 	public Collection $filters;
 
 	#[NCA\Logger]

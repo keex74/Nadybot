@@ -843,6 +843,7 @@ class RelayController extends ModuleInstance {
 			->orderBy('id')
 			->asObj(RelayLayer::class)
 			->each(static function (RelayLayer $layer) use ($arguments): void {
+				assert(isset($layer->id));
 				$layer->arguments = $arguments->get($layer->id, new Collection())->toArray();
 			})
 			->groupBy('relay_id');
@@ -854,6 +855,7 @@ class RelayController extends ModuleInstance {
 			->orderBy('id')
 			->asObj(RelayConfig::class)
 			->each(static function (RelayConfig $relay) use ($layers, $events): void {
+				assert(isset($relay->id));
 				$relay->layers = $layers->get($relay->id, new Collection())->toArray();
 				$relay->events = $events->get($relay->id, new Collection())
 					->toArray();

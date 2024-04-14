@@ -68,9 +68,9 @@ class CommandSearchController extends ModuleInstance {
 	/**
 	 * Remove all commands that we don't have access to
 	 *
-	 * @param Collection<CommandSearchResult> $data
+	 * @param Collection<int,CommandSearchResult> $data
 	 *
-	 * @return Collection<CommandSearchResult>
+	 * @return Collection<int,CommandSearchResult>
 	 *
 	 * @throws SQLException
 	 * @throws Exception
@@ -86,9 +86,9 @@ class CommandSearchController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Collection<CommandSearchResult> $data
+	 * @param Collection<int,CommandSearchResult> $data
 	 *
-	 * @return Collection<CommandSearchResult>
+	 * @return Collection<int,CommandSearchResult>
 	 */
 	public function orderBySimilarity(Collection $data, string $search): Collection {
 		return $data->each(static function (CommandSearchResult $row) use ($search): void {
@@ -101,7 +101,7 @@ class CommandSearchController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Collection<CommandSearchResult> $results
+	 * @param Collection<int,CommandSearchResult> $results
 	 *
 	 * @return string|string[]
 	 */
@@ -130,7 +130,7 @@ class CommandSearchController extends ModuleInstance {
 		return $msg;
 	}
 
-	/** @return Collection<CommandSearchResult> */
+	/** @return Collection<int,CommandSearchResult> */
 	public function findSimilarCommands(string $search, string $sender): Collection {
 		$commands = $this->getAllCmds();
 		$commands = $this->filterDisabled($commands);
@@ -138,7 +138,7 @@ class CommandSearchController extends ModuleInstance {
 		return $this->orderBySimilarity($commands, $search);
 	}
 
-	/** @return Collection<CommandSearchResult> */
+	/** @return Collection<int,CommandSearchResult> */
 	protected function getAllCmds(): Collection {
 		$permissions = $this->db->table(CmdPermission::getTable())
 			->asObj(CmdPermission::class)
@@ -153,9 +153,9 @@ class CommandSearchController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Collection<CommandSearchResult> $commands
+	 * @param Collection<int,CommandSearchResult> $commands
 	 *
-	 * @return Collection<CommandSearchResult>
+	 * @return Collection<int,CommandSearchResult>
 	 */
 	protected function filterDisabled(Collection $commands): Collection {
 		return $commands->filter(static function (CommandSearchResult $cmd): bool {

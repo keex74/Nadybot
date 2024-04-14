@@ -271,7 +271,6 @@ class OnlineController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('hidden', 'hide')] string $action
 	): void {
-		/** @var Collection<OnlineHide> */
 		$masks = new Collection($this->getHiddenPlayerMasks());
 		$masks = $masks->sortBy('mask');
 		$blobs = new Collection();
@@ -314,7 +313,6 @@ class OnlineController extends ModuleInstance {
 	): void {
 		$mask = strtolower($mask);
 
-		/** @var Collection<OnlineHide> */
 		$masks = new Collection($this->getHiddenPlayerMasks());
 		if ($masks->where('mask', $mask)->isNotEmpty()) {
 			$context->reply("The mask <highlight>{$mask}<end> is already hidden.");
@@ -391,12 +389,11 @@ class OnlineController extends ModuleInstance {
 		$onlineChars = $this->db->table(Online::getTable())->asObj(Online::class);
 		$onlineByName = $onlineChars->keyBy('name');
 
-		/** @var Collection<string> */
 		$mains = $onlineChars->map(function (Online $online): string {
 			return $this->altsController->getMainOf($online->name);
 		})->unique();
 
-		/** @var Collection<OnlinePlayer> */
+		/** @var Collection<int,OnlinePlayer> */
 		$players = new Collection();
 		foreach ($mains as $main) {
 			$alts = $this->altsController->getAltsOf($main);
@@ -520,7 +517,6 @@ class OnlineController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<Online> */
 		$data = $this->db->table(Online::getTable())
 			->asObj(Online::class);
 

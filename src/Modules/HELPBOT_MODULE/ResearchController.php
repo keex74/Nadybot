@@ -78,8 +78,8 @@ class ResearchController extends ModuleInstance {
 		$query = $this->db->table(Research::getTable())
 			->where('level', '>', $loLevel)
 			->where('level', '<=', $hiLevel);
-		$query->select($query->colFunc('SUM', 'sk', 'totalsk'));
-		$query->addSelect($query->colFunc('MAX', 'levelcap', 'levelcap'));
+		$query->selectRaw($query->colFunc('SUM', 'sk', 'totalsk'));
+		$query->addSelect($query->raw($query->colFunc('MAX', 'levelcap', 'levelcap')));
 
 		/** @var ?ResearchResult */
 		$row = $query->asObj(ResearchResult::class)->first();

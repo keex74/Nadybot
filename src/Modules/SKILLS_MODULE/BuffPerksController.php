@@ -56,7 +56,7 @@ class BuffPerksController extends ModuleInstance {
 	#[NCA\Setting\Timestamp(mode: SettingMode::NoEdit)]
 	public int $perksDBVersion = 0;
 
-	/** @var Collection<Perk> */
+	/** @var Collection<string,Perk> */
 	public Collection $perks;
 
 	#[NCA\Logger]
@@ -718,9 +718,10 @@ class BuffPerksController extends ModuleInstance {
 	/**
 	 * @param array<int,int> $buffs
 	 *
-	 * @return Collection<ExtBuff>
+	 * @return Collection<int,ExtBuff>
 	 */
 	private function buffHashToCollection(array $buffs): Collection {
+		/** @var Collection<int,ExtBuff> */
 		$result = new Collection();
 		foreach ($buffs as $skillId => $amount) {
 			$skill = $this->itemsController->getSkillByID($skillId);
@@ -740,9 +741,10 @@ class BuffPerksController extends ModuleInstance {
 	/**
 	 * @param array<int,int> $resistances
 	 *
-	 * @return Collection<ExtResistance>
+	 * @return Collection<int,ExtResistance>
 	 */
 	private function resistanceHashToCollection(array $resistances): Collection {
+		/** @var Collection<int,ExtResistance> */
 		$result = new Collection();
 		foreach ($resistances as $strainId => $amount) {
 			$nanoline = $this->nanoController->getNanoLineById($strainId);

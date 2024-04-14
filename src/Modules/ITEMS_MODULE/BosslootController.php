@@ -65,7 +65,6 @@ class BosslootController extends ModuleInstance {
 		$query = $this->db->table(BossNamedb::getTable());
 		$this->db->addWhereFromParams($query, explode(' ', $bossName), 'bossname');
 
-		/** @var Collection<BossNamedb> */
 		$bosses = $query->asObj(BossNamedb::class);
 		$count = $bosses->count();
 
@@ -96,7 +95,6 @@ class BosslootController extends ModuleInstance {
 
 		$blob .= "<header2>Loot<end>\n";
 
-		/** @var Collection<BossLootdb> */
 		$data = $this->db->table(BossLootdb::getTable())
 			->where('bossid', $row->bossid)
 			->asObj(BossLootdb::class);
@@ -127,7 +125,6 @@ class BosslootController extends ModuleInstance {
 			->select(['b2.bossid', 'b2.bossname'])->distinct();
 		$this->db->addWhereFromParams($query, explode(' ', $item), 'b1.itemname');
 
-		/** @var Collection<BossNamedb> */
 		$loot = $query->asObj(BossNamedb::class);
 		$count = $loot->count();
 
@@ -148,7 +145,6 @@ class BosslootController extends ModuleInstance {
 			$this->db->addWhereFromParams($query, explode(' ', $search), 'itemname');
 		}
 
-		/** @var Collection<BossLootdb> */
 		$data = $query->asObj(BossLootdb::class);
 		$this->addItemsToLoot($data);
 
@@ -169,7 +165,7 @@ class BosslootController extends ModuleInstance {
 		return $blob;
 	}
 
-	/** @param Collection<BossLootdb> $data */
+	/** @param Collection<int,BossLootdb> $data */
 	private function addItemsToLoot(Collection $data): void {
 		$itemsByName = $this->itemsController
 			->getByNames(...$data->whereNull('aoid')->pluck('itemname')->toArray())
@@ -186,9 +182,8 @@ class BosslootController extends ModuleInstance {
 		});
 	}
 
-	/** @return Collection<string> */
+	/** @return Collection<int,string> */
 	private function getBossLocations(string $bossName): Collection {
-		/** @var Collection<string> */
 		$locations = $this->whereisController->getByName($bossName)
 			->map(static function (Whereis $npc): string {
 				if ($npc->playfield === Playfield::Unknown || ($npc->xcoord === 0 && $npc->ycoord === 0)) {

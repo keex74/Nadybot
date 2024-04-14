@@ -14,6 +14,8 @@ use stdClass;
 class AddIdColumn implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Timer::getTable();
+
+		/** @var Collection<int,stdClass> */
 		$data = $db->schema()->hasTable($table) ? $db->table($table)->get() : new Collection();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {

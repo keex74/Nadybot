@@ -269,7 +269,6 @@ class GuildController extends ModuleInstance {
 
 		$alts = $altInfo->getAllAlts();
 
-		/** @var Collection<OrgMember> */
 		$data = $this->db->table(OrgMember::getTable())
 			->whereIn('name', $alts)
 			->where('mode', '!=', 'del')
@@ -321,7 +320,6 @@ class GuildController extends ModuleInstance {
 		$timeString = Util::unixtimeToReadable($time, false);
 		$time = time() - $time;
 
-		/** @var Collection<RecentOrgMember> */
 		$members = $this->db->table(OrgMember::getTable())
 			->where('mode', '!=', 'del')
 			->where('logged_off', '>', $time)
@@ -349,10 +347,8 @@ class GuildController extends ModuleInstance {
 
 		$prevToon = '';
 		foreach ($members as $main => $memberAlts) {
-			/** @var Collection<RecentOrgMember> $memberAlts */
-			$member = $memberAlts->first();
+			$member = $memberAlts->firstOrFail();
 
-			/** @var RecentOrgMember $member */
 			if ($member->main === $prevToon) {
 				continue;
 			}
@@ -978,7 +974,6 @@ class GuildController extends ModuleInstance {
 		$dbEntries = [];
 
 		// Save the current org_members table in a var
-		/** @var Collection<OrgMember> */
 		$data = $this->db->table(OrgMember::getTable())->asObj(OrgMember::class);
 
 		// If the update would remove over 30% of the org members,

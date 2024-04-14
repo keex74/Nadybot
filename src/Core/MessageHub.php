@@ -40,7 +40,7 @@ class MessageHub {
 	/** @var array<string,ClassSpec> */
 	public array $modifiers = [];
 
-	/** @var Collection<RouteHopColor> */
+	/** @var Collection<int,RouteHopColor> */
 	public static Collection $colors;
 
 	public bool $routingLoaded = false;
@@ -118,16 +118,16 @@ class MessageHub {
 	public function loadTagFormat(): void {
 		$query = $this->db->table(RouteHopFormat::getTable());
 		Source::$format = $query
-			->orderByDesc($query->colFunc('LENGTH', 'hop'))
+			->orderByDesc($query->raw($query->colFunc('LENGTH', 'hop')))
 			->asObj(RouteHopFormat::class);
 	}
 
 	public function loadTagColor(): void {
 		$query = $this->db->table(RouteHopColor::getTable());
 		static::$colors = $query
-			->orderByDesc($query->colFunc('LENGTH', 'hop'))
-			->orderByDesc($query->colFunc('LENGTH', 'where'))
-			->orderByDesc($query->colFunc('LENGTH', 'via'))
+			->orderByDesc($query->raw($query->colFunc('LENGTH', 'hop')))
+			->orderByDesc($query->raw($query->colFunc('LENGTH', 'where')))
+			->orderByDesc($query->raw($query->colFunc('LENGTH', 'via')))
 			->asObj(RouteHopColor::class);
 	}
 

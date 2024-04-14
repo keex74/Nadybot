@@ -231,7 +231,7 @@ class ProfileController extends ModuleInstance {
 		}
 		$contents .= "\n# Commands\n";
 
-		/** @var Collection<CmdCfg> */
+		/** @var Collection<int,CmdCfg> */
 		$data = $this->commandManager->getAll(true);
 		foreach ($data as $row) {
 			foreach ($row->permissions as $channel => $permissions) {

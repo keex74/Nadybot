@@ -59,7 +59,6 @@ class HelpbotController extends ModuleInstance {
 		$range1 = (int)floor($ql - $ql / 10);
 		$range2 = (int)ceil($ql + $ql / 10);
 
-		/** @var Collection<DynaDB> */
 		$data = $this->db->table(DynaDB::getTable(), 'd')
 			->where('max_ql', '>=', $range1)
 			->where('min_ql', '<=', $range2)
@@ -186,12 +185,12 @@ class HelpbotController extends ModuleInstance {
 	/**
 	 * Format the dynacamp results as a blob for a popup
 	 *
-	 * @param Collection<DynaDB> $data
+	 * @param Collection<int,DynaDB> $data
 	 */
 	private function formatResults(Collection $data): string {
 		$blob = '';
 
-		/** @var Collection<string,Collection<DynaDB>> */
+		/** @var Collection<string,Collection<int,DynaDB>> */
 		$data = $data
 			->groupBy(static fn (DynaDB $search): string => $search->playfield->long())
 			->sortKeys();

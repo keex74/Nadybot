@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -36,7 +35,6 @@ class ClusterController extends ModuleInstance {
 	/** Get a list of skills/attributes you can get clusters for */
 	#[NCA\HandlesCommand('cluster')]
 	public function clusterListCommand(CmdContext $context): void {
-		/** @var Collection<Cluster> */
 		$data = $this->db->table(Cluster::getTable())
 			->orderBy('LongName')
 			->asObj(Cluster::class);
@@ -69,11 +67,9 @@ class ClusterController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$query = $this->db->table(Cluster::getTable())
-			->whereIn('SkillID', array_column($skills, 'id'));
-
-		/** @var Collection<Cluster> */
-		$data = $query->asObj(Cluster::class);
+		$data = $this->db->table(Cluster::getTable())
+			->whereIn('SkillID', array_column($skills, 'id'))
+			->asObj(Cluster::class);
 		$count = $data->count();
 
 		if ($count === 0) {

@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\ORGLIST_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -46,7 +45,6 @@ class OrgMembersController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Collection<Player> */
 		$players = $this->db->table(Player::getTable())
 			->where('guild_id', $orgId)
 			->where('dimension', $this->db->getDim())

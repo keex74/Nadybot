@@ -752,11 +752,7 @@ class PackageController extends ModuleInstance {
 			),
 		);
 
-		/**
-		 * @var Collection<Package>
-		 *
-		 * @psalm-suppress InternalMethod
-		 */
+		/** @psalm-suppress InternalMethod */
 		$packages = new Collection(
 			$mapper->hydrateObjects(Package::class, $data)->toArray()
 		);

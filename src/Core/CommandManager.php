@@ -119,7 +119,7 @@ class CommandManager implements MessageEmitter {
 
 	public function loadPermsetMappings(): void {
 		$query = $this->db->table(CmdPermSetMapping::getTable());
-		$this->permSetMappings = $query->orderByDesc($query->colFunc('LENGTH', 'source'))
+		$this->permSetMappings = $query->orderByDesc($query->raw($query->colFunc('LENGTH', 'source')))
 			->asObj(CmdPermSetMapping::class)
 			->toArray();
 	}
@@ -325,7 +325,6 @@ class CommandManager implements MessageEmitter {
 			$query->where('cmd', $cmd);
 		}
 
-		/** @var Collection<CmdCfg> */
 		$data = $query->asObj(CmdCfg::class);
 		if ($data->isEmpty()) {
 			return 0;
@@ -367,14 +366,14 @@ class CommandManager implements MessageEmitter {
 			->exists();
 	}
 
-	/** @return Collection<CmdPermissionSet> */
+	/** @return Collection<int,CmdPermissionSet> */
 	public function getPermissionSets(): Collection {
 		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(CmdPermissionSet::class);
 		return $permSets;
 	}
 
-	/** @return Collection<ExtCmdPermissionSet> */
+	/** @return Collection<int,ExtCmdPermissionSet> */
 	public function getExtPermissionSets(): Collection {
 		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(ExtCmdPermissionSet::class);
@@ -386,18 +385,18 @@ class CommandManager implements MessageEmitter {
 		return $permSets;
 	}
 
-	/** @return Collection<CmdPermSetMapping> */
+	/** @return Collection<int,CmdPermSetMapping> */
 	public function getPermSetMappings(): Collection {
 		return new Collection($this->permSetMappings);
 	}
 
-	/** @return Collection<CmdCfg> */
+	/** @return Collection<int,CmdCfg> */
 	public function getAll(bool $includeSubcommands=false): Collection {
+		/** @var Collection<string,Collection<int,CmdPermission>> */
 		$permissions = $this->db->table(CmdPermission::getTable())
 			->asObj(CmdPermission::class)
 			->groupBy('cmd');
 
-		/** @var Collection<CmdCfg> */
 		$data = $this->db->table(CmdCfg::getTable())
 			->whereIn('cmdevent', $includeSubcommands ? ['cmd', 'subcmd'] : ['cmd'])
 			->asObj(CmdCfg::class)
@@ -408,13 +407,13 @@ class CommandManager implements MessageEmitter {
 		return $data;
 	}
 
-	/** @return Collection<CmdCfg> */
+	/** @return Collection<int,CmdCfg> */
 	public function getAllForModule(string $module, bool $includeSubcommands=false): Collection {
+		/** @var Collection<string,Collection<int,CmdPermission>> */
 		$permissions = $this->db->table(CmdPermission::getTable())
 			->asObj(CmdPermission::class)
 			->groupBy('cmd');
 
-		/** @var Collection<CmdCfg> */
 		$data = $this->db->table(CmdCfg::getTable())
 			->whereIn('cmdevent', $includeSubcommands ? ['cmd', 'subcmd'] : ['cmd'])
 			->where('module', $module)
@@ -482,7 +481,6 @@ class CommandManager implements MessageEmitter {
 			$permissionQuery->where('permission_set', $permissionSet);
 		}
 
-		/** @var Collection<CmdPermission> */
 		$permissions = $permissionQuery->asObj(CmdPermission::class);
 		foreach ($permissions as $permission) {
 			if ($this->accessManager->checkAccess($sender, $permission->access_level)) {
@@ -906,9 +904,9 @@ class CommandManager implements MessageEmitter {
 	}
 
 	/**
-	 * @param Collection<ReflectionMethod> $methods
+	 * @param Collection<int,ReflectionMethod> $methods
 	 *
-	 * @return Collection<ReflectionMethod[]>
+	 * @return Collection<int,ReflectionMethod[]>
 	 */
 	public function groupRefMethods(Collection $methods): Collection {
 		$lookup = [];
@@ -947,7 +945,7 @@ class CommandManager implements MessageEmitter {
 		$prologues = [];
 		$epilogues = [];
 
-		/** @var Collection<ReflectionMethod> */
+		/** @var Collection<int,ReflectionMethod> */
 		$methods = new Collection();
 		foreach (explode(',', $cmds) as $handler) {
 			$methods->push($this->getRefMethodForHandler($handler));
@@ -971,7 +969,7 @@ class CommandManager implements MessageEmitter {
 
 		/** @var string $cmdName */
 		foreach ($groupedByCmd as $cmdName => $refGroups) {
-			/** @var Collection<ReflectionMethod[]> $refGroups */
+			/** @var Collection<int,ReflectionMethod[]> $refGroups */
 			$header = "<header2>'{$cmdName}' command".
 				((count($refGroups) > 1 || count($refGroups[0]) > 1) ? 's' : '');
 			if ($showRights) {
@@ -1531,7 +1529,7 @@ class CommandManager implements MessageEmitter {
 		return [trim($result[0]), isset($result[1]) ? trim($result[1]) : null];
 	}
 
-	/** @return Collection<ReflectionMethod> */
+	/** @return Collection<int,ReflectionMethod> */
 	protected function findGroupMembers(string $groupName): Collection {
 		$objs = Registry::getAllInstances();
 		$ms = new Collection();
@@ -1584,9 +1582,9 @@ class CommandManager implements MessageEmitter {
 	}
 
 	/**
-	 * @param Collection<ReflectionMethod[]> $list
+	 * @param Collection<int,ReflectionMethod[]> $list
 	 *
-	 * @return Collection<ReflectionMethod[]>
+	 * @return Collection<int,ReflectionMethod[]>
 	 */
 	protected function groupBySubcmd(Collection $list): Collection {
 		/**
@@ -1600,8 +1598,12 @@ class CommandManager implements MessageEmitter {
 				?: $refMethods1[0]->getStartLine() <=> $refMethods2[0]->getStartLine();
 		});
 
-		/** @param ReflectionMethod[] $refMethods */
-		return $sList->groupBy(static function (array $refMethods): string {
+		/**
+		 * @param ReflectionMethod[] $refMethods
+		 *
+		 * @var Collection<int,ReflectionMethod[]> $grouped
+		 */
+		$grouped = $sList->groupBy(static function (array $refMethods): string {
 			if (empty($refMethods)) {
 				return '';
 			}
@@ -1614,6 +1616,7 @@ class CommandManager implements MessageEmitter {
 			$handlesCmd = $attrs[0]->newInstance();
 			return $handlesCmd->command;
 		});
+		return $grouped;
 	}
 
 	protected function getParamRegexp(ReflectionParameter $param, string $comment): ?CommandRegexp {

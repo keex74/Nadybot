@@ -89,7 +89,7 @@ class NewsController extends ModuleInstance {
 	#[NCA\Logger]
 	private LoggerInterface $logger;
 
-	/** @return Collection<INews> */
+	/** @return Collection<int,INews> */
 	public function getNewsItems(string $player): Collection {
 		if ($this->newsConfirmedForAllAlts) {
 			$player = $this->altsController->getMainOf($player);

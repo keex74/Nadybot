@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\DEV_MODULE;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -51,7 +50,6 @@ class SilenceController extends ModuleInstance {
 	/** Get a list of all commands that have been silenced */
 	#[NCA\HandlesCommand('silence')]
 	public function silenceCommand(CmdContext $context): void {
-		/** @var Collection<SilenceCmd> */
 		$data = $this->db->table(SilenceCmd::getTable())
 			->orderBy('cmd')
 			->orderBy('channel')

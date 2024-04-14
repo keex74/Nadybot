@@ -223,10 +223,8 @@ class SymbiantController extends ModuleInstance {
 		foreach ($bySlot as $slotName => $slotSymbs) {
 			$lines = ["<tab><highlight>{$slotName}<end>"];
 
-			/** @var Collection<Symbiant> $slotSymbs */
 			$byUnit = $slotSymbs->groupBy('Unit');
 			foreach ($byUnit as $unitName => $unitSymbs) {
-				/** @var Collection<Symbiant> $unitSymbs */
 				if (empty($unitName)) {
 					$lines = array_merge(
 						$lines,

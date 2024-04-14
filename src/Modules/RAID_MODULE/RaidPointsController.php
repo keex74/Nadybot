@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\RAID_MODULE;
 
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -671,7 +670,6 @@ class RaidPointsController extends ModuleInstance {
 	/** See a list of pre-defined raid rewards */
 	#[NCA\HandlesCommand('reward')]
 	public function rewardListCommand(CmdContext $context): void {
-		/** @var Collection<RaidReward> */
 		$rewards = $this->db->table(RaidReward::getTable())
 			->orderBy('name')
 			->asObj(RaidReward::class);

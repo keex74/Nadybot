@@ -243,7 +243,7 @@ class FindOrgController extends ModuleInstance {
 		$this->logger->info('Finished downloading orglists');
 	}
 
-	/** @return Collection<Organization> */
+	/** @return Collection<int,Organization> */
 	public function getOrgsByName(string ...$names): Collection {
 		if (empty($names)) {
 			return new Collection();
@@ -253,7 +253,7 @@ class FindOrgController extends ModuleInstance {
 			->asObj(Organization::class);
 	}
 
-	/** @return Collection<Organization> */
+	/** @return Collection<int,Organization> */
 	public function getOrgsById(int ...$ids): Collection {
 		if (empty($ids)) {
 			return new Collection();

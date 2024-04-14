@@ -8,10 +8,10 @@ use Nadybot\Core\DBTable;
 
 #[Table(name: 'spawntime', shared: Shared::Yes)]
 class Spawntime extends DBTable {
-	/** @var Collection<Whereis> */
+	/** @var Collection<int,Whereis> */
 	#[Ignore] public Collection $coordinates;
 
-	/** @param ?Collection<Whereis> $coordinates */
+	/** @param ?Collection<int,Whereis> $coordinates */
 	public function __construct(
 		#[PK] public string $mob,
 		public ?string $alias=null,

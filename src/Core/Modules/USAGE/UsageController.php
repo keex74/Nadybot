@@ -101,8 +101,8 @@ class UsageController extends ModuleInstance {
 			->where('dt', '>', $time)
 			->groupBy('command')
 			->select('command');
-		$query->orderByRaw($query->colFunc('COUNT', 'command')->getValue())
-			->selectRaw($query->colFunc('COUNT', 'command', 'count')->getValue());
+		$query->orderByRaw($query->colFunc('COUNT', 'command'))
+			->selectRaw($query->colFunc('COUNT', 'command', 'count'));
 		$data = $query->asObj(CommandUsageStats::class);
 		$count = $data->count();
 
@@ -147,7 +147,7 @@ class UsageController extends ModuleInstance {
 			->where('dt', '>', $time)
 			->groupBy('sender');
 		$query->orderByColFunc('COUNT', 'sender', 'desc')
-			->select('sender', $query->colFunc('COUNT', 'command', 'count'));
+			->select('sender', ${$query}->raw($query->colFunc('COUNT', 'command', 'count')));
 		$data = $query->asObj(PlayerUsageStats::class)->toArray();
 		$count = count($data);
 
@@ -199,7 +199,7 @@ class UsageController extends ModuleInstance {
 			->groupBy('type')
 			->orderBy('type')
 			->select('type AS channel');
-		$query->selectRaw($query->colFunc('COUNT', 'type', 'count')->getValue());
+		$query->selectRaw($query->colFunc('COUNT', 'type', 'count'));
 
 		/** @var ChannelUsageStats[] */
 		$data = $query->asObj(ChannelUsageStats::class)->toArray();
@@ -217,7 +217,7 @@ class UsageController extends ModuleInstance {
 			->orderByColFunc('COUNT', 'command', 'desc')
 			->limit($limit)
 			->select('command');
-		$query->selectRaw($query->colFunc('COUNT', 'command', 'count')->getValue());
+		$query->selectRaw($query->colFunc('COUNT', 'command', 'count'));
 
 		/** @var CommandUsageStats[] */
 		$data = $query->asObj(CommandUsageStats::class)->toArray();
@@ -236,7 +236,7 @@ class UsageController extends ModuleInstance {
 			->orderByColFunc('COUNT', 'sender', 'desc')
 			->limit($limit)
 			->select('sender');
-		$query->selectRaw($query->colFunc('COUNT', 'sender', 'count')->getValue());
+		$query->selectRaw($query->colFunc('COUNT', 'sender', 'count'));
 
 		/** @var PlayerUsageStats[] */
 		$data = $query->asObj(PlayerUsageStats::class)->toArray();
@@ -283,7 +283,7 @@ class UsageController extends ModuleInstance {
 			->where('dt', '<', time())
 			->groupBy('command')
 			->select('command');
-		$query->selectRaw($query->rawFunc('COUNT', '*', 'count')->getValue());
+		$query->selectRaw($query->rawFunc('COUNT', '*', 'count'));
 		$commands = $query->asObj(CommandUsageStats::class)
 			->reduce(static function (stdClass $carry, CommandUsageStats $entry) {
 				$carry->{$entry->command} = $entry->count;
@@ -368,7 +368,6 @@ class UsageController extends ModuleInstance {
 		)
 	]
 	public function usageNewsTile(string $sender): ?string {
-		/** @var Collection<string> */
 		$commands = $this->db->table(Usage::getTable())
 			->where('sender', $sender)
 			->where('dt', '>', time() - 7*24*3_600)
