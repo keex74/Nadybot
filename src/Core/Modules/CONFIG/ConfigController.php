@@ -871,10 +871,13 @@ class ConfigController extends ModuleInstance {
 		$commands = $this->commandManager->getAll()
 			->groupBy('module');
 		$result = [];
+
 		foreach ($modules as $module => $dummy) {
 			$row = $data->get($module);
 
-			$moduleCmds = $commands->get($module, new Collection());
+			/** @var Collection<int,CmdCfg> */
+			$dummy = new Collection();
+			$moduleCmds = $commands->get($module, $dummy);
 			if ($moduleCmds->isEmpty() && !isset($row)) {
 				continue;
 			}
@@ -895,9 +898,9 @@ class ConfigController extends ModuleInstance {
 				description: $this->getModuleDescription($module),
 				num_commands_enabled: $num_commands_enabled,
 				num_commands_disabled: $num_commands_disabled,
-				num_events_disabled: isset($row) ? (int)$row->count_events_disabled : 0,
-				num_events_enabled: isset($row) ? (int)$row->count_events_enabled : 0,
-				num_settings: isset($row) ? (int)$row->count_settings : 0,
+				num_events_disabled: isset($row) ? $row->count_events_disabled : 0,
+				num_events_enabled: isset($row) ? $row->count_events_enabled : 0,
+				num_settings: isset($row) ? $row->count_settings : 0,
 			);
 		}
 		return $result;

@@ -953,9 +953,9 @@ class LootController extends ModuleInstance {
 			->groupBy('name');
 		$data->each(static function (RaidLoot $loot) use ($itemsByBame): void {
 			$loot->item = $itemsByBame->get($loot->name)
-				->where('lowql', '<=', $loot->ql)
-				->where('highql', '>=', $loot->ql)
-				->first();
+				?->where('lowql', '<=', $loot->ql)
+				?->where('highql', '>=', $loot->ql)
+				?->first();
 		});
 
 		foreach ($data as $row) {
@@ -1064,6 +1064,8 @@ class LootController extends ModuleInstance {
 				if (!isset($item->winner)) {
 					continue;
 				}
+
+				/** @psalm-suppress PossiblyNullPropertyFetch,PossiblyNullPropertyAssignment */
 				$compressedList->last()->winners []= $item->winner;
 				continue;
 			}

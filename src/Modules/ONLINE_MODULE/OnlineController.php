@@ -273,6 +273,8 @@ class OnlineController extends ModuleInstance {
 	): void {
 		$masks = new Collection($this->getHiddenPlayerMasks());
 		$masks = $masks->sortBy('mask');
+
+		/** @var Collection<int,string> */
 		$blobs = new Collection();
 		foreach ($masks as $mask) {
 			$delLink = Text::makeChatcmd('remove', "/tell <myname> online hide del {$mask->id}");

@@ -922,8 +922,9 @@ class CommandManager implements MessageEmitter {
 			$lookup[$headline] []= $m;
 		}
 
-		/** @psalm-suppress RedundantFunctionCall */
-		return new Collection(array_merge(array_values($lookup), array_values($empty)));
+		/** @var array<int,ReflectionMethod[]> */
+		$result = array_merge(array_values($lookup), $empty);
+		return new Collection($result);
 	}
 
 	/**
@@ -948,10 +949,14 @@ class CommandManager implements MessageEmitter {
 		/** @var Collection<int,ReflectionMethod> */
 		$methods = new Collection();
 		foreach (explode(',', $cmds) as $handler) {
-			$methods->push($this->getRefMethodForHandler($handler));
+			if (null !== ($method = $this->getRefMethodForHandler($handler))) {
+				$methods->push($method);
+			}
 		}
+
+		/** @var Collection<int, ReflectionMethod> */
 		$ms = new Collection();
-		foreach ($methods->filter() as $m) {
+		foreach ($methods as $m) {
 			foreach ($m->getAttributes(NCA\Help\Group::class) as $attr) {
 				/** @var NCA\Help\Group */
 				$attrObj = $attr->newInstance();
@@ -1532,6 +1537,8 @@ class CommandManager implements MessageEmitter {
 	/** @return Collection<int,ReflectionMethod> */
 	protected function findGroupMembers(string $groupName): Collection {
 		$objs = Registry::getAllInstances();
+
+		/** @var Collection<int,ReflectionMethod> */
 		$ms = new Collection();
 		foreach ($objs as $obj) {
 			$refObj = new ReflectionClass($obj);

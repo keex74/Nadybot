@@ -119,12 +119,12 @@ class NewsController extends ModuleInstance {
 		if ($news->count() === 0) {
 			return null;
 		}
-		$latestNews = null;
+		$latestNews = $news->firstOrFail();
 		$msg = '';
 		$blob = '';
 		$sticky = '';
 		foreach ($news as $item) {
-			if ($latestNews === null || $item->time > $latestNews->time) {
+			if ($item->time > $latestNews->time) {
 				$latestNews = $item;
 			}
 			if ($sticky !== '') {

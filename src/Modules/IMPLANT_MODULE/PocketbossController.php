@@ -117,7 +117,7 @@ class PocketbossController extends ModuleInstance {
 
 		$pb =$query->asObj(Pocketboss::class);
 		return $pb->groupBy('pb')
-			->map(static fn (Collection $col): Pocketboss => $col->first())
+			->map(static fn (Collection $col): Pocketboss => $col->firstOrFail())
 			->values()
 			->toArray();
 	}

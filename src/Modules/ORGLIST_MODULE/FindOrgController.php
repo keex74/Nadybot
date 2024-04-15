@@ -141,7 +141,7 @@ class FindOrgController extends ModuleInstance {
 			return strcasecmp($org->name, $search) === 0;
 		});
 		if ($exactMatches->count() === 1) {
-			return [$exactMatches->first()];
+			return [$exactMatches->firstOrFail()];
 		}
 		return $orgs->toArray();
 	}

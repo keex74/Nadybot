@@ -268,7 +268,7 @@ class EventsController extends ModuleInstance {
 		$upcomingEvents = '';
 		$pastEvents = '';
 		foreach ($data as $row) {
-			if ($row->event_attendees == '') {
+			if (!isset($row->event_attendees) || $row->event_attendees === '') {
 				$attendance = 0;
 			} else {
 				$attendance = count(explode(',', $row->event_attendees));

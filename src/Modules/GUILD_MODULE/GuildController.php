@@ -279,7 +279,7 @@ class GuildController extends ModuleInstance {
 			if (in_array($row->name, $onlineAlts)) {
 				// skip
 				continue;
-			} elseif ($row->logged_off == 0) {
+			} elseif (!isset($row->logged_off) || $row->logged_off === 0) {
 				$blob .= "<highlight>{$row->name}<end> has never logged on.\n";
 			} else {
 				$blob .= "<highlight>{$row->name}<end> last seen at " . Util::date($row->logged_off) . ".\n";
@@ -538,7 +538,7 @@ class GuildController extends ModuleInstance {
 			return "\n<tab>{$percentage} % <highlight>{$key}<end>: {$count} ".
 				Text::pluralize('member', $count).
 				', level ' . $players->min('level') . ' / <highlight>'.
-				round($players->avg('level'), 0) . '<end> / '.
+				round(($players->avg('level') ?? 0), 0) . '<end> / '.
 				$players->max('level');
 		};
 		$tlFunc = static function (Player $p): string {
@@ -552,7 +552,7 @@ class GuildController extends ModuleInstance {
 		}
 		$blob .= '<tab><highlight>Members<end>: ' . $members->count() . "\n".
 			'<tab><highlight>Min level<end>: ' . $members->min('level') . "\n".
-			'<tab><highlight>Avg level<end>: ' . round($members->avg('level'), 0) . "\n".
+			'<tab><highlight>Avg level<end>: ' . round(($members->avg('level') ?? 0), 0) . "\n".
 			'<tab><highlight>Max level<end>: ' . $members->max('level') . "\n\n".
 			'<header2>Numbers by breed<end>'.
 			$members->sortBy('breed')->groupBy('breed')

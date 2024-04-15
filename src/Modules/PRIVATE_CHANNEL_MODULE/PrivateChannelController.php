@@ -778,7 +778,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		/** @var Collection<int,OrgCount> */
 		$orgStats = $byOrg->map(static function (Collection $chars, string $orgName): OrgCount {
 			return new OrgCount(
-				avgLevel: $chars->avg('level'),
+				avgLevel: $chars->avg('level') ?? 0,
 				numPlayers: $chars->count(),
 				orgName: strlen($orgName) ? $orgName : null,
 			);

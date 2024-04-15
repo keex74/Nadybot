@@ -148,6 +148,8 @@ class ColorsController extends ModuleInstance {
 		PFilename $themeName
 	): void {
 		$paths = explode(':', $this->themePath);
+
+		/** @var Collection<int,string> */
 		$files = new Collection();
 		foreach ($paths as $path) {
 			$fileList = $this->fs->listFiles(__DIR__ . '/' . $path);
@@ -175,6 +177,8 @@ class ColorsController extends ModuleInstance {
 	/** @return Theme[] */
 	public function getThemeList(): array {
 		$paths = explode(':', $this->themePath);
+
+		/** @var Collection<int,Theme> */
 		$themes = new Collection();
 		foreach ($paths as $path) {
 			$fileList = $this->fs->listFiles(__DIR__ . '/' . $path);
@@ -182,9 +186,10 @@ class ColorsController extends ModuleInstance {
 				if (!str_ends_with($fileName, '.json')) {
 					continue;
 				}
-				$themes->push(
-					$this->loadTheme(__DIR__ . "/{$path}/{$fileName}")
-				);
+				$theme = $this->loadTheme(__DIR__ . "/{$path}/{$fileName}");
+				if (isset($theme)) {
+					$themes->push($theme);
+				}
 			}
 		}
 		$themes = $themes->filter()->sortBy('name')->values();

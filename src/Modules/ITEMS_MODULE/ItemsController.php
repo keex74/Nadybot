@@ -330,12 +330,15 @@ class ItemsController extends ModuleInstance {
 		});
 		$groups = $data->groupBy('group_id');
 		$groupsProcessed = [];
+
+		/** @var Collection<int,ItemSearchResult> */
 		$result = new Collection();
 		while (count($result) < $this->maxitems && $data->count() > 0) {
 			/** @var ItemSearchResult */
 			$nextItem = $data->shift(1);
 			if (!isset($nextItem->group_id) || !isset($groupsProcessed[$nextItem->group_id])) {
 				if (isset($nextItem->group_id)) {
+					/** @psalm-suppress PossiblyNullReference */
 					$result->push(...$groups->get($nextItem->group_id)->toArray());
 					$groupsProcessed[$nextItem->group_id] = true;
 				} else {
@@ -715,13 +718,6 @@ class ItemsController extends ModuleInstance {
 		// between Bow and Bow special attack
 		$query = $this->db->table(Skill::getTable());
 
-		/**
-		 * @psalm-suppress ImplicitToStringCast
-		 *
-		 * @phpstan-ignore-next-line
-		 *
-		 * @var Collection<Skill>
-		 */
 		$results = $query->where($query->raw($query->colFunc('LOWER', 'name')), strtolower($skillName))
 			->select('*')->distinct()
 			->asObj(Skill::class);
@@ -749,12 +745,17 @@ class ItemsController extends ModuleInstance {
 		$buffs = $buffs->groupBy('item_id')
 			->map(static function (Collection $iBuffs, int $itemId) use ($skills): array {
 				return $iBuffs->map(static function (ItemBuff $buff) use ($skills): ExtBuff {
+					if (null === ($skill = $skills->get($buff->attribute_id))) {
+						throw new \Exception("Unknown skill {$buff->attribute_id} encountered");
+					}
 					return new ExtBuff(
-						skill: $skills->get($buff->attribute_id),
+						skill: $skill,
 						amount: $buff->amount,
 					);
 				})->toArray();
 			});
+
+		/** @var Collection<int,ItemWithBuffs> */
 		$result = new Collection();
 		foreach ($items as $item) {
 			$new = ItemWithBuffs::fromEntry($item);

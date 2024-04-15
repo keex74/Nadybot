@@ -636,6 +636,8 @@ class DB {
 
 	public function createDatabaseSchema(): void {
 		$instances = Registry::getAllInstances();
+
+		/** @var Collection<int,CoreMigration> */
 		$migrations = new Collection();
 		foreach ($instances as $instance) {
 			$migrations = $migrations->merge($this->getMigrationFiles($instance));
@@ -858,6 +860,7 @@ class DB {
 
 	/** @return Collection<int,CoreMigration> */
 	private function getMigrationFiles(object $instance): Collection {
+		/** @var Collection<int,CoreMigration> */
 		$migrations = new Collection();
 		$ref = new ReflectionClass($instance);
 		$attrs = $ref->getAttributes(NCA\HasMigrations::class);

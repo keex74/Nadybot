@@ -35,7 +35,9 @@ class QueryBuilder extends Builder {
 	 * @return Collection<int,T>
 	 */
 	public function asObj(string $class): Collection {
-		return new Collection($this->fetchAll($class, $this->toSql(), ...$this->getBindings()));
+		/** @var T[] */
+		$result = $this->fetchAll($class, $this->toSql(), ...$this->getBindings());
+		return new Collection($result);
 	}
 
 	/**
@@ -104,16 +106,10 @@ class QueryBuilder extends Builder {
 	}
 
 	public function orWhereIlike(string $column, string $value): self {
-		/**
-		 * @psalm-suppress ImplicitToStringCast
-		 */
 		return $this->orWhere($this->raw($this->colFunc('LOWER', $column)), 'like', strtolower($value));
 	}
 
 	public function whereIlike(string $column, string $value, string $boolean='and'): self {
-		/**
-		 * @psalm-suppress ImplicitToStringCast
-		 */
 		return $this->where($this->raw($this->colFunc('LOWER', $column)), 'like', strtolower($value), $boolean);
 	}
 

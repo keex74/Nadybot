@@ -194,11 +194,11 @@ class WhatBuffsController extends ModuleInstance {
 				->asObj(Skill::class)
 				->keyBy('id');
 			$data = $perkBuffs->map(static function (int $buff, int $skillId) use ($skillsById): ?SkillBuffItemCount {
-				if ($skillsById->get($skillId) === null) {
+				if (($skill = $skillsById->get($skillId)) === null) {
 					return null;
 				}
 				$result = new SkillBuffItemCount(
-					skill: $skillsById->get($skillId)->name,
+					skill: $skill->name,
 					num: $buff,
 				);
 				return $result;
@@ -418,7 +418,7 @@ class WhatBuffsController extends ModuleInstance {
 			}
 
 			$data = $query->asObj(NanoBuffSearchResult::class);
-			if ($data->isNotEmpty() && $data->last()->amount < 0) {
+			if ($data->isNotEmpty() && $data->last()?->amount < 0) {
 				$data = $data->reverse();
 			}
 			$result = $this->formatBuffs($data->toArray(), $skill);
@@ -491,7 +491,7 @@ class WhatBuffsController extends ModuleInstance {
 				$item->multi_m = $specials->multi_m;
 				$item->multi_r = $specials->multi_r;
 			});
-			if ($data->isNotEmpty() && $data->last()->amount < 0) {
+			if ($data->isNotEmpty() && $data->last()?->amount < 0) {
 				$data = $data->reverse();
 			}
 			$result = $this->formatItems($data->toArray(), $skill, $category);

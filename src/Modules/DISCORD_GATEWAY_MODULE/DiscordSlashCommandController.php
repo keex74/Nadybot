@@ -463,10 +463,11 @@ class DiscordSlashCommandController extends ModuleInstance {
 			->keyBy('cmd');
 		$cfgs->where('cmdevent', 'subcmd')
 			->each(static function (CmdCfg $cfg) use ($mains): void {
-				if (!$mains->has($cfg->dependson)) {
+				$search = $mains->get($cfg->dependson);
+				if (!isset($search)) {
 					return;
 				}
-				$mains->get($cfg->dependson)->file .= ",{$cfg->file}";
+				$search->file .= ",{$cfg->file}";
 			});
 		return $mains->toArray();
 	}
@@ -579,6 +580,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 	private function getNumChangedSlashCommands(Collection $live, Collection $set): int {
 		$live = $live->keyBy('name');
 		$changedOrNewCommands = $set->filter(static function (ApplicationCommand $cmd) use ($live): bool {
+			/** @psalm-suppress PossiblyNullArgument */
 			return !$live->has($cmd->name)
 				|| !$cmd->isSameAs($live->get($cmd->name));
 		})->values();

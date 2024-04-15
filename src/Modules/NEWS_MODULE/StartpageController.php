@@ -179,7 +179,7 @@ class StartpageController extends ModuleInstance {
 			return !isset($this->tiles[$tileName]);
 		});
 		if ($invalid->isNotEmpty()) {
-			throw new InvalidTileException($invalid->first() . ' is not a valid tile.');
+			throw new InvalidTileException($invalid->firstOrFail() . ' is not a valid tile.');
 		}
 		return $this->settingManager->save('startpage_layout', $coll->flatten()->join(';'));
 	}

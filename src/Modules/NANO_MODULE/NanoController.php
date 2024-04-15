@@ -434,8 +434,10 @@ class NanoController extends ModuleInstance {
 				$nanos[$key] ??= $nano;
 				return $nanos;
 			}, []);
-		$nanos = array_values($nanos);
-		return new Collection($nanos);
+
+		/** @var Nano[] */
+		$bestNanos = array_values($nanos);
+		return new Collection($bestNanos);
 	}
 
 	/** @param Collection<int,Nano> $nanos */

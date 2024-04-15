@@ -134,7 +134,7 @@ class BankController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$blob = '<header2>Items in ' . $data[0]->container . "<end>\n";
+		$blob = '<header2>Items in ' . ($data[0]->container ?? 'Bag') . "<end>\n";
 		foreach ($data as $row) {
 			/** @var Bank $row */
 			$itemLink = $row->getLink();

@@ -264,7 +264,7 @@ class MobController extends ModuleInstance {
 		if (isset($type)) {
 			/** @var Collection<string,Collection<int,Mob>> */
 			$factions = new Collection([$type => $factions->get($type)]);
-			if ($factions->get($type)->isEmpty()) {
+			if ($factions->get($type, new Collection())->isEmpty()) {
 				$context->reply("There is currently no data for any {$type} hags. Maybe the API is down.");
 				return;
 			}
@@ -315,7 +315,7 @@ class MobController extends ModuleInstance {
 		if (isset($type)) {
 			/** @var Collection<string,Collection<int,Mob>> */
 			$factions = new Collection([$type => $factions->get($type)]);
-			if ($factions->get($type)->isEmpty()) {
+			if ($factions->get($type, new Collection())->isEmpty()) {
 				$context->reply("There is currently no data for any {$type} Dreadloch camp. Maybe the API is down.");
 				return;
 			}

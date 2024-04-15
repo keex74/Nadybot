@@ -92,6 +92,7 @@ class MessageHubController extends ModuleInstance {
 			->orderBy('id')
 			->asObj(RouteModifier::class)
 			->each(static function (RouteModifier $mod) use ($arguments): void {
+				assert(isset($mod->id));
 				$mod->arguments = $arguments->get($mod->id, new Collection())->toArray();
 			})
 			->groupBy('route_id');
@@ -99,6 +100,7 @@ class MessageHubController extends ModuleInstance {
 			->orderBy('id')
 			->asObj(Route::class)
 			->each(function (Route $route) use ($modifiers): void {
+				assert(isset($route->id));
 				$route->modifiers = $modifiers->get($route->id, new Collection())->toArray();
 				try {
 					$msgRoute = $this->messageHub->createMessageRoute($route);

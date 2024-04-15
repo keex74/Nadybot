@@ -919,23 +919,27 @@ class AttacksController extends ModuleInstance {
 	 *
 	 * @return Collection<string,Collection<int,DBTowerAttack>>
 	 */
-	private function groupAttackList(DBTowerAttack ...$attacks): Collection {
+	private function groupAttackList(DBTowerAttack ...$towerAttacks): Collection {
 		/** @var Collection<int,DBTowerAttack> */
-		$attacks = (new Collection($attacks))->sortByDesc('timestamp');
+		$attacks = (new Collection($towerAttacks))->sortByDesc('timestamp');
+		$firstAttack = $attacks->first();
+		$lastAttack = $attacks->last();
 
-		/**
-		 * A hash with site/owner key and a list of outcomes for this combination
-		 *
-		 * @var array<string,DBOutcome[]>
-		 */
-		$outcomes = $this->db->table(DBOutcome::getTable())
-			->where('timestamp', '>', $attacks->last()->timestamp)
-			->where('timestamp', '<', $attacks->first()->timestamp)
-			->orderByDesc('timestamp')
-			->asObj(DBOutcome::class)
-			->groupBy(static function (DBOutcome $outcome): string {
-				return "{$outcome->losing_org}:{$outcome->playfield->value}:{$outcome->site_id}";
-			})->toArray();
+		/** @var array<string,DBOutcome[]> $outcomes */
+		$outcomes = [];
+		if (isset($firstAttack) && isset($lastAttack)) {
+			/** A hash with site/owner key and a list of outcomes for this combination */
+			$outcomes = $this->db->table(DBOutcome::getTable())
+				->where('timestamp', '>', $lastAttack->timestamp)
+				->where('timestamp', '<', $firstAttack->timestamp)
+				->orderByDesc('timestamp')
+				->asObj(DBOutcome::class)
+				->groupBy(static function (DBOutcome $outcome): string {
+					return "{$outcome->losing_org}:{$outcome->playfield->value}:{$outcome->site_id}";
+				})->toArray();
+
+			/** @var array<string,DBOutcome[]> $outcomes */
+		}
 
 		/**
 		 * A hash with site/owner key and a list of attacks for this combination
@@ -951,7 +955,6 @@ class AttacksController extends ModuleInstance {
 			}, []);
 		$lookup = [];
 		foreach ($groups as $key => $gAttacks) {
-			/** @var DBOutcome[] */
 			$keyOutcomes = $outcomes[$key] ?? [];
 			$lastAttack = null;
 			$id = 0;

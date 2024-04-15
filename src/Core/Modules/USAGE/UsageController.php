@@ -315,7 +315,7 @@ class UsageController extends ModuleInstance {
 				->orderBy('relay_id')->orderByDesc('id')->asObj(RelayLayer::class)
 				->groupBy('relay_id')
 				->map(static function (Collection $group): string {
-					return $group->first()->layer;
+					return $group->firstOrFail()->layer;
 				})->flatten()->unique()->toArray(),
 			aodb_db_version        : $this->settingManager->getString('aodb_db_version')??'unknown',
 			max_blob_size          : $this->settingManager->getInt('max_blob_size')??0,
