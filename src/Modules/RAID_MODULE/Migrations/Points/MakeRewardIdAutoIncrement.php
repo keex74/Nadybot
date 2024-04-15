@@ -13,10 +13,7 @@ class MakeRewardIdAutoIncrement implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = RaidReward::getTable();
 		$db->schema()->table($table, static function (Blueprint $table): void {
-			$table->dropPrimary();
-		});
-		$db->schema()->table($table, static function (Blueprint $table): void {
-			$table->integer('id')->autoIncrement()->change();
+			$table->id('id')->change();
 		});
 	}
 }
