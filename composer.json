@@ -56,7 +56,8 @@
 		"amphp/byte-stream": "^2.1",
 		"amphp/parallel": "^2.2",
 		"amphp/http-server": "^3.3.0",
-		"amphp/websocket-server": "^4.0.0"
+		"amphp/websocket-server": "^4.0.0",
+		"doctrine/dbal": "^3"
 	},
 	"repositories": [
 		{
