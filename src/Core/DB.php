@@ -471,7 +471,6 @@ class DB {
 			}
 			$data[$colName] = $prop->getValue($row);
 			if (count($attrs = $prop->getAttributes(NCA\DB\MapWrite::class))) {
-				/** @var NCA\DB\MapWrite */
 				$mapper = $attrs[0]->newInstance();
 				$data[$colName] = $mapper->map($data[$colName]);
 			} elseif ($data[$colName] instanceof DateTimeInterface) {
@@ -519,7 +518,7 @@ class DB {
 			}
 			$data[$colName] = $prop->getValue($row);
 			if (count($attrs = $prop->getAttributes(NCA\DB\MapWrite::class))) {
-				/** @var NCA\DB\MapWrite */
+				/** DB\MapWrite */
 				$mapper = $attrs[0]->newInstance();
 				$data[$colName] = $mapper->map($data[$colName]);
 			} elseif ($data[$colName] instanceof DateTimeInterface) {
@@ -570,7 +569,6 @@ class DB {
 			$propNames[$colName] = $prop->name;
 			$updates[$colName] = $prop->getValue($row);
 			if (count($attrs = $prop->getAttributes(NCA\DB\MapWrite::class))) {
-				/** @var NCA\DB\MapWrite */
 				$mapper = $attrs[0]->newInstance();
 				$updates[$colName] = $mapper->map($updates[$colName]);
 			} elseif ($updates[$colName] instanceof DateTimeInterface) {

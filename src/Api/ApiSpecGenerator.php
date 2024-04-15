@@ -14,7 +14,6 @@ use Nadybot\Core\{
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
-use ReflectionParameter;
 use ReflectionProperty;
 
 use ReflectionUnionType;
@@ -52,7 +51,6 @@ class ApiSpecGenerator {
 				continue;
 			}
 
-			/** @var NCA\Instance */
 			$instanceObj = $instanceAttrs[0]->newInstance();
 			$name = $instanceObj->name ?? Registry::formatName($className);
 			$instances[$name] = $className;
@@ -73,10 +71,8 @@ class ApiSpecGenerator {
 					continue;
 				}
 
-				/** @var NCA\Api */
 				$apiAttr = $apiAttrs[0]->newInstance();
 
-				/** @var ReflectionParameter[] $params */
 				$params = array_slice($method->getParameters(), 2);
 				$path = preg_replace_callback(
 					'/%[ds]/',
@@ -324,7 +320,6 @@ class ApiSpecGenerator {
 		}
 		$qParamAttrs = $method->getAttributes(NCA\QueryParam::class);
 		foreach ($qParamAttrs as $qParamAttr) {
-			/** @var NCA\QueryParam */
 			$qParam = $qParamAttr->newInstance();
 			$result []= [
 				'name' => $qParam->name,
@@ -365,16 +360,12 @@ class ApiSpecGenerator {
 		foreach ($method->getAttributes() as $attr) {
 			$attr = $attr->newInstance();
 			if ($attr instanceof NCA\ApiResult) {
-				/** @var NCA\ApiResult $attr */
 				$doc->responses[$attr->code] = $attr;
 			} elseif ($attr instanceof NCA\ApiTag) {
-				/** @var NCA\ApiTag $attr */
 				$doc->tags []= $attr->tag;
 			} elseif ($attr instanceof NCA\RequestBody) {
-				/** @var NCA\RequestBody $attr */
 				$doc->requestBody = $attr;
 			} elseif ($attr instanceof NCA\VERB) {
-				/** @var NCA\VERB $attr */
 				$doc->methods []= strtolower(class_basename($attr));
 			}
 		}
@@ -489,7 +480,6 @@ class ApiSpecGenerator {
 		$description = $this->getDescriptionFromComment(is_string($docComment) ? $docComment : '');
 		$nameAttr = $refProperty->getAttributes(NCA\JSON\Name::class);
 		if (count($nameAttr) > 0) {
-			/** @var NCA\JSON\Name */
 			$nameObj = $nameAttr[0]->newInstance();
 			return [$nameObj->name, $this->getRegularNameAndType($refProperty)[1], $description];
 		}

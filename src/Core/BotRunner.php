@@ -492,7 +492,6 @@ class BotRunner {
 			foreach ($refObj->getProperties() as $refProp) {
 				foreach ($refProp->getAttributes(NCA\DefineSetting::class, ReflectionAttribute::IS_INSTANCEOF) as $refAttr) {
 					try {
-						/** @var NCA\DefineSetting */
 						$attr = $refAttr->newInstance();
 					} catch (\Throwable $e) {
 						$this->logger->error('Incompatible attribute #[{attrName}] in {loc}: {error}', [

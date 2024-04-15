@@ -394,7 +394,6 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 					continue;
 				}
 				foreach ($attrs as $attribute) {
-					/** @var NCA\HttpVerb */
 					$attrObj = $attribute->newInstance();
 					$closure = $method->getClosure($instance);
 					if (isset($closure)) {

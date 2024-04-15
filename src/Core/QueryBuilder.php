@@ -233,7 +233,6 @@ class QueryBuilder extends Builder {
 				$readMap = $refProp->getAttributes(NCA\DB\MapRead::class);
 				if (count($readMap)) {
 					foreach ($readMap as $mapper) {
-						/** @var NCA\DB\MapRead */
 						$mapper = $mapper->newInstance();
 						$row[$colName] = $mapper->map($values[$col]);
 					}

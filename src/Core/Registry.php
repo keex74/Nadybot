@@ -91,7 +91,6 @@ class Registry {
 			}
 			$injectAttrs = $property->getAttributes(NCA\Inject::class);
 			if (count($injectAttrs)) {
-				/** @var NCA\Inject */
 				$injectAttr = $injectAttrs[0]->newInstance();
 				$dependencyName = $injectAttr->instance;
 				if (!isset($dependencyName)) {
@@ -123,7 +122,6 @@ class Registry {
 
 			$loggerAttrs = $property->getAttributes(NCA\Logger::class);
 			if (count($loggerAttrs)) {
-				/** @var NCA\Logger */
 				$loggerAttr = $loggerAttrs[0]->newInstance();
 				if (isset($loggerAttr->tag)) {
 					$tag = $loggerAttr->tag;

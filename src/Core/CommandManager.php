@@ -519,7 +519,6 @@ class CommandManager implements MessageEmitter {
 			return false;
 		}
 		foreach ($handlesAttrs as $handlesAttr) {
-			/** @var NCA\HandlesCommand */
 			$handlesCmdObj = $handlesAttr->newInstance();
 			if ($handlesCmdObj instanceof NCA\HandlesAllCommands) {
 				return true;
@@ -958,7 +957,6 @@ class CommandManager implements MessageEmitter {
 		$ms = new Collection();
 		foreach ($methods as $m) {
 			foreach ($m->getAttributes(NCA\Help\Group::class) as $attr) {
-				/** @var NCA\Help\Group */
 				$attrObj = $attr->newInstance();
 				$ms->push(...$this->findGroupMembers($attrObj->group)->toArray());
 			}
@@ -990,12 +988,10 @@ class CommandManager implements MessageEmitter {
 			foreach ($refGroups as $refMethods) {
 				$parts []= $this->getHelpText($refMethods, $cmd);
 				if (count($prologue = $refMethods[0]->getAttributes(NCA\Help\Prologue::class)) > 0) {
-					/** @var NCA\Help\Prologue */
 					$prologue = $prologue[0]->newInstance();
 					$prologues []= $prologue->text;
 				}
 				if (count($epilogue = $refMethods[0]->getAttributes(NCA\Help\Epilogue::class)) > 0) {
-					/** @var NCA\Help\Epilogue */
 					$epilogue = $epilogue[0]->newInstance();
 					$epilogues []= $epilogue->text;
 				}
@@ -1056,7 +1052,6 @@ class CommandManager implements MessageEmitter {
 			$params = $m->getParameters();
 			$commandAttrs = $m->getAttributes(NCA\HandlesCommand::class);
 			for ($k = 0; $k < count($commandAttrs); $k++) {
-				/** @var NCA\HandlesCommand */
 				$commandObj = $commandAttrs[$k]->newInstance();
 				$commandName = explode(' ', $commandObj->command)[0];
 				$paramText = ["<symbol>{$commandName}"];
@@ -1086,7 +1081,6 @@ class CommandManager implements MessageEmitter {
 			}
 			$examples = $m->getAttributes(NCA\Help\Example::class);
 			foreach ($examples as $exAttr) {
-				/** @var NCA\Help\Example */
 				$example = $exAttr->newInstance();
 				$lines []= "<tab>-&gt; <highlight>{$example->command}<end>".
 					(isset($example->description) ? " - {$example->description}" : '');
@@ -1210,7 +1204,6 @@ class CommandManager implements MessageEmitter {
 		if (count($cmds)) {
 			$commands = [];
 			foreach ($cmds as $command) {
-				/** @var NCA\HandlesCommand */
 				$cmdObj = $command->newInstance();
 				$commands []= explode(' ', $cmdObj->command)[0];
 			}
@@ -1544,7 +1537,6 @@ class CommandManager implements MessageEmitter {
 			$refObj = new ReflectionClass($obj);
 			foreach ($refObj->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
 				foreach ($m->getAttributes(NCA\Help\Group::class) as $attr) {
-					/** @var NCA\Help\Group */
 					$attrObj = $attr->newInstance();
 					if ($attrObj->group === $groupName) {
 						$ms->push($m);
@@ -1561,7 +1553,6 @@ class CommandManager implements MessageEmitter {
 		}
 		$cmdAttrs = $m->getAttributes(NCA\HandlesCommand::class);
 		foreach ($cmdAttrs as $cmdAttr) {
-			/** @var NCA\HandlesCommand */
 			$handlesCommand = $cmdAttr->newInstance();
 			$cmd = explode(' ', $handlesCommand->command)[0];
 			if (isset($this->subcommandManager->subcommands[$cmd])) {
@@ -1619,7 +1610,6 @@ class CommandManager implements MessageEmitter {
 				return '';
 			}
 
-			/** @var NCA\HandlesCommand */
 			$handlesCmd = $attrs[0]->newInstance();
 			return $handlesCmd->command;
 		});

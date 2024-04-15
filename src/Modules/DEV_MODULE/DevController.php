@@ -150,7 +150,6 @@ class DevController extends ModuleInstance {
 					continue;
 				}
 
-				/** @var NCA\HandlesCommand */
 				$commandObj = $commands[0]->newInstance();
 				$command = $commandObj->command;
 				$command = explode(' ', $command)[0];

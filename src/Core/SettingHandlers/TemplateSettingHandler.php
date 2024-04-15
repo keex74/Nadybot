@@ -108,7 +108,6 @@ class TemplateSettingHandler extends SettingHandler {
 			$refObj = new ReflectionObject($instance);
 			foreach ($refObj->getProperties() as $refProp) {
 				foreach ($refProp->getAttributes(NCA\Setting\Template::class, ReflectionAttribute::IS_INSTANCEOF) as $refAttr) {
-					/** @var NCA\Setting\Template */
 					$attr = $refAttr->newInstance();
 					$attr->name ??= Nadybot::toSnakeCase($refProp->getName());
 					if ($attr->name === $this->row->name) {

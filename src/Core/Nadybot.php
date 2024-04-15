@@ -1441,7 +1441,6 @@ class Nadybot {
 		$reflection = new ReflectionClass($class);
 
 		foreach ($reflection->getAttributes(NCA\ProvidesEvent::class) as $eventAttr) {
-			/** @var NCA\ProvidesEvent */
 			$eventObj = $eventAttr->newInstance();
 			$this->eventManager->addEventType($eventObj->event, $eventObj->desc);
 		}
@@ -1454,7 +1453,6 @@ class Nadybot {
 		$reflection = new ReflectionClass($class);
 
 		foreach ($reflection->getAttributes(NCA\SettingHandler::class) as $settingAttr) {
-			/** @var NCA\SettingHandler */
 			$AttrObj = $settingAttr->newInstance();
 			$this->settingManager->registerSettingHandler($AttrObj->name, $class);
 		}
@@ -1489,7 +1487,6 @@ class Nadybot {
 				}
 			}
 			foreach ($method->getAttributes(NCA\HandlesCommand::class) as $command) {
-				/** @var NCA\HandlesCommand */
 				$command = $command->newInstance();
 				$commandName = $command->command;
 				$handlerName = "{$name}.{$method->name}:".$method->getStartLine();
@@ -1505,7 +1502,6 @@ class Nadybot {
 				}
 			}
 			foreach ($method->getAttributes(NCA\Event::class) as $eventAnnotation) {
-				/** @var NCA\Event */
 				$event = $eventAnnotation->newInstance();
 				foreach ((array)$event->name as $eventName) {
 					$this->eventManager->register(
@@ -1519,7 +1515,6 @@ class Nadybot {
 				}
 			}
 			foreach ($method->getAttributes(NCA\SettingChangeHandler::class) as $changeAnnotation) {
-				/** @var NCA\SettingChangeHandler */
 				$change = $changeAnnotation->newInstance();
 				$closure = $method->getClosure($obj);
 
@@ -1753,7 +1748,6 @@ class Nadybot {
 		$subcommands = [];
 		$reflection = new ReflectionClass($obj);
 		foreach ($reflection->getAttributes(NCA\DefineCommand::class) as $attribute) {
-			/** @var NCA\DefineCommand */
 			$attribute = $attribute->newInstance();
 			$command = $attribute->command;
 			$definition = new CmdDef(
@@ -1791,7 +1785,6 @@ class Nadybot {
 				continue;
 			}
 
-			/** @var NCA\DefineSetting */
 			$attribute = $attrs[0]->newInstance();
 			$attribute->name ??= self::toSnakeCase($property->getName());
 

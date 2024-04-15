@@ -454,7 +454,6 @@ class StartpageController extends ModuleInstance {
 		$className = $instance::class;
 		$funcName = "{$className}::" . $method->getName() . '()';
 
-		/** @var NCA\NewsTile */
 		$attrObj = $newsTileAttrs[0]->newInstance();
 		$name = $attrObj->name;
 		$closure = $method->getClosure($instance);

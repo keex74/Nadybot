@@ -227,7 +227,6 @@ class ClassLoader {
 
 			$overwrite = false;
 
-			/** @var NCA\Instance */
 			$instanceAttr = $instanceAnnos[0]->newInstance();
 			if ($instanceAttr->name !== null) {
 				$name = $instanceAttr->name;
