@@ -978,16 +978,14 @@ class MessageHubController extends ModuleInstance {
 	public function setHopRender(string $hop, bool $state): void {
 		/** @var ?RouteHopFormat */
 		$format = Source::$format->first(static fn (RouteHopFormat $x) => $x->hop === $hop);
-		$update = true;
 		if (!isset($format)) {
 			$format = new RouteHopFormat(
 				hop: $hop,
 				format: '%s',
 			);
-			$update = false;
 		}
 		$format->render = $state;
-		if ($update) {
+		if (isset($format->id)) {
 			$this->db->update($format);
 		} else {
 			$format->id = $this->db->insert($format);
@@ -1002,14 +1000,11 @@ class MessageHubController extends ModuleInstance {
 		}
 		$spec = Source::$format->first(static fn (RouteHopFormat $x) => $x->hop === $hop);
 
-		/** @var ?RouteHopFormat $spec */
-		$update = true;
 		if (!isset($spec)) {
 			$spec = new RouteHopFormat(hop: $hop);
-			$update = false;
 		}
 		$spec->format = $format;
-		if ($update) {
+		if (isset($spec->id)) {
 			$this->db->update($spec);
 		} else {
 			$spec->id = $this->db->insert($spec);

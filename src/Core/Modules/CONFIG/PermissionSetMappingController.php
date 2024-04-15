@@ -343,7 +343,6 @@ class PermissionSetMappingController extends ModuleInstance {
 	protected function changeCmdMap(CmdContext $context, string $source, Closure $callback): void {
 		$source = strtolower($source);
 
-		/** @var null|CmdPermSetMapping */
 		$set = $this->cmdManager->getPermSetMappings()->where('source', $source)->first();
 		if (!isset($set)) {
 			$context->reply("There is currently no permission set map for <highlight>{$source}<end>.");
