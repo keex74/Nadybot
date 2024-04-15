@@ -13,6 +13,9 @@ class CreateEventsTable implements SchemaMigration {
 		$table = 'events';
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
+				$table->dropPrimary();
+			});
+			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->id('id')->change();
 			});
 			return;
