@@ -3,12 +3,8 @@
 namespace Nadybot\Api;
 
 use Nadybot\Core\Attributes as NCA;
-use ReflectionMethod;
 
 class PathDoc {
-	public string $description;
-	public string $path;
-
 	/** @var string[] */
 	public array $tags = [];
 
@@ -18,5 +14,10 @@ class PathDoc {
 	/** @var array<int,NCA\ApiResult> */
 	public array $responses = [];
 	public ?NCA\RequestBody $requestBody = null;
-	public ReflectionMethod $phpMethod;
+
+	public function __construct(
+		public string $description,
+		public string $path,
+	) {
+	}
 }

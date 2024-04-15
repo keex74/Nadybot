@@ -234,8 +234,7 @@ class ApiSpecGenerator {
 		$newResult = [];
 		foreach ($mapping as $path => $refMethods) {
 			foreach ($refMethods as $refMethod) {
-				$doc = $this->getMethodDoc($refMethod);
-				$doc->path = $path;
+				$doc = $this->getMethodDoc($refMethod, $path);
 				$newResult[$path] ??= [];
 				$newResult[$path]['parameters'] = $this->getParamDocs($path, $refMethod);
 				foreach ($doc->methods as $method) {
@@ -341,10 +340,12 @@ class ApiSpecGenerator {
 		return $comment;
 	}
 
-	public function getMethodDoc(ReflectionMethod $method): PathDoc {
-		$doc = new PathDoc();
+	public function getMethodDoc(ReflectionMethod $method, string $path): PathDoc {
 		$comment = $method->getDocComment();
-		$doc->description = is_string($comment) ? $this->getDescriptionFromComment($comment) : 'No documentation provided';
+		$doc = new PathDoc(
+			path: $path,
+			description: is_string($comment) ? $this->getDescriptionFromComment($comment) : 'No documentation provided',
+		);
 
 		$apiResultAttrs = $method->getAttributes(NCA\ApiResult::class);
 		if (empty($apiResultAttrs)) {
