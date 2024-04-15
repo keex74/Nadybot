@@ -155,7 +155,7 @@ class CommandAlias {
 	/** Updates a command alias in the db */
 	public function update(CmdAlias $row): int {
 		$this->logger->info('Updating alias ({alias})', ['alias' => $row]);
-		return $this->db->update($row);
+		return $this->db->update($row, 'alias');
 	}
 
 	/** Read the database entry for an alias */

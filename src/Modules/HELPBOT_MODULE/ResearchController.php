@@ -75,6 +75,10 @@ class ResearchController extends ModuleInstance {
 		}
 		$loLevel = min($from, $to);
 		$hiLevel = max($from, $to);
+		if ($hiLevel <= $loLevel) {
+			$context->reply('No research is needed to stay on your current level.');
+			return;
+		}
 		$query = $this->db->table(Research::getTable())
 			->where('level', '>', $loLevel)
 			->where('level', '<=', $hiLevel);

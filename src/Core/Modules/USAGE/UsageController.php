@@ -147,7 +147,7 @@ class UsageController extends ModuleInstance {
 			->where('dt', '>', $time)
 			->groupBy('sender');
 		$query->orderByColFunc('COUNT', 'sender', 'desc')
-			->select('sender', ${$query}->raw($query->colFunc('COUNT', 'command', 'count')));
+			->select('sender', $query->raw($query->colFunc('COUNT', 'command', 'count')));
 		$data = $query->asObj(PlayerUsageStats::class)->toArray();
 		$count = count($data);
 

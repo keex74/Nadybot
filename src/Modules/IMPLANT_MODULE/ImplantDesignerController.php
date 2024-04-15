@@ -243,18 +243,20 @@ class ImplantDesignerController extends ModuleInstance {
 		$slot = $slot();
 		$grade = $grade();
 		$design = $this->getDesign($context->char->name, '@');
-		$design->{$slot} ??= new stdClass();
+		$design->{$slot->designSlotName()} ??= new stdClass();
 
 		/** @psalm-suppress UnsupportedReferenceUsage */
-		$slotObj = &$design->{$slot};
+		$slotObj = &$design->{$slot->designSlotName()};
 
 		if ($grade === 'symb') {
 			/** @var ?Symbiant */
 			$symbRow = $this->db->table(Symbiant::getTable(), 's')
 				->join('ImplantType AS i', 's.SlotID', 'i.ImplantTypeID')
-				->where('i.ShortName', $slot)
+				->where('i.ShortName', $slot->designSlotName())
 				->where('s.Name', $cluster)
 				->select('s.*')
+				->addSelect('i.ShortName AS SlotName')
+				->addSelect('i.Name AS SlotLongName')
 				->asObj(Symbiant::class)->first();
 
 			if ($symbRow === null) {
@@ -289,7 +291,7 @@ class ImplantDesignerController extends ModuleInstance {
 				$msg = "<highlight>{$slot->longName()}(symb)<end> has been set to <highlight>{$symb->name}<end>.";
 			}
 		} else {
-			if (strtolower($cluster) == 'clear') {
+			if (strtolower($cluster) === 'clear') {
 				if ($slotObj->{$grade} === null) {
 					$msg = "There is no cluster in <highlight>{$slot->longName()}({$grade})<end>.";
 				} else {
@@ -324,10 +326,10 @@ class ImplantDesignerController extends ModuleInstance {
 		$slot = $slot();
 
 		$design = $this->getDesign($context->char->name, '@');
-		if (!isset($design->{$slot})) {
-			$design->{$slot} = new stdClass();
+		if (!isset($design->{$slot->designSlotName()})) {
+			$design->{$slot->designSlotName()} = new stdClass();
 		}
-		$slotObj = $design->{$slot};
+		$slotObj = $design->{$slot->designSlotName()};
 		unset($slotObj->symb);
 		$slotObj->ql = $ql;
 		$this->saveDesign($context->char->name, '@', $design);
@@ -377,7 +379,7 @@ class ImplantDesignerController extends ModuleInstance {
 		$slot = $slot();
 
 		$design = $this->getDesign($context->char->name, '@');
-		$slotObj = $design->{$slot};
+		$slotObj = $design->{$slot->designSlotName()};
 		if (empty($slotObj)) {
 			$msg = 'You must have at least one cluster filled to require an ability.';
 		} elseif (!empty($slotObj->symb)) {
@@ -420,7 +422,7 @@ class ImplantDesignerController extends ModuleInstance {
 		$ability = $ability();
 
 		$design = $this->getDesign($context->char->name, '@');
-		$slotObj = $design->{$slot};
+		$slotObj = $design->{$slot->designSlotName()};
 		if (empty($slotObj)) {
 			$msg = 'You must have at least one cluster filled to require an ability.';
 		} elseif (!empty($slotObj->symb)) {

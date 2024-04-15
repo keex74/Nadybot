@@ -5,12 +5,13 @@ namespace Nadybot\Modules\HELPBOT_MODULE\Migrations\Dyna;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\HELPBOT_MODULE\DynaDB;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_12_07_06_13_23, shared: true)]
 class CreateDynadbTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'dynadb';
+		$table = DynaDB::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('playfield_id')->index();

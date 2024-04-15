@@ -13,7 +13,7 @@ class Cluster extends DBTable {
 		public string $LongName,
 		public string $OfficialName,
 		public int $NPReq,
-		public int $SkillID,
+		public ?int $SkillID=null,
 	) {
 	}
 }

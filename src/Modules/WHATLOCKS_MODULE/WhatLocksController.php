@@ -136,7 +136,8 @@ class WhatLocksController extends ModuleInstance {
 		$items->each(static function (WhatLocks $item) use ($itemsById): void {
 			$item->item = $itemsById->get($item->item_id);
 		});
-		assert(null !== $lastItem = $items->last());
+		$lastItem = $items->last();
+		assert(isset($lastItem));
 		// Last element has the longest lock time, so determine how many time characters are useless
 		$longestSuperfluous = $this->prettyDuration($lastItem->duration)[0];
 		$lines = $items->map(function (WhatLocks $item) use ($longestSuperfluous): ?string {

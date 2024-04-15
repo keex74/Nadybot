@@ -21,6 +21,7 @@ class DBAuction extends DBTable {
 		public ?string $winner,
 		public int $end,
 		public bool $reimbursed,
+		public ?int $raid_id=null,
 		#[NCA\DB\AutoInc] public ?int $id=null,
 	) {
 	}

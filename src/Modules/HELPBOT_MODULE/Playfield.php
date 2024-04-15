@@ -5,7 +5,7 @@ namespace Nadybot\Modules\HELPBOT_MODULE;
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\DBTable;
 
-#[Table(name: 'playfield', shared: Shared::Yes)]
+#[Table(name: 'playfields', shared: Shared::Yes)]
 class Playfield extends DBTable {
 	/** @var array<string,string|int|null> */
 	public const EXAMPLE_TOKENS = [

@@ -371,6 +371,7 @@ class DB {
 
 	/** Start a transaction */
 	public function beginTransaction(): void {
+		$this->logCaller('Starting transaction');
 		$this->logger->info('Starting transaction');
 		$this->sql?->beginTransaction();
 	}
@@ -382,9 +383,7 @@ class DB {
 		while ($this->inTransaction()) {
 			$duration = microtime(true) - $start;
 			if ($duration > 2 && !$notified) {
-				$this->logger->notice('Waiting for beginning a transaction for over {duration}s.', [
-					'duration' => 2,
-				]);
+				$this->logCaller('Waiting for beginning a transaction for over 2s.');
 				$notified = true;
 			}
 			delay(0.01);
@@ -394,6 +393,7 @@ class DB {
 
 	/** Commit a transaction */
 	public function commit(): void {
+		$this->logCaller('Committing transaction');
 		$this->logger->info('Committing transaction');
 		try {
 			$this->sql?->commit();
@@ -404,6 +404,7 @@ class DB {
 
 	/** Roll back a transaction */
 	public function rollback(): void {
+		$this->logCaller('Rolling back transaction');
 		$this->logger->info('Rolling back transaction');
 		$this->sql?->rollback();
 	}
@@ -854,6 +855,21 @@ class DB {
 				->where('module', $module);
 		return $ownQuery->union($sharedQuery)
 			->orderBy('migration')->asObj(Migration::class);
+	}
+
+	private function logCaller(string $logLine): void {
+		$bt = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+		foreach ($bt as $trace) {
+			if (isset($trace['file']) && ($trace['file'] === __FILE__)) {
+				continue;
+			}
+			$this->logger->info('{log_line} from {file}#{line}', [
+				'log_line' => $logLine,
+				'file' => $trace['file']??null,
+				'line' => $trace['line']??null,
+			]);
+			break;
+		}
 	}
 
 	/** @return Collection<int,CoreMigration> */
