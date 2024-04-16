@@ -15,7 +15,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Safe\Exceptions\DatetimeException;
-use Safe\{DateTimeImmutable};
+use Safe\{DateTime, DateTimeImmutable};
 
 /**
  * @author Nadyita (RK5)
@@ -136,7 +136,7 @@ class ArbiterController extends ModuleInstance {
 		if ($pos === false) {
 			return;
 		}
-		$day = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('N');
+		$day = (new DateTime('now', new DateTimeZone('UTC')))->format('N');
 		$startsSunday = isset($ends) && strtolower($ends) === 'next';
 		if ($startsSunday) {
 			$start = strtotime('sunday');
@@ -150,8 +150,8 @@ class ArbiterController extends ModuleInstance {
 		try {
 			$this->db->table(ICCArbiter::getTable())->truncate();
 			for ($i = 0; $i < 3; $i++) {
-				$arbStart = (new DateTimeImmutable())->setTimestamp($start);
-				$arbEnd = (new DateTimeImmutable())->setTimestamp($end);
+				$arbStart = (new DateTime())->setTimestamp($start);
+				$arbEnd = (new DateTime())->setTimestamp($end);
 				$days = 14 * $i;
 				$arbStart->add(new DateInterval("P{$days}D"));
 				$arbEnd->add(new DateInterval("P{$days}D"));

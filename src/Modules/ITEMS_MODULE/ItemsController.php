@@ -318,7 +318,6 @@ class ItemsController extends ModuleInstance {
 			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.highql', 'foo.highql'], 'ql'))
 			->selectRaw($query->colFunc('COALESCE', ['a1.lowql', 'a2.lowql', 'foo.lowql'], 'lowql'))
 			->selectRaw($query->colFunc('COALESCE', ['a1.highql', 'a2.highql', 'foo.highql'], 'highql'));
-		echo("\n\n\n" . $query->toSql() . "\n\n\n");
 		$data = $query->asObj(ItemSearchResult::class);
 		$data = $data->filter(static function (ItemSearchResult $item): bool {
 			static $found = [];

@@ -671,16 +671,23 @@ class MessageHub {
 	/** Remove all routes from the routing table and return how many were removed */
 	public function deleteAllRoutes(): int {
 		$routes = $this->getRoutes();
-		$this->db->awaitBeginTransaction();
+		$needTransaction = $this->db->inTransaction() === false;
+		if ($needTransaction) {
+			$this->db->awaitBeginTransaction();
+		}
 		try {
 			$this->db->table(RouteModifierArgument::getTable())->truncate();
 			$this->db->table(RouteModifier::getTable())->truncate();
 			$this->db->table(Route::getTable())->truncate();
 		} catch (Exception $e) {
-			$this->db->rollback();
+			if ($needTransaction) {
+				$this->db->rollback();
+			}
 			throw $e;
 		}
-		$this->db->commit();
+		if ($needTransaction) {
+			$this->db->commit();
+		}
 		$this->routes = [];
 		return count($routes);
 	}

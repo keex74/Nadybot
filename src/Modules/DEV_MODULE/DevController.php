@@ -215,6 +215,10 @@ class DevController extends ModuleInstance {
 	public function inTransactionCommand(CmdContext $context): void {
 		if ($this->db->inTransaction()) {
 			$msg = 'There is an active transaction.';
+			$opened = $this->db->getTransactionOpener();
+			if (isset($opened)) {
+				$msg .= " It was opened in {$opened}.";
+			}
 		} else {
 			$msg = 'There is no active transaction.';
 		}

@@ -63,6 +63,8 @@ class DB {
 	/** @var array<string,string> */
 	protected array $tableNames = [];
 
+	private ?string $transactionOpened = null;
+
 	#[NCA\Logger]
 	private LoggerInterface $logger;
 
@@ -371,8 +373,19 @@ class DB {
 
 	/** Start a transaction */
 	public function beginTransaction(): void {
-		$this->logCaller('Starting transaction');
-		$this->logger->info('Starting transaction');
+		$bt = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+		foreach ($bt as $trace) {
+			if (isset($trace['file']) && ($trace['file'] === __FILE__)) {
+				continue;
+			}
+			$this->transactionOpened = ($trace['file'] ?? '{closure}').
+				'#' . ($trace['line'] ?? '0');
+			$this->logger->info('Starting transaction from {file}#{line}', [
+				'file' => $trace['file']??null,
+				'line' => $trace['line']??null,
+			]);
+			break;
+		}
 		$this->sql?->beginTransaction();
 	}
 
@@ -400,6 +413,7 @@ class DB {
 		} catch (PDOException $e) {
 			$this->logger->info('No active transaction to commit');
 		}
+		$this->transactionOpened = null;
 	}
 
 	/** Roll back a transaction */
@@ -407,11 +421,17 @@ class DB {
 		$this->logCaller('Rolling back transaction');
 		$this->logger->info('Rolling back transaction');
 		$this->sql?->rollback();
+		$this->transactionOpened = null;
 	}
 
 	/** Check if we're currently in a transaction */
 	public function inTransaction(): bool {
 		return $this->sql?->inTransaction() ?? false;
+	}
+
+	/** Get where the current transaction was opened */
+	public function getTransactionOpener(): ?string {
+		return $this->transactionOpened;
 	}
 
 	/** Format SQL code by replacing placeholders like <myname> */
