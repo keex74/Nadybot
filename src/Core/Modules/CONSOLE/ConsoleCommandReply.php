@@ -12,6 +12,7 @@ use Nadybot\Core\{
 	Routing\RoutableMessage,
 	Routing\Source,
 	Safe,
+	Text,
 	Types\CommandReply,
 	Types\MessageEmitter,
 };
@@ -38,8 +39,10 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 		return Source::CONSOLE;
 	}
 
-	public function reply($msg): void {
-		foreach ((array)$msg as $text) {
+	/** @param string|string[] $msg */
+	public function reply(string|array $msg): void {
+		$msg = Text::unbreakPopups((array)$msg);
+		foreach ($msg as $text) {
 			$rMessage = new RoutableMessage($text);
 			$rMessage->setCharacter(new Character($this->config->main->character, $this->chatBot->char?->id));
 			$rMessage->prependPath(new Source(Source::CONSOLE, 'Console'));
@@ -51,7 +54,8 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 
 	/** @param string|string[] $msg */
 	public function replyOnly(string|array $msg): void {
-		foreach ((array)$msg as $text) {
+		$msg = Text::unbreakPopups((array)$msg);
+		foreach ($msg as $text) {
 			$text = $this->formatMsg($text);
 			echo("{$this->config->main->character}: {$text}\n");
 		}
@@ -252,6 +256,15 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 			$message
 		);
 		$message = str_ireplace(array_keys($array), array_values($array), $message);
+		$message = preg_replace_callback(
+			'/<green>(l*)<end><red>│<end><green>(l*)<end>/s',
+			static function (array $matches): string {
+				return '<green>' . str_repeat('|', strlen($matches[1])) . '<end>'.
+					'<red>│<end>'.
+					'<green>' . str_repeat('|', strlen($matches[2])) . '<end>';
+			},
+			$message
+		);
 		$message = Safe::pregReplace("/<a\s+href=['\"]?user:\/\/[^'\">]+['\"]?\s*>(.*?)<\/a>/s", '<link>$1</link>', $message);
 		$message = Safe::pregReplace("/<a\s+href=['\"]?skillid:\/\/\d+['\"]?\s*>(.*?)<\/a>/s", '[skill:<link>$1</link>]', $message);
 		$message = Safe::pregReplace("/<a\s+href=['\"]chatcmd:\/\/\/(.*?)['\"]\s*>(.*?)<\/a>/s", '<link>$2</link>', $message);
