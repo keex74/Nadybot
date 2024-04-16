@@ -73,15 +73,22 @@ class ApiSpecGenerator {
 
 				$apiAttr = $apiAttrs[0]->newInstance();
 
-				$params = array_slice($method->getParameters(), 2);
-				$path = preg_replace_callback(
-					'/%[ds]/',
-					static function (array $matches) use (&$params): string {
-						$param = array_shift($params);
-						return '{' . $param->getName() . '}';
-					},
-					$apiAttr->path
-				);
+				$params = array_slice($method->getParameters(), 1);
+				try {
+					$path = preg_replace_callback(
+						'/%[ds]/',
+						static function (array $matches) use (&$params): string {
+							if (!count($params)) {
+								throw new \Exception('No parameters left');
+							}
+							$param = array_shift($params);
+							return '{' . $param->getName() . '}';
+						},
+						$apiAttr->path
+					);
+				} catch (\Throwable $e) {
+					throw new \Exception('Error when trying to get params for ' . $apiAttr->path . ': ' . $e->getMessage());
+				}
 				$paths[$path] ??= [];
 				$paths[$path] []= $method;
 			}
@@ -168,7 +175,13 @@ class ApiSpecGenerator {
 			if ($nameAndType[1] === 'array') {
 				$docBlock = $refProp->getDocComment();
 				if ($docBlock === false) {
-					throw new Exception("Untyped array found at {$class}::\$" . $refProp->name);
+					$docBlock = $refProp->getDeclaringClass()->getConstructor()?->getDocComment() ?? false;
+					if ($docBlock === false) {
+						throw new Exception("Untyped array found at {$class}::\$" . $refProp->name);
+					}
+					if (count($matches = Safe::pregMatch('/@param\s+(.*\$' . preg_quote($refProp->name, '/') . ')/m', $docBlock))) {
+						$docBlock = '@var ' . $matches[1];
+					}
 				}
 				if (!count($matches = Safe::pregMatch("/@json-var\s+(.+?)\[\]/", $docBlock))
 					&& !count($matches = Safe::pregMatch("/@var\s+(.+?)\[\]/", $docBlock))) {
@@ -204,7 +217,7 @@ class ApiSpecGenerator {
 				'name' => 'GPL3',
 				'url' => 'https://www.gnu.org/licenses/gpl-3.0.en.html',
 			],
-			'version' => BotRunner::getVersion(false),
+			'version' => (new BotRunner([]))->getVersion(false),
 		];
 	}
 
