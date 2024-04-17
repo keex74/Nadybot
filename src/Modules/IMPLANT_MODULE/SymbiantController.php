@@ -118,7 +118,7 @@ class SymbiantController extends ModuleInstance {
 			foreach ($buffCounter as $skillName => $count) {
 				$colorStart = '';
 				$colorEnd = '';
-				$buffs = new Collection($item->buffs);
+				$buffs = collect($item->buffs);
 
 				/** @var ?ExtBuff */
 				$buff = $buffs->filter(static function (ExtBuff $buff) use ($skillName): bool {
@@ -218,11 +218,14 @@ class SymbiantController extends ModuleInstance {
 	/** Render a slot-grouped list of symbiants */
 	private function renderSymbiantBuffs(Symbiant ...$symbiants): string {
 		$result = [];
-		$symbs = new Collection($symbiants);
+		$symbs = collect($symbiants);
+
+		/** @var Collection<string,Collection<int,Symbiant>> */
 		$bySlot = $symbs->groupBy('SlotLongName');
 		foreach ($bySlot as $slotName => $slotSymbs) {
 			$lines = ["<tab><highlight>{$slotName}<end>"];
 
+			/** @var Collection<string,Collection<int,Symbiant>> */
 			$byUnit = $slotSymbs->groupBy('Unit');
 			foreach ($byUnit as $unitName => $unitSymbs) {
 				if (empty($unitName)) {

@@ -727,7 +727,9 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				return;
 			}
 		}
-		$chars = new Collection($chars);
+		$chars = collect($chars);
+
+		/** @var array<string,int> */
 		$online = $chars->countBy('profession')->toArray();
 		$numOnline = $chars->count();
 		if (!$this->countEmptyProfs && !$numOnline) {
@@ -763,7 +765,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				return;
 			}
 		}
-		$online = new Collection($online);
+		$online = collect($online);
 
 		if ($online->isEmpty()) {
 			$msg = 'No characters in channel.';
@@ -773,6 +775,8 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			$context->reply($msg);
 			return;
 		}
+
+		/** @var Collection<string,Collection<int,OnlinePlayer>> */
 		$byOrg = $online->groupBy('guild');
 
 		/** @var Collection<int,OrgCount> */
@@ -814,8 +818,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return;
 		}
 
-		/** @var Collection<int,OnlinePlayer> */
-		$data = (new Collection($this->onlineController->getPlayers('priv', $this->config->main->character)))
+		$data = collect($this->onlineController->getPlayers('priv', $this->config->main->character))
 			->where('profession', $prof->value);
 		if (isset($raidOnly)) {
 			[$errMsg, $data] = $this->filterRaid($data->toArray());
@@ -823,7 +826,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				$context->reply($errMsg);
 				return;
 			}
-			$data = new Collection($data);
+			$data = collect($data);
 		}
 		$numOnline = $data->count();
 		if ($numOnline === 0) {

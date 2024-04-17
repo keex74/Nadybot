@@ -733,7 +733,7 @@ class ConfigApiController extends ModuleInstance {
 
 	protected function getCmdSource(string $sourceName): ?CmdSource {
 		$sourceName = strtolower($sourceName);
-		$sources = new Collection($this->commandManager->getSources());
+		$sources = collect($this->commandManager->getSources());
 		$source = $sources->first(static function (string $source) use ($sourceName): bool {
 			return Safe::pregReplace("/\(.+$/", '', $source) === $sourceName;
 		});

@@ -371,7 +371,7 @@ class ConfigController extends ModuleInstance {
 		}
 		if ($permissionSet !== 'all') {
 			$commands = $commands->filter(static function (CmdCfg $cfg) use ($permissionSet): bool {
-				$cfg->permissions = (new Collection($cfg->permissions))
+				$cfg->permissions = collect($cfg->permissions)
 					->where('permission_set', $permissionSet)->toArray();
 				return !(empty($cfg->permissions));
 			});
@@ -881,11 +881,11 @@ class ConfigController extends ModuleInstance {
 			if ($moduleCmds->isNotEmpty()) {
 				$num_commands_enabled = $moduleCmds
 					->reduce(static function (int $enabled, CmdCfg $cfg): int {
-						return $enabled + (new Collection($cfg->permissions))->where('enabled', true)->count();
+						return $enabled + collect($cfg->permissions)->where('enabled', true)->count();
 					}, 0);
 				$num_commands_disabled = $moduleCmds
 					->reduce(static function (int $disabled, CmdCfg $cfg): int {
-						return $disabled + (new Collection($cfg->permissions))->where('enabled', false)->count();
+						return $disabled + collect($cfg->permissions)->where('enabled', false)->count();
 					}, 0);
 			}
 			$result []= new ConfigModule(

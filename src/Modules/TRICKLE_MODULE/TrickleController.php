@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\TRICKLE_MODULE;
 
 use function Safe\preg_split;
-use Illuminate\Support\Collection;
 
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -158,7 +157,7 @@ class TrickleController extends ModuleInstance {
 				$reqs []= "{$value} {$abilityName}";
 			}
 		}
-		$msg = (new Collection($reqs))->join(', ', ' or ');
+		$msg = collect($reqs)->join(', ', ' or ');
 		return $msg;
 	}
 

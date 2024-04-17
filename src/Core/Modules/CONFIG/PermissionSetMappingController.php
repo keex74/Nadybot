@@ -4,7 +4,6 @@ namespace Nadybot\Core\Modules\CONFIG;
 
 use Closure;
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -53,7 +52,7 @@ class PermissionSetMappingController extends ModuleInstance {
 		'to be treated as a command, along with some other flags.'
 	)]
 	public function cmdmapListCommand(CmdContext $context): void {
-		$srcs = new Collection($this->cmdManager->getSources());
+		$srcs = collect($this->cmdManager->getSources());
 		$maps = $this->cmdManager->getPermSetMappings();
 		$unusedSrcs = $srcs->filter(static function (string $source) use ($maps): bool {
 			foreach ($maps as $map) {
@@ -103,7 +102,7 @@ class PermissionSetMappingController extends ModuleInstance {
 			$context->reply("There is no permission set <highlight>{$permissionSet}<end>.");
 			return;
 		}
-		$srcValid = (new Collection($this->cmdManager->getSources()))
+		$srcValid = collect($this->cmdManager->getSources())
 			->filter(static function (string $mask) use ($source): bool {
 				return fnmatch($mask, $source, \FNM_CASEFOLD);
 			})->isNotEmpty();
@@ -145,7 +144,7 @@ class PermissionSetMappingController extends ModuleInstance {
 		#[NCA\Str('list')] string $action,
 		#[NCA\Str('src', 'source', 'sources')] string $subaction,
 	): void {
-		$sources = (new Collection($this->cmdManager->getSources()))->sort();
+		$sources = collect($this->cmdManager->getSources())->sort();
 		$blob = "<header2>Registered sources<end>\n".
 			'<tab>' . $sources->join("\n<tab>");
 		$context->reply(
@@ -243,7 +242,7 @@ class PermissionSetMappingController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$choices = (new Collection(explode(';', $row->options)))->map(static function (string $option) use ($source): string {
+		$choices = collect(explode(';', $row->options))->map(static function (string $option) use ($source): string {
 			return "<tab><highlight>{$option}<end> [" . Text::makeChatcmd('use this', "/tell <myname> cmdmap symbol set {$source} {$option}") . ']';
 		})->join("\n");
 		$context->reply(

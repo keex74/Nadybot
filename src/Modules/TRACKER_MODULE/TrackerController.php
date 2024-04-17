@@ -672,7 +672,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$this->findOrgController->sendNotReadyError($context);
 			return;
 		}
-		$orgs = new Collection($this->findOrgController->lookupOrg($orgName()));
+		$orgs = collect($this->findOrgController->lookupOrg($orgName()));
 		$count = $orgs->count();
 		if ($count === 0) {
 			$context->reply('No matches found.');
@@ -683,8 +683,8 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		$context->reply($msg);
 	}
 
-	public function formatOrglist(Organization ...$orgs): string {
-		$orgs = (new Collection($orgs))->sortBy('name');
+	public function formatOrglist(Organization ...$organizations): string {
+		$orgs = collect($organizations)->sortBy('name');
 		$blob = "<header2>Matching orgs<end>\n";
 		foreach ($orgs as $org) {
 			$addLink = Text::makeChatcmd('track', "/tell <myname> track addorg {$org->id}");

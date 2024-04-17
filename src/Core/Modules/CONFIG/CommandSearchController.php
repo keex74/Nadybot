@@ -53,7 +53,7 @@ class CommandSearchController extends ModuleInstance {
 		$exactMatch = $commands->where('cmd', $search)->first();
 
 		if ($exactMatch) {
-			$results = new Collection([$exactMatch]);
+			$results = collect([$exactMatch]);
 			$exactMatch = true;
 		} else {
 			$exactMatch = true;

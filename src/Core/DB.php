@@ -695,9 +695,13 @@ class DB {
 	}
 
 	public function runMigrations(CoreMigration ...$migrations): void {
-		$migrations = new Collection($migrations);
+		$toRun = collect($migrations);
 		$this->createMigrationTables();
-		$groupedMigs = $migrations->groupBy('module');
+
+		/** @var Collection<string,Collection<int,CoreMigration>> */
+		$groupedMigs = $toRun->groupBy('module');
+
+		/** @var Collection<int,CoreMigration> */
 		$missingMigs = $groupedMigs->map(function (Collection $migs, string $module): Collection {
 			return $this->filterAppliedMigrations($module, $migs);
 		})->flatten()

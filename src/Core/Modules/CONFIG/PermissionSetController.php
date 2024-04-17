@@ -4,7 +4,6 @@ namespace Nadybot\Core\Modules\CONFIG;
 
 use Closure;
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -163,7 +162,7 @@ class PermissionSetController extends ModuleInstance {
 	protected function renderPermissionSet(ExtCmdPermissionSet $set): string {
 		$channelNames = '&lt;none&gt;';
 		if (!empty($set->mappings)) {
-			$channelNames = (new Collection($set->mappings))->pluck('source')
+			$channelNames = collect($set->mappings)->pluck('source')
 				->join('<end>, <highlight>', '<end> and <highlight>');
 		}
 		$block = "<header2>{$set->name}<end>\n".

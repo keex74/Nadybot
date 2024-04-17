@@ -965,7 +965,7 @@ class RelayController extends ModuleInstance {
 			throw new Exception(
 				'Unknown parameter' . (count($params) > 1 ? 's' : '').
 				' <highlight>'.
-				(new Collection(array_keys($params)))
+				collect(array_keys($params))
 					->join('<end>, <highlight>', '<end> and <highlight>').
 				"<end> to <highlight>{$name}<end>."
 			);

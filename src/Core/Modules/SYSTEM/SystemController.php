@@ -7,7 +7,6 @@ use function Safe\{ini_get, json_encode};
 use Amp\Http\Server\{Request, Response};
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\Player;
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Filesystem;
@@ -423,7 +422,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 			$blob .= "<tab>SuperAdmin: - <highlight>none<end> -\n";
 		} else {
 			$blob .= '<tab>SuperAdmin: <highlight>'.
-				(new Collection($info->basic->superadmins))->join('<end>, <highlight>', '<end> and <highlight>').
+				collect($info->basic->superadmins)->join('<end>, <highlight>', '<end> and <highlight>').
 				"<end>\n";
 		}
 		if (isset($info->basic->org)) {

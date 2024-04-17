@@ -5,7 +5,6 @@ namespace Nadybot\Modules\ITEMS_MODULE;
 use function Safe\json_decode;
 use Amp\Http\Client\{HttpClientBuilder, Request};
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -185,7 +184,7 @@ class GmiController extends ModuleInstance {
 			$sellCutString = ' (top 10 only)';
 			$gmi->sellOrders = array_slice($gmi->sellOrders, 0, 10);
 		}
-		$orders = new Collection([...$gmi->buyOrders, ...$gmi->sellOrders]);
+		$orders = collect([...$gmi->buyOrders, ...$gmi->sellOrders]);
 		$highestAmount = $orders->max('count');
 		$highestPrice = $orders->max('price');
 		$buyers = "<header2>Buy orders{$buyCutString}<end>";

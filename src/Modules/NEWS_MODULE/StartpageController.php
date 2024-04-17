@@ -10,7 +10,6 @@ use Amp\Http\Server\{Request, Response};
 use Closure;
 use DateInterval;
 use DateTimeZone;
-use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Nadybot\Core\{
 	AccessManager,
@@ -171,7 +170,7 @@ class StartpageController extends ModuleInstance {
 	}
 
 	public function setTiles(string ...$tileNames): bool {
-		$coll = (new Collection($tileNames))->unique();
+		$coll = collect($tileNames)->unique();
 		if ($coll->count() !== count($tileNames)) {
 			throw new DuplicateTileException('You cannot display a news tile more than once.');
 		}

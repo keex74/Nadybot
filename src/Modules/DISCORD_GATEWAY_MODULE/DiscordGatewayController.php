@@ -13,7 +13,7 @@ use Amp\Socket\ConnectContext;
 use Amp\Websocket\Client\{Rfc6455Connector, WebsocketConnectException, WebsocketConnection, WebsocketHandshake};
 use Amp\Websocket\{WebsocketCloseCode, WebsocketClosedException, WebsocketCount};
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
-use Illuminate\Support\{Collection, ItemNotFoundException};
+use Illuminate\Support\{ItemNotFoundException};
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Filesystem;
 use Nadybot\Core\Modules\DISCORD\{
@@ -1920,7 +1920,7 @@ class DiscordGatewayController extends ModuleInstance {
 						'guild' => $guild->name,
 					]);
 					$this->db->table(DBEmoji::getTable())->delete($emoji->id);
-					$guild->emojis = (new Collection($guild->emojis))
+					$guild->emojis = collect($guild->emojis)
 						->where('id', '!=', $emoji->emoji_id)
 						->toArray();
 				}
@@ -1951,8 +1951,8 @@ class DiscordGatewayController extends ModuleInstance {
 				$data = "data:image/{$info['extension']};base64,".
 					base64_encode($content);
 
-				/** @var null|Emoji */
-				$oldEmoji = (new Collection($guild->emojis))
+				/** @var ?Emoji */
+				$oldEmoji = collect($guild->emojis)
 					->where('name', $info['filename'])
 					->first();
 
@@ -1964,7 +1964,7 @@ class DiscordGatewayController extends ModuleInstance {
 						'emoji' => $oldEmoji->name,
 						'guild' => $guild->name,
 					]);
-					$guild->emojis = (new Collection($guild->emojis))
+					$guild->emojis = collect($guild->emojis)
 						->where('id', '!=', $oldEmoji->id)
 						->toArray();
 					unset($oldEmoji);

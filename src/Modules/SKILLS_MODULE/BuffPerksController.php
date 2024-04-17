@@ -303,7 +303,7 @@ class BuffPerksController extends ModuleInstance {
 		});
 		$perks = $perks->map(static function (Perk $perk) use ($profession, $level): Perk {
 			$p = clone $perk;
-			$p->levels = (new Collection($p->levels))->filter(
+			$p->levels = collect($p->levels)->filter(
 				static function (PerkLevel $pl) use ($profession, $level): bool {
 					return in_array($profession->value, $pl->professions)
 						&& $pl->required_level <= $level;
@@ -486,13 +486,13 @@ class BuffPerksController extends ModuleInstance {
 	 */
 	protected function aggregatePerk(Perk $perk): PerkAggregate {
 		/** @var int */
-		$minLevel = (new Collection($perk->levels))->keys()->min();
+		$minLevel = collect($perk->levels)->keys()->min();
 		$result = new PerkAggregate(
 			expansion: $perk->expansion,
 			name: $perk->name,
 			description: $perk->description,
 			professions: $perk->levels[$minLevel]->professions,
-			max_level: (new Collection($perk->levels))->keys()->max(),
+			max_level: collect($perk->levels)->keys()->max(),
 		);
 
 		/** @var array<int,int> */
@@ -532,7 +532,7 @@ class BuffPerksController extends ModuleInstance {
 		$dbVersion = $this->perksDBVersion;
 
 		$perkInfo = $this->getPerkInfo();
-		$this->perks = new Collection($perkInfo);
+		$this->perks = collect($perkInfo);
 		$empty = !$this->db->table(Perk::getTable())->exists();
 		if (($dbVersion >= $mtime) && !$empty) {
 			return;

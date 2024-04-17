@@ -37,7 +37,7 @@ class QueryBuilder extends Builder {
 	public function asObj(string $class): Collection {
 		/** @var T[] */
 		$result = $this->fetchAll($class, $this->toSql(), ...$this->getBindings());
-		return new Collection($result);
+		return collect($result);
 	}
 
 	/**

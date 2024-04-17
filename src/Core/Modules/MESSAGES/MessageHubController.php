@@ -237,7 +237,7 @@ class MessageHubController extends ModuleInstance {
 			return;
 		}
 
-		$senders = new Collection($this->messageHub->getEmitters());
+		$senders = collect($this->messageHub->getEmitters());
 		$hasSender = $senders->first(static function (MessageEmitter $e) use ($from) {
 			return fnmatch($e->getChannelName(), $from, \FNM_CASEFOLD)
 				|| fnmatch($from, $e->getChannelName(), \FNM_CASEFOLD);
@@ -316,7 +316,7 @@ class MessageHubController extends ModuleInstance {
 		$emitters = $this->messageHub->getEmitters();
 		$count = count($emitters);
 		ksort($emitters);
-		$emitters = new Collection($emitters);
+		$emitters = collect($emitters);
 		$blob = $emitters->groupBy($this->getEmitterType(...))
 			->map($this->renderEmitterGroup(...))
 			->join("\n\n");
@@ -334,7 +334,7 @@ class MessageHubController extends ModuleInstance {
 		$receivers = $this->messageHub->getReceivers();
 		$count = count($receivers);
 		ksort($receivers);
-		$receivers = new Collection($receivers);
+		$receivers = collect($receivers);
 		$blob = $receivers->groupBy($this->getEmitterType(...))
 			->map($this->renderEmitterGroup(...))
 			->join("\n\n");

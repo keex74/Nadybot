@@ -176,7 +176,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			->orderBy('cmd')
 			->pluckStrings('cmd')
 			->toArray();
-		$newCommands = (new Collection($commands))
+		$newCommands = collect($commands)
 			->map(static function (string $cmd): string {
 				return strtolower($cmd);
 			})
@@ -250,7 +250,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			->orderBy('cmd')
 			->pluckStrings('cmd')
 			->toArray();
-		$delCommands = (new Collection($commands))
+		$delCommands = collect($commands)
 			->map(static function (string $cmd): string {
 				return strtolower($cmd);
 			})
@@ -409,8 +409,8 @@ class DiscordSlashCommandController extends ModuleInstance {
 		$this->logger->info('{count} Slash-commands already registered', [
 			'count' => count($registeredCmds),
 		]);
-		$registeredCmds = new Collection($registeredCmds);
-		$commands = new Collection($this->calcSlashCommands());
+		$registeredCmds = collect($registeredCmds);
+		$commands = collect($this->calcSlashCommands());
 
 		$numModifiedCommands = $this->getNumChangedSlashCommands($registeredCmds, $commands);
 		$this->logger->info('{count} Slash-commands need (re-)registering', [

@@ -2,7 +2,6 @@
 
 namespace Nadybot\Core\Modules\CONFIG;
 
-use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -38,7 +37,7 @@ class CommandlistController extends ModuleInstance {
 		$cmds = $this->commandManager->getAll(true);
 		if (isset($accessLevel)) {
 			$cmds = $cmds->filter(static function (CmdCfg $cmd) use ($accessLevel): bool {
-				$cmd->permissions = (new Collection($cmd->permissions))->where('access_level', $accessLevel)
+				$cmd->permissions = (collect($cmd->permissions))->where('access_level', $accessLevel)
 					->toArray();
 				return count($cmd->permissions) > 0;
 			});
@@ -53,7 +52,7 @@ class CommandlistController extends ModuleInstance {
 		$isMod = $this->accessManager->checkAccess($context->char->name, 'moderator');
 		$lines = [];
 		foreach ($cmds as $cmd) {
-			$perms = new Collection($cmd->permissions);
+			$perms = collect($cmd->permissions);
 			$numEnabled = $perms->where('enabled', true)->count();
 			$numDisabled = $perms->where('enabled', false)->count();
 

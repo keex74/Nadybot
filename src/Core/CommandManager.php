@@ -387,7 +387,7 @@ class CommandManager implements MessageEmitter {
 
 	/** @return Collection<int,CmdPermSetMapping> */
 	public function getPermSetMappings(): Collection {
-		return new Collection($this->permSetMappings);
+		return collect($this->permSetMappings);
 	}
 
 	/** @return Collection<int,CmdCfg> */
@@ -923,7 +923,7 @@ class CommandManager implements MessageEmitter {
 
 		/** @var array<int,ReflectionMethod[]> */
 		$result = array_merge(array_values($lookup), $empty);
-		return new Collection($result);
+		return collect($result);
 	}
 
 	/**
@@ -1374,7 +1374,7 @@ class CommandManager implements MessageEmitter {
 		if (count($usedBy = $this->getSourcesForPermsetName($name)) > 0) {
 			throw new InvalidArgumentException(
 				"The permission set <highlight>{$name}<end> is still assigned to <highlight>".
-				(new Collection($usedBy))->join('<end>, <highlight>', '<end> and <highlight>').
+				(collect($usedBy))->join('<end>, <highlight>', '<end> and <highlight>').
 				'<end>.'
 			);
 		}

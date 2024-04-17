@@ -514,13 +514,12 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 			return $a->time <=> $b->time;
 		});
 
-		/** @var Alert */
-		$lastAlert = (new Collection($alerts))->last();
+		$lastAlert = collect($alerts)->last();
 		$timer = new Timer(
 			id: $id,
 			name: $name,
 			owner: $owner,
-			endtime: $lastAlert->time,
+			endtime: $lastAlert?->time,
 			settime: time(),
 			callback: $callback,
 			data: $data,
