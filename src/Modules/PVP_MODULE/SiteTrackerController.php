@@ -4,7 +4,6 @@ namespace Nadybot\Modules\PVP_MODULE;
 
 // pf, site
 
-use function Safe\glob;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\MESSAGES\MessageHubController;
 use Nadybot\Core\{
@@ -120,18 +119,14 @@ class SiteTrackerController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		$handlerFile = glob(__DIR__ . '/Handlers/*.php');
-		foreach ($handlerFile as $file) {
-			require_once $file;
-			$className = basename($file, '.php');
-			$fullClass = __NAMESPACE__ . "\\Handlers\\{$className}";
-			if (!class_exists($fullClass)) {
+		foreach (get_declared_classes() as $class) {
+			if (!is_a($class, Base::class, true)) {
 				continue;
 			}
-			$refClass = new ReflectionClass($fullClass);
+			$refClass = new ReflectionClass($class);
 			foreach ($refClass->getAttributes(Argument::class) as $attr) {
 				$handler = $attr->newInstance();
-				$this->registerHandler($fullClass, ...$handler->names);
+				$this->registerHandler($class, ...$handler->names);
 			}
 		}
 

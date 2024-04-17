@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\RELAY_MODULE;
 
-use function Safe\{glob, json_encode, preg_match, preg_split};
+use function Safe\{json_encode, preg_match, preg_split};
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
@@ -167,36 +167,32 @@ class RelayController extends ModuleInstance {
 	}
 
 	public function loadStackComponents(): void {
-		/**
-		 * @var array<string,string|callable>
-		 *
-		 * @phpstan-var array<string,array{class-string, callable}>
-		 */
+		/** @var array<string,array{class-string,class-string,\Closure}> */
 		$types = [
 			'RelayProtocol' => [
 				NCA\RelayProtocol::class,
+				RelayProtocolInterface::class,
 				$this->registerRelayProtocol(...),
 			],
 			'Layer' => [
 				NCA\RelayStackMember::class,
+				RelayLayerInterface::class,
 				$this->registerStackElement(...),
 			],
 			'Transport' => [
 				NCA\RelayTransport::class,
+				TransportInterface::class,
 				$this->registerTransport(...),
 			],
 		];
 		foreach ($types as $dir => $data) {
-			$files = glob(__DIR__ . "/{$dir}/*.php");
-			foreach ($files as $file) {
-				require_once $file;
-				$className = basename($file, '.php');
-				$fullClass = __NAMESPACE__ . "\\{$dir}\\{$className}";
-				if (class_exists($fullClass)) {
-					$spec = Util::getClassSpecFromClass($fullClass, $data[0]);
-					if (isset($spec)) {
-						$data[1]($spec);
-					}
+			foreach (get_declared_classes() as $class) {
+				if (!is_a($class, $data[1], true)) {
+					continue;
+				}
+				$spec = Util::getClassSpecFromClass($class, $data[0]);
+				if (isset($spec)) {
+					$data[2]($spec);
 				}
 			}
 		}

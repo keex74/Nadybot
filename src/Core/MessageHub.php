@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Safe\{glob, json_encode, preg_match};
+use function Safe\{json_encode, preg_match};
 use Exception;
 use Illuminate\Support\Collection;
 use JsonException;
@@ -64,6 +64,9 @@ class MessageHub {
 	private BuddylistManager $buddyListManager;
 
 	#[NCA\Inject]
+	private Filesystem $fs;
+
+	#[NCA\Inject]
 	private BotConfig $config;
 
 	#[NCA\Inject]
@@ -87,15 +90,11 @@ class MessageHub {
 	#[NCA\Setup]
 	public function setup(): void {
 		$this->parseMessageEmitters();
-		$modifierFiles = glob(__DIR__ . '/EventModifier/*.php');
-		foreach ($modifierFiles as $file) {
-			require_once $file;
-			$className = basename($file, '.php');
-			$fullClass = __NAMESPACE__ . "\\EventModifier\\{$className}";
-			if (!class_exists($fullClass)) {
+		foreach (get_declared_classes() as $class) {
+			if (!is_a($class, EventModifier::class, true)) {
 				continue;
 			}
-			$spec = Util::getClassSpecFromClass($fullClass, NCA\EventModifier::class);
+			$spec = Util::getClassSpecFromClass($class, NCA\EventModifier::class);
 			if (isset($spec)) {
 				$this->registerEventModifier($spec);
 			}

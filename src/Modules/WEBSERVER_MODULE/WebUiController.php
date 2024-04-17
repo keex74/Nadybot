@@ -3,7 +3,6 @@
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
 use function Amp\async;
-use function Safe\{glob};
 use Amp\ByteStream\WritableResourceStream;
 use Amp\File\{FilesystemException};
 use Amp\Http\Client\{HttpClientBuilder, Request, Response};
@@ -153,7 +152,9 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 
 	/** Delete a directory and all its subdirectories */
 	public function recursiveRemoveDirectory(string $directory): bool {
-		foreach (glob("{$directory}/*") as $file) {
+		$files = $this->fs->listFiles($directory);
+		foreach ($files as $file) {
+			$file = "{$directory}/{$file}";
 			if ($this->fs->isDirectory($file)) {
 				$this->recursiveRemoveDirectory($file);
 			} else {
