@@ -28,34 +28,10 @@ class Patcher {
 		}
 
 		assert($package instanceof \Composer\Package\Package);
-		if ($package->getName() === 'squizlabs/php_codesniffer') {
-			static::patchCodesniffer($vendorDir, $package);
-		}
 
 		if ($package->getName() === 'farafiri/php-parsing-tool') {
 			static::patchParsingTool($vendorDir, $package);
 		}
-	}
-
-	/**
-	 * Patch PHP Codesniffer to use Nadybot style by default
-	 *
-	 * @param string                    $vendorDir The installation basepath
-	 * @param \Composer\Package\Package $package   The package being installed
-	 */
-	public static function patchCodesniffer($vendorDir, Package $package): void {
-		$file = $vendorDir . '/' . $package->getName() . '/CodeSniffer.conf.dist';
-		$oldContent = file_get_contents($file); // @phpstan-ignore-line
-		if ($oldContent === false) {
-			return;
-		}
-		$newContent = "__DIR__.'/../../../style/Nadybot/ruleset.xml'";
-		// @phpstan-ignore-next-line
-		$data = \preg_replace("/'PSR2'/", $newContent, $oldContent);
-		// @phpstan-ignore-next-line
-		$data = \preg_replace("/(?<='show_warnings' => ')0/", '1', $data);
-		$newFile = $vendorDir . '/' . $package->getName() . '/CodeSniffer.conf';
-		file_put_contents($newFile, $data); // @phpstan-ignore-line
 	}
 
 	/**

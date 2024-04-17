@@ -7,7 +7,6 @@
     "phpcs.ignorePatterns": [
         "vendor/*"
     ],
-    "phpcs.standard": "style/Nadybot/ruleset.xml",
     "phpunit.phpunit": "vendor/bin/phpunit",
     "phpunit.args": [
         "--configuration",

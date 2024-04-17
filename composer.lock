@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8516b0e48de86d09a4ffcdac1fb004a0",
+    "content-hash": "451e990014f0027003b4ef790fcf7a92",
     "packages": [
         {
             "name": "amphp/amp",
@@ -2372,7 +2372,7 @@
         },
         {
             "name": "illuminate/collections",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -2427,7 +2427,7 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -2473,7 +2473,7 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -2524,7 +2524,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -2572,16 +2572,16 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "635b0319641f7c746300f615838232ae30b0760c"
+                "reference": "cf468c45729ec39f0ab03b3c97e65b0cc937b22b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/635b0319641f7c746300f615838232ae30b0760c",
-                "reference": "635b0319641f7c746300f615838232ae30b0760c",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/cf468c45729ec39f0ab03b3c97e65b0cc937b22b",
+                "reference": "cf468c45729ec39f0ab03b3c97e65b0cc937b22b",
                 "shasum": ""
             },
             "require": {
@@ -2641,11 +2641,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-04-10T14:11:27+00:00"
+            "time": "2024-04-15T18:56:27+00:00"
         },
         {
             "name": "illuminate/macroable",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -2691,7 +2691,7 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v10.48.7",
+            "version": "v10.48.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
@@ -5497,17 +5497,61 @@
             "time": "2024-04-13T07:20:53+00:00"
         },
         {
+            "name": "nadyita/phpstan-amp-file-rule",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nadyita/phpstan-amp-file-rule.git",
+                "reference": "7cc2f1cf25180b071064c07a80505e2a69e8cf28"
+            },
+            "require": {
+                "php": "^8.1.17",
+                "phpstan/phpstan": "^1.10"
+            },
+            "require-dev": {
+                "composer-phar/php-cs-fixer": "^3.51.0",
+                "nadybot/nadystyle": "dev-main",
+                "nikic/php-parser": "^4.13.0",
+                "thecodingmachine/safe": "^1.0 || ^2.0"
+            },
+            "default-branch": true,
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "phpstan-amp-file-rule.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nadyita\\PHPStan\\Rules\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nadyita",
+                    "email": "nadyita@hodorraid.org"
+                }
+            ],
+            "description": "A PHPStan rule to detect the use of sync filesystem calls for which there are async counterparts. Must be used in conjunction with amphp/file",
+            "time": "2024-04-17T08:33:18+00:00"
+        },
+        {
             "name": "phpstan/phpstan",
-            "version": "1.10.66",
+            "version": "1.10.67",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd"
+                "reference": "16ddbe776f10da6a95ebd25de7c1dbed397dc493"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/94779c987e4ebd620025d9e5fdd23323903950bd",
-                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/16ddbe776f10da6a95ebd25de7c1dbed397dc493",
+                "reference": "16ddbe776f10da6a95ebd25de7c1dbed397dc493",
                 "shasum": ""
             },
             "require": {
@@ -5550,13 +5594,9 @@
                 {
                     "url": "https://github.com/phpstan",
                     "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
-                    "type": "tidelift"
                 }
             ],
-            "time": "2024-03-28T16:17:31+00:00"
+            "time": "2024-04-16T07:22:02+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -6873,7 +6913,8 @@
         "nadylib/imex": 20,
         "nadybot/aolib": 20,
         "nadylib/leaky-bucket": 20,
-        "nadybot/nadystyle": 20
+        "nadybot/nadystyle": 20,
+        "nadyita/phpstan-amp-file-rule": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

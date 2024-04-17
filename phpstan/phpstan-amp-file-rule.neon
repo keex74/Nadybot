@@ -1,5 +1,0 @@
-services:
-  -
-    class: Nadybot\phpstan\Rules\UseAsyncFunctionsRule
-    tags:
-      - phpstan.rules.rule
