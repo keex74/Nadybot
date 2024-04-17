@@ -147,10 +147,10 @@ class DB {
 				} catch (PDOException $e) {
 					if (!$errorShown) {
 						$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
-						$this->logger->error(
-							"Cannot connect to the MySQL db at {$config->host}: ".
-							trim($e->errorInfo[2])
-						);
+						$this->logger->error('Cannot connect to the MySQL db at {db_host}: {error}', [
+							'host' => $config->host,
+							'error' => $e->errorInfo[2],
+						]);
 						$this->logger->notice(
 							'Will keep retrying until the db is back up again'
 						);
@@ -279,8 +279,11 @@ class DB {
 				} catch (PDOException $e) {
 					if (!$errorShown) {
 						$this->logger->error(
-							"Cannot connect to the PostgreSQL db at {$config->host}: ".
-							trim($e->errorInfo[2] ?? $e->getMessage())
+							'Cannot connect to the PostgreSQL DB at {db_host}: {error}',
+							[
+								'db_host' => $config->host,
+								'error' => trim($e->errorInfo[2] ?? $e->getMessage()),
+							]
 						);
 						$this->logger->notice(
 							'Will keep retrying until the db is back up again'
@@ -312,8 +315,11 @@ class DB {
 					if (!$errorShown) {
 						$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
 						$this->logger->error(
-							"Cannot connect to the MSSQL db at {$config->host}: ".
-							trim($e->errorInfo[2])
+							'Cannot connect to the MSSQL DB at {db_host}: {error}',
+							[
+								'db_host' => $config->host,
+								'error' => trim($e->errorInfo[2]),
+							]
 						);
 						$this->logger->notice(
 							'Will keep retrying until the db is back up again'
@@ -340,14 +346,12 @@ class DB {
 				if (!isset($this->sql)) {
 					return;
 				}
-				$this->logger->debug(
-					$query,
-					[
-						'params' => $bindings,
-						'driver' => $this->sql->getAttribute(PDO::ATTR_DRIVER_NAME),
-						'version' => $this->sql->getAttribute(PDO::ATTR_SERVER_VERSION),
-					]
-				);
+				$this->logger->debug('{query}', [
+					'query' => $query,
+					'params' => $bindings,
+					'driver' => $this->sql->getAttribute(PDO::ATTR_DRIVER_NAME),
+					'version' => $this->sql->getAttribute(PDO::ATTR_SERVER_VERSION),
+				]);
 			}
 		);
 	}
@@ -976,11 +980,11 @@ class DB {
 			if (isset(BotRunner::$arguments['migration-errors-fatal'])) {
 				throw $e;
 			}
-			$this->logger->error(
-				"Error executing {$class}::migrate(): " .
-				$e->getMessage(),
-				['exception' => $e]
-			);
+			$this->logger->error('Error executing {class}::migrate(): {error}', [
+				'class' => $class,
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			return;
 		}
 		$this->table($table)->insert([

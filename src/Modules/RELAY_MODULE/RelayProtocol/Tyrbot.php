@@ -105,16 +105,16 @@ class Tyrbot implements RelayProtocolInterface {
 			$identify = $mapper->hydrateObject(BasePacket::class, $data);
 			return $this->decodeAndHandlePacket($message->sender, $identify, $data);
 		} catch (JsonException $e) {
-			$this->logger->error(
-				"Invalid data received via Tyrbot protocol: {$serialized}",
-				['exception' => $e]
-			);
+			$this->logger->error('Invalid data received via Tyrbot protocol: {data}', [
+				'data' => $serialized,
+				'exception' => $e,
+			]);
 			return null;
 		} catch (Throwable $e) {
-			$this->logger->error(
-				"Invalid Tyrbot-package received: {$serialized}",
-				['exception' => $e]
-			);
+			$this->logger->error('Invalid Tyrbot-package received: {data}', [
+				'data' => $serialized,
+				'exception' => $e,
+			]);
 			return null;
 		}
 	}

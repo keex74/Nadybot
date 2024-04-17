@@ -446,9 +446,9 @@ class DiscordSlashCommandController extends ModuleInstance {
 			}
 			throw $e;
 		}
-		$this->logger->notice(
-			count($newCmds) . ' Slash-commands registered successfully.'
-		);
+		$this->logger->notice('{num_commands} Slash-commands registered successfully.', [
+			'num_commands' => count($newCmds),
+		]);
 	}
 
 	/** @return array<string,CmdCfg> */

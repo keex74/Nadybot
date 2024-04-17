@@ -643,9 +643,15 @@ class RaidPointsController extends ModuleInstance {
 		}
 		$mainPoints = $this->getThisAltsRaidPoints($event->main);
 		$this->logger->notice(
-			"Adding {$event->alt} as an alt of {$event->main} requires us to merge their raid points. ".
-			"Combining {$event->alt}'s points ({$altsPoints}) with {$event->main}'s (".
-			($mainPoints??0) . ')'
+			'Adding {alt} as an alt of {main} requires us to merge their raid points. '.
+			"Combining {alt}'s points ({alts_raid_points}) with {main}'s (".
+			'{mains_raid_points}).',
+			[
+				'alt' => $event->alt,
+				'main' => $event->main,
+				'alts_raid_points' => $altsPoints,
+				'mains_raid_points' => $mainPoints ?? 0,
+			]
 		);
 		$this->db->awaitBeginTransaction();
 		try {
@@ -656,15 +662,15 @@ class RaidPointsController extends ModuleInstance {
 				->delete();
 		} catch (Throwable $e) {
 			$this->db->rollback();
-			$this->logger->error(
-				'There was an error combining these points: ' . $e->getMessage()
-			);
+			$this->logger->error('There was an error combining these points: {error}', [
+				'error' => $e->getMessage(),
+			]);
 			return;
 		}
 		$this->db->commit();
-		$this->logger->notice(
-			'Raid points merged successfully to a new total of ' . $newPoints
-		);
+		$this->logger->notice('Raid points merged successfully to a new total of {new_total}', [
+			'new_total' => $newPoints,
+		]);
 	}
 
 	/** See a list of pre-defined raid rewards */

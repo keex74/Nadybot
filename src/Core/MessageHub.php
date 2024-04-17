@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Safe\{json_encode, preg_match};
+use function Safe\{preg_match};
 use Exception;
 use Illuminate\Support\Collection;
 use JsonException;
@@ -417,10 +417,10 @@ class MessageHub {
 			$eventLogLevel = Logger::toMonologLevel($path[0]->name);
 		}
 		try {
-			$this->logger->info(
-				"Trying to route {$type} - ".
-				json_encode($event, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE|\JSON_THROW_ON_ERROR)
-			);
+			$this->logger->info('Trying to route {type} - {event}', [
+				'type' => $type,
+				'event' => $event,
+			]);
 		} catch (JsonException $e) {
 			// Ignore
 		}

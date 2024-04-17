@@ -26,9 +26,9 @@ class MigrateReputationTable implements SchemaMigration {
 			$db->schema()->dropIfExists('reputation');
 			return;
 		}
-		$logger->info(
-			'Converting ' . $oldData->count() . ' DB entries from reputation to comments'
-		);
+		$logger->info('Converting {num_entries} DB entries from reputation to comments', [
+			'num_entries' => $oldData->count(),
+		]);
 		$cat = $this->reputationController->getReputationCategory();
 		try {
 			foreach ($oldData as $row) {

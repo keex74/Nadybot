@@ -340,9 +340,9 @@ class QueryBuilder extends Builder {
 				return $this->executeQuery($sql, $params);
 			}
 			if ($this->nadyDB->getType() === DB\Type::MySQL && in_array($e->errorInfo[1], [1_927, 2_006], true)) {
-				$this->logger->warning(
-					'DB had recoverable error: ' . trim($e->errorInfo[2]) . ' - reconnecting'
-				);
+				$this->logger->warning('DB had recoverable error: {error} - reconnecting', [
+					'error' => trim($e->errorInfo[2]),
+				]);
 				$conn->reconnect();
 				return $this->executeQuery(...func_get_args());
 			}
