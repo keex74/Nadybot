@@ -2,8 +2,6 @@
 
 namespace Nadybot\Core\Modules\CONFIG;
 
-use function Safe\glob;
-
 use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\{
@@ -595,16 +593,13 @@ class ConfigController extends ModuleInstance {
 		if (!isset($path)) {
 			return null;
 		}
-		$files = array_values(array_filter(
-			glob("{$path}/*", \GLOB_NOSORT) ?: [],
-			static function (string $file): bool {
-				return strtolower(basename($file)) === 'readme.txt';
-			}
-		));
-		if (!count($files)) {
+		$file = collect($this->fs->listFiles($path))->first(
+			static fn (string $file): bool => strtolower($file) === 'readme.txt'
+		);
+		if (!isset($file)) {
 			return null;
 		}
-		return trim($this->fs->read($files[0]));
+		return trim($this->fs->read($path . \DIRECTORY_SEPARATOR . $file));
 	}
 
 	/** Show configuration and controls for a single module */
