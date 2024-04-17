@@ -3,11 +3,14 @@
 namespace Nadybot\Api;
 
 use function Safe\{glob, preg_match, preg_match_all};
+
+use DateTimeInterface;
 use Exception;
 use Nadybot\Core\{
 	Attributes as NCA,
 	BotRunner,
 	DBRow,
+	DBTable,
 	Registry,
 	Safe,
 };
@@ -198,7 +201,7 @@ class ApiSpecGenerator {
 		}
 		if ($refClass->getParentClass() !== false) {
 			$parentClass = $refClass->getParentClass()->getName();
-			if ($parentClass !== DBRow::class) {
+			if (!in_array($parentClass, [DBRow::class, DBTable::class], true)) {
 				$parentParts = explode('\\', $parentClass);
 				$this->addSchema($result, end($parentParts));
 				$newResult = [
@@ -431,6 +434,14 @@ class ApiSpecGenerator {
 		$propName = $refProp->getName();
 		if (!$refProp->hasType()) {
 			$comment = $refProp->getDocComment();
+			if ($comment === false) {
+				$comment = $refProp->getDeclaringClass()->getConstructor()?->getDocComment() ?? false;
+				if ($comment !== false) {
+					if (count($matches = Safe::pregMatch('/@param\s+(.*\$' . preg_quote($refProp->name, '/') . ')/m', $comment))) {
+						$comment = '@var ' . $matches[1];
+					}
+				}
+			}
 			if ($comment === false || !count($matches = Safe::pregMatch("/@var ([^\s]+)/s", $comment))) {
 				return [$propName, 'mixed'];
 			}
@@ -468,9 +479,7 @@ class ApiSpecGenerator {
 				} else {
 					$types []= $refType->getName();
 				}
-			} elseif ($refType->getName() === 'DateTime') {
-				$types []= 'integer';
-			} elseif ($refType->getName() === 'DateTimeImmutable') {
+			} elseif (is_a($refType->getName(), DateTimeInterface::class, true)) {
 				$types []= 'integer';
 			} else {
 				$name = explode('\\', $refType->getName());
@@ -491,9 +500,17 @@ class ApiSpecGenerator {
 	 * @phpstan-return null|array{0: string, 1: string|string[], 2?: string}
 	 */
 	protected function getNameAndType(ReflectionProperty $refProperty): ?array {
-		$docComment = $refProperty->getDocComment();
 		if (count($refProperty->getAttributes(NCA\JSON\Ignore::class))) {
 			return null;
+		}
+		$docComment = $refProperty->getDocComment();
+		if ($docComment === false) {
+			$docComment = $refProperty->getDeclaringClass()->getConstructor()?->getDocComment() ?? false;
+			if ($docComment !== false) {
+				if (count($matches = Safe::pregMatch('/@param\s+.*\$' . preg_quote($refProperty->name, '/') . '\s(.*)/m', $docComment))) {
+					$docComment = $matches[1];
+				}
+			}
 		}
 		$description = $this->getDescriptionFromComment(is_string($docComment) ? $docComment : '');
 		$nameAttr = $refProperty->getAttributes(NCA\JSON\Name::class);
