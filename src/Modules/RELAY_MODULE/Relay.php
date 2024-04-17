@@ -119,6 +119,7 @@ class Relay implements MessageReceiver {
 		$this->onlineChars[$where] ??= [];
 		$player = OnlinePlayer::fromPlayer(new Player(
 			name: $character,
+			dimension: $dimension,
 			charid: $uid ?? 0,
 			source: $clientId,
 		));
