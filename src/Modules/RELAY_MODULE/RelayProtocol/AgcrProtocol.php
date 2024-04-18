@@ -137,7 +137,9 @@ class AgcrProtocol implements RelayProtocolInterface {
 		$command = preg_quote($this->command, '/');
 		$data = array_shift($message->packages);
 		if (!count($matches = Safe::pregMatch("/^.?{$command}\s+(.+)/s", $data))) {
-			$this->logger->debug('Relay {relay} dropped message that was not a command');
+			$this->logger->debug('Relay {relay} dropped message that was not a command', [
+				'relay' => $this->relay->getName(),
+			]);
 			return null;
 		}
 		$data = $matches[1];

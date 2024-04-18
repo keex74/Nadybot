@@ -475,7 +475,10 @@ class PackageController extends ModuleInstance {
 
 		$toDelete = [];
 		foreach ($iterator as $file) {
-			$this->logger->info('Encountered ' . $file->getFilename() . ' (' . $file->getPathname() . ')');
+			$this->logger->info('Encountered {filename} ({path})', [
+				'filename' => $file->getFilename(),
+				'path' => $file->getPathname(),
+			]);
 
 			/** @var SplFileInfo $file */
 			if (in_array($file->getFilename(), ['.', '..'], true)) {
@@ -487,7 +490,7 @@ class PackageController extends ModuleInstance {
 				$this->logger->info('Skipping, because . or ..');
 				continue;
 			}
-			$this->logger->info('Adding as ' . $file->getRealPath());
+			$this->logger->info('Adding as {real_path}', ['real_path' => $file->getRealPath()]);
 			$realPath = $file->getRealPath();
 			if ($realPath !== false) {
 				$toDelete []= $realPath;

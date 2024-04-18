@@ -92,7 +92,10 @@ class Highway implements RelayLayerInterface, StatusProvider {
 					'Unable to encode subscribe-command into highway protocol: '.
 						$e->getMessage()
 				);
-				$this->logger->error($this->status->text);
+				$this->logger->error('{error}', [
+					'error' => $this->status->text,
+					'exception' => $e,
+				]);
 				return [];
 			}
 			$this->initCallback = $callback;
@@ -121,7 +124,10 @@ class Highway implements RelayLayerInterface, StatusProvider {
 					'Unable to encode unsubscribe-command into highway protocol: '.
 						$e->getMessage()
 				);
-				$this->logger->error($this->status->text);
+				$this->logger->error('{error}', [
+					'error' => $this->status->text,
+					'exception' => $e,
+				]);
 				return [];
 			}
 			$this->deInitCallback = $callback;
@@ -143,9 +149,11 @@ class Highway implements RelayLayerInterface, StatusProvider {
 					$encoded []= $this->encodePackage($msg);
 				} catch (JsonException | UnableToSerializeObject $e) {
 					$this->logger->error(
-						'Unable to encode the relay data into highway protocol: '.
-							$e->getMessage(),
-						['exception' => $e]
+						'Unable to encode the relay data into highway protocol: {error}',
+						[
+							'error' => $e->getMessage(),
+							'exception' => $e,
+						]
 					);
 					continue;
 				}

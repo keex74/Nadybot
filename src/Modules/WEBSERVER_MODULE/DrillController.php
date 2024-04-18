@@ -114,11 +114,13 @@ class DrillController extends ModuleInstance {
 		} catch (WebsocketConnectException $e) {
 			$this->logger->error('Still endpoint errored: {error}', [
 				'error' => $e->getMessage(),
+				'exception' => $e,
 			]);
 			return;
 		} catch (HttpException $e) {
 			$this->logger->error('Request to connect to Drill failed: {error}', [
 				'error' => $e->getMessage(),
+				'exception' => $e,
 			]);
 			delay($this->reconnectDelay);
 			$this->reconnectDelay = max($this->reconnectDelay * 2, 5);
@@ -126,6 +128,7 @@ class DrillController extends ModuleInstance {
 		} catch (WebsocketClosedException $e) {
 			$this->logger->notice('Reconnecting to Drill in {delay}s.', [
 				'delay' => $this->reconnectDelay,
+				'exception' => $e,
 			]);
 			delay($this->reconnectDelay);
 			$this->reconnectDelay = max($this->reconnectDelay * 2, 5);
@@ -144,6 +147,7 @@ class DrillController extends ModuleInstance {
 		} catch (Drill\UnsupportedPacketException $e) {
 			$this->logger->warning('Received unsupported Drill package type {type}', [
 				'type' => $e->getMessage(),
+				'exception' => $e,
 			]);
 			return;
 		}
@@ -222,6 +226,7 @@ class DrillController extends ModuleInstance {
 		} catch (TimeoutException | CancelledException $e) {
 			$this->logger->warning('No Drill auth token from {sender} received for 30s', [
 				'sender' => $packet->sender,
+				'exception' => $e,
 			]);
 			return;
 		} catch (Throwable $e) {

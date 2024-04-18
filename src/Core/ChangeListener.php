@@ -2,10 +2,11 @@
 
 namespace Nadybot\Core;
 
+use Closure;
+
 class ChangeListener {
-	/** @param callable $callback */
 	public function __construct(
-		public $callback,
+		public Closure $callback,
 		public mixed $data,
 	) {
 	}

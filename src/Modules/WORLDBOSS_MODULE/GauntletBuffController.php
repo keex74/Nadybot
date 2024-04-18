@@ -192,7 +192,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 		} catch (Throwable $error) {
 			$this->logger->warning('Unknown error from Gauntlet buff API: {error}', [
 				'error' => $error->getMessage(),
-				'Exception' => $error,
+				'exception' => $error,
 			]);
 			return;
 		}

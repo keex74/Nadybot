@@ -123,7 +123,10 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 			$sendto->reply($msg);
 		} catch (UserException $e) {
 		} catch (Throwable $e) {
-			$this->logger->warning('Error downloading/installing new WebUI: ' . $e->getMessage());
+			$this->logger->warning('Error downloading/installing new WebUI: {error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 		}
 	}
 
@@ -301,8 +304,10 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 			$this->uninstallNadyUi();
 			$this->installNewRelease($artifact);
 		} catch (Exception $e) {
-			$msg = $e->getMessage();
-			$this->logger->error($msg);
+			$this->logger->error('{error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			throw $e;
 		}
 		if ($currentVersion === 0) {

@@ -61,9 +61,11 @@ class TyrRelay implements RelayLayerInterface, StatusProvider {
 				$encoded []= json_encode($json, \JSON_THROW_ON_ERROR|\JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
 			} catch (JsonException $e) {
 				$this->logger->error(
-					'Unable to encode the relay data into tyr-relay protocol: '.
-						$e->getMessage(),
-					['exception' => $e]
+					'Unable to encode the relay data into tyr-relay protocol: {error}',
+					[
+						'error' => $e->getMessage(),
+						'exception' => $e,
+					]
 				);
 				continue;
 			}
@@ -80,7 +82,10 @@ class TyrRelay implements RelayLayerInterface, StatusProvider {
 					RelayStatus::ERROR,
 					'Unable to decode tyr-relay message: ' . $e->getMessage()
 				);
-				$this->logger->error($this->status->text);
+				$this->logger->error('{error}', [
+					'error' => $this->status->text,
+					'exception' => $e,
+				]);
 				$data = null;
 				continue;
 			}
@@ -92,7 +97,7 @@ class TyrRelay implements RelayLayerInterface, StatusProvider {
 					RelayStatus::ERROR,
 					'Received tyr-relay message without type'
 				);
-				$this->logger->error($this->status->text);
+				$this->logger->error('{error}', ['error' => $this->status->text]);
 				$data = null;
 				continue;
 			}
@@ -112,7 +117,7 @@ class TyrRelay implements RelayLayerInterface, StatusProvider {
 					RelayStatus::ERROR,
 					'Received tyr-relay message without payload'
 				);
-				$this->logger->error($this->status->text);
+				$this->logger->error('{error}', ['error' => $this->status->text]);
 				$data = null;
 				continue;
 			}

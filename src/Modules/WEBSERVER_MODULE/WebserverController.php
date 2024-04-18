@@ -549,7 +549,10 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 		try {
 			$payload = JWT::decode($token, trim($aoAuthPubKey));
 		} catch (Exception $e) {
-			$this->logger->error('JWT: ' . $e->getMessage(), ['exception' => $e]);
+			$this->logger->error('JWT: {error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			return null;
 		}
 		if (!isset($payload->exp) || $payload->exp <= time()) {

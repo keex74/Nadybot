@@ -1558,6 +1558,7 @@ class DiscordGatewayController extends ModuleInstance {
 				'invitations for the Discord server "{discordServer}"',
 				[
 					'discordServer' => $guild->name,
+					'exception' => $e,
 				]
 			);
 			$this->noManageInviteRights[$guild->id] = true;
@@ -1763,7 +1764,7 @@ class DiscordGatewayController extends ModuleInstance {
 				->where('token', $inviteCode)
 				->asObj(DBDiscordInvite::class)
 				->firstOrFail();
-		} catch (ItemNotFoundException $e) {
+		} catch (ItemNotFoundException) {
 			$this->logger->notice('Cannot find invitation {token} in the database, cannot link user', [
 				'token' => $inviteCode,
 			]);
@@ -2009,6 +2010,7 @@ class DiscordGatewayController extends ModuleInstance {
 					'emojis for the Discord server "{discordServer}"',
 					[
 						'discordServer' => $guild->name,
+						'exception' => $e,
 					]
 				);
 			} else {
@@ -2052,6 +2054,7 @@ class DiscordGatewayController extends ModuleInstance {
 						$retryDelay = $gwTry**2;
 						$this->logger->notice('Error reading Discord gateway: {error}, retrying in {retry}s', [
 							'error' => $e->getMessage(),
+							'exception' => $e,
 							'retry' => $retryDelay,
 						]);
 						delay($retryDelay);
@@ -2109,6 +2112,7 @@ class DiscordGatewayController extends ModuleInstance {
 			} catch (WebsocketConnectException $e) {
 				$this->logger->error('Discord endpoint errored: {error}', [
 					'error' => $e->getMessage(),
+					'exception' => $e,
 				]);
 				$this->sessionId = null;
 				return;
@@ -2128,6 +2132,7 @@ class DiscordGatewayController extends ModuleInstance {
 					unset($this->client);
 					$this->logger->notice('Reconnecting to Discord gateway in {delay}s.', [
 						'delay' => $this->reconnectDelay,
+						'exception' => $e,
 					]);
 					delay($this->reconnectDelay);
 					$this->reconnectDelay = max($this->reconnectDelay * 2, 5);
@@ -2137,6 +2142,7 @@ class DiscordGatewayController extends ModuleInstance {
 			} catch (Throwable $e) {
 				$this->logger->error('Error from Discord endpoint: {error}', [
 					'error' => $e->getMessage(),
+					'exception' => $e,
 				]);
 				$this->sessionId = null;
 				return;

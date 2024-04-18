@@ -221,7 +221,10 @@ class Tyrbot implements RelayProtocolInterface {
 		try {
 			$data = $this->jsonEncode($packet);
 		} catch (JsonException $e) {
-			$this->logger->error('Error ecoding Tyrbot message: ' . $e->getMessage(), ['exception' => $e]);
+			$this->logger->error('Error encoding Tyrbot message: {error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			return [];
 		}
 		$this->logger->debug('Successfully encoded message into Tyrbot format on relay {relay}', [

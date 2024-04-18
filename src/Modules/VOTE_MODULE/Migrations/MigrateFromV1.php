@@ -47,7 +47,9 @@ class MigrateFromV1 implements SchemaMigration {
 			$db->table(self::DB_OLD_VOTE)
 				->where('question', (string)$oldPoll->question)
 				->delete();
-			$logger->info("Poll \"{$oldPoll->question}\" converted to new poll system");
+			$logger->info('Poll "{question}" converted to new poll system', [
+				'question' => $oldPoll->question,
+			]);
 		}
 		$db->schema()->dropIfExists(self::DB_OLD_VOTE);
 		$logger->info('Conversion completed');

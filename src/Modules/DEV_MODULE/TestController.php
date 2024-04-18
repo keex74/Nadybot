@@ -100,7 +100,7 @@ class TestController extends ModuleInstance {
 		if ($this->showTestCommands) {
 			$this->chatBot->sendTell($line, $context->char->name);
 		} else {
-			$this->logger->notice($line);
+			$this->logger->notice('{line}', ['line' => $line]);
 			if (!$this->showTestResults) {
 				$testContext->sendto = new MockCommandReply($line, $logFile);
 				Registry::injectDependencies($testContext->sendto);

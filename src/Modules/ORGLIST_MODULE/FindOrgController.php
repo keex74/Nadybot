@@ -203,7 +203,10 @@ class FindOrgController extends ModuleInstance {
 				->chunkInsert($inserts);
 			$this->db->commit();
 		} catch (Exception $e) {
-			$this->logger->error('Error downloading orgs: ' . $e->getMessage(), ['exception' => $e]);
+			$this->logger->error('Error downloading orgs: {error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			$this->db->rollback();
 			$this->ready = true;
 		}
@@ -307,7 +310,7 @@ class FindOrgController extends ModuleInstance {
 				} else {
 					$body = $response->getBody()->buffer();
 				}
-			} catch (TimeoutException $e) {
+			} catch (TimeoutException) {
 				$this->logger->warning(
 					'Timeout downloading orglist for letter {letter}, retrying in {retry}s',
 					[

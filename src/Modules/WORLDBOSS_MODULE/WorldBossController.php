@@ -483,7 +483,7 @@ class WorldBossController extends ModuleInstance {
 		} catch (Throwable $error) {
 			$this->logger->warning('Unknown error from Worldboss API: {error}', [
 				'error' => $error->getMessage(),
-				'Exception' => $error,
+				'exception' => $error,
 			]);
 			return 0;
 		}

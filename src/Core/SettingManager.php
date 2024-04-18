@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core;
 
+use Closure;
 use Exception;
 use Nadybot\Core\Exceptions\SQLException;
 use Nadybot\Core\{
@@ -381,15 +382,11 @@ class SettingManager {
 	 *	} );
 	 * </code>
 	 *
-	 * @param string   $settingName changed setting's name
-	 * @param callable $callback    the callback function to call
-	 * @param mixed    $data        any data which will be passed to to the callback (optional)
+	 * @param string  $settingName changed setting's name
+	 * @param Closure $callback    the callback function to call
+	 * @param mixed   $data        any data which will be passed to to the callback (optional)
 	 */
-	public function registerChangeListener(string $settingName, callable $callback, mixed $data=null): void {
-		if (!is_callable($callback)) {
-			$this->logger->error('Given callback is not valid.');
-			return;
-		}
+	public function registerChangeListener(string $settingName, Closure $callback, mixed $data=null): void {
 		$settingName = strtolower($settingName);
 
 		$listener = new ChangeListener(

@@ -135,7 +135,9 @@ class WebsocketController extends ModuleInstance implements WebsocketClientHandl
 				return;
 			}
 			$this->subscriptions[$client->getId()] = $event->data->events;
-			$this->logger->info('Websocket subscribed to ' . implode(',', $event->data->events));
+			$this->logger->info('Websocket subscribed to {subscribed_to}', [
+				'subscribed_to' => implode(',', $event->data->events),
+			]);
 		} catch (TypeError) {
 			$client->close(4_002);
 		}

@@ -146,6 +146,7 @@ class CustomCmdController extends ModuleInstance {
 			$this->logger->warning('Unable to open {dir} to search for custom commands: {error}', [
 				'dir' => $baseDir,
 				'error' => $e->getMessage(),
+				'exception' => $e,
 			]);
 			return;
 		}

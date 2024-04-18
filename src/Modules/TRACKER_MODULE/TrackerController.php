@@ -267,7 +267,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 				$this->updateRosterForOrg($orgData);
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['Exception' => $e->getPrevious()]);
+			$this->logger->error('{error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e->getPrevious(),
+			]);
 		}
 		$this->logger->notice('Finished Tracker Roster update');
 	}
@@ -652,7 +655,10 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			}
 			$this->updateRosterForOrg($guild);
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['Exception' => $e->getPrevious()]);
+			$this->logger->error('{error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e->getPrevious(),
+			]);
 			$context->reply($e->getMessage());
 			return;
 		}

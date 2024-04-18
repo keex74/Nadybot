@@ -172,7 +172,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Auction[] $auctions */
 	public function importAuctions(array $auctions): void {
-		$this->logger->notice('Importing ' . count($auctions) . ' auction(s)');
+		$this->logger->notice('Importing {num_auctions} auction(s)', [
+			'num_auctions' => count($auctions),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all auctions');
@@ -188,9 +190,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -200,7 +200,9 @@ class ImportController extends ModuleInstance {
 	/** @param Schema\Ban[] $banlist */
 	public function importBanlist(array $banlist): void {
 		$numImported = 0;
-		$this->logger->notice('Importing ' . count($banlist) . ' ban(s)');
+		$this->logger->notice('Importing {num_bans} ban(s)', [
+			'num_bans' => count($banlist),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all bans');
@@ -221,12 +223,7 @@ class ImportController extends ModuleInstance {
 				$numImported++;
 			}
 		} catch (Throwable $e) {
-			$this->logger->error('Error importing bans: {error}', [
-				'error' => $e->getMessage(),
-				'exception' => $e,
-			]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -238,7 +235,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\CloakEntry[] $cloakActions */
 	public function importCloak(array $cloakActions): void {
-		$this->logger->notice('Importing ' . count($cloakActions) . ' cloak action(s)');
+		$this->logger->notice('Importing {num_actions} cloak action(s)', [
+			'num_actions' => count($cloakActions),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all cloak actions');
@@ -251,9 +250,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -262,7 +259,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Link[] $links */
 	public function importLinks(array $links): void {
-		$this->logger->notice('Importing ' . count($links) . ' links');
+		$this->logger->notice('Importing {num_links} links', [
+			'num_links' => count($links),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all links');
@@ -276,9 +275,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -291,7 +288,9 @@ class ImportController extends ModuleInstance {
 	 */
 	public function importMembers(array $members, array $rankMap=[]): void {
 		$numImported = 0;
-		$this->logger->notice('Importing ' . count($members) . ' member(s)');
+		$this->logger->notice('Importing {num_members} member(s)', [
+			'num_members' => count($members),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all members');
@@ -358,12 +357,7 @@ class ImportController extends ModuleInstance {
 			}
 			$this->raidRankController->uploadRaidRanks();
 		} catch (Throwable $e) {
-			$this->logger->error('Error importing members: {error}', [
-				'error' => $e->getMessage(),
-				'exception' => $e,
-			]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -374,7 +368,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Event[] $events */
 	public function importEvents(array $events): void {
-		$this->logger->notice('Importing ' . count($events) . ' events');
+		$this->logger->notice('Importing {num_events} events', [
+			'num_events' => count($events),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all events');
@@ -397,9 +393,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -408,7 +402,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\News[] $news */
 	public function importNews(array $news): void {
-		$this->logger->notice('Importing ' . count($news) . ' news');
+		$this->logger->notice('Importing {num_news} news', [
+			'num_news' => count($news),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all news');
@@ -436,9 +432,7 @@ class ImportController extends ModuleInstance {
 				}
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -447,7 +441,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Note[] $notes */
 	public function importNotes(array $notes): void {
-		$this->logger->notice('Importing ' . count($notes) . ' notes');
+		$this->logger->notice('Importing {num_notes} notes', [
+			'num_notes' => count($notes),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all notes');
@@ -472,9 +468,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -483,7 +477,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\OrgNote[] $notes */
 	public function importOrgNotes(array $notes): void {
-		$this->logger->notice('Importing ' . count($notes) . ' org notes');
+		$this->logger->notice('Importing {num_notes} org notes', [
+			'num_notes' => count($notes),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all org notes');
@@ -501,9 +497,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -512,7 +506,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Poll[] $polls */
 	public function importPolls(array $polls): void {
-		$this->logger->notice('Importing ' . count($polls) . ' polls');
+		$this->logger->notice('Importing {num_polls} polls', [
+			'num_polls' => count($polls),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all polls');
@@ -546,9 +542,7 @@ class ImportController extends ModuleInstance {
 				}
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -557,7 +551,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Quote[] $quotes */
 	public function importQuotes(array $quotes): void {
-		$this->logger->notice('Importing ' . count($quotes) . ' quotes');
+		$this->logger->notice('Importing {num_quotes} quotes', [
+			'num_quotes' => count($quotes),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all quotes');
@@ -570,9 +566,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -581,7 +575,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\RaffleBonus[] $bonuses */
 	public function importRaffleBonus(array $bonuses): void {
-		$this->logger->notice('Importing ' . count($bonuses) . ' raffle bonuses');
+		$this->logger->notice('Importing {num_bonuses} raffle bonuses', [
+			'num_bonuses' => count($bonuses),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raffle bonuses');
@@ -597,9 +593,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -608,7 +602,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\RaidBlock[] $blocks */
 	public function importRaidBlocks(array $blocks): void {
-		$this->logger->notice('Importing ' . count($blocks) . ' raid blocks');
+		$this->logger->notice('Importing {num_blocks} raid blocks', [
+			'num_blocks' => count($blocks),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raid blocks');
@@ -628,9 +624,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -639,7 +633,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Raid[] $raids */
 	public function importRaids(array $raids): void {
-		$this->logger->notice('Importing ' . count($raids) . ' raids');
+		$this->logger->notice('Importing {num_raids} raids', [
+			'num_raids' => count($raids),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raids');
@@ -711,9 +707,7 @@ class ImportController extends ModuleInstance {
 				}
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -722,7 +716,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\RaidPointEntry[] $points */
 	public function importRaidPoints(array $points): void {
-		$this->logger->notice('Importing ' . count($points) . ' raid points');
+		$this->logger->notice('Importing {num_points} raid points', [
+			'num_points' => count($points),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raid points');
@@ -738,9 +734,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -749,7 +743,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\RaidPointLog[] $points */
 	public function importRaidPointsLog(array $points): void {
-		$this->logger->notice('Importing ' . count($points) . ' raid point logs');
+		$this->logger->notice('Importing {num_point_logs} raid point logs', [
+			'num_point_logs' => count($points),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all raid point logs');
@@ -771,9 +767,7 @@ class ImportController extends ModuleInstance {
 				));
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -782,7 +776,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Timer[] $timers */
 	public function importTimers(array $timers): void {
-		$this->logger->notice('Importing ' . count($timers) . ' timers');
+		$this->logger->notice('Importing {num_timers} timers', [
+			'num_timers' => count($timers),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all timers');
@@ -819,9 +815,7 @@ class ImportController extends ModuleInstance {
 				$timerNum++;
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -830,7 +824,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param TrackedUser[] $trackedUsers */
 	public function importTrackedCharacters(array $trackedUsers): void {
-		$this->logger->notice('Importing ' . count($trackedUsers) . ' tracked users');
+		$this->logger->notice('Importing {num_tracked_users} tracked users', [
+			'num_tracked_users' => count($trackedUsers),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all tracked users');
@@ -860,9 +856,7 @@ class ImportController extends ModuleInstance {
 				}
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -874,7 +868,9 @@ class ImportController extends ModuleInstance {
 	 * @param array<string,string>     $rankMap
 	 */
 	public function importCommentCategories(array $categories, array $rankMap): void {
-		$this->logger->notice('Importing ' . count($categories) . ' comment categories');
+		$this->logger->notice('Importing {num_categories} comment categories', [
+			'num_categories' => count($categories),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all user-managed comment categories');
@@ -900,9 +896,7 @@ class ImportController extends ModuleInstance {
 				}
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -911,7 +905,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param Schema\Comment[] $comments */
 	public function importComments(array $comments): void {
-		$this->logger->notice('Importing ' . count($comments) . ' comment(s)');
+		$this->logger->notice('Importing {num_comments} comment(s)', [
+			'num_comments' => count($comments),
+		]);
 		$this->db->awaitBeginTransaction();
 		try {
 			$this->logger->notice('Deleting all comments');
@@ -943,9 +939,7 @@ class ImportController extends ModuleInstance {
 				$this->db->insert($entry);
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -1031,7 +1025,9 @@ class ImportController extends ModuleInstance {
 
 	/** @param AltMain[] $alts */
 	protected function importAlts(array $alts): void {
-		$this->logger->notice('Importing alts for ' . count($alts) . ' character(s)');
+		$this->logger->notice('Importing alts for {num_alts} character(s)', [
+			'num_alts' => count($alts),
+		]);
 		$numImported = 0;
 		$this->db->awaitBeginTransaction();
 		try {
@@ -1047,9 +1043,7 @@ class ImportController extends ModuleInstance {
 				}
 			}
 		} catch (Throwable $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
-			$this->logger->notice('Rolling back changes');
-			$this->db->rollback();
+			$this->rollback($e);
 			return;
 		}
 		$this->db->commit();
@@ -1081,6 +1075,14 @@ class ImportController extends ModuleInstance {
 	/** @param Schema\Channel[] $channels */
 	protected function channelsToMode(array $channels): string {
 		return implode(',', array_map(static fn (Schema\Channel $channel) => $channel->toNadybot(), $channels));
+	}
+
+	private function rollback(Throwable $e): void {
+		$this->logger->error('{error}. Rolling back changes.', [
+			'error' => rtrim($e->getMessage(), '.'),
+			'exception' => $e,
+		]);
+		$this->db->rollback();
 	}
 
 	private function loadAndParseExportFile(string $fileName, CmdContext $sendto): ?Schema\Export {

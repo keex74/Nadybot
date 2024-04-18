@@ -140,10 +140,15 @@ class RelayController extends ModuleInstance {
 				$relay = $this->createRelayFromDB($relayConf);
 				$this->addRelay($relay);
 				$relay->init(function () use ($relay) {
-					$this->logger->notice('Relay ' . $relay->getName() . ' initialized');
+					$this->logger->notice('Relay {relay_name} initialized', [
+						'relay_name' => $relay->getName(),
+					]);
 				});
 			} catch (Exception $e) {
-				$this->logger->error($e->getMessage(), ['exception' => $e]);
+				$this->logger->error('{error}', [
+					'error' => $e->getMessage(),
+					'exception' => $e,
+				]);
 			}
 		}
 	}
@@ -442,7 +447,9 @@ class RelayController extends ModuleInstance {
 			$this->db->commit();
 		}
 		$relay->init(function () use ($relay) {
-			$this->logger->notice('Relay ' . $relay->getName() . ' initialized');
+			$this->logger->notice('Relay {relay_name} initialized', [
+				'relay_name' => $relay->getName(),
+			]);
 		});
 		return $relay;
 	}
@@ -485,7 +492,9 @@ class RelayController extends ModuleInstance {
 			return false;
 		}
 		$liveRelay->deinit(function (Relay $relay) {
-			$this->logger->notice('Relay ' . $relay->getName() . ' destroyed');
+			$this->logger->notice('Relay {relay_name} destroyed', [
+				'relay_name' => $relay->getName(),
+			]);
 			unset($relay);
 		});
 		return true;

@@ -20,7 +20,10 @@ class Registry {
 
 	public static function setInstance(string $name, object $obj): void {
 		$name = strtolower($name);
-		static::getLogger()->info("Adding instance '{$name}'");
+		static::getLogger()->info("Adding instance '{class}' as '{instance}'", [
+			'class' => $obj::class,
+			'instance' => $name,
+		]);
 		static::$repo[$name] = $obj;
 	}
 
@@ -51,7 +54,9 @@ class Registry {
 
 		$instance = Registry::$repo[$name]??null;
 		if ($instance === null) {
-			static::getLogger()->warning("Could not find instance for '{$name}'");
+			static::getLogger()->warning("Could not find instance for '{instance}'", [
+				'instance' => $name,
+			]);
 		}
 
 		return $instance;

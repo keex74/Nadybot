@@ -171,7 +171,10 @@ class CommentController extends ModuleInstance {
 				}
 			}
 		} catch (SQLException $e) {
-			$this->logger->error('Error changing comment tables: ' . $e->getMessage(), ['exception' => $e]);
+			$this->logger->error('Error changing comment tables: {error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			$this->db->rollback();
 			$this->db->registerTableName('comments', $oldCommentTable);
 			$this->db->registerTableName('comment_categories', $oldCategoryTable);

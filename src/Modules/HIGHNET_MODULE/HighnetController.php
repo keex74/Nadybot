@@ -304,6 +304,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		} catch (UnableToHydrateObject $e) {
 			$this->logger->info('Invalid highnet-package received: {data}.', [
 				'data' => $body,
+				'exception' => $e,
 			]);
 		}
 	}

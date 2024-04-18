@@ -664,6 +664,7 @@ class RaidPointsController extends ModuleInstance {
 			$this->db->rollback();
 			$this->logger->error('There was an error combining these points: {error}', [
 				'error' => $e->getMessage(),
+				'exception' => $e,
 			]);
 			return;
 		}
