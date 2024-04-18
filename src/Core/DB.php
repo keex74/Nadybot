@@ -148,12 +148,12 @@ class DB {
 					if (!$errorShown) {
 						$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
 						$this->logger->error('Cannot connect to the MySQL db at {db_host}: {error}', [
-							'host' => $config->host,
+							'db_host' => $config->host,
 							'error' => $e->errorInfo[2],
+							'exception' => $e,
 						]);
-						$this->logger->notice(
-							'Will keep retrying until the db is back up again'
-						);
+						// @phpstan-ignore-next-line
+						$this->logger->notice('Will keep retrying until the db is back up again');
 						$errorShown = true;
 					}
 					sleep(1);
@@ -283,11 +283,11 @@ class DB {
 							[
 								'db_host' => $config->host,
 								'error' => trim($e->errorInfo[2] ?? $e->getMessage()),
+								'exception' => $e,
 							]
 						);
-						$this->logger->notice(
-							'Will keep retrying until the db is back up again'
-						);
+						// @phpstan-ignore-next-line
+						$this->logger->notice('Will keep retrying until the db is back up again');
 						$errorShown = true;
 					}
 					sleep(1);
@@ -319,11 +319,11 @@ class DB {
 							[
 								'db_host' => $config->host,
 								'error' => trim($e->errorInfo[2]),
+								'exception' => $e,
 							]
 						);
-						$this->logger->notice(
-							'Will keep retrying until the db is back up again'
-						);
+						// @phpstan-ignore-next-line
+						$this->logger->notice('Will keep retrying until the db is back up again');
 						$errorShown = true;
 					}
 					sleep(1);
@@ -414,7 +414,7 @@ class DB {
 		$this->logger->info('Committing transaction');
 		try {
 			$this->sql?->commit();
-		} catch (PDOException $e) {
+		} catch (PDOException) {
 			$this->logger->info('No active transaction to commit');
 		}
 		$this->transactionOpened = null;
@@ -806,8 +806,10 @@ class DB {
 		);
 
 		if ($this->table($table)->exists() && Util::compareVersionNumbers((string)$version, (string)$currentVersion) <= 0) {
-			$msg = "'{$table}' database already up to date! version: '{$currentVersion}'";
-			$this->logger->info($msg);
+			$this->logger->info("'{table}' database already up to date! version: '{current_version}'", [
+				'table' => $table,
+				'current_version' => $currentVersion,
+			]);
 			return false;
 		}
 		$this->logger->info('Inserting {file}', ['file' => $file]);
@@ -832,17 +834,22 @@ class DB {
 				$this->table($table)->chunkInsert($items);
 			}
 		} catch (PDOException $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
+			$this->logger->error('{error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e
+			]);
 			throw $e;
 		}
 		$this->settingManager->save($settingName, (string)$version);
 
 		if ($version !== 0) {
-			$msg = "Updated '{$table}' database from '{$currentVersion}' to '{$version}'";
-			$this->logger->info($msg);
+			$this->logger->info("Updated '{table}' database from '{current_version}' to '{version}'", [
+				'table' => $table,
+				'current_version' => $currentVersion,
+				'version' => $version,
+			]);
 		} else {
-			$msg = "Updated '{$table}' database";
-			$this->logger->info($msg);
+			$this->logger->info("Updated '{table}' database", ['table' => $table]);
 		}
 		return true;
 	}

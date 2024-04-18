@@ -77,6 +77,7 @@ class AccountUnfreezer {
 				$this->logger->notice("{$proxyText} for {account} giving an error: {error}.", [
 					'account' => $this->account->username,
 					'error' => $e->getMessage(),
+					'exception' => $e,
 				]);
 			}
 		} while ($lastResult === self::UNFREEZE_TEMP_ERROR);

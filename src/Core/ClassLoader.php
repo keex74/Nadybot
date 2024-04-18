@@ -106,9 +106,16 @@ class ClassLoader {
 				$minimum = $entries['minimum_php_version'];
 				$current = \PHP_VERSION;
 				if (strnatcmp($minimum, $current) > 0) {
-					$this->logger->warning('Could not load module'
-					." {$moduleName} as it requires at least PHP version '{$minimum}',"
-					." but current PHP version is '{$current}'");
+					$this->logger->warning(
+						'Could not load module {module} as it requires at least PHP '.
+						"version '{minimum_php_version}', but current PHP version is ".
+						"{current_php_version}'",
+						[
+							'module' => $moduleName,
+							'minimum_php_version' => $minimum,
+							'current_php_version' => $current,
+						]
+					);
 					return;
 				}
 			}
@@ -116,7 +123,7 @@ class ClassLoader {
 
 		try {
 			$newInstances = $this->getNewInstancesInDir("{$baseDir}/{$moduleName}");
-		} catch (IntegratedIntoBaseException $e) {
+		} catch (IntegratedIntoBaseException) {
 			$this->logger->error('The module {module} got integrated into Nadybot. You can remove it from {path}.', [
 				'path' => "{$baseDir}/{$moduleName}",
 				'module' => $moduleName,
@@ -126,9 +133,10 @@ class ClassLoader {
 			$this->logger->error('Could not load module {module}: {error}', [
 				'module' => $moduleName,
 				'error' => 'Parse error in ' . $e->getMessage(). '.',
+				'exception' => $e,
 			]);
 			return;
-		} catch (InvalidVersionException $e) {
+		} catch (InvalidVersionException) {
 			$this->logger->warning(
 				"Not enabling module {module}, because it's not compatible with Nadybot {version}.",
 				[

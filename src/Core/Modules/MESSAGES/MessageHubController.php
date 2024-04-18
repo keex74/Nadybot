@@ -106,7 +106,10 @@ class MessageHubController extends ModuleInstance {
 					$msgRoute = $this->messageHub->createMessageRoute($route);
 					$this->messageHub->addRoute($msgRoute);
 				} catch (Exception $e) {
-					$this->logger->error($e->getMessage(), ['exception' => $e]);
+					$this->logger->error('{error}', [
+						'error' => $e->getMessage(),
+						'exception' => $e,
+					]);
 				}
 			});
 		$this->messageHub->routingLoaded = true;

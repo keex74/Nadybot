@@ -13,7 +13,10 @@ abstract class DBRow implements Stringable {
 		$trace2 = $backtrace[0];
 		$logger = new LoggerWrapper('Core/DB');
 		Registry::injectDependencies($logger);
-		$logger->warning("Tried to get value '{$value}' from row that doesn't exist: " . var_export($this, true));
+		$logger->warning("Tried to get value '{value}' from row that doesn't exist: {row}", [
+			'value' => $value,
+			'row' => $this,
+		]);
 		$class = '';
 		if (isset($trace['class'])) {
 			$class = $trace['class'] . '::';

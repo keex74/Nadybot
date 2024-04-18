@@ -226,6 +226,7 @@ class EventFeed {
 					$this->logger->info('[{uri}] Service not up yet, reconnecting in {delay}s', [
 						'uri' => self::URI,
 						'delay' => self::RECONNECT_DELAY,
+						'exception' => $e,
 					]);
 					delay(self::RECONNECT_DELAY);
 					continue;
@@ -305,6 +306,7 @@ class EventFeed {
 					'error' => $e->getMessage(),
 					'file' => $e->getFile(),
 					'line' => $e->getLine(),
+					'exception' => $e,
 				]
 			);
 		} catch (Throwable $e) {

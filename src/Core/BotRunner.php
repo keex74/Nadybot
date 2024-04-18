@@ -528,14 +528,14 @@ class BotRunner {
 	/** Get a message describing the bot's codebase */
 	private function sendBotBanner(): void {
 		$this->logger->notice(
-			\PHP_EOL.
-			' _   _  __     '.\PHP_EOL.
-			"| \ | |/ /_    Nadybot version: {version}".\PHP_EOL.
-			"|  \| | '_ \   Project Site:    {project_url}".\PHP_EOL.
-			"| |\  | (_) |  In-Game Contact: {in_game_contact}".\PHP_EOL.
-			"|_| \_|\___/   Discord:         {discord_link}".\PHP_EOL.
-			\PHP_EOL,
+			'{eol}'.
+			' _   _  __     {eol}'.
+			"| \ | |/ /_    Nadybot version: {version}{eol}".
+			"|  \| | '_ \   Project Site:    {project_url}{eol}".
+			"| |\  | (_) |  In-Game Contact: {in_game_contact}{eol}".
+			"|_| \_|\___/   Discord:         {discord_link}{eol}{eol}",
 			[
+				'eol' => \PHP_EOL,
 				'version' => self::getVersion(),
 				'project_url' => 'https://github.com/Nadybot/Nadybot',
 				'in_game_contact' => 'Nady',

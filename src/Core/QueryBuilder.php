@@ -260,7 +260,10 @@ class QueryBuilder extends Builder {
 					unset($row[$colName]);
 				}
 			} catch (Throwable $e) {
-				$this->logger->error($e->getMessage(), ['exception' => $e]);
+				$this->logger->error('{error}', [
+					'error' => $e->getMessage(),
+					'exception' => $e,
+				]);
 				throw $e;
 			}
 		}
@@ -277,6 +280,7 @@ class QueryBuilder extends Builder {
 				'error' => $e->getMessage(),
 				'data' => $row,
 				'values' => $values,
+				'exception' => $e,
 			]);
 			throw $e;
 		}
@@ -311,7 +315,8 @@ class QueryBuilder extends Builder {
 	private function executeQuery(string $sql, array $params): PDOStatement {
 		/** @var Connection */
 		$conn = $this->getConnection();
-		$this->logger->debug($sql, [
+		$this->logger->debug('{sql}', [
+			'sql' => $sql,
 			'params' => $params,
 			'driver' => $conn->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME),
 			'version' => $conn->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION),
@@ -342,6 +347,7 @@ class QueryBuilder extends Builder {
 			if ($this->nadyDB->getType() === DB\Type::MySQL && in_array($e->errorInfo[1], [1_927, 2_006], true)) {
 				$this->logger->warning('DB had recoverable error: {error} - reconnecting', [
 					'error' => trim($e->errorInfo[2]),
+					'exception' => $e,
 				]);
 				$conn->reconnect();
 				return $this->executeQuery(...func_get_args());

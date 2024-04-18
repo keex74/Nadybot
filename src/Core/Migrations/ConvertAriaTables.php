@@ -23,7 +23,9 @@ class ConvertAriaTables implements SchemaMigration {
 		if (empty($tables)) {
 			return;
 		}
-		$logger->info('Converting ' . count($tables) . ' DB tables from Aria to InnoDB...');
+		$logger->info('Converting {num_tables} DB tables from Aria to InnoDB...', [
+			'num_tables' => count($tables),
+		]);
 		$grammar = $db->schema()->getConnection()->getSchemaGrammar();
 		foreach ($tables as $table) {
 			$sql = 'ALTER TABLE ' . $grammar->wrapTable($table).

@@ -29,6 +29,7 @@ final class HttpRetry implements ApplicationInterceptor {
 
 		do {
 			if ($attempt > 1) {
+				// @phpstan-ignore-next-line
 				$this->logger->info('Retrying {url}, try {try}/{maxtries}', [
 					'url' => $request->getUri()->__toString(),
 					'try' => $attempt,
@@ -48,6 +49,7 @@ final class HttpRetry implements ApplicationInterceptor {
 			$this->logger->info('Retrying {url} in {delay}ms', [
 				'url' => $request->getUri()->__toString(),
 				'delay' => $delay,
+				'exception' => $exception,
 			]);
 			delay($delay);
 		} while ($attempt++ <= $this->retryLimit);

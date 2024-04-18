@@ -320,13 +320,13 @@ final class Filesystem {
 		$callNum = self::$callNum++;
 		$this->logger?->debug('[{call}] -> createHardlink({target}, {link})', [
 			'call' => sprintf('%6d', $callNum),
-			'original' => $target,
+			'target' => $target,
 			'link' => $link,
 		]);
 		$this->fs->createHardlink($target, $link);
 		$this->logger?->debug('[{call}] <- createHardlink({target}, {link})', [
 			'call' => sprintf('%6d', $callNum),
-			'original' => $target,
+			'target' => $target,
 			'link' => $link,
 		]);
 	}

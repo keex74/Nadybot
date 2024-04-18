@@ -73,7 +73,10 @@ class MessageRoute {
 			try {
 				$modifiedEvent = $modifier->modify($modifiedEvent);
 			} catch (Throwable $e) {
-				$this->logger->error('Error when modifying event: ' . $e->getMessage(), ['exception' => $e]);
+				$this->logger->error('Error when modifying event: {error}', [
+					'error' => $e->getMessage(),
+					'exception' => $e,
+				]);
 				continue;
 			}
 			if (!isset($modifiedEvent)) {

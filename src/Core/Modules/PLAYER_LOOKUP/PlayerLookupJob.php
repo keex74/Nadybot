@@ -115,7 +115,7 @@ class PlayerLookupJob {
 			$this->logger->error('Exception looking up {character}: {error}', [
 				'character' => $todo->name,
 				'error' => $e->getMessage(),
-				'Exception' => $e,
+				'exception' => $e,
 			]);
 		}
 	}

@@ -175,16 +175,25 @@ class LoggerWrapper implements LoggerInterface {
 			$message = Safe::pregReplace('|</a>|', '[/link]', $message);
 		}
 
-		if ($channel == 'Buddy') {
-			$line = "[{$channel}] {$sender} {$message}";
-		} elseif ($sender == '-1' || $sender == '4294967295') {
-			$line = "[{$channel}] {$message}";
-		} else {
-			$line = "[{$channel}] {$sender}: {$message}";
-		}
-
 		$this->chatLogger ??= $this->logger->withName('CHAT');
-		$this->chatLogger->notice($line);
+		if ($channel == 'Buddy') {
+			$this->chatLogger->notice('[{channel}] {sender} {message}', [
+				'channel' => $channel,
+				'sender' => $sender,
+				'message' => $message,
+			]);
+		} elseif ($sender == '-1' || $sender == '4294967295') {
+			$this->chatLogger->notice('[{channel}] {message}', [
+				'channel' => $channel,
+				'message' => $message,
+			]);
+		} else {
+			$this->chatLogger->notice('[{channel}] {sender}: {message}', [
+				'channel' => $channel,
+				'sender' => $sender,
+				'message' => $message,
+			]);
+		}
 	}
 
 	/** Get the relative path of the directory where logs of this bot are stored */

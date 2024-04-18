@@ -446,7 +446,10 @@ class ProfileController extends ModuleInstance {
 			}
 			return $profileSendTo->result;
 		} catch (Exception $e) {
-			$this->logger->error('Could not load profile: ' . $e->getMessage(), ['exception' => $e]);
+			$this->logger->error('Could not load profile: {error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 			$this->db->rollback();
 			return null;
 		}

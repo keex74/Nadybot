@@ -269,7 +269,10 @@ class Nadybot {
 		}
 		$this->db->commit();
 		EventLoop::setErrorHandler(function (Throwable $e): void {
-			$this->logger->error($e->getMessage(), ['exception' => $e]);
+			$this->logger->error('{error}', [
+				'error' => $e->getMessage(),
+				'exception' => $e,
+			]);
 		});
 		$this->db->beginTransaction();
 		// $jobs = [];
@@ -446,8 +449,10 @@ class Nadybot {
 				} catch (\Throwable $e) {
 					$this->logger->error('{error}', [
 						'error' => $e->getMessage(),
+						'exception' => $e,
 					]);
 				}
+				// @phpstan-ignore-next-line
 				$this->logger->notice('Waiting {delay}s before retrying logging in', [
 					'delay' => 5,
 				]);
@@ -1628,24 +1633,10 @@ class Nadybot {
 	 * @param string     $message The message to log
 	 */
 	public function logChat(string $channel, string|int $sender, string $message): void {
-		if (!$this->config->general->showAomlMarkup) {
-			$message = Safe::pregReplace('|<font.*?>|', '', $message);
-			$message = Safe::pregReplace('|</font>|', '', $message);
-			$message = Safe::pregReplace('|<a\\s+href=".+?">|s', '[link]', $message);
-			$message = Safe::pregReplace("|<a\\s+href='.+?'>|s", '[link]', $message);
-			$message = Safe::pregReplace('|<a\\s+href=.+?>|s', '[link]', $message);
-			$message = Safe::pregReplace('|</a>|', '[/link]', $message);
+		if (!($this->logger instanceof LoggerWrapper)) {
+			return;
 		}
-
-		if ($channel == 'Buddy') {
-			$line = "[{$channel}] {$sender} {$message}";
-		} elseif ($sender == '-1' || $sender == '4294967295') {
-			$line = "[{$channel}] {$message}";
-		} else {
-			$line = "[{$channel}] {$sender}: {$message}";
-		}
-
-		$this->logger->notice($line);
+		$this->logger->logChat($channel, $sender, $message);
 	}
 
 	public static function asyncErrorHandler(Throwable $e): void {

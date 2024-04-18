@@ -175,7 +175,9 @@ class MgmtInterfaceController extends ModuleInstance {
 
 	private function handleConnection(ResourceSocket $socket): void {
 		$reader = splitLines($socket);
-		$this->logger->notice('New connection on management interface from ' . $socket->getRemoteAddress());
+		$this->logger->notice('New connection on management interface from {remote_addr}', [
+			'remote_addr' => $socket->getRemoteAddress(),
+		]);
 		foreach ($reader as $line) {
 			$this->processLine($socket, $line);
 		}

@@ -449,6 +449,7 @@ class DiscordAPIClient extends ModuleInstance {
 						'retry' => ($retries > 0) ? ", retrying in {$delay}s" : '',
 						'error' => $e->getMessage(),
 						'delay' => $delay,
+						'exception' => $e,
 					]
 				);
 				$retry = true;

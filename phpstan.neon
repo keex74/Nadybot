@@ -8,7 +8,13 @@ parameters:
   ignoreErrors:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
     - '#Static property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
+  sfpPsrLog:
+    enableMessageStaticStringRule: true
+    enableContextRequireExceptionKeyRule: true
+    reportContextExceptionLogLevel: 'info'
+    contextKeyOriginalPattern: '#\A[A-Za-z0-9-_]+\z#'
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/nadyita/phpstan-amp-file-rule/phpstan-amp-file-rule.neon
     - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
+    - vendor/struggle-for-php/sfp-phpstan-psr-log/rules.neon

@@ -1502,7 +1502,7 @@ class CommandManager implements MessageEmitter {
 		$refClass = new ReflectionClass($instance);
 		try {
 			$refMethod = $refClass->getMethod($method);
-		} catch (ReflectionException $e) {
+		} catch (ReflectionException) {
 			$this->logger->error('Could not find method {class}::{method}()', [
 				'class' => $name,
 				'method' => $method,

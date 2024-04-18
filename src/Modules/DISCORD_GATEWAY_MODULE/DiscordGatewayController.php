@@ -425,7 +425,9 @@ class DiscordGatewayController extends ModuleInstance {
 
 		$this->heartbeatInterval = intdiv($payload->d['heartbeat_interval']??30_000, 1_000);
 		EventLoop::repeat($this->heartbeatInterval, $this->sendWebsocketHeartbeat(...));
-		$this->logger->info('Setting Discord heartbeat interval to '.$this->heartbeatInterval.'sec');
+		$this->logger->info('Setting Discord heartbeat interval to {interval} seconds', [
+			'interval' => $this->heartbeatInterval,
+		]);
 		$this->lastHeartbeat = time();
 
 		if ($this->sessionId !== null && $this->lastSequenceNumber !== null) {
@@ -860,10 +862,9 @@ class DiscordGatewayController extends ModuleInstance {
 
 		$this->sessionId = $payload->d['session_id'] ?? null;
 		$this->me = $user;
-		$this->logger->notice(
-			'Successfully logged into Discord Gateway as '.
-			$user->getName()
-		);
+		$this->logger->notice('Successfully logged into Discord Gateway as {username}', [
+			'username' => $user->getName(),
+		]);
 		$this->mustReconnect = true;
 		$this->reconnectDelay = 5;
 		$this->reconnectUrl = $payload->d['resume_gateway_url'] ?? null;

@@ -83,7 +83,9 @@ class Connection implements LogWrapInterface {
 		try {
 			$package = Parser::parseHighwayPackage($data);
 		} catch (UnableToHydrateObject $e) {
-			$this->logger->error('Invalid highway-package received');
+			$this->logger->error('Invalid highway-package received', [
+				'exception' => $e,
+			]);
 			throw $e;
 		}
 		$this->logger->info('Received package {package}', ['package' => $package]);

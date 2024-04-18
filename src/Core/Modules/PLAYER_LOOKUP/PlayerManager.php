@@ -247,7 +247,7 @@ class PlayerManager extends ModuleInstance {
 					break;
 				} catch (\Amp\TimeoutException | \Amp\CancelledException) {
 					$baseUrl = self::PORK_URL;
-				} catch (TimeoutException $e) {
+				} catch (TimeoutException) {
 					/** @psalm-suppress RedundantCast */
 					$delay = (int)pow($try, 2);
 					$this->logger->info('Lookup for {name}.{dimension} timed out, retrying in {delay}s ({try}/{retries})', [
