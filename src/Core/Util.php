@@ -7,6 +7,7 @@ use Amp\File\{FilesystemException};
 use BackedEnum;
 use Exception;
 use InvalidArgumentException;
+use Iterator;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Config\BotConfig;
 use RangeException;
@@ -460,5 +461,21 @@ class Util {
 			}
 		}
 		return $a;
+	}
+
+	/**
+	 * Convert the given iterable into an iterator
+	 *
+	 * @template T
+	 *
+	 * @param iterable<T> $iter
+	 *
+	 * @return Iterator<T>
+	 */
+	public static function toIterator(iterable $iter): Iterator {
+		if (is_array($iter)) {
+			return new \ArrayIterator($iter);
+		}
+		return new \IteratorIterator($iter);
 	}
 }

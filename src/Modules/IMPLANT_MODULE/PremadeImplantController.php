@@ -106,9 +106,11 @@ class PremadeImplantController extends ModuleInstance {
 		return $query->asObj(PremadeSearchResult::class)->toArray();
 	}
 
-	/** @param PremadeSearchResult[] $implants */
-	public function formatResults(array $implants): string {
+	/** @param iterable<PremadeSearchResult> $implants */
+	public function formatResults(iterable $implants): string {
 		$blob = '';
+
+		/** @var array<string,PremadeSearchResult[]> */
 		$slotMap = [];
 		foreach ($implants as $implant) {
 			$slotMap[$implant->slot] ??= [];

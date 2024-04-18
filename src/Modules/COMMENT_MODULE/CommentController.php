@@ -4,6 +4,7 @@ namespace Nadybot\Modules\COMMENT_MODULE;
 
 use Exception;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -510,30 +511,29 @@ class CommentController extends ModuleInstance {
 	/**
 	 * Remove all comments from $comments that $sender does not have permission to read
 	 *
-	 * @param Comment[] $comments
+	 * @param iterable<Comment> $comments
 	 *
 	 * @return Comment[]
 	 */
-	public function filterInaccessibleComments(array $comments, string $sender): array {
-		$accessCache = [];
+	public function filterInaccessibleComments(iterable $comments, string $sender): array {
 		$senderAL = $this->accessManager->getAccessLevelForCharacter($sender);
-		$readableComments = array_values(
-			array_filter(
-				$comments,
-				function (Comment $comment) use (&$accessCache, $senderAL): bool {
-					if (isset($accessCache[$comment->category])) {
-						return $accessCache[$comment->category];
-					}
-					$cat = $this->getCategory($comment->category);
-					$canRead = false;
-					if (isset($cat)) {
-						$canRead = $this->accessManager->compareAccessLevels($senderAL, $cat->min_al_read) >= 0;
-					}
-					return $accessCache[$comment->category] = $canRead;
-				}
-			)
-		);
-		return $readableComments;
+		$accessCache = [];
+
+		/** @var Collection<int,Comment> */
+		$com = new Collection($comments);
+		return $com->filter(function (Comment $comment) use (&$accessCache, $senderAL): bool {
+			if (isset($accessCache[$comment->category])) {
+				return $accessCache[$comment->category];
+			}
+			$cat = $this->getCategory($comment->category);
+			$canRead = false;
+			if (isset($cat)) {
+				$canRead = $this->accessManager->compareAccessLevels($senderAL, $cat->min_al_read) >= 0;
+			}
+			return $accessCache[$comment->category] = $canRead;
+		})
+		->values()
+		->toArray();
 	}
 
 	/**

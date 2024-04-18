@@ -499,8 +499,8 @@ class AuctionController extends ModuleInstance {
 		$context->reply($blob);
 	}
 
-	/** @param DBAuction[] $items */
-	public function renderAuctionList(array $items): string {
+	/** @param iterable<array-key,DBAuction> $items */
+	public function renderAuctionList(iterable $items): string {
 		$result = [];
 		foreach ($items as $item) {
 			$result []= $this->renderAuctionItem($item);

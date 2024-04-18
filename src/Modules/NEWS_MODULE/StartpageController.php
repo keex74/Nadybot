@@ -518,10 +518,11 @@ class StartpageController extends ModuleInstance {
 			"]\n";
 	}
 
-	/** @param array<string,NewsTile> $tiles */
-	protected function renderLayout(array $tiles): string {
+	/** @param iterable<string,NewsTile> $tiles */
+	protected function renderLayout(iterable $tiles): string {
 		$blobLines = [];
 		$i = 0;
+		$tiles = collect($tiles);
 		foreach ($tiles as $name => $tile) {
 			$blobLines []= $this->getInsertLine($i);
 			$descrLink = Text::makeChatcmd('details', "/tell <myname> startpage describe {$name}");

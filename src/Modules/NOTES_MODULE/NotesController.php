@@ -303,33 +303,31 @@ class NotesController extends ModuleInstance {
 	/**
 	 * Render the reminder message for $sender, reminding about the $notes
 	 *
-	 * @param string $format The format to render the messages with
-	 * @param Note[] $notes  The notes we are reminded about
+	 * @param string                   $format The format to render the messages with
+	 * @param iterable<array-key,Note> $notes  The notes we are reminded about
 	 *
 	 * @return string The rendered message
 	 */
-	public function getReminderMessage(string $format, array $notes): string {
+	public function getReminderMessage(string $format, iterable $notes): string {
+		$notes = collect($notes);
 		if ($format === static::FORMAT_GROUPED) {
-			$msgs = array_map(
+			$msgs = $notes->map(
 				static function (Note $note): string {
 					return "For {$note->added_by}: <highlight>{$note->note}<end>";
 				},
-				$notes
 			);
 			$msg = ':: <red>Reminder' . (count($msgs) > 1 ? 's' : '') . "<end> ::\n".
-				implode("\n", $msgs);
+				$msgs->join("\n");
 		} else {
-			$msgs = array_map(
+			$msg = $notes->map(
 				static function (Note $note) use ($format): string {
 					$addedBy = $note->added_by;
 					if ($format === static::FORMAT_INDIVIDUAL2) {
 						$addedBy = "<yellow>{$addedBy}<end>";
 					}
 					return ":: <red>Reminder for {$addedBy}<end> :: <highlight>{$note->note}<end>";
-				},
-				$notes
-			);
-			$msg = implode("\n", $msgs);
+				}
+			)->join("\n");
 		}
 		return $msg;
 	}
@@ -454,9 +452,9 @@ class NotesController extends ModuleInstance {
 	/**
 	 * Render an array of Notes into a blob
 	 *
-	 * @param Note[] $notes
+	 * @param iterable<Note> $notes
 	 */
-	protected function renderNotes(array $notes, string $sender): string {
+	protected function renderNotes(iterable $notes, string $sender): string {
 		$blob = '';
 		$current = '';
 		$format = $this->reminderFormat;

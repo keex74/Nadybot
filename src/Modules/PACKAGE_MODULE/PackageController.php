@@ -109,15 +109,15 @@ class PackageController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Package[] $packages
+	 * @param iterable<array-key,Package> $packages
 	 *
 	 * @return string|string[]
 	 */
-	public function renderPackageList(array $packages): string|array {
+	public function renderPackageList(iterable $packages): string|array {
 		/** @var array<string,PackageGroup> */
 		$groupedPackages = [];
 
-		/** @var Package[] $packages */
+		$packages = collect($packages);
 		if (!count($packages)) {
 			return 'There are currently no packages available for Nadybot.';
 		}
@@ -212,17 +212,19 @@ class PackageController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @param Package[]|null $packages */
-	public function displayPackageDetail(?array $packages, string $packageName, CmdContext $context): void {
+	/** @param ?iterable<int,Package> $packages */
+	public function displayPackageDetail(?iterable $packages, string $packageName, CmdContext $context): void {
 		if (!isset($packages)) {
 			$context->reply("There was an error retrieving information about {$packageName}.");
 			return;
 		}
-		if (!count($packages)) {
+		$packages = collect($packages);
+		$package = $packages->first();
+		if (!isset($package)) {
 			$context->reply("{$packageName} is not compatible with Nadybot.");
 			return;
 		}
-		if ($packages[0]->state === static::EXTRA) {
+		if ($package->state === static::EXTRA) {
 			$installedVersion = (string)$this->db->table(PackageFile::getTable())
 				->where('module', $packages[0]->name)
 				->max('version');
@@ -231,7 +233,7 @@ class PackageController extends ModuleInstance {
 		$blob .= "\n\n<header2>Details<end>\n".
 			"<tab>Name: <highlight>{$packages[0]->name}<end>\n".
 			"<tab>Author: <highlight>{$packages[0]->author}<end>\n";
-		if ($packages[0]->state === static::BUILT_INT) {
+		if ($package->state === static::BUILT_INT) {
 			$blob .= "<tab>Status: <highlight>Included in Nadybot now<end>\n";
 		} elseif (isset($installedVersion)) {
 			$blob .= '<tab>Installed: <highlight>'.
@@ -770,24 +772,26 @@ class PackageController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Package[] $packages
+	 * @param iterable<array-key,Package> $packages
 	 *
 	 * @return string|string[]
 	 */
-	private function getPackageDetail(array $packages): string|array {
-		if (!count($packages)) {
+	private function getPackageDetail(iterable $packages): string|array {
+		$packages = collect($packages);
+		$package = $packages->first();
+		if (!isset($package)) {
 			return 'This package is not compatible with Nadybot.';
 		}
-		if ($packages[0]->state === static::EXTRA) {
+		if ($package->state === static::EXTRA) {
 			$installedVersion = (string)$this->db->table(PackageFile::getTable())
-				->where('module', $packages[0]->name)
+				->where('module', $package->name)
 				->max('version');
 		}
-		$blob = trim($this->renderHTML($packages[0]->description));
+		$blob = trim($this->renderHTML($package->description));
 		$blob .= "\n\n<header2>Details<end>\n".
-			"<tab>Name: <highlight>{$packages[0]->name}<end>\n".
-			"<tab>Author: <highlight>{$packages[0]->author}<end>\n";
-		if ($packages[0]->state === static::BUILT_INT) {
+			"<tab>Name: <highlight>{$package->name}<end>\n".
+			"<tab>Author: <highlight>{$package->author}<end>\n";
+		if ($package->state === static::BUILT_INT) {
 			$blob .= "<tab>Status: <highlight>Included in Nadybot now<end>\n";
 		} elseif (isset($installedVersion)) {
 			$blob .= '<tab>Installed: <highlight>'.
@@ -795,7 +799,7 @@ class PackageController extends ModuleInstance {
 				'<end> ['.
 				Text::makeChatcmd(
 					'uninstall',
-					"/tell <myname> package uninstall {$packages[0]->name}"
+					"/tell <myname> package uninstall {$package->name}"
 				) . "]\n";
 		}
 		$blob .= "\n<header2>Available versions<end>\n";
@@ -833,10 +837,12 @@ class PackageController extends ModuleInstance {
 	/**
 	 * Check if the package is compatible with our Bot
 	 *
-	 * @param Package[] $packages
+	 * @param iterable<array-key,Package> $packages
 	 */
-	private function getHighestCompatibleVersion(array $packages, PackageAction $cmd): SemanticVersion {
-		if ($packages[0]->state === static::BUILT_INT) {
+	private function getHighestCompatibleVersion(iterable $packages, PackageAction $cmd): SemanticVersion {
+		$packages = collect($packages);
+		$package = $packages->firstOrFail();
+		if ($package->state === static::BUILT_INT) {
 			throw new UserException(
 				"<highlight>{$cmd->package}<end> is a built-in module in ".
 				'Nadybot ' . BotRunner::getVersion() .' and cannot be managed '.
@@ -859,23 +865,19 @@ class PackageController extends ModuleInstance {
 			);
 		}
 		if (isset($cmd->version)) {
-			$packages = array_values(
-				array_filter(
-					$packages,
-					static function (Package $package) use ($cmd): bool {
-						return $cmd->version->cmpStr($package->version) === 0;
-					}
-				)
-			);
+			$packages = $packages->filter(
+				static function (Package $package) use ($cmd): bool {
+					return $cmd->version->cmpStr($package->version) === 0;
+				}
+			)->values();
 
-			/** @var Package[] $packages */
 			if (!count($packages)) {
 				throw new UserException(
 					"<highlight>{$cmd->package}<end> does not exist in ".
 					"version <highlight>{$cmd->version}<end>."
 				);
 			}
-			if (!$packages[0]->compatible) {
+			if (!$packages->firstOrFail()->compatible) {
 				// return new Failure(new UserException(
 				// 	"<highlight>{$cmd->package} {$cmd->version}<end> ".
 				// 	"is not compatible with Nadybot " . BotRunner::getVersion()
@@ -883,16 +885,14 @@ class PackageController extends ModuleInstance {
 			}
 			return $cmd->version;
 		}
-		$packages = array_values(
-			array_filter(
-				$packages,
-				static function (Package $package): bool {
-					return $package->compatible;
-				}
-			)
-		);
-		$newestPackage = $packages[0] ?? false;
-		if ($newestPackage === false) {
+		$packages = $packages->filter(
+			static function (Package $package): bool {
+				return $package->compatible;
+			}
+		)->values();
+
+		$newestPackage = $packages->first();
+		if (!isset($newestPackage)) {
 			throw new UserException(
 				"No version of <highlight>{$cmd->package}<end> found that ".
 				'is compatible with Nadybot ' . BotRunner::getVersion() . '.'

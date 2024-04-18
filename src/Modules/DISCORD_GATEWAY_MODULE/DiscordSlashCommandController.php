@@ -403,13 +403,13 @@ class DiscordSlashCommandController extends ModuleInstance {
 	/**
 	 * Ensure the global application commands are identical to $registeredCmds
 	 *
-	 * @param ApplicationCommand[] $registeredCmds
+	 * @param iterable<array-key,ApplicationCommand> $registeredCmds
 	 */
-	private function updateSlashCommands(array $registeredCmds): void {
-		$this->logger->info('{count} Slash-commands already registered', [
-			'count' => count($registeredCmds),
-		]);
+	private function updateSlashCommands(iterable $registeredCmds): void {
 		$registeredCmds = collect($registeredCmds);
+		$this->logger->info('{count} Slash-commands already registered', [
+			'count' => $registeredCmds->count(),
+		]);
 		$commands = collect($this->calcSlashCommands());
 
 		$numModifiedCommands = $this->getNumChangedSlashCommands($registeredCmds, $commands);

@@ -44,9 +44,9 @@ class TrackerEntry extends DBTable implements MessageEmitter {
 		return explode(',', $events);
 	}
 
-	/** @param string[] $events */
-	public static function encodeEvents(array $events): string {
-		return implode(',', $events);
+	/** @param iterable<array-key,string> $events */
+	public static function encodeEvents(iterable $events): string {
+		return collect($events)->join(',');
 	}
 
 	public function getChannelName(): string {

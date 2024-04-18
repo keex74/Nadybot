@@ -806,16 +806,12 @@ class RaffleController extends ModuleInstance {
 			->pluckInts('bonus')->first() ?? 0;
 	}
 
-	/** @param RaffleResultItem[] $result */
-	protected function resultIsUnambiguous(array $result): bool {
-		$points = array_map(
-			static function (RaffleResultItem $item) {
-				return $item->points;
-			},
-			$result
+	/** @param iterable<array-key,RaffleResultItem> $result */
+	protected function resultIsUnambiguous(iterable $result): bool {
+		$points = collect($result)->map(
+			static fn (RaffleResultItem $item): int => $item->points
 		);
-		$uniqPoints = array_unique($points);
-		return count($points) === count($uniqPoints);
+		return $points->count() === $points->unique()->count();
 	}
 
 	/** @return RaffleResultItem[] */

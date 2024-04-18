@@ -29,6 +29,7 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
+use Nadybot\Modules\ORGLIST_MODULE\Organization;
 use Nadybot\Modules\WHOIS_MODULE\NameHistory;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -626,8 +627,8 @@ class BanController extends ModuleInstance {
 		}
 	}
 
-	/** @param \Nadybot\Modules\ORGLIST_MODULE\Organization[] $orgs */
-	public function formatOrgsToBan(array $orgs, ?string $duration, string $reason): string {
+	/** @param iterable<Organization> $orgs */
+	public function formatOrgsToBan(iterable $orgs, ?string $duration, string $reason): string {
 		$blob = '';
 		$banCmd = "/tell <myname> orgban add %d reason {$reason}";
 		if (isset($duration)) {

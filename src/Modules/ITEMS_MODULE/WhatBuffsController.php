@@ -421,7 +421,7 @@ class WhatBuffsController extends ModuleInstance {
 			if ($data->isNotEmpty() && $data->last()?->amount < 0) {
 				$data = $data->reverse();
 			}
-			$result = $this->formatBuffs($data->toArray(), $skill);
+			$result = $this->formatBuffs($data, $skill);
 		} elseif ($category === 'Perk') {
 			if ($froobFriendly) {
 				return "Froobs don't have perks.";
@@ -494,7 +494,7 @@ class WhatBuffsController extends ModuleInstance {
 			if ($data->isNotEmpty() && $data->last()?->amount < 0) {
 				$data = $data->reverse();
 			}
-			$result = $this->formatItems($data->toArray(), $skill, $category);
+			$result = $this->formatItems($data, $skill, $category);
 			if ($data->first(static fn (ItemBuffSearchResult $i): bool => !$i->in_game)) {
 				$addNotInGameNotice = true;
 			}
@@ -575,13 +575,13 @@ class WhatBuffsController extends ModuleInstance {
 	/**
 	 * Format a list of item buff search results
 	 *
-	 * @param ItemBuffSearchResult[] $items The items that matched the search
+	 * @param iterable<array-key,ItemBuffSearchResult> $items The items that matched the search
 	 *
 	 * @return (int|string)[]
 	 *
 	 * @psalm-return array{0: int, 1:string}
 	 */
-	public function formatItems(array $items, Skill $skill, string $category): array {
+	public function formatItems(iterable $items, Skill $skill, string $category): array {
 		$showUniques = $this->whatbuffsShowUnique;
 		$showNodrops = $this->whatbuffsShowNodrop;
 		$blob = '<header2>' . ucfirst($this->locationToItem($category)) . " that buff {$skill->name}<end>\n";
@@ -589,6 +589,7 @@ class WhatBuffsController extends ModuleInstance {
 		$itemMapping = [];
 		$maxQL = [];
 		$maxAmount = [];
+		$items = collect($items);
 		foreach ($items as $item) {
 			if ($item->amount === $item->low_amount) {
 				$item->highql = $item->lowql;
@@ -615,8 +616,7 @@ class WhatBuffsController extends ModuleInstance {
 		if (in_array($skill->name, ['SkillLockModifier', '% Add. Nano Cost'])) {
 			$multiplier = -1;
 		}
-		usort(
-			$items,
+		$items = $items->sort(
 			static function (ItemBuffSearchResult $a, ItemBuffSearchResult $b) use ($multiplier): int {
 				return ($b->amount <=> $a->amount) * $multiplier;
 			}
@@ -668,12 +668,11 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	/**
-	 * @param NanoBuffSearchResult[] $items
+	 * @param iterable<NanoBuffSearchResult> $items
 	 *
-	 * @return NanoBuffSearchResult[]
+	 * @return iterable<NanoBuffSearchResult>
 	 */
-	public function groupDrainsAndWrangles(array $items): array {
-		$result = [];
+	public function groupDrainsAndWrangles(iterable $items): iterable {
 		$groups = [
 			'/(Divest|Deprive) Skills.*Transfer/',
 			'/(Ransack|Plunder) Skills.*Transfer/',
@@ -696,24 +695,24 @@ class WhatBuffsController extends ModuleInstance {
 				}
 			}
 			if ($skip === false) {
-				$result []= $item;
+				yield $item;
 			}
 		}
-		return $result;
 	}
 
 	/**
-	 * @param PerkBuffSearchResult[] $perks
+	 * @param iterable<PerkBuffSearchResult> $perks
 	 *
 	 * @return (int|string)[]
 	 *
 	 * @psalm-return array{0: int, 1:string}
 	 */
-	public function formatPerkBuffs(array $perks, Skill $skill): array {
+	public function formatPerkBuffs(iterable $perks, Skill $skill): array {
 		$blob = "<header2>Perks that buff {$skill->name}<end>\n";
-		$maxBuff = 0;
+		$maxBuff = $numPerks = 0;
 		foreach ($perks as $perk) {
 			$maxBuff = max($maxBuff, abs($perk->amount));
+			$numPerks++;
 		}
 		$maxDigits = strlen((string)$maxBuff);
 		foreach ($perks as $perk) {
@@ -734,26 +733,22 @@ class WhatBuffsController extends ModuleInstance {
 			$blob .= $prefix . "{$perk->unit}  {$perk->name} ({$color}{$perk->profs}<end>)\n";
 		}
 
-		$count = count($perks);
-		return [$count, $blob];
+		return [$numPerks, $blob];
 	}
 
 	/**
-	 * @param NanoBuffSearchResult[] $items
+	 * @param iterable<array-key,NanoBuffSearchResult> $items
 	 *
 	 * @return (int|string)[]
 	 *
 	 * @psalm-return array{0: int, 1: string}
 	 */
-	public function formatBuffs(array $items, Skill $skill): array {
-		$items = array_values(
-			array_filter(
-				$items,
-				static function (NanoBuffSearchResult $nano): bool {
-					return !preg_match("/^Composite .+ Expertise \(\d hours\)$/", $nano->name);
-				}
-			)
-		);
+	public function formatBuffs(iterable $items, Skill $skill): array {
+		$items = collect($items)->filter(
+			static function (NanoBuffSearchResult $nano): bool {
+				return !preg_match("/^Composite .+ Expertise \(\d hours\)$/", $nano->name);
+			}
+		)->values();
 		$blob = "<header2>Nanoprograms that buff {$skill->name}<end>\n";
 		$maxBuff = 0;
 		foreach ($items as $item) {
@@ -761,7 +756,9 @@ class WhatBuffsController extends ModuleInstance {
 		}
 		$maxDigits = strlen((string)$maxBuff);
 		$items = $this->groupDrainsAndWrangles($items);
+		$numItems = 0;
 		foreach ($items as $item) {
+			$numItems++;
 			if ($item->ncu === 999) {
 				$item->ncu = 0;
 			}
@@ -778,8 +775,7 @@ class WhatBuffsController extends ModuleInstance {
 			$blob .= "\n";
 		}
 
-		$count = count($items);
-		return [$count, $blob];
+		return [$numItems, $blob];
 	}
 
 	/**
@@ -812,11 +808,11 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	/**
-	 * @param PerkBuffSearchResult[] $data
+	 * @param iterable<PerkBuffSearchResult> $data
 	 *
-	 * @return PerkBuffSearchResult[]
+	 * @return iterable<PerkBuffSearchResult>
 	 */
-	protected function generatePerkBufflist(array $data): array {
+	private function generatePerkBufflist(iterable $data): iterable {
 		/** @var array<string,PerkBuffSearchResult> */
 		$result = [];
 		foreach ($data as $perk) {
@@ -833,7 +829,9 @@ class WhatBuffsController extends ModuleInstance {
 				$result[$perk->name]->profMax[$prof] += $perk->amount;
 			}
 		}
-		$data = [];
+
+		/** @var Collection<int,PerkBuffSearchResult> */
+		$newData = new Collection();
 		// If a perk has different max levels for profs, we create one entry for each of the
 		// buff levels, so 1 perk can appear several times with different max buffs
 		foreach ($result as $perk => $perkData) {
@@ -850,19 +848,17 @@ class WhatBuffsController extends ModuleInstance {
 				$obj->amount = $buffValue;
 				$obj->profs = implode(',', $profs);
 				$obj->profMax = [];
-				$data []= $obj;
+				$newData->push($obj);
 			}
 		}
-		usort(
-			$data,
+		return $newData->sort(
 			static function (PerkBuffSearchResult $p1, PerkBuffSearchResult $p2): int {
 				return ($p2->amount <=> $p1->amount) ?: strcmp($p1->name??'', $p2->name??'');
 			}
 		);
-		return $data;
 	}
 
-	protected function getSlotPrefix(ItemBuffSearchResult $item, string $category): string {
+	private function getSlotPrefix(ItemBuffSearchResult $item, string $category): string {
 		$markSetting = $this->whatbuffsDisplay;
 		$result = '';
 		if ($item->multi_m !== null || $item->multi_r !== null) {
@@ -909,7 +905,7 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	/** Convert a location (arms) to item type (sleeves) */
-	protected function locationToItem(string $location): string {
+	private function locationToItem(string $location): string {
 		$location = strtolower($location);
 		$map = [
 			'arms' => 'sleeves',
@@ -932,7 +928,7 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	/** Resolve aliases for locations like arms and sleeves  into proper locations */
-	protected function resolveLocationAlias(string $location): string {
+	private function resolveLocationAlias(string $location): string {
 		$location = strtolower($location);
 		$map = [
 			'arm' => 'arms',

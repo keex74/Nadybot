@@ -176,14 +176,14 @@ class LegacyLogger {
 	}
 
 	/**
-	 * Parse th defined handlers into objects
+	 * Parse the defined handlers into objects
 	 *
-	 * @param array<string,mixed>              $handlers
+	 * @param iterable<string,mixed>           $handlers
 	 * @param array<string,FormatterInterface> $formatters
 	 *
 	 * @return array<string,AbstractProcessingHandler>
 	 */
-	public static function parseHandlersConfig(array $handlers, array $formatters): array {
+	public static function parseHandlersConfig(iterable $handlers, array $formatters): array {
 		$result = [];
 		foreach ($handlers as $name => $config) {
 			$class = 'Monolog\\Handler\\'.static::toClass($config['type']) . 'Handler';
@@ -220,11 +220,11 @@ class LegacyLogger {
 	/**
 	 * Parse the defined formatters and return them as objects
 	 *
-	 * @param array<string,array<mixed>> $formatters
+	 * @param iterable<string,array<mixed>> $formatters
 	 *
 	 * @return array<string,FormatterInterface>
 	 */
-	public static function parseFormattersConfig(array $formatters): array {
+	public static function parseFormattersConfig(iterable $formatters): array {
 		$result = [];
 		foreach ($formatters as $name => $config) {
 			$class = 'Monolog\\Formatter\\' . static::toClass($config['type']) . 'Formatter';

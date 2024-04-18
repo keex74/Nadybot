@@ -165,8 +165,8 @@ class SymbiantController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @param array<string,SymbiantConfig> $configs */
-	protected function configsToBlob(array $configs): string {
+	/** @param iterable<string,SymbiantConfig> $configs */
+	protected function configsToBlob(iterable $configs): string {
 		/** @var ImplantType[] */
 		$types = $this->db->table(ImplantType::getTable())
 			->asObj(ImplantType::class)

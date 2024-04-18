@@ -198,8 +198,8 @@ class AlienBioController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @param int[]|string[] $types */
-	public function getTypeBlob(array $types): string {
+	/** @param iterable<int>|iterable<string> $types */
+	public function getTypeBlob(iterable $types): string {
 		$blob = '';
 		foreach ($types as $type) {
 			$blob .= '<tab>' . Text::makeChatcmd((string)$type, "/tell <myname> bioinfo {$type}") . "\n";

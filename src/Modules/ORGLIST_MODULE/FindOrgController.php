@@ -146,10 +146,10 @@ class FindOrgController extends ModuleInstance {
 		return $orgs->toArray();
 	}
 
-	/** @param Organization[] $orgs */
-	public function formatResults(array $orgs): string {
+	/** @param iterable<array-key,Organization> $orgs */
+	public function formatResults(iterable $orgs): string {
 		$blob = "<header2>Matching orgs<end>\n";
-		usort($orgs, static function (Organization $a, Organization $b): int {
+		$orgs = collect($orgs)->sort(static function (Organization $a, Organization $b): int {
 			return strcasecmp($a->name, $b->name);
 		});
 		foreach ($orgs as $org) {

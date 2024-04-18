@@ -349,26 +349,17 @@ class ItemsController extends ModuleInstance {
 	}
 
 	/**
-	 * @param ItemSearchResult[] $data
+	 * @param iterable<array-key,ItemSearchResult> $data
 	 *
 	 * @return string|string[]
 	 */
-	public function createItemsBlob(array $data, string $search, ?int $ql, string $version, string $footer, mixed $elapsed=null): string|array {
+	public function createItemsBlob(iterable $data, string $search, ?int $ql, string $version, string $footer, mixed $elapsed=null): string|array {
+		$data = collect($data);
 		$numItems = count($data);
-		$groups = count(
-			array_unique(
-				array_diff(
-					array_map(static function (ItemSearchResult $row) {
-						return $row->group_id;
-					}, $data),
-					[null],
-				)
-			)
-		) + count(
-			array_filter($data, static function (ItemSearchResult $row) {
-				return $row->group_id === null;
-			})
-		);
+		$groups = $data->map(static fn (ItemSearchResult $row): ?int => $row->group_id)
+			->filter()->unique()->count()
+			+
+			$data->whereNull('group_id')->count();
 
 		if ($numItems === 0) {
 			if ($ql !== null) {
@@ -400,40 +391,11 @@ class ItemsController extends ModuleInstance {
 		return $link;
 	}
 
-	/**
-	 * Sort by exact word matches higher than partial word matches
-	 *
-	 * @param ItemSearchResult[] $data
-	 *
-	 * @return ItemSearchResult[]
-	 */
-	public function orderSearchResults(array $data, string $search): array {
-		$searchTerms = explode(' ', $search);
-		foreach ($data as $row) {
-			if (strcasecmp($search, $row->name) == 0) {
-				$numExactMatches = 100;
-				continue;
-			}
-			$itemKeywords = preg_split("/\s/", $row->name);
-			$numExactMatches = 0;
-			foreach ($itemKeywords as $keyword) {
-				foreach ($searchTerms as $searchWord) {
-					if (strcasecmp($keyword, $searchWord) == 0) {
-						$numExactMatches++;
-						break;
-					}
-				}
-			}
-			$row->numExactMatches = $numExactMatches;
-		}
-
-		return $data;
-	}
-
-	/** @param ItemSearchResult[] $data */
-	public function formatSearchResults(array $data, ?int $ql, bool $showImages, ?string $search=null): string {
+	/** @param iterable<int,ItemSearchResult> $data */
+	public function formatSearchResults(iterable $data, ?int $ql, bool $showImages, ?string $search=null): string {
 		$list = '';
 		$oldGroup = null;
+		$data = collect($data);
 		for ($itemNum = 0; $itemNum < count($data); $itemNum++) {
 			$row = $data[$itemNum];
 			$origName = $row->name;
@@ -682,21 +644,19 @@ class ItemsController extends ModuleInstance {
 	 *  and "Crappy Caterwaul"
 	 * would be "Caterwaul", without the leading space!
 	 *
-	 * @param string[] $words The words to compare
+	 * @param iterable<int,string> $words The words to compare
 	 *
 	 * @return string The longest common string of all given words
 	 */
-	public function getLongestCommonStringOfWords(array $words): string {
-		if (empty($words)) {
+	public function getLongestCommonStringOfWords(iterable $words): string {
+		$words = collect($words);
+		if ($words->isEmpty()) {
 			return '';
 		}
-		return trim(
-			array_reduce(
-				$words,
-				$this->getLongestCommonString(...),
-				array_shift($words)
-			)
-		);
+
+		/** @var string */
+		$firstWord = $words->shift();
+		return trim($words->reduce($this->getLongestCommonString(...), $firstWord));
 	}
 
 	/** @return ?Skill */

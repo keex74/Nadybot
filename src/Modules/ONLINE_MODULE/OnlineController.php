@@ -743,11 +743,11 @@ class OnlineController extends ModuleInstance {
 	/**
 	 * Remove all hidden characters from the list
 	 *
-	 * @param OnlinePlayer[] $characters
+	 * @param iterable<OnlinePlayer> $characters
 	 *
 	 * @return OnlinePlayer[]
 	 */
-	public function filterHiddenCharacters(array $characters, string $group): array {
+	public function filterHiddenCharacters(iterable $characters, string $group): array {
 		$hiddenMasks = $this->getHiddenPlayerMasks();
 		$visibleCharacters = [];
 		foreach ($characters as $char) {
@@ -965,8 +965,9 @@ class OnlineController extends ModuleInstance {
 		return " {$fancyColon} <highlight>AFK for {$timeString}: {$props[1]}<end>";
 	}
 
-	/** @param OnlinePlayer[] $players */
-	public function formatData(array $players, int $showOrgInfo, ?int $groupBy=null): OnlineList {
+	/** @param iterable<array-key,OnlinePlayer> $players */
+	public function formatData(iterable $players, int $showOrgInfo, ?int $groupBy=null): OnlineList {
+		$players = collect($players);
 		$currentGroup = '';
 		$separator = '-';
 		$list = new OnlineList(
@@ -1162,11 +1163,11 @@ class OnlineController extends ModuleInstance {
 	 * Replace the main of each character in a relay online list with
 	 * this bot's known main of that main.
 	 *
-	 * @param array<string,array<string,OnlinePlayer>> $onlineChars
+	 * @param iterable<string,iterable<string,OnlinePlayer>> $onlineChars
 	 *
 	 * @return array<string,array<string,OnlinePlayer>>
 	 */
-	private function getLocalAltsForRemote(array $onlineChars): array {
+	private function getLocalAltsForRemote(iterable $onlineChars): array {
 		$result = [];
 		foreach ($onlineChars as $relay => $charLists) {
 			$result[$relay] = [];
@@ -1181,8 +1182,8 @@ class OnlineController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @param OnlineHide[] $hiddenMasks */
-	private function charOnHiddenList(string $group, OnlinePlayer $char, array $hiddenMasks): bool {
+	/** @param iterable<OnlineHide> $hiddenMasks */
+	private function charOnHiddenList(string $group, OnlinePlayer $char, iterable $hiddenMasks): bool {
 		foreach ($hiddenMasks as $mask) {
 			$fullName = $char->name;
 			if (str_contains($mask->mask, '.') && isset($char->guild)) {

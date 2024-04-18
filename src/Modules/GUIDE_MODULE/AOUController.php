@@ -252,8 +252,8 @@ class AOUController extends ModuleInstance {
 		return $msg;
 	}
 
-	/** @param string[] $needles */
-	private function striposarray(string $haystack, array $needles): bool {
+	/** @param iterable<string> $needles */
+	private function striposarray(string $haystack, iterable $needles): bool {
 		foreach ($needles as $needle) {
 			if (stripos($haystack, $needle) === false) {
 				return false;

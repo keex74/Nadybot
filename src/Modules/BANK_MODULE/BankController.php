@@ -209,9 +209,12 @@ class BankController extends ModuleInstance {
 		}
 
 		$bodies = await($procs);
+
+		/** @var string[] */
 		$lines = array_merge(
 			...array_map(
-				static fn (string $body) => preg_split("/(?:\r\n|\r|\n)/", $body),
+				/** @return string[] */
+				static fn (string $body): array => preg_split("/(?:\r\n|\r|\n)/", $body),
 				$bodies
 			)
 		);
@@ -253,10 +256,10 @@ class BankController extends ModuleInstance {
 		}
 	}
 
-	/** @param string[] $lines */
-	private function bankUpdate(array $lines): void {
+	/** @param iterable<array-key,string> $lines */
+	private function bankUpdate(iterable $lines): void {
 		// remove the header line
-		array_shift($lines);
+		$lines = collect($lines)->skip(1);
 
 		$this->db->awaitBeginTransaction();
 		$this->db->table(Bank::getTable())->truncate();

@@ -140,8 +140,8 @@ class ChatGroupingController extends ModuleInstance {
 		$this->joined = array_diff($this->joined, [$eventObj->sender]);
 	}
 
-	/** @param array<int,string[]> $groups */
-	private function renderGroups(array $groups): string {
+	/** @param iterable<int,iterable<string>> $groups */
+	private function renderGroups(iterable $groups): string {
 		$lines = [];
 		foreach ($groups as $groupId => $members) {
 			$group = ['<header2>Group ' . ($groupId +1) . '<end>'];
