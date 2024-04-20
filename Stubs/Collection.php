@@ -4,7 +4,6 @@ namespace Illuminate\Support;
 
 use ArrayAccess;
 use Illuminate\Contracts\Support\CanBeEscapedWhenCastToString;
-use Illuminate\Support\Enumerable;
 
 /**
  * @template TKey of array-key
@@ -13,6 +12,7 @@ use Illuminate\Support\Enumerable;
  *
  * @implements \ArrayAccess<TKey, TValue>
  * @implements \Illuminate\Support\Enumerable<TKey, TValue>
+ *
  * @phpstan-ignore-next-line
  */
 class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable {

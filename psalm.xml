@@ -16,8 +16,12 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="Stubs" />
         </ignoreFiles>
     </projectFiles>
+    <stubs>
+      <file name="Stubs/Collection.php" />
+    </stubs>
     <issueHandlers>
         <InvalidClassConstantType errorLevel="suppress" />
         <PropertyNotSetInConstructor errorLevel="suppress" />

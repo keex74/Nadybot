@@ -933,7 +933,8 @@ class ConfigController extends ModuleInstance {
 	public function getModuleSettings(string $module): array {
 		$module = strtoupper($module);
 
-		return $this->db->table(Setting::getTable())
+		/** @var SettingHandler[] */
+		$handlers = $this->db->table(Setting::getTable())
 			->where('module', $module)
 			->orderBy('mode')
 			->orderBy('description')
@@ -943,6 +944,7 @@ class ConfigController extends ModuleInstance {
 			})
 			->filter()
 			->toArray();
+		return $handlers;
 	}
 
 	/** Check if we need to show the raid access levels */

@@ -9,12 +9,12 @@ parameters:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
     - '#Static property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
   stubFiles:
-    - src/Stubs/Collection.stub
-    - src/Stubs/Enumerable.stub
-    - src/Stubs/Arrayable.stub
-    - src/Stubs/ContrArrayable.stub
-    - src/Stubs/Jsonable.stub
-    - src/Stubs/CanBeEscapedWhenCastToString.stub
+    - Stubs/Collection.php
+    - Stubs/Enumerable.stub
+    - Stubs/Arrayable.stub
+    - Stubs/ContrArrayable.stub
+    - Stubs/Jsonable.stub
+    - Stubs/CanBeEscapedWhenCastToString.stub
   sfpPsrLog:
     enableMessageStaticStringRule: true
     enableContextRequireExceptionKeyRule: true
