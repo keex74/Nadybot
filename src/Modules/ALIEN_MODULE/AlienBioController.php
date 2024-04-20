@@ -268,11 +268,9 @@ class AlienBioController extends ModuleInstance {
 			throw new Exception('Cannot find expected ofab bio material in database.');
 		}
 
-		/** @var OfabArmorType[] $data */
 		$data = $this->db->table(OfabArmorType::getTable())
 			->where('type', $type)
-			->asObj(OfabArmorType::class)
-			->toArray();
+			->asObj(OfabArmorType::class);
 
 		$blob = $item . "\n\n";
 		$blob .= "<highlight>Upgrades Ofab armor for:<end>\n";
@@ -294,10 +292,9 @@ class AlienBioController extends ModuleInstance {
 			throw new Exception('Cannot find expected ofab bio material in database.');
 		}
 
-		/** @var OfabWeapon[] $data */
 		$data = $this->db->table(OfabWeapon::getTable())
 			->where('type', $type)
-			->asObj(OfabWeapon::class)->toArray();
+			->asObj(OfabWeapon::class);
 
 		$blob = $item . "\n\n";
 		$blob .= "<highlight>Upgrades Ofab weapons:<end>\n";
@@ -340,11 +337,9 @@ class AlienBioController extends ModuleInstance {
 
 		$blob .= "<highlight>Adds {$specials} to:<end>\n";
 
-		/** @var AlienWeapon[] $data */
 		$data = $this->db->table(AlienWeapon::getTable())
 			->where('type', $type)
-			->asObj(AlienWeapon::class)
-			->toArray();
+			->asObj(AlienWeapon::class);
 		foreach ($data as $row) {
 			$item = $this->itemsController->getItem($row->name, $maxAIType);
 			if (!isset($item)) {

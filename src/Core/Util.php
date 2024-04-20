@@ -6,6 +6,7 @@ use function Safe\{date, getcwd};
 use Amp\File\{FilesystemException};
 use BackedEnum;
 use Exception;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Iterator;
 use Nadybot\Core\Attributes as NCA;
@@ -285,18 +286,22 @@ class Util {
 	/**
 	 * Get an array with all files (not dirs) in a directory
 	 *
-	 * @return string[] An array of file names in that directory
+	 * @return Collection<array-key,string> An array of file names in that directory
 	 */
-	public function getFilesInDirectory(string $path): array {
+	public function getFilesInDirectory(string $path): Collection {
 		try {
-			$files = $this->fs->listFiles($path);
+			$files = collect($this->fs->listFiles($path));
 		} catch (FilesystemException) {
-			return [];
+			/** @var string[] $empty */
+			$empty = [];
+			return collect($empty);
 		}
-		return array_values(array_filter(
-			$files,
+
+		/** @var Collection<array-key,string> */
+		$result = $files->filter(
 			fn (string $f): bool => !$this->fs->isDirectory($path . \DIRECTORY_SEPARATOR . $f)
-		));
+		)->values();
+		return $result;
 	}
 
 	/**
@@ -310,10 +315,13 @@ class Util {
 		} catch (FilesystemException) {
 			return [];
 		}
-		return array_values(array_filter(
+
+		/** @var string[] */
+		$result = array_values(array_filter(
 			$files,
 			fn (string $f): bool => $f !== '.' && $f !== '..' && $this->fs->isDirectory($path . \DIRECTORY_SEPARATOR . $f)
 		));
+		return $result;
 	}
 
 	/** Calculate the title level from the player's level */

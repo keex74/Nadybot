@@ -359,8 +359,7 @@ class SettingManager {
 		$this->settings = [];
 
 		// Upload Settings from the db that are set by modules
-		/** @var Setting[] $data */
-		$data = $this->db->table(Setting::getTable())->asObj(Setting::class)->toArray();
+		$data = $this->db->table(Setting::getTable())->asObj(Setting::class);
 		foreach ($data as $row) {
 			$row->value = $this->getHardcoded($row->name, $row->value);
 			$this->settings[$row->name] = new SettingValue($row);

@@ -38,9 +38,8 @@ class EventlistController extends ModuleInstance {
 			$query->whereIlike('type', "%{$eventType}%");
 		}
 
-		/** @var EventCfg[] $data */
-		$data = $query->asObj(EventCfg::class)->toArray();
-		$count = count($data);
+		$data = $query->asObj(EventCfg::class);
+		$count = $data->count();
 
 		if ($count === 0) {
 			$msg = "No events of type <highlight>{$eventType}<end> found.";

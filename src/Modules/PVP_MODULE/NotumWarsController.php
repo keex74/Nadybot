@@ -575,14 +575,13 @@ class NotumWarsController extends ModuleInstance {
 	/**
 	 * Get a flat collection of all enable tower sites
 	 *
-	 * @return Collection<int,FeedMessage\SiteUpdate>
+	 * @return Collection<array-key,FeedMessage\SiteUpdate>
 	 */
 	public function getEnabledSites(): Collection {
-		/** @var Collection<int,FeedMessage\SiteUpdate> */
+		/** @var Collection<array-key,FeedMessage\SiteUpdate> */
 		$result = new Collection();
 		foreach ($this->state as $pfId => $sites) {
 			foreach ($sites as $siteId => $site) {
-				/** @var FeedMessage\SiteUpdate $site */
 				if ($site->enabled) {
 					$result->push($site);
 				}

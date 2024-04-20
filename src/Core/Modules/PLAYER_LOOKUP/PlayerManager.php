@@ -301,11 +301,11 @@ class PlayerManager extends ModuleInstance {
 	 * @param string   $search    Search term
 	 * @param int|null $dimension Dimension to limit search to
 	 *
-	 * @return Player[]
+	 * @return Collection<array-key,Player>
 	 *
 	 * @throws SQLException On error
 	 */
-	public function searchForPlayers(string $search, ?int $dimension=null): array {
+	public function searchForPlayers(string $search, ?int $dimension=null): Collection {
 		$query = $this->db->table(Player::getTable())->orderBy('name')->limit(100);
 		$searchTerms = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $searchTerms, 'name');
@@ -314,7 +314,7 @@ class PlayerManager extends ModuleInstance {
 			$query->where('dimension', $dimension);
 		}
 
-		return $query->asObj(Player::class)->toArray();
+		return $query->asObj(Player::class);
 	}
 
 	private function parsePlayerFromBody(string $body): ?Player {

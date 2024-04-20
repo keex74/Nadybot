@@ -8,6 +8,13 @@ parameters:
   ignoreErrors:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
     - '#Static property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
+  stubFiles:
+    - src/Stubs/Collection.stub
+    - src/Stubs/Enumerable.stub
+    - src/Stubs/Arrayable.stub
+    - src/Stubs/ContrArrayable.stub
+    - src/Stubs/Jsonable.stub
+    - src/Stubs/CanBeEscapedWhenCastToString.stub
   sfpPsrLog:
     enableMessageStaticStringRule: true
     enableContextRequireExceptionKeyRule: true

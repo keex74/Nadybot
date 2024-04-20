@@ -1,0 +1,20 @@
+<?php declare(strict_types=1);
+
+namespace Illuminate\Support;
+
+use Countable;
+use Illuminate\Contracts\Support\{Arrayable, Jsonable};
+use IteratorAggregate;
+use JsonSerializable;
+
+/**
+ * @template TKey of array-key
+ *
+ * @template-covariant TValue
+ *
+ * @extends \Illuminate\Contracts\Support\Arrayable<TKey, TValue>
+ * @extends \IteratorAggregate<TKey, TValue>
+ * @phpstan-ignore-next-line
+ */
+interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, JsonSerializable {
+}

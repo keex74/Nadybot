@@ -529,9 +529,8 @@ class TestController extends ModuleInstance {
 	/** Get a list of all tests the bot has */
 	#[NCA\HandlesCommand('test')]
 	public function testListCommand(CmdContext $context): void {
-		$files = $this->util->getFilesInDirectory($this->path);
-		$count = count($files);
-		sort($files);
+		$files = collect($this->util->getFilesInDirectory($this->path));
+		$count = $files->count();
 		$blob = Text::makeChatcmd('All Tests', '/tell <myname> test all') . "\n";
 		foreach ($files as $file) {
 			$name = str_replace('.txt', '', $file);

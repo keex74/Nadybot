@@ -455,17 +455,15 @@ class DB {
 	/**
 	 * Insert a DBRow $row into the database
 	 *
-	 * @param DBTable|DBTable[] $row
+	 * @param DBTable|iterable<array-key,DBTable> $row
 	 */
-	public function insert(array|DBTable $row, ?string $table=null): int {
-		if (is_array($row)) {
-			return array_reduce(
-				$row,
-				function (int $carry, DBTable $row) use ($table): int {
-					return $this->insert($row, $table) * $carry;
-				},
-				0
-			) ? 1 : 0;
+	public function insert(iterable|DBTable $row, ?string $table=null): int {
+		if (!($row instanceof DBTable)) {
+			$result = 1;
+			foreach ($row as $entry) {
+				$result *= $this->insert($entry, $table);
+			}
+			return $result === 0 ? 0 : 1;
 		}
 		$table ??= $row::tryGetTable();
 		if (!isset($table)) {
@@ -836,7 +834,7 @@ class DB {
 		} catch (PDOException $e) {
 			$this->logger->error('{error}', [
 				'error' => $e->getMessage(),
-				'exception' => $e
+				'exception' => $e,
 			]);
 			throw $e;
 		}
@@ -857,10 +855,10 @@ class DB {
 	/**
 	 * Generate an SQL query from a column and a list of criteria
 	 *
-	 * @param string[] $params An array of strings that $column must contain (or not contain if they start with "-")
-	 * @param string   $column The table column to test against
+	 * @param iterable<array-key,string> $params An array of strings that $column must contain (or not contain if they start with "-")
+	 * @param string                     $column The table column to test against
 	 */
-	public function addWhereFromParams(QueryBuilder $query, array $params, string $column, string $boolean='and'): void {
+	public function addWhereFromParams(QueryBuilder $query, iterable $params, string $column, string $boolean='and'): void {
 		$closure = static function (QueryBuilder $query) use ($params, $column): void {
 			foreach ($params as $key => $value) {
 				if ($value[0] == '-' && strlen($value) > 1) {

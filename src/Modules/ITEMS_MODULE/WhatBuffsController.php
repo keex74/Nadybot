@@ -4,6 +4,7 @@ namespace Nadybot\Modules\ITEMS_MODULE;
 
 use function Safe\preg_match;
 use Closure;
+use Generator;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nadybot\Core\{
@@ -670,9 +671,9 @@ class WhatBuffsController extends ModuleInstance {
 	/**
 	 * @param iterable<NanoBuffSearchResult> $items
 	 *
-	 * @return iterable<NanoBuffSearchResult>
+	 * @return Generator<array-key,NanoBuffSearchResult>
 	 */
-	public function groupDrainsAndWrangles(iterable $items): iterable {
+	public function groupDrainsAndWrangles(iterable $items): Generator {
 		$groups = [
 			'/(Divest|Deprive) Skills.*Transfer/',
 			'/(Ransack|Plunder) Skills.*Transfer/',
@@ -810,9 +811,9 @@ class WhatBuffsController extends ModuleInstance {
 	/**
 	 * @param iterable<PerkBuffSearchResult> $data
 	 *
-	 * @return iterable<PerkBuffSearchResult>
+	 * @return Collection<array-key,PerkBuffSearchResult>
 	 */
-	private function generatePerkBufflist(iterable $data): iterable {
+	private function generatePerkBufflist(iterable $data): Collection {
 		/** @var array<string,PerkBuffSearchResult> */
 		$result = [];
 		foreach ($data as $perk) {
@@ -830,7 +831,7 @@ class WhatBuffsController extends ModuleInstance {
 			}
 		}
 
-		/** @var Collection<int,PerkBuffSearchResult> */
+		/** @var Collection<array-key,PerkBuffSearchResult> */
 		$newData = new Collection();
 		// If a perk has different max levels for profs, we create one entry for each of the
 		// buff levels, so 1 perk can appear several times with different max buffs

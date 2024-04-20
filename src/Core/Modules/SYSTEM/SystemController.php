@@ -370,7 +370,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 		);
 
 		$configStats = new ConfigStatistics();
-		$configStats->active_aliases = $numAliases = count($this->commandAlias->getEnabledAliases());
+		$configStats->active_aliases = $numAliases = $this->commandAlias->getEnabledAliases()->count();
 		foreach ($this->eventManager->events as $type => $events) {
 			$configStats->active_events += count($events);
 		}
@@ -381,7 +381,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 			);
 		}
 		$configStats->active_subcommands = count($this->subcommandManager->subcommands);
-		$configStats->active_help_commands = count($this->helpManager->getAllHelpTopics(null));
+		$configStats->active_help_commands = iterator_count($this->helpManager->getAllHelpTopics(null));
 
 		$systemStats = new SystemStats(
 			charinfo_cache_size: $this->db->table(Player::getTable())->count(),

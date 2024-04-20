@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Safe\{preg_match, preg_match_all, preg_replace};
+use function Safe\{preg_match, preg_match_all, preg_replace, preg_split};
 use Safe\Exceptions\PcreException;
 
 class Safe {
@@ -142,5 +142,26 @@ class Safe {
 
 		/** @psalm-suppress LessSpecificReturnStatement */
 		return $matches;
+	}
+
+	/**
+	 * Split the given string by a regular expression.
+	 *
+	 * @param string   $pattern The pattern to search for, as a string.
+	 * @param string   $subject The input string.
+	 * @param int|null $limit   If specified, then only substrings up to limit
+	 *                          are returned with the rest of the string being placed in the last
+	 *                          substring.  A limit of -1 or 0 means "no limit".
+	 *                          into subject at offset 1.
+	 *
+	 * @return string[] Returns an array containing substrings of subject
+	 *                  split along boundaries matched by pattern.
+	 *
+	 * @throws PcreException
+	 */
+	public static function pregSplit(string $pattern, string $subject, ?int $limit=-1): array {
+		/** @var string[] */
+		$result = preg_split($pattern, $subject, $limit);
+		return $result;
 	}
 }

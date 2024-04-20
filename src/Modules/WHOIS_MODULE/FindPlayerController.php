@@ -39,7 +39,7 @@ class FindPlayerController extends ModuleInstance {
 			$search,
 			$this->config->main->dimension
 		);
-		$count = count($players);
+		$count = $players->count();
 
 		if ($count === 0) {
 			$msg = "Could not find any players matching <highlight>{$search}<end>.";

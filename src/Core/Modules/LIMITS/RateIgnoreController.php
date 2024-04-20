@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\Modules\LIMITS;
 
+use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -44,7 +45,7 @@ class RateIgnoreController extends ModuleInstance {
 	)]
 	public function rateignoreCommand(CmdContext $context): void {
 		$list = $this->all();
-		if (count($list) === 0) {
+		if ($list->isEmpty()) {
 			$context->reply('No entries in rate limit ignore list');
 			return;
 		}
@@ -131,14 +132,13 @@ class RateIgnoreController extends ModuleInstance {
 	/**
 	 * Get all rateignorelist entries
 	 *
-	 * @return RateIgnoreList[]
+	 * @return Collection<array-key,RateIgnoreList>
 	 *
 	 * @throws SQLException
 	 */
-	public function all(): array {
+	public function all(): Collection {
 		return $this->db->table(RateIgnoreList::getTable())
 			->orderBy('name')
-			->asObj(RateIgnoreList::class)
-			->toArray();
+			->asObj(RateIgnoreList::class);
 	}
 }

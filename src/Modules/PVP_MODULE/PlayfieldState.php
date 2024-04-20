@@ -46,8 +46,12 @@ class PlayfieldState implements ArrayAccess, Iterator {
 		unset($this->sites[$offset]);
 	}
 
-	public function current(): SiteUpdate|bool {
-		return current($this->sites);
+	public function current(): SiteUpdate {
+		$current = current($this->sites);
+		if ($current === false) {
+			throw new Exception('Cannot get current value of an empty array');
+		}
+		return $current;
 	}
 
 	public function rewind(): void {

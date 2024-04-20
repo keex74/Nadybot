@@ -313,8 +313,8 @@ class ConfigApiController extends ModuleInstance {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 		$channel = $request->getQueryParameter('channel') ?? 'all';
-		$channels = $this->commandManager->getPermissionSets()->pluck('name')->toArray();
-		if ($channel !== 'all' && !in_array($channel, $channels, true)) {
+		$channels = $this->commandManager->getPermissionSets()->pluck('name');
+		if ($channel !== 'all' && !$channels->containsStrict($channel)) {
 			return new Response(HttpStatus::UNPROCESSABLE_ENTITY);
 		}
 		if ($this->configController->toggleModule($module, $channel, $op === 'enable')) {

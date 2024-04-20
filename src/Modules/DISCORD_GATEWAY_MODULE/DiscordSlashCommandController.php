@@ -214,7 +214,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		if (!$this->db->insert(
 			$newCommands->map(static function (string $cmd): DiscordSlashCommand {
 				return new DiscordSlashCommand(cmd: $cmd);
-			})->toArray()
+			})
 		)) {
 			$context->reply("There was an error registering the {$cmdText}.");
 			return;
@@ -273,7 +273,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			$this->db->insert(
 				$delCommands->map(static function (string $cmd): DiscordSlashCommand {
 					return new DiscordSlashCommand(cmd: $cmd);
-				})->toArray()
+				})
 			);
 			$context->reply(
 				'Error removing ' . $delCommands->count(). ' '.

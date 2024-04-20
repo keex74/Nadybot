@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core;
 
+use Generator;
 use Nadybot\Core\DBSchema\{CmdCfg, CmdPermission, HlpCfg, Setting};
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -95,8 +96,7 @@ class HelpManager {
 			'foo'
 		)->select('foo.module', 'foo.file', 'foo.name', 'foo.admin AS admin_list', 'foo.description');
 
-		/** @var HelpTopic[] $data */
-		$data = $outerQuery->asObj(HelpTopic::class)->toArray();
+		$data = $outerQuery->asObj(HelpTopic::class);
 
 		$accessLevel = $this->accessManager->getAccessLevelForCharacter($char);
 
@@ -143,9 +143,9 @@ class HelpManager {
 	/**
 	 * Return all help topics a character has access to
 	 *
-	 * @return HelpTopic[] Help topics
+	 * @return Generator<array-key,HelpTopic> Help topics
 	 */
-	public function getAllHelpTopics(?CmdContext $context): array {
+	public function getAllHelpTopics(?CmdContext $context): Generator {
 		$cmdHelp = $this->db->table(CmdCfg::getTable(), 'c')
 			->join(CmdPermission::getTable() . ' as p', 'c.cmd', 'p.cmd')
 			->where('c.cmdevent', 'cmd')
@@ -170,15 +170,13 @@ class HelpManager {
 		->orderByDesc('sort')
 		->orderBy('description');
 
-		/** @var HelpTopic[] $data */
-		$data = $outerQuery->asObj(HelpTopic::class)->toArray();
+		$data = $outerQuery->asObj(HelpTopic::class);
 
 		$accessLevel = 'all';
 		if (isset($context)) {
 			$accessLevel = $this->accessManager->getAccessLevelForCharacter($context->char->name);
 		}
 
-		$topics = [];
 		$added = [];
 		foreach ($data as $row) {
 			$key = $row->module.$row->name.$row->description;
@@ -193,12 +191,10 @@ class HelpManager {
 					admin_list: $row->admin_list,
 					sort: $row->sort,
 				);
-				$topics []= $obj;
+				yield $obj;
 				$added[$key] = true;
 			}
 		}
-
-		return $topics;
 	}
 
 	/** @param iterable<string> $accessLevelsArray */

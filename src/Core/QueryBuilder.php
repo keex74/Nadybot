@@ -32,7 +32,7 @@ class QueryBuilder extends Builder {
 	 *
 	 * @param class-string<T> $class
 	 *
-	 * @return Collection<int,T>
+	 * @return Collection<array-key,T>
 	 */
 	public function asObj(string $class): Collection {
 		/** @var T[] */
@@ -55,7 +55,7 @@ class QueryBuilder extends Builder {
 	/**
 	 * Pluck values as ints
 	 *
-	 * @return Collection<int,int>
+	 * @return Collection<array-key,int>
 	 */
 	public function pluckInts(string $column): Collection {
 		return $this->pluck($column)

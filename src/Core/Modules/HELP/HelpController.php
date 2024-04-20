@@ -97,7 +97,7 @@ class HelpController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('topics', 'list')] string $action
 	): void {
-		$data = $this->helpManager->getAllHelpTopics($context);
+		$data = collect($this->helpManager->getAllHelpTopics($context));
 
 		if (count($data) === 0) {
 			$msg = 'No help files found.';

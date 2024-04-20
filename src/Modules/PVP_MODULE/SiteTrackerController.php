@@ -273,7 +273,7 @@ class SiteTrackerController extends ModuleInstance {
 			->filter(static fn (SiteUpdate $site): bool => $tracker->matches($site))
 			->sortBy('site_id')
 			->sortBy('playfield_id');
-		$blob = $this->nwCtrl->renderHotSites(...$sites->toArray());
+		$blob = $this->nwCtrl->renderHotSites(null, ...$sites->toArray());
 		$expression = Safe::pregReplace('/\s+'.implode('\s+', array_map('preg_quote', $tracker->events)).'$/', '', $tracker->expression);
 		$msg = $this->text->makeBlob(
 			"Sites matching tracker '{$expression}' (" . $sites->count() . ')',

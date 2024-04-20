@@ -146,10 +146,10 @@ class UsageController extends ModuleInstance {
 			->where('command', $cmd)
 			->where('dt', '>', $time)
 			->groupBy('sender');
-		$query->orderByColFunc('COUNT', 'sender', 'desc')
-			->select('sender', $query->raw($query->colFunc('COUNT', 'command', 'count')));
-		$data = $query->asObj(PlayerUsageStats::class)->toArray();
-		$count = count($data);
+		$data = $query->orderByColFunc('COUNT', 'sender', 'desc')
+			->select('sender', $query->raw($query->colFunc('COUNT', 'command', 'count')))
+			->asObj(PlayerUsageStats::class);
+		$count = $data->count();
 
 		if ($count > 0) {
 			$blob = '';
@@ -201,8 +201,7 @@ class UsageController extends ModuleInstance {
 			->select('type AS channel');
 		$query->selectRaw($query->colFunc('COUNT', 'type', 'count'));
 
-		/** @var ChannelUsageStats[] */
-		$data = $query->asObj(ChannelUsageStats::class)->toArray();
+		$data = $query->asObj(ChannelUsageStats::class);
 
 		$blob = "<header2>Channel Usage<end>\n";
 		foreach ($data as $row) {
@@ -219,8 +218,7 @@ class UsageController extends ModuleInstance {
 			->select('command');
 		$query->selectRaw($query->colFunc('COUNT', 'command', 'count'));
 
-		/** @var CommandUsageStats[] */
-		$data = $query->asObj(CommandUsageStats::class)->toArray();
+		$data = $query->asObj(CommandUsageStats::class);
 
 		$blob .= "<header2>{$limit} Most Used Commands<end>\n";
 		foreach ($data as $row) {
@@ -236,10 +234,8 @@ class UsageController extends ModuleInstance {
 			->orderByColFunc('COUNT', 'sender', 'desc')
 			->limit($limit)
 			->select('sender');
-		$query->selectRaw($query->colFunc('COUNT', 'sender', 'count'));
-
-		/** @var PlayerUsageStats[] */
-		$data = $query->asObj(PlayerUsageStats::class)->toArray();
+		$data = $query->selectRaw($query->colFunc('COUNT', 'sender', 'count'))
+			->asObj(PlayerUsageStats::class);
 
 		$blob .= "\n<header2>{$limit} Most Active Users<end>\n";
 		foreach ($data as $row) {

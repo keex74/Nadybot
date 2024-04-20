@@ -6,10 +6,8 @@ use function Safe\{json_decode, json_encode};
 
 use Amp\File\{FilesystemException};
 use Exception;
-use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\{
 	CmdAlias,
-	CmdCfg,
 	CmdPermSetMapping,
 	CmdPermission,
 	CmdPermissionSet,
@@ -220,8 +218,7 @@ class ProfileController extends ModuleInstance {
 		}
 		$contents .= "\n# Events\n";
 
-		/** @var EventCfg[] */
-		$data = $this->db->table(EventCfg::getTable())->asObj(EventCfg::class)->toArray();
+		$data = $this->db->table(EventCfg::getTable())->asObj(EventCfg::class);
 		foreach ($data as $row) {
 			$status = 'disable';
 			if ($row->status === 1) {
@@ -231,7 +228,6 @@ class ProfileController extends ModuleInstance {
 		}
 		$contents .= "\n# Commands\n";
 
-		/** @var Collection<int,CmdCfg> */
 		$data = $this->commandManager->getAll(true);
 		foreach ($data as $row) {
 			foreach ($row->permissions as $channel => $permissions) {
@@ -242,11 +238,10 @@ class ProfileController extends ModuleInstance {
 		}
 		$contents .= "\n# Aliases\n";
 
-		/** @var CmdAlias[] */
 		$data = $this->db->table(CmdAlias::getTable())
 			->where('status', 1)
 			->orderBy('alias')
-			->asObj(CmdAlias::class)->toArray();
+			->asObj(CmdAlias::class);
 		foreach ($data as $row) {
 			$contents .= "!alias rem {$row->alias}\n";
 			$contents .= "!alias add {$row->alias} {$row->cmd}\n";
@@ -263,9 +258,8 @@ class ProfileController extends ModuleInstance {
 		$contents .= "\n# Route colors\n".
 			"!route color remall\n";
 
-		/** @var RouteHopColor[] */
 		$data = $this->db->table(RouteHopColor::getTable())
-			->asObj(RouteHopColor::class)->toArray();
+			->asObj(RouteHopColor::class);
 		foreach ($data as $row) {
 			foreach (['text', 'tag'] as $color) {
 				if (isset($row->{"{$color}_color"})) {
@@ -283,7 +277,7 @@ class ProfileController extends ModuleInstance {
 
 		/** @var RouteHopFormat[] */
 		$data = $this->db->table(RouteHopFormat::getTable())
-			->asObj(RouteHopFormat::class)->toArray();
+			->asObj(RouteHopFormat::class);
 		foreach ($data as $row) {
 			if ($row->render === false) {
 				$contents .= "!route format render {$row->hop} false\n";

@@ -765,8 +765,9 @@ class WishlistController extends ModuleInstance {
 						->where('expires_on', '<', time());
 				});
 		}
-		$ids = $query->pluckInts('id')
-			->toArray();
+
+		/** @var int[] */
+		$ids = $query->pluckInts('id')->toArray();
 		if (count($ids) === 0) {
 			if ($includeActive) {
 				throw new UserException('Your wishlist is empty.');

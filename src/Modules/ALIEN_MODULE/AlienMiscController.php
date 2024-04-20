@@ -137,13 +137,11 @@ class AlienMiscController extends ModuleInstance {
 		'<tab>1, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, and 300.'
 	)]
 	public function ofabarmorCommand(CmdContext $context): void {
-		/** @var int[] */
 		$qls = $this->db->table(OfabArmorCost::getTable())
 			->orderBy('ql')
 			->select('ql')
 			->distinct()
-			->pluckInts('ql')
-			->toArray();
+			->pluckInts('ql');
 		$blob = $this->db->table(OfabArmorType::getTable())
 			->orderBy('profession')
 			->asObj(OfabArmorType::class)
@@ -268,7 +266,7 @@ class AlienMiscController extends ModuleInstance {
 		$qls = $this->db->table(OfabWeaponCost::getTable())
 			->orderBy('ql')
 			->select('ql')->distinct()
-			->pluckInts('ql')->toArray();
+			->pluckInts('ql');
 		$blob = $this->db->table(OfabWeapon::getTable())
 			->orderBy('name')
 			->asObj(OfabWeapon::class)

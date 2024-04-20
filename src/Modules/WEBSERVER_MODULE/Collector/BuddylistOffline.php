@@ -11,7 +11,7 @@ class BuddylistOffline implements GaugeProvider {
 
 	public function getValue(): float {
 		return $this->buddylistManager->getUsedBuddySlots()
-			- count($this->buddylistManager->getOnline());
+			- iterator_count($this->buddylistManager->getOnline());
 	}
 
 	public function getTags(): array {

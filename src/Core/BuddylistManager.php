@@ -151,16 +151,14 @@ class BuddylistManager {
 	/**
 	 * Get the names of all people in the friendlist who are online
 	 *
-	 * @return string[]
+	 * @return \Generator<array-key,string>
 	 */
-	public function getOnline(): array {
-		$result = [];
+	public function getOnline(): \Generator {
 		foreach ($this->buddyList as $uid => $data) {
 			if ($data->online) {
-				$result []= $data->name;
+				yield $data->name;
 			}
 		}
-		return $result;
 	}
 
 	public function addName(string $name, string $type): bool {

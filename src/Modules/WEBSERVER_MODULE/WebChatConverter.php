@@ -35,7 +35,7 @@ class WebChatConverter extends ModuleInstance {
 	/**
 	 * Add the color and display information to the path
 	 *
-	 * @param null|Source[] $path
+	 * @param ?Source[] $path
 	 *
 	 * @return null|WebSource[]
 	 */

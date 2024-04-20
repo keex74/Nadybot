@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\RAID_MODULE;
 
-use function Safe\preg_split;
 use InvalidArgumentException;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -418,13 +417,11 @@ class AuctionController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('history')] string $action
 	): void {
-		/** @var DBAuction[] */
 		$items = $this->db->table(DBAuction::getTable())
 			->orderByDesc('id')
 			->limit(40)
-			->asObj(DBAuction::class)
-			->toArray();
-		if (!count($items)) {
+			->asObj(DBAuction::class);
+		if ($items->isEmpty()) {
 			$context->reply('No auctions have ever been started on this bot.');
 			return;
 		}
@@ -462,26 +459,24 @@ class AuctionController extends ModuleInstance {
 		} else {
 			$this->db->addWhereFromParams(
 				$query,
-				preg_split('/\s+/', $search),
+				Safe::pregSplit('/\s+/', $search),
 				'item'
 			);
 		}
 
-		/** @var DBAuction[] */
 		$items = (clone $query)
 			->orderByDesc('end')
 			->limit(40)
-			->asObj(DBAuction::class)->toArray();
-		if (!count($items)) {
+			->asObj(DBAuction::class);
+		if ($items->isEmpty()) {
 			$context->reply("Nothing matched <highlight>{$search}<end>.");
 			return;
 		}
 
-		/** @var DBAuction */
 		$mostExpensiveItem = (clone $query)
 			->orderByDesc('cost')
 			->limit(1)
-			->asObj(DBAuction::class)->first();
+			->asObj(DBAuction::class)->firstOrFail();
 		$avgCost = (int)(clone $query)->avg('cost');
 		$queryLastTen = (clone $query)->orderByDesc('id')->limit(10);
 		$avgCostLastTen = (int)$this->db->fromSub($queryLastTen, 'last_auctions')

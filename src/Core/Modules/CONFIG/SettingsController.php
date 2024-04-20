@@ -58,11 +58,9 @@ class SettingsController extends ModuleInstance {
 	public function settingsCommand(CmdContext $context): void {
 		$blob = "Changing any of these settings will take effect immediately. Please note that some of these settings are read-only and cannot be changed.\n\n";
 
-		/** @var Setting[] $data */
 		$data = $this->db->table(Setting::getTable())
 			->orderBy('module')
-			->asObj(Setting::class)
-			->toArray();
+			->asObj(Setting::class);
 		$currentModule = '';
 		foreach ($data as $row) {
 			if ($row->module !== $currentModule) {

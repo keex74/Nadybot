@@ -10,7 +10,7 @@ class BuddylistOnline implements GaugeProvider {
 	private BuddylistManager $buddylistManager;
 
 	public function getValue(): float {
-		return count($this->buddylistManager->getOnline());
+		return iterator_count($this->buddylistManager->getOnline());
 	}
 
 	public function getTags(): array {

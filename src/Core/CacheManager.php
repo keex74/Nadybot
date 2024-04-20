@@ -3,6 +3,7 @@
 namespace Nadybot\Core;
 
 use Amp\File\FilesystemException;
+use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Config\BotConfig;
 use Psr\Log\LoggerInterface;
@@ -140,9 +141,9 @@ class CacheManager {
 	 *
 	 * @param string $groupName The "name" of the cache, e.g. "guild_roster"
 	 *
-	 * @return string[]
+	 * @return Collection<array-key,string>
 	 */
-	public function getFilesInGroup(string $groupName): array {
+	public function getFilesInGroup(string $groupName): Collection {
 		$path = $this->cacheDir . \DIRECTORY_SEPARATOR . $groupName . \DIRECTORY_SEPARATOR;
 
 		return $this->util->getFilesInDirectory($path);

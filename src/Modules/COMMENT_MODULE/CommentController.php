@@ -104,11 +104,9 @@ class CommentController extends ModuleInstance {
 		$this->db->beginTransaction();
 		try {
 			// read all current entries
-			/** @var Comment[] */
-			$comments = $this->db->table(Comment::getTable())->asObj(Comment::class)->toArray();
+			$comments = $this->db->table(Comment::getTable())->asObj(Comment::class);
 
-			/** @var CommentCategory[] */
-			$cats = $this->db->table(CommentCategory::getTable())->asObj(CommentCategory::class)->toArray();
+			$cats = $this->db->table(CommentCategory::getTable())->asObj(CommentCategory::class);
 			if ($newValue === '1') {
 				// save new name
 				$newCommentTable = 'comments';
@@ -220,9 +218,8 @@ class CommentController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('category', 'categories')] string $action,
 	): void {
-		/** @var CommentCategory[] */
 		$categories = $this->db->table(CommentCategory::getTable())
-			->asObj(CommentCategory::class)->toArray();
+			->asObj(CommentCategory::class);
 		if (count($categories) === 0) {
 			$context->reply('There are currently no comment categories defined.');
 			return;
@@ -491,11 +488,10 @@ class CommentController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Comment[] */
 		$comments = $this->db->table(Comment::getTable())
 			->where('category', $categoryName)
 			->orderBy('created_at')
-			->asObj(Comment::class)->toArray();
+			->asObj(Comment::class);
 		if (!count($comments)) {
 			$msg = "No comments found in category <highlight>{$categoryName}<end>.";
 			$context->reply($msg);
@@ -539,13 +535,16 @@ class CommentController extends ModuleInstance {
 	/**
 	 * Format the blob for a list of comments
 	 *
-	 * @param Comment[] $comments
+	 * @param iterable<array-key,Comment> $comments
 	 */
-	public function formatComments(array $comments, bool $groupByMain, bool $addCategory=false): FormattedComments {
+	public function formatComments(iterable $comments, bool $groupByMain, bool $addCategory=false): FormattedComments {
+		/** @var array<string,Comment[]> */
 		$chars = [];
+		$numComments = 0;
 		foreach ($comments as $comment) {
 			$chars[$comment->character] ??= [];
 			$chars[$comment->character] []= $comment;
+			$numComments++;
 		}
 		if ($groupByMain) {
 			$grouped = [];
@@ -571,7 +570,7 @@ class CommentController extends ModuleInstance {
 		}
 		return new FormattedComments(
 			numChars: count($chars),
-			numComments: count($comments),
+			numComments: $numComments,
 			numMains: count($grouped),
 			blob: $blob,
 		);

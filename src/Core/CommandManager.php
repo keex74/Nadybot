@@ -4,6 +4,7 @@ namespace Nadybot\Core;
 
 use function Safe\{preg_match_all, preg_split};
 use Exception;
+use Generator;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Nadybot\Core\Modules\SYSTEM\SystemController;
@@ -366,14 +367,14 @@ class CommandManager implements MessageEmitter {
 			->exists();
 	}
 
-	/** @return Collection<int,CmdPermissionSet> */
+	/** @return Collection<array-key,CmdPermissionSet> */
 	public function getPermissionSets(): Collection {
 		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(CmdPermissionSet::class);
 		return $permSets;
 	}
 
-	/** @return Collection<int,ExtCmdPermissionSet> */
+	/** @return Collection<array-key,ExtCmdPermissionSet> */
 	public function getExtPermissionSets(): Collection {
 		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(ExtCmdPermissionSet::class);
@@ -385,12 +386,12 @@ class CommandManager implements MessageEmitter {
 		return $permSets;
 	}
 
-	/** @return Collection<int,CmdPermSetMapping> */
+	/** @return Collection<array-key,CmdPermSetMapping> */
 	public function getPermSetMappings(): Collection {
 		return collect($this->permSetMappings);
 	}
 
-	/** @return Collection<int,CmdCfg> */
+	/** @return Collection<array-key,CmdCfg> */
 	public function getAll(bool $includeSubcommands=false): Collection {
 		/** @var Collection<string,Collection<int,CmdPermission>> */
 		$permissions = $this->db->table(CmdPermission::getTable())
@@ -1019,9 +1020,11 @@ class CommandManager implements MessageEmitter {
 			' for an explanation of the command syntax</i>';
 	}
 
-	/** @param ReflectionMethod[] $ms */
-	public function getHelpText(array $ms, string $command): string {
+	/** @param iterable<array-key,ReflectionMethod> $ms */
+	public function getHelpText(iterable $ms, string $command): string {
+		$first = null;
 		foreach ($ms as $m) {
+			$first ??= $m;
 			$params = $m->getParameters();
 			if (count($params) === 0
 				|| !$params[0]->hasType()) {
@@ -1039,7 +1042,7 @@ class CommandManager implements MessageEmitter {
 		}
 		$lines = [];
 		$extra = [];
-		$comment = $ms[0]->getDocComment();
+		$comment = $first?->getDocComment() ?? false;
 		if ($comment !== false) {
 			$parts = $this->cleanComment($comment);
 			$lines []= trim($parts[0]);
@@ -1047,8 +1050,9 @@ class CommandManager implements MessageEmitter {
 				$extra []= '<i>' . trim($parts[1]) . '</i>';
 			}
 		}
-		for ($j = 0; $j < count($ms); $j++) {
-			$m = $ms[$j];
+		$j = -1;
+		foreach ($ms as $m) {
+			$j++;
 			$params = $m->getParameters();
 			$commandAttrs = $m->getAttributes(NCA\HandlesCommand::class);
 			for ($k = 0; $k < count($commandAttrs); $k++) {
@@ -1180,11 +1184,10 @@ class CommandManager implements MessageEmitter {
 	 * @return CommandRegexp[]
 	 */
 	public function retrieveRegexes(ReflectionMethod $reflectedMethod): array {
-		$regexes = [];
 		if (count($reflectedMethod->getAttributes(NCA\HandlesCommand::class))) {
-			$regexes = $this->getRegexpFromCharClass($reflectedMethod);
+			return $this->getRegexpFromCharClass($reflectedMethod);
 		}
-		return $regexes;
+		return [];
 	}
 
 	/** @return CommandRegexp[] */
@@ -1371,10 +1374,11 @@ class CommandManager implements MessageEmitter {
 		if (!$this->db->table(CmdPermissionSet::getTable())->where('name', $name)->exists()) {
 			throw new InvalidArgumentException("The permission set <highlight>{$name}<end> does not exist.");
 		}
-		if (count($usedBy = $this->getSourcesForPermsetName($name)) > 0) {
+		$usedBy = collect($this->getSourcesForPermsetName($name));
+		if ($usedBy->count() > 0) {
 			throw new InvalidArgumentException(
 				"The permission set <highlight>{$name}<end> is still assigned to <highlight>".
-				(collect($usedBy))->join('<end>, <highlight>', '<end> and <highlight>').
+				$usedBy->join('<end>, <highlight>', '<end> and <highlight>').
 				'<end>.'
 			);
 		}
@@ -1441,17 +1445,15 @@ class CommandManager implements MessageEmitter {
 	 *
 	 * @param string $name Name of the permission set
 	 *
-	 * @return string[] A list of all sources mapping to this
+	 * @return Generator<array-key,string> A list of all sources mapping to this
 	 */
-	public function getSourcesForPermsetName(string $name): array {
+	public function getSourcesForPermsetName(string $name): Generator {
 		$name = strtolower($name);
-		$result = [];
 		foreach ($this->permSetMappings as $map) {
 			if ($map->permission_set === $name) {
-				$result []= $map->source;
+				yield $map->source;
 			}
 		}
-		return $result;
 	}
 
 	/** Check the message in $context for a valid command and execute it in the proper channel */
@@ -1489,7 +1491,7 @@ class CommandManager implements MessageEmitter {
 		return true;
 	}
 
-	protected function getRefMethodForHandler(string $handler): ?ReflectionMethod {
+	private function getRefMethodForHandler(string $handler): ?ReflectionMethod {
 		[$name, $method] = explode('.', $handler);
 		[$method, $line] = explode(':', $method);
 		$instance = Registry::tryGetInstance($name);
@@ -1517,7 +1519,7 @@ class CommandManager implements MessageEmitter {
 	 *
 	 * @phpstan-return array{string, ?string}
 	 */
-	protected function cleanComment(string $comment): array {
+	private function cleanComment(string $comment): array {
 		$comment = trim(Safe::pregReplace("|^/\*\*(.*)\*/|s", '$1', $comment));
 		$comment = Safe::pregReplace("/^[ \t]*\*[ \t]*/m", '', $comment);
 		$comment = trim(Safe::pregReplace('/^@.*/m', '', $comment));
@@ -1528,7 +1530,7 @@ class CommandManager implements MessageEmitter {
 	}
 
 	/** @return Collection<int,ReflectionMethod> */
-	protected function findGroupMembers(string $groupName): Collection {
+	private function findGroupMembers(string $groupName): Collection {
 		$objs = Registry::getAllInstances();
 
 		/** @var Collection<int,ReflectionMethod> */
@@ -1547,7 +1549,7 @@ class CommandManager implements MessageEmitter {
 		return $ms;
 	}
 
-	protected function canViewHelp(CmdContext $context, ReflectionMethod $m): bool {
+	private function canViewHelp(CmdContext $context, ReflectionMethod $m): bool {
 		if (count($m->getAttributes(NCA\Help\Hide::class)) > 0) {
 			return false;
 		}
@@ -1584,7 +1586,7 @@ class CommandManager implements MessageEmitter {
 	 *
 	 * @return Collection<int,ReflectionMethod[]>
 	 */
-	protected function groupBySubcmd(Collection $list): Collection {
+	private function groupBySubcmd(Collection $list): Collection {
 		/**
 		 * @param ReflectionMethod[] $refMethods1
 		 * @param ReflectionMethod[] $refMethods2
@@ -1616,7 +1618,7 @@ class CommandManager implements MessageEmitter {
 		return $grouped;
 	}
 
-	protected function getParamRegexp(ReflectionParameter $param, string $comment): ?CommandRegexp {
+	private function getParamRegexp(ReflectionParameter $param, string $comment): ?CommandRegexp {
 		if (!$param->hasType()) {
 			return null;
 		}

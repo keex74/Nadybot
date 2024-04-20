@@ -694,13 +694,11 @@ class ConfigController extends ModuleInstance {
 			}
 		}
 
-		/** @var EventCfg[] */
 		$data = $this->db->table(EventCfg::getTable())
 			->where('module', $module)
 			->orderBy('type')
-			->asObj(EventCfg::class)
-			->toArray();
-		if (count($data) > 0) {
+			->asObj(EventCfg::class);
+		if ($data->isNotEmpty()) {
 			$found = true;
 			$blob .= "\n<header2>Events<end>\n";
 		}

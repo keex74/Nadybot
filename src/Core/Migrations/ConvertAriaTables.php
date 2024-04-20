@@ -13,18 +13,16 @@ class ConvertAriaTables implements SchemaMigration {
 			return;
 		}
 
-		/** @var string[] */
 		$tables = $db->table('information_schema.TABLES')
 			->where('TABLE_SCHEMA', $db->schema()->getConnection()->getDatabaseName())
 			->where('ENGINE', 'Aria')
 			->select('TABLE_NAME')
-			->pluckStrings('TABLE_NAME')
-			->toArray();
-		if (empty($tables)) {
+			->pluckStrings('TABLE_NAME');
+		if ($tables->isEmpty()) {
 			return;
 		}
 		$logger->info('Converting {num_tables} DB tables from Aria to InnoDB...', [
-			'num_tables' => count($tables),
+			'num_tables' => $tables->count(),
 		]);
 		$grammar = $db->schema()->getConnection()->getSchemaGrammar();
 		foreach ($tables as $table) {
