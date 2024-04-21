@@ -516,7 +516,7 @@ class RelayController extends ModuleInstance {
 	/**
 	 * Get a list of commands to create all current relays
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getRelayDump(): array {
 		$relays = $this->getRelays();
@@ -837,7 +837,7 @@ class RelayController extends ModuleInstance {
 	/**
 	 * Read all defined relays from the database
 	 *
-	 * @return RelayConfig[]
+	 * @return list<RelayConfig>
 	 */
 	public function getRelays(): array {
 		$arguments = $this->db->table(RelayLayerArgument::getTable())
@@ -865,7 +865,9 @@ class RelayController extends ModuleInstance {
 				$relay->events = $events->get($relay->id, new Collection())
 					->toArray();
 			})
-			->toArray();
+			->toList();
+
+		/** @var list<RelayConfig> */
 		return $relays;
 	}
 
@@ -1030,7 +1032,7 @@ class RelayController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'RelayConfig[]', desc: 'The configured relays')
 	]
 	public function apiGetRelaysEndpoint(Request $request): Response {
-		return ApiResponse::create(array_values($this->getRelays()));
+		return ApiResponse::create($this->getRelays());
 	}
 
 	/** Get a single relay */
@@ -1240,7 +1242,7 @@ class RelayController extends ModuleInstance {
 	/**
 	 * @param array<string,ClassSpec> $specs
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function renderClassSpecOverview(array $specs, string $name, string $subCommand): array {
 		$count = count($specs);
@@ -1265,7 +1267,7 @@ class RelayController extends ModuleInstance {
 	/**
 	 * @param array<string,ClassSpec> $specs
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function renderClassSpecDetails(array $specs, string $key, string $name): array {
 		$spec = $specs[$key] ?? null;
@@ -1513,9 +1515,9 @@ class RelayController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Source[] $source
+	 * @param list<Source> $source
 	 *
-	 * @phpstan-param non-empty-array<Source> $source
+	 * @psalm-param list<Source>&non-empty-array<int,Source> $source
 	 */
 	private function getExampleMessage(RelayConfig $relay, array $source): string {
 		$rEvent = new RoutableMessage('xxx');

@@ -48,10 +48,10 @@ class ImplantDesignerController extends ModuleInstance {
 	#[NCA\Inject]
 	private ImplantController $implantController;
 
-	/** @var string[] */
+	/** @var list<string> */
 	private array $slots = ['head', 'eye', 'ear', 'rarm', 'chest', 'larm', 'rwrist', 'waist', 'lwrist', 'rhand', 'legs', 'lhand', 'feet'];
 
-	/** @var string[] */
+	/** @var list<string> */
 	private array $grades = ['shiny', 'bright', 'faded'];
 
 	#[NCA\Setup]
@@ -468,8 +468,7 @@ class ImplantDesignerController extends ModuleInstance {
 				$query->where('c3.LongName', $slotObj->faded);
 			}
 
-			/** @var ImplantLayout[] */
-			$data = $query->asObj(ImplantLayout::class)->toArray();
+			$data = $query->asObj(ImplantLayout::class);
 			$primary = null;
 			foreach ($data as $row) {
 				$results = [];
@@ -483,8 +482,8 @@ class ImplantDesignerController extends ModuleInstance {
 					$results []= ['faded', $row->FadedEffect];
 				}
 
-				/** @var string[] */
-				$results = array_map(static function ($item) use ($slot) {
+				/** @var list<string> */
+				$results = array_map(static function ($item) use ($slot): string {
 					return empty($item[1]) ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot->designSlotName()} {$item[0]} {$item[1]}");
 				}, $results);
 				if ($results[0] != $primary) {
@@ -660,7 +659,7 @@ class ImplantDesignerController extends ModuleInstance {
 		return $this->addImplantInfo($row, $ql);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getClustersForSlot(string $implantType, string $clusterType): array {
 		return $this->db
 			->table(Cluster::getTable(), 'c1')
@@ -671,7 +670,7 @@ class ImplantDesignerController extends ModuleInstance {
 			->where('c3.Name', strtolower($clusterType))
 			->select('LongName AS skill')
 			->pluckStrings('skill')
-			->toArray();
+			->toList();
 	}
 
 	public function getDesign(string $sender, string $name): stdClass {
@@ -702,7 +701,7 @@ class ImplantDesignerController extends ModuleInstance {
 	}
 
 	private function renderShoppingList(ShoppingList $list): string {
-		/** @var string[] */
+		/** @var list<string> */
 		$parts = [];
 		if (!empty($list->implants)) {
 			$part = '<header2>Empty Implants<end>';

@@ -47,19 +47,11 @@ class ClassLoader {
 	private Filesystem $fs;
 
 	/**
-	 * Relative directories where to look for modules
-	 *
-	 * @var string[]
-	 */
-	private array $moduleLoadPaths;
-
-	/**
 	 * Initialize the class loader
 	 *
-	 * @param string[] $moduleLoadPaths Relative paths where to look for modules
+	 * @param list<string> $moduleLoadPaths Relative paths where to look for modules
 	 */
-	public function __construct(array $moduleLoadPaths) {
-		$this->moduleLoadPaths = $moduleLoadPaths;
+	public function __construct(private array $moduleLoadPaths) {
 	}
 
 	/** Load all classes that provide an #[Instance] */

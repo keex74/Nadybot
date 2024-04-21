@@ -883,7 +883,7 @@ class LootController extends ModuleInstance {
 	/**
 	 * Get the current loot list
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function getCurrentLootList(): string|array {
 		if (empty($this->loot)) {
@@ -920,9 +920,7 @@ class LootController extends ModuleInstance {
 				$list .= implode(
 					', ',
 					array_map(
-						static function ($name) {
-							return "<yellow>{$name}<end>";
-						},
+						static fn (string $name): string => "<yellow>{$name}<end>",
 						array_keys($item->users)
 					)
 				);

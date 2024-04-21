@@ -451,7 +451,6 @@ class CommentController extends ModuleInstance {
 		}
 
 		/** @var ?CommentCategory $category */
-		/** @var Comment[] $comments */
 		$comments = $this->getComments($category, $character);
 		$comments = $this->filterInaccessibleComments($comments, $context->char->name);
 		if (!count($comments)) {
@@ -509,7 +508,7 @@ class CommentController extends ModuleInstance {
 	 *
 	 * @param iterable<Comment> $comments
 	 *
-	 * @return Comment[]
+	 * @return list<Comment>
 	 */
 	public function filterInaccessibleComments(iterable $comments, string $sender): array {
 		$senderAL = $this->accessManager->getAccessLevelForCharacter($sender);
@@ -529,7 +528,7 @@ class CommentController extends ModuleInstance {
 			return $accessCache[$comment->category] = $canRead;
 		})
 		->values()
-		->toArray();
+		->toList();
 	}
 
 	/**
@@ -620,7 +619,7 @@ class CommentController extends ModuleInstance {
 	/**
 	 * Read all comments about a list of players or their alts/main, optionally limited to a category
 	 *
-	 * @return Comment[]
+	 * @return list<Comment>
 	 */
 	public function getComments(?CommentCategory $category, string ...$characters): array {
 		$query = $this->db->table(Comment::getTable())->orderBy('created_at');
@@ -634,8 +633,7 @@ class CommentController extends ModuleInstance {
 			$query->where('category', $category->name);
 		}
 
-		/** @var Comment[] */
-		$comments = $query->asObj(Comment::class)->toArray();
+		$comments = $query->asObj(Comment::class)->toList();
 		return $comments;
 	}
 
@@ -657,14 +655,14 @@ class CommentController extends ModuleInstance {
 	/**
 	 * Read all comments about of a category
 	 *
-	 * @return Comment[]
+	 * @return list<Comment>
 	 */
 	public function readCategoryComments(CommentCategory $category): array {
 		return $this->db->table(Comment::getTable())
 			->whereIlike('category', $category->name)
 			->orderBy('created_at')
 			->asObj(Comment::class)
-			->toArray();
+			->toList();
 	}
 
 	/**

@@ -13,6 +13,9 @@ class Timer {
 	 * @param ?Channel[] $channels
 	 * @param ?int       $repeatInterval If this is a repeating timer, then set this to the number of seconds between each repeat
 	 * @param ?Alert[]   $alerts         Alerts that need to be fired by this alarm. If these are set, then endTime doesn't trigger an alarm by itself, but requires the endTime alert to be an own alert
+	 *
+	 * @psalm-param ?list<Channel> $channels
+	 * @psalm-param ?list<Alert>   $alerts
 	 */
 	public function __construct(
 		public int $endTime,

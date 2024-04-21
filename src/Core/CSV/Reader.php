@@ -33,7 +33,7 @@ class Reader {
 		}
 		$line = $iter->current();
 
-		/** @var string[] */
+		/** @var list<string> */
 		$headers = str_getcsv($line);
 		while ((count($headers) === 1) && is_string($headers[0]) && $headers[0][0] === '#') {
 			$iter->next();
@@ -43,7 +43,7 @@ class Reader {
 			}
 			$line = $iter->current();
 
-			/** @var string[] */
+			/** @var list<string> */
 			$headers = str_getcsv($line);
 		}
 		$numCols = count($headers);

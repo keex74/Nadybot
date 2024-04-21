@@ -84,7 +84,7 @@ class Safe {
 		return preg_replace($pattern, $replacement, $subject, $limit, $count);
 	}
 
-	/** @return string[] */
+	/** @return array<array-key,string> */
 	public static function pregMatch(string $pattern, string $subject, int $flags=0, int $offset=0): array {
 		$matches = [];
 		if (preg_match($pattern, $subject, $matches, $flags, $offset) === 0 || !is_array($matches)) {
@@ -99,9 +99,9 @@ class Safe {
 	}
 
 	/**
-	 * @return array<string|int,string[]>
+	 * @return array<string|int,list<string>>
 	 *
-	 * @phpstan-return array<array-key,string[]>
+	 * @phpstan-return array<array-key,list<string>>
 	 */
 	public static function pregMatchAll(string $pattern, string $subject, int $flags=0, int $offset=0): array {
 		$matches = [];
@@ -154,13 +154,13 @@ class Safe {
 	 *                          substring.  A limit of -1 or 0 means "no limit".
 	 *                          into subject at offset 1.
 	 *
-	 * @return string[] Returns an array containing substrings of subject
-	 *                  split along boundaries matched by pattern.
+	 * @return list<string> Returns an array containing substrings of subject
+	 *                      split along boundaries matched by pattern.
 	 *
 	 * @throws PcreException
 	 */
 	public static function pregSplit(string $pattern, string $subject, ?int $limit=-1): array {
-		/** @var string[] */
+		/** @var list<string> */
 		$result = preg_split($pattern, $subject, $limit);
 		return $result;
 	}

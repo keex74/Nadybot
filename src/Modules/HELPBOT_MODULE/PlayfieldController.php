@@ -66,8 +66,8 @@ class PlayfieldController extends ModuleInstance {
 		$this->db->addWhereFromParams($query, explode(' ', $search), 'long_name');
 		$this->db->addWhereFromParams($query, explode(' ', $search), 'short_name', 'or');
 
-		/** @var Playfield[] */
-		$data = $query->asObj(Playfield::class)->toArray();
+		/** @var list<Playfield> */
+		$data = $query->asObj(Playfield::class)->toList();
 
 		$count = count($data);
 
@@ -163,7 +163,7 @@ class PlayfieldController extends ModuleInstance {
 			->asObj(Playfield::class);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function processWaypointCommand(string $xCoords, string $yCoords, string $playfieldName, int $playfieldId): array {
 		$link = Text::makeChatcmd("waypoint: {$xCoords}x{$yCoords} {$playfieldName}", "/waypoint {$xCoords} {$yCoords} {$playfieldId}");
 		$blob = "Click here to use waypoint: {$link}";

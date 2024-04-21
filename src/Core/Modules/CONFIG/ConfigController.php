@@ -815,7 +815,7 @@ class ConfigController extends ModuleInstance {
 	/**
 	 * Get a list of all installed modules and some stats regarding the settings
 	 *
-	 * @return ConfigModule[]
+	 * @return list<ConfigModule>
 	 */
 	public function getModules(): array {
 		$modules = [];
@@ -902,7 +902,7 @@ class ConfigController extends ModuleInstance {
 	/**
 	 * Get all accesslevels, their name, full name and numeric value
 	 *
-	 * @return ModuleAccessLevel[]
+	 * @return list<ModuleAccessLevel>
 	 */
 	public function getValidAccessLevels(): array {
 		$result = [];
@@ -928,12 +928,12 @@ class ConfigController extends ModuleInstance {
 	/**
 	 * Get all settings for a module
 	 *
-	 * @return SettingHandler[]
+	 * @return list<SettingHandler>
 	 */
 	public function getModuleSettings(string $module): array {
 		$module = strtoupper($module);
 
-		/** @var SettingHandler[] */
+		/** @var list<SettingHandler> */
 		$handlers = $this->db->table(Setting::getTable())
 			->where('module', $module)
 			->orderBy('mode')
@@ -942,8 +942,8 @@ class ConfigController extends ModuleInstance {
 			->map(function (Setting $setting): ?SettingHandler {
 				return $this->settingManager->getSettingHandler($setting);
 			})
-			->filter()
-			->toArray();
+			->filter(static fn (?SettingHandler $handler): bool => isset($handler))
+			->toList();
 		return $handlers;
 	}
 

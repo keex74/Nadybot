@@ -90,7 +90,7 @@ class WhatLocksController extends ModuleInstance {
 	 *
 	 * @param Skill $skills A list of skills to choose from
 	 *
-	 * @return string[] The complete dialogue
+	 * @return list<string> The complete dialogue
 	 */
 	public function getSkillChoiceDialog(Skill ...$skills): array {
 		usort($skills, static function (Skill $a, Skill $b): int {

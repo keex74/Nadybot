@@ -50,7 +50,7 @@ class BotRunner {
 	/**
 	 * The command line arguments
 	 *
-	 * @var string[]
+	 * @var list<string>
 	 */
 	private array $argv = [];
 
@@ -61,7 +61,7 @@ class BotRunner {
 	/**
 	 * Create a new instance
 	 *
-	 * @param string[] $argv
+	 * @param list<string> $argv
 	 */
 	public function __construct(array $argv) {
 		$this->argv = $argv;
@@ -167,24 +167,14 @@ class BotRunner {
 		if ($exitCode !== 0 || $stdout === '') {
 			return null;
 		}
-		$tags = explode("\n", trim($stdout));
-		$tags = array_diff($tags, ['nightly']);
-
-		$tags = array_map(
-			static function (string $tag): SemanticVersion {
+		$tagString = collect(explode("\n", trim($stdout)))
+			->diff(['nightly'])
+			->map(static function (string $tag): SemanticVersion {
 				return new SemanticVersion($tag);
-			},
-			$tags
-		);
-
-		/** @var SemanticVersion[] $tags */
-		usort(
-			$tags,
-			static function (SemanticVersion $v1, SemanticVersion $v2): int {
+			})
+			->sort(static function (SemanticVersion $v1, SemanticVersion $v2): int {
 				return $v1->cmp($v2);
-			}
-		);
-		$tagString = array_pop($tags)->getOrigVersion();
+			})->last()?->getOrigVersion();
 		return self::$latestTag = $tagString;
 	}
 

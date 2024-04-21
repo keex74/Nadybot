@@ -106,7 +106,7 @@ class CommandManager implements MessageEmitter {
 	/** @var array<string,CmdPermission> */
 	private array $cmdDefaultPermissions = [];
 
-	/** @var CmdPermSetMapping[] */
+	/** @var list<CmdPermSetMapping> */
 	private array $permSetMappings = [];
 
 	/** @var array<string,bool> */
@@ -121,8 +121,7 @@ class CommandManager implements MessageEmitter {
 	public function loadPermsetMappings(): void {
 		$query = $this->db->table(CmdPermSetMapping::getTable());
 		$this->permSetMappings = $query->orderByDesc($query->raw($query->colFunc('LENGTH', 'source')))
-			->asObj(CmdPermSetMapping::class)
-			->toArray();
+			->asObjArr(CmdPermSetMapping::class);
 	}
 
 	/** Register a source mask to be used as command source */
@@ -145,7 +144,7 @@ class CommandManager implements MessageEmitter {
 		return true;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getSources(): array {
 		return array_keys($this->sources);
 	}
@@ -367,31 +366,33 @@ class CommandManager implements MessageEmitter {
 			->exists();
 	}
 
-	/** @return Collection<array-key,CmdPermissionSet> */
+	/** @return Collection<int,CmdPermissionSet> */
 	public function getPermissionSets(): Collection {
 		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(CmdPermissionSet::class);
 		return $permSets;
 	}
 
-	/** @return Collection<array-key,ExtCmdPermissionSet> */
+	/** @return Collection<int,ExtCmdPermissionSet> */
 	public function getExtPermissionSets(): Collection {
 		$permSets = $this->db->table(CmdPermissionSet::getTable())
 			->asObj(ExtCmdPermissionSet::class);
 		$mappings = $this->getPermSetMappings()
 			->groupBy('permission_set');
 		$permSets->each(static function (ExtCmdPermissionSet $set) use ($mappings): void {
-			$set->mappings = $mappings->get($set->name, new Collection())->toArray();
+			$set->mappings = $mappings->get($set->name, new Collection())->toList();
 		});
 		return $permSets;
 	}
 
-	/** @return Collection<array-key,CmdPermSetMapping> */
+	/** @return Collection<int,CmdPermSetMapping> */
 	public function getPermSetMappings(): Collection {
-		return collect($this->permSetMappings);
+		/** @var Collection<int,CmdPermSetMapping> */
+		$result = collect($this->permSetMappings);
+		return $result;
 	}
 
-	/** @return Collection<array-key,CmdCfg> */
+	/** @return Collection<int,CmdCfg> */
 	public function getAll(bool $includeSubcommands=false): Collection {
 		/** @var Collection<string,Collection<int,CmdPermission>> */
 		$permissions = $this->db->table(CmdPermission::getTable())
@@ -554,12 +555,12 @@ class CommandManager implements MessageEmitter {
 			return false;
 		}
 		// Remove all handler we are not allowed to call or which don't match
-		$commandHandler->files = array_filter(
+		$commandHandler->files = array_values(array_filter(
 			$commandHandler->files,
 			function (string $handler) use ($context): bool {
 				return $this->canCallHandler($context, $handler);
 			}
-		);
+		));
 		return count($commandHandler->files) > 0;
 	}
 
@@ -603,12 +604,12 @@ class CommandManager implements MessageEmitter {
 		}
 
 		// Remove all handler we are not allowed to call or which don't match
-		$commandHandler->files = array_filter(
+		$commandHandler->files = array_values(array_filter(
 			$commandHandler->files,
 			function (string $handler) use ($context): bool {
 				return $this->canCallHandler($context, $handler);
 			}
-		);
+		));
 
 		// If there are no handlers we have access to and the character doesn't
 		// even have access to the main-command: error
@@ -850,7 +851,7 @@ class CommandManager implements MessageEmitter {
 		return $handler;
 	}
 
-	/** @param string[] $calls */
+	/** @param list<string> $calls */
 	public function sortCalls(array &$calls): void {
 		if (count($calls) < 2) {
 			return;
@@ -892,7 +893,7 @@ class CommandManager implements MessageEmitter {
 	/**
 	 * Get the help text for a command
 	 *
-	 * @return string|string[] The help text as one or more pages
+	 * @return string|list<string> The help text as one or more pages
 	 */
 	public function getHelpForCommand(string $cmd, CmdContext $context): string|array {
 		$result = $this->get($cmd);
@@ -930,7 +931,7 @@ class CommandManager implements MessageEmitter {
 	/**
 	 * Get the help text for a command, purely from the code
 	 *
-	 * @return string|string[] The help text as one or more pages
+	 * @return string|list<string> The help text as one or more pages
 	 */
 	public function getCmdHelpFromCode(string $cmd, CmdContext $context): string|array {
 		$cmds = $this->db->table(CmdCfg::getTable())
@@ -1181,7 +1182,7 @@ class CommandManager implements MessageEmitter {
 	/**
 	 * Get all stored regular expression Matches for a function
 	 *
-	 * @return CommandRegexp[]
+	 * @return list<CommandRegexp>
 	 */
 	public function retrieveRegexes(ReflectionMethod $reflectedMethod): array {
 		if (count($reflectedMethod->getAttributes(NCA\HandlesCommand::class))) {
@@ -1190,7 +1191,7 @@ class CommandManager implements MessageEmitter {
 		return [];
 	}
 
-	/** @return CommandRegexp[] */
+	/** @return list<CommandRegexp> */
 	public function getRegexpFromCharClass(ReflectionMethod $method): array {
 		$params = $method->getParameters();
 		if (count($params) === 0
@@ -1263,7 +1264,7 @@ class CommandManager implements MessageEmitter {
 			$permSet->mappings = $this->getPermSetMappings()
 				->where('permission_set', $name)
 				->values()
-				->toArray();
+				->toList();
 		}
 		return $permSet;
 	}
@@ -1515,9 +1516,9 @@ class CommandManager implements MessageEmitter {
 	}
 
 	/**
-	 * @return string[]
+	 * @return list<?string>
 	 *
-	 * @phpstan-return array{string, ?string}
+	 * @psalm-return array{string, ?string}
 	 */
 	private function cleanComment(string $comment): array {
 		$comment = trim(Safe::pregReplace("|^/\*\*(.*)\*/|s", '$1', $comment));
@@ -1584,12 +1585,12 @@ class CommandManager implements MessageEmitter {
 	/**
 	 * @param Collection<int,ReflectionMethod[]> $list
 	 *
-	 * @return Collection<int,ReflectionMethod[]>
+	 * @return Collection<string,ReflectionMethod[]>
 	 */
 	private function groupBySubcmd(Collection $list): Collection {
 		/**
-		 * @param ReflectionMethod[] $refMethods1
-		 * @param ReflectionMethod[] $refMethods2
+		 * @param list<ReflectionMethod> $refMethods1
+		 * @param list<ReflectionMethod> $refMethods2
 		 */
 		$sList = $list->sort(static function (array $refMethods1, array $refMethods2): int {
 			$n1 = $refMethods1[0]->getDeclaringClass()->getShortName();
@@ -1599,9 +1600,9 @@ class CommandManager implements MessageEmitter {
 		});
 
 		/**
-		 * @param ReflectionMethod[] $refMethods
+		 * @param list<ReflectionMethod> $refMethods
 		 *
-		 * @var Collection<int,ReflectionMethod[]> $grouped
+		 * @var Collection<string,ReflectionMethod[]> $grouped
 		 */
 		$grouped = $sList->groupBy(static function (array $refMethods): string {
 			if (empty($refMethods)) {

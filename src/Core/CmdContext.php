@@ -20,8 +20,8 @@ class CmdContext implements CommandReply {
 	private float $started;
 
 	/**
-	 * @param mixed[]   $args
-	 * @param Closure[] $shutdownFunctions
+	 * @param array<array-key,mixed> $args
+	 * @param list<Closure>          $shutdownFunctions
 	 */
 	public function __construct(
 		string $charName,
@@ -57,8 +57,10 @@ class CmdContext implements CommandReply {
 		return $this;
 	}
 
-	public function reply($msg): void {
+	/** @param string|list<string> $msg */
+	public function reply(string|array $msg): void {
 		if (isset($this->mapping)) {
+			/** @psalm-suppress PossiblyInvalidArgument */
 			$msg = str_replace('<symbol>', $this->mapping->symbol, $msg);
 		}
 		$this->sendto?->reply($msg);

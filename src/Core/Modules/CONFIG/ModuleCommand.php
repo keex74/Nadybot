@@ -9,7 +9,7 @@ class ModuleCommand extends ModuleSubcommand {
 	 * cannot be enabled without the command itself
 	 * being enabled.
 	 *
-	 * @var ModuleSubcommand[]
+	 * @var list<ModuleSubcommand>
 	 */
 	public array $subcommands = [];
 }

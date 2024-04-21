@@ -6,9 +6,9 @@ use InvalidArgumentException;
 
 class ClassSpec {
 	/**
-	 * @param class-string        $name
-	 * @param class-string        $class
-	 * @param FunctionParameter[] $params
+	 * @param class-string            $name
+	 * @param class-string            $class
+	 * @param list<FunctionParameter> $params
 	 */
 	public function __construct(
 		public string $name,
@@ -22,7 +22,7 @@ class ClassSpec {
 	}
 
 	public function setParameters(FunctionParameter ...$params): self {
-		$this->params = $params;
+		$this->params = array_values($params);
 		return $this;
 	}
 
@@ -31,7 +31,7 @@ class ClassSpec {
 		return $this;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getSecrets(): array {
 		$secrets = [];
 		foreach ($this->params as $param) {

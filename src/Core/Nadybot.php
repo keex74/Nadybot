@@ -132,7 +132,7 @@ class Nadybot {
 	 *
 	 * Ignore Messages from Vicinity/IRRK New Wire/OT OOC/OT Newbie OOC...
 	 *
-	 * @var string[]
+	 * @var list<string>
 	 */
 	public array $channelsToIgnore = [
 		'IRRK News Wire', 'OT OOC', 'OT Newbie OOC', 'OT shopping 11-50',
@@ -154,7 +154,7 @@ class Nadybot {
 	 */
 	public array $groupNameToId = [];
 
-	/** @var int[] */
+	/** @var list<int> */
 	public array $buddyQueue = [];
 
 	protected int $started = 0;

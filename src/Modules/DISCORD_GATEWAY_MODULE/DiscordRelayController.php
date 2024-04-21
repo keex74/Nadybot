@@ -26,7 +26,7 @@ class DiscordRelayController extends ModuleInstance {
 	/**
 	 * Gives a list of all channels we have access to
 	 *
-	 * @return SettingOption[]
+	 * @return list<SettingOption>
 	 */
 	public function getChannelOptionList(): array {
 		$guilds = $this->discordGatewayController->getGuilds();
@@ -34,7 +34,7 @@ class DiscordRelayController extends ModuleInstance {
 			return [];
 		}
 
-		/** @var SettingOption[] */
+		/** @var list<SettingOption> */
 		$result = [];
 		foreach ($guilds as $guildId => $guild) {
 			foreach ($guild->channels as $channel) {

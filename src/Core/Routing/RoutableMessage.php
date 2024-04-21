@@ -5,6 +5,7 @@ namespace Nadybot\Core\Routing;
 class RoutableMessage extends RoutableEvent {
 	public const EVENT_MASK = self::TYPE_MESSAGE;
 
+	/** @param list<Source> $path */
 	public function __construct(
 		string $message,
 		array $path=[],

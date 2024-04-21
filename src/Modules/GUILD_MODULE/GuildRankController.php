@@ -3,6 +3,7 @@
 namespace Nadybot\Modules\GUILD_MODULE;
 
 use Exception;
+use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -81,13 +82,12 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 	/**
 	 * Get a list of all defined rank mappings
 	 *
-	 * @return OrgRankMapping[]
+	 * @return Collection<int,OrgRankMapping>
 	 */
-	public function getMappings(): array {
+	public function getMappings(): Collection {
 		return $this->db->table(OrgRankMapping::getTable())
 			->orderBy('min_rank')
-			->asObj(OrgRankMapping::class)
-			->toArray();
+			->asObj(OrgRankMapping::class);
 	}
 
 	public function getEffectiveAccessLevel(int $rank): string {
@@ -119,8 +119,9 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			return;
 		}
 		$maps = $this->getMappings();
-		$mapKeys = array_reduce(
-			$maps,
+
+		/** @var array<int,true> */
+		$mapKeys = $maps->reduce(
 			static function (array $carry, OrgRankMapping $m): array {
 				$carry[$m->min_rank] = true;
 				return $carry;
@@ -128,7 +129,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			[]
 		);
 		$ranks = $guild->governing_form->getOrgRanks();
-		if (!count($maps)) {
+		if ($maps->isEmpty()) {
 			$context->reply('There are currently no org rank to bot rank mappings defined.');
 			return;
 		}
@@ -145,7 +146,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			}
 			$blob .= "\n";
 		}
-		$msg = $this->text->makeBlob('Defined mappings (' . count($maps) . ')', $blob);
+		$msg = $this->text->makeBlob("Defined mappings ({$maps->count()})", $blob);
 		$context->reply($msg);
 	}
 

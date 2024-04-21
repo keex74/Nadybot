@@ -124,7 +124,7 @@ class AltsController extends ModuleInstance {
 		return $this->alts[$char] ?? $char;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getAltsOf(string $char): array {
 		$alts = [$char];
 		foreach ($this->alts as $alt => $main) {
@@ -790,10 +790,10 @@ class AltsController extends ModuleInstance {
 	 * Add $alts to the alt list of $main
 	 * Security-wise, $user is the user triggering the command
 	 *
-	 * @return string[] the result message to print
+	 * @return list<string> the result message to print
 	 */
 	private function addAltsToMain(string $user, string $main, PCharacter ...$alts): array {
-		/** @var string[] */
+		/** @var list<string> */
 		$result = [];
 
 		$uid = $this->chatBot->getUid($main);

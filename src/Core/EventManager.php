@@ -58,7 +58,7 @@ class EventManager {
 	#[NCA\Inject]
 	private MessageHubController $messageHubController;
 
-	/** @var CronEntry[] */
+	/** @var list<CronEntry> */
 	private array $cronevents = [];
 
 	/** @var array<string,EventType> */
@@ -547,7 +547,7 @@ class EventManager {
 	}
 
 	/**
-	 * @param mixed[] $args
+	 * @param list<mixed> $args
 	 *
 	 * @throws StopExecutionException
 	 */

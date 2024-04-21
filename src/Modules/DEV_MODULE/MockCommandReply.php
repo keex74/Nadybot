@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 
 class MockCommandReply implements CommandReply {
-	/** @var string[] */
+	/** @var list<string> */
 	public array $output = [];
 
 	#[NCA\Logger]

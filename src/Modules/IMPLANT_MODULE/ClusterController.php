@@ -80,14 +80,13 @@ class ClusterController extends ModuleInstance {
 		$implantDesignerLink = Text::makeChatcmd('implant designer', '/tell <myname> implantdesigner');
 		$blob = "Click 'Add' to add cluster to {$implantDesignerLink}.\n\n";
 		foreach ($data as $cluster) {
-			/** @var SlotClusterType[] */
 			$results = $this->db->table(ClusterImplantMap::getTable(), 'c1')
 				->join('ClusterType AS c2', 'c1.ClusterTypeID', 'c2.ClusterTypeID')
 				->join('ImplantType AS i', 'c1.ImplantTypeID', 'i.ImplantTypeID')
 				->where('c1.ClusterID', $cluster->ClusterID)
 				->orderByDesc('c2.ClusterTypeID')
 				->select(['i.ShortName as Slot', 'c2.Name AS ClusterType'])
-				->asObj(SlotClusterType::class)->toArray();
+				->asObj(SlotClusterType::class);
 			$blob .= "<pagebreak><header2>{$cluster->LongName}<end>:\n";
 
 			foreach ($results as $row) {

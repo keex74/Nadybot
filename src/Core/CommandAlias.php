@@ -196,7 +196,7 @@ class CommandAlias {
 	/**
 	 * Get a list of all currently enabled aliases
 	 *
-	 * @return Collection<array-key,CmdAlias>
+	 * @return Collection<int,CmdAlias>
 	 */
 	public function getEnabledAliases(): Collection {
 		return $this->db->table(CmdAlias::getTable())

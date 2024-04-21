@@ -154,7 +154,7 @@ class AdminController extends ModuleInstance {
 		$context->reply($link);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getLeaderList(bool $showOfflineAlts, bool $showSuperAdmins=true): array {
 		$superadmins = [];
 		$admins = [];

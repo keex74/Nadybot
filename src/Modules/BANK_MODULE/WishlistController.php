@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\BANK_MODULE;
 
-use function Safe\preg_split;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\ALTS\AltsController;
 use Nadybot\Core\ParamClass\{PCharacter, PDuration, PQuantity, PRemove};
@@ -355,8 +354,7 @@ class WishlistController extends ModuleInstance {
 		$what = strip_tags($what);
 		$query = $this->db->table(Wish::getTable());
 
-		/** @var string[] */
-		$tokens = preg_split("/\s+/", $what);
+		$tokens = Safe::pregSplit("/\s+/", $what);
 		$this->db->addWhereFromParams($query, $tokens, 'item');
 		$items = $query->asObj(Wish::class);
 		$wishlistGrouped = $this->addFulfilments($items)
@@ -766,8 +764,7 @@ class WishlistController extends ModuleInstance {
 				});
 		}
 
-		/** @var int[] */
-		$ids = $query->pluckInts('id')->toArray();
+		$ids = $query->pluckInts('id')->toList();
 		if (count($ids) === 0) {
 			if ($includeActive) {
 				throw new UserException('Your wishlist is empty.');
@@ -809,9 +806,9 @@ class WishlistController extends ModuleInstance {
 	private function renderCheckWishlist(Collection $wishlistGrouped, string ...$allChars): array {
 		$numItems = 0;
 
-		/** @param Collection<Wish> $wishlist */
+		/** @param Collection<int,Wish> $wishlist */
 		$blob = $wishlistGrouped->map(function (Collection $wishlist, string $char) use ($allChars, &$numItems): string {
-			/** @return string[] */
+			/** @return list<string> */
 			$groupLines = $wishlist->map(function (Wish $wish) use (&$numItems, $allChars): array {
 				$lines = [];
 				$numItems++;
@@ -863,8 +860,12 @@ class WishlistController extends ModuleInstance {
 		return [$numItems, $blob];
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function getActiveFroms(): array {
+		/** @var array<string,true> */
+		$start = [];
+
+		/** @var array<string,true> */
 		$fromChars = $this->db->table(Wish::getTable())
 			->whereNotNull('from')
 			->where('fulfilled', false)
@@ -873,14 +874,15 @@ class WishlistController extends ModuleInstance {
 					->orWhere('expires_on', '>', time());
 			})
 			->asObj(Wish::class)
+			/** @return array<string,true> */
 			->reduce(static function (array $result, Wish $w): array {
 				if (isset($w->from)) {
 					$result[$w->from] = true;
 				}
 				return $result;
-			}, []);
+			}, $start);
 
-		/** @var string[] */
+		/** @var list<string> */
 		$keys = array_keys($fromChars);
 		return $keys;
 	}

@@ -3,42 +3,42 @@
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
 class SymbiantConfig {
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $eye = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $head = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $ear = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $rarm = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $chest = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $larm = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $rwrist = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $waist = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $lwrist = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $rhand = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $legs = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $lhand = [];
 
-	/** @var Symbiant[] */
+	/** @var list<Symbiant> */
 	public array $feet = [];
 }

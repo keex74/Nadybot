@@ -29,6 +29,9 @@ class DiscordMessageIn implements Stringable {
 	 * @param ?stdClass            $message_reference reference data sent with crossposted messages
 	 * @param ?int                 $flags             message flags ORd together, describes extra
 	 *                                                features of the message
+	 *
+	 * @psalm-param list<DiscordEmbed>
+	 * @psalm-param list<DiscordUser>
 	 */
 	public function __construct(
 		public string $id,

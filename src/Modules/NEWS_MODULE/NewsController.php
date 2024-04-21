@@ -110,7 +110,7 @@ class NewsController extends ModuleInstance {
 		return $query->asObj(INews::class);
 	}
 
-	/** @return string[]|null */
+	/** @return ?list<string> */
 	public function getNews(string $player, bool $onlyUnread=true): ?array {
 		$news = $this->getNewsItems($player);
 		if ($onlyUnread) {

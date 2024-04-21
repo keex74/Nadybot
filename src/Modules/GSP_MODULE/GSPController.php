@@ -337,7 +337,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 	 *
 	 * @param iterable<Song> $history The history (playlist) as an array of songs
 	 *
-	 * @return string[] Rendered song information about the playlist
+	 * @return list<string> Rendered song information about the playlist
 	 */
 	protected function getPlaylistInfos(iterable $history): array {
 		$songs = [];

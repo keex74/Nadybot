@@ -204,7 +204,7 @@ class QuoteController extends ModuleInstance {
 		return (int)($this->db->table(Quote::getTable())->max('id') ?? 0);
 	}
 
-	/** @return null|string[] */
+	/** @return ?list<string> */
 	public function getQuoteInfo(?int $id=null): ?array {
 		$count = $this->getMaxId();
 

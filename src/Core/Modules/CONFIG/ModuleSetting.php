@@ -19,7 +19,7 @@ class ModuleSetting {
 	/**
 	 * @param string                              $name        The name of the setting
 	 * @param null|int|string|bool|int[]|string[] $value       The current value
-	 * @param SettingOption[]                     $options     A list of predefined options to pick from
+	 * @param list<SettingOption>                 $options     A list of predefined options to pick from
 	 * @param bool                                $editable    Is this a fixed setting (like database version) or can it be changed?
 	 * @param string                              $description A description of what this setting is for
 	 */

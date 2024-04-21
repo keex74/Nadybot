@@ -7,10 +7,10 @@ use Nadybot\Core\{Attributes as NCA, DBTable};
 #[NCA\DB\Table(name: 'route_modifier')]
 class RouteModifier extends DBTable {
 	/**
-	 * @param string                  $modifier  The name of the modifier
-	 * @param ?int                    $id        The id of the route modifier. Lower id means higher priority
-	 * @param ?int                    $route_id  The id of the route where this modifier belongs to
-	 * @param RouteModifierArgument[] $arguments
+	 * @param string                      $modifier  The name of the modifier
+	 * @param ?int                        $id        The id of the route modifier. Lower id means higher priority
+	 * @param ?int                        $route_id  The id of the route where this modifier belongs to
+	 * @param list<RouteModifierArgument> $arguments
 	 */
 	public function __construct(
 		public string $modifier,

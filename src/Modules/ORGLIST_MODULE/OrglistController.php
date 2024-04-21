@@ -205,7 +205,7 @@ class OrglistController extends ModuleInstance {
 	 *
 	 * @param array<string,bool> $onlineStates
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	private function renderOrglist(Guild $org, array $onlineStates, float $startTime, bool $renderOffline): array {
 		$orgRankNames = $org->governing_form->getOrgRanks();

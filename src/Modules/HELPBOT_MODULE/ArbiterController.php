@@ -200,7 +200,7 @@ class ArbiterController extends ModuleInstance {
 			}
 		}
 
-		/** @var ArbiterEvent[] */
+		/** @var list<ArbiterEvent> */
 		$upcomingEvents = [
 			$this->getNextBS($time),
 			$this->getNextAI($time),
@@ -266,7 +266,7 @@ class ArbiterController extends ModuleInstance {
 		)
 	]
 	public function arbiterNewsTile(string $sender): ?string {
-		/** @var ArbiterEvent[] */
+		/** @var list<ArbiterEvent> */
 		$upcomingEvents = [
 			$this->getNextBS(),
 			$this->getNextAI(),
@@ -299,7 +299,7 @@ class ArbiterController extends ModuleInstance {
 		)
 	]
 	public function arbiterNewsForceTile(string $sender): ?string {
-		/** @var ArbiterEvent[] */
+		/** @var list<ArbiterEvent> */
 		$upcomingEvents = [
 			$this->getNextBS(),
 			$this->getNextAI(),

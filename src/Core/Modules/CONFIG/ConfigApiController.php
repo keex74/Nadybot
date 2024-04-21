@@ -535,7 +535,7 @@ class ConfigApiController extends ModuleInstance {
 		$result = [];
 		foreach ($sources as $source) {
 			$cmdSrc = CmdSource::fromMask($source);
-			$cmdSrc->mappings = $maps->get($cmdSrc->source, new Collection())->toArray();
+			$cmdSrc->mappings = $maps->get($cmdSrc->source, new Collection())->toList();
 			$result []= $cmdSrc;
 		}
 		return ApiResponse::create($result);
@@ -553,7 +553,7 @@ class ConfigApiController extends ModuleInstance {
 		if (!isset($cmdSrc)) {
 			return new Response(status: HttpStatus::NOT_FOUND);
 		}
-		$cmdSrc->mappings = $this->getCmdSourceMappings($source)->toArray();
+		$cmdSrc->mappings = $this->getCmdSourceMappings($source)->toList();
 		return ApiResponse::create($cmdSrc);
 	}
 

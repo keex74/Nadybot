@@ -10,7 +10,7 @@ class RoutableEvent extends Event {
 	public const TYPE_MESSAGE = 'message';
 	public const TYPE_EVENT = 'event';
 
-	/** @param Source[] $path */
+	/** @param list<Source> $path */
 	public function __construct(
 		string $type,
 		public array $path=[],
@@ -39,7 +39,7 @@ class RoutableEvent extends Event {
 		return $this->char;
 	}
 
-	/** @return Source[] */
+	/** @return list<Source> */
 	public function getPath(): array {
 		return $this->path;
 	}

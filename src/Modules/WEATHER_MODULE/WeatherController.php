@@ -266,7 +266,7 @@ class WeatherController extends ModuleInstance {
 		return $blob;
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	protected function getWeatherBlob(Nominatim $nominatim, Weather $weather): string|array {
 		$blob = $this->renderWeather($nominatim, $weather);
 		$placeParts = explode(', ', $nominatim->display_name);

@@ -55,6 +55,13 @@ class Guild implements Stringable {
 	 * @param GuildMember[]      $members                       users in the guild
 	 * @param DiscordChannel[]   $channels                      channels in the guild
 	 * @param ?int               $max_presences                 the maximum number of presences for the guild (the default value, currently 25000, is in effect when null is returned)
+	 *
+	 * @psalm-param list<Role>           $roles
+	 * @psalm-param list<Emoji>          $emojis
+	 * @psalm-param list<string>         $features
+	 * @psalm-param list<VoiceState>     $voice_states
+	 * @psalm-param list<GuildMember>    $members
+	 * @psalm-param list<DiscordChannel> $channels
 	 */
 	public function __construct(
 		public string $id,

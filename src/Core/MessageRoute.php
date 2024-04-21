@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 
 class MessageRoute {
-	/** @var EventModifier[] */
+	/** @var list<EventModifier> */
 	private array $modifiers = [];
 
 	#[NCA\Logger]
@@ -53,7 +53,7 @@ class MessageRoute {
 		return $this->route->destination;
 	}
 
-	/** @return EventModifier[] */
+	/** @return list<EventModifier> */
 	public function getModifiers(): array {
 		return $this->modifiers;
 	}
@@ -89,7 +89,7 @@ class MessageRoute {
 	/**
 	 * Render the modifiers so we can display them
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function renderModifiers(bool $asLink=false): array {
 		$result = [];

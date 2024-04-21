@@ -12,14 +12,18 @@ class DemoResponseCommandReply implements CommandReply {
 	) {
 	}
 
-	public function reply($msg): void {
+	/** @param string|list<string> $msg */
+	public function reply(string|array $msg): void {
 		if ($this->source === 'aopriv') {
+			/** @psalm-suppress PossiblyInvalidArgument */
 			$msg = str_replace("chatcmd:///tell {$this->botname} ", 'chatcmd:///g <myname> <symbol>demo ', $msg);
 			$msg = str_replace('chatcmd:///tell <myname> ', 'chatcmd:///g <myname> <symbol>demo ', $msg);
 		} elseif (count($matches = Safe::pregMatch("/^aopriv\((.+)\)$/", $this->source))) {
+			/** @psalm-suppress PossiblyInvalidArgument */
 			$msg = str_replace("chatcmd:///tell {$this->botname} ", "chatcmd:///g {$matches[1]} <symbol>demo ", $msg);
 			$msg = str_replace('chatcmd:///tell <myname> ', "chatcmd:///g {$matches[1]} <symbol>demo ", $msg);
 		} elseif ($this->source === 'aoorg') {
+			/** @psalm-suppress PossiblyInvalidArgument */
 			$msg = str_replace("chatcmd:///tell {$this->botname} ", 'chatcmd:///o <symbol>demo ', $msg);
 			$msg = str_replace('chatcmd:///tell <myname> ', 'chatcmd:///o <symbol>demo ', $msg);
 		}

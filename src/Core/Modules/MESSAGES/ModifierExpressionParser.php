@@ -40,7 +40,7 @@ class ModifierExpressionParser {
 	}
 
 	/**
-	 * @return RouteModifier[]
+	 * @return list<RouteModifier>
 	 *
 	 * @throws ModifierParserException
 	 */

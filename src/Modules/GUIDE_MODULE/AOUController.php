@@ -120,7 +120,7 @@ class AOUController extends ModuleInstance {
 	/**
 	 * @phpstan-param non-empty-string $body
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function renderAOUGuide(string $body, int $guideId): array|string {
 		$dom = new DOMDocument();
@@ -176,7 +176,7 @@ class AOUController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	private function searchAndGetAOUGuide(string $search, bool $searchGuideText): string|array {
 		$params = [
 			'mode' => 'search',
@@ -199,7 +199,7 @@ class AOUController extends ModuleInstance {
 	/**
 	 * @phpstan-param non-empty-string $body
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	private function renderAOUGuideList(string $body, bool $searchGuideText, string $search): array|string {
 		$searchTerms = explode(' ', $search);
@@ -279,7 +279,11 @@ class AOUController extends ModuleInstance {
 		);
 	}
 
-	/** @param string[] $arr */
+	/**
+	 * @param string[] $arr
+	 *
+	 * @psalm-assert list{string,string,string,numeric-string,string} $arr
+	 */
 	private function replaceItem(array $arr): string {
 		$type = $arr[1];
 		$id = (int)$arr[3];
@@ -295,7 +299,11 @@ class AOUController extends ModuleInstance {
 		return $output;
 	}
 
-	/** @param string[] $arr */
+	/**
+	 * @param string[] $arr
+	 *
+	 * @psalm-assert list{string,string,string} $arr
+	 */
 	private function replaceWaypoint(array $arr): string {
 		$label = $arr[2];
 		$params = explode(' ', $arr[1]);
@@ -308,7 +316,11 @@ class AOUController extends ModuleInstance {
 		return Text::makeChatcmd($label . " ({$wp['x']}x{$wp['y']})", "/waypoint {$wp['x']} {$wp['y']} {$wp['pf']}");
 	}
 
-	/** @param string[] $arr */
+	/**
+	 * @param string[] $arr
+	 *
+	 * @psalm-assert list{string,string,string,string} $arr
+	 */
 	private function replaceGuideLinks(array $arr): string {
 		$url = $arr[2];
 		$label = $arr[3];

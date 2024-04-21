@@ -167,10 +167,12 @@ class SymbiantController extends ModuleInstance {
 
 	/** @param iterable<string,SymbiantConfig> $configs */
 	protected function configsToBlob(iterable $configs): string {
-		/** @var ImplantType[] */
+		/** @var list<ImplantType> */
 		$types = $this->db->table(ImplantType::getTable())
 			->asObj(ImplantType::class)
-			->toArray();
+			->toList();
+
+		/** @var array<string,string> */
 		$typeMap = array_column($types, 'Name', 'ShortName');
 		$blob = '';
 		$slots = get_class_vars(SymbiantConfig::class);
@@ -276,20 +278,20 @@ class SymbiantController extends ModuleInstance {
 	/**
 	 * Find all symbiants buffing a given skill
 	 *
-	 * @return Symbiant[]
+	 * @return list<Symbiant>
 	 */
 	private function findSymbiantsBuffing(Skill $skill): array {
-		$symbiants = $this->db->table(Symbiant::getTable(), 'sym')
+		return $this->db->table(Symbiant::getTable(), 'sym')
 			->join('SymbiantClusterMatrix AS scm', 'scm.SymbiantID', '=', 'sym.ID')
 			->join(Cluster::getTable() . ' AS c', 'c.ClusterID', '=', 'scm.ClusterID')
 			->join('ImplantType AS it', 'it.ImplantTypeID', 'sym.SlotID')
 			->select(['sym.*', 'it.ShortName AS SlotName', 'it.Name AS SlotLongName'])
 			->where('c.SkillID', $skill->id)
-			->asObj(Symbiant::class);
-		return $symbiants->toArray();
+			->asObj(Symbiant::class)
+			->toList();
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function findBestSymbiants(CmdContext $context, ?PWord $prof, ?int $level): array {
 		if (!isset($level) || !isset($prof)) {
 			$whois = $this->playerManager->byName($context->char->name);
@@ -306,7 +308,7 @@ class SymbiantController extends ModuleInstance {
 		return $this->getAndRenderBestSymbiants($profession, $level);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function getAndRenderBestSymbiants(Profession $prof, int $level): array {
 		$query = $this->db->table(Symbiant::getTable(), 's')
 			->join('SymbiantProfessionMatrix AS spm', 'spm.SymbiantID', 's.ID')

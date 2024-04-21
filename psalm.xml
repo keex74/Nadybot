@@ -21,6 +21,7 @@
     </projectFiles>
     <stubs>
       <file name="Stubs/Collection.php" />
+      <file name="Stubs/IterableList.php" />
     </stubs>
     <issueHandlers>
         <InvalidClassConstantType errorLevel="suppress" />

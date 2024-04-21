@@ -31,11 +31,11 @@ use Throwable;
 class DiscordAPIClient extends ModuleInstance {
 	public const DISCORD_API = 'https://discord.com/api/v10';
 
-	/** @var ChannelQueueItem[] */
+	/** @var list<ChannelQueueItem> */
 	protected array $outQueue = [];
 	protected bool $queueProcessing = false;
 
-	/** @var WebhookQueueItem[] */
+	/** @var list<WebhookQueueItem> */
 	protected array $webhookQueue = [];
 	protected bool $webhookQueueProcessing = false;
 
@@ -82,7 +82,7 @@ class DiscordAPIClient extends ModuleInstance {
 		return json_decode($this->sendRequest($request), false);
 	}
 
-	/** @return ApplicationCommand[] */
+	/** @return list<ApplicationCommand> */
 	public function registerGlobalApplicationCommands(
 		string $applicationId,
 		string $message,
@@ -103,7 +103,7 @@ class DiscordAPIClient extends ModuleInstance {
 		return json_decode($this->sendRequest(new Request($url, 'DELETE')), false);
 	}
 
-	/** @return ApplicationCommand[] */
+	/** @return list<ApplicationCommand> */
 	public function getGlobalApplicationCommands(string $applicationId): array {
 		$mapper = new ObjectMapperUsingReflection();
 		$json = $this->sendRequest(new Request(self::DISCORD_API . "/applications/{$applicationId}/commands"));
@@ -255,7 +255,7 @@ class DiscordAPIClient extends ModuleInstance {
 	/**
 	 * Get all currently valid guild invites for $guildId
 	 *
-	 * @return DiscordChannelInvite[]
+	 * @return list<DiscordChannelInvite>
 	 */
 	public function getGuildInvites(string $guildId): array {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/invites");
@@ -267,7 +267,7 @@ class DiscordAPIClient extends ModuleInstance {
 	/**
 	 * Get all currently set guild events from Discord for $guildId
 	 *
-	 * @return DiscordScheduledEvent[]
+	 * @return list<DiscordScheduledEvent>
 	 */
 	public function getGuildEvents(string $guildId): array {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/scheduled-events?with_user_count=true");
@@ -279,7 +279,7 @@ class DiscordAPIClient extends ModuleInstance {
 	/**
 	 * Get all currently registered Emojis for $guildId
 	 *
-	 * @return Emoji[]
+	 * @return list<Emoji>
 	 */
 	public function getEmojis(string $guildId): array {
 		$request = new Request(self::DISCORD_API . "/guilds/{$guildId}/emojis");

@@ -875,7 +875,7 @@ class AttacksController extends ModuleInstance {
 		return $blob;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function nwAttacksCmd(QueryBuilder $query, string $title, string $command, int $page, ?bool $group): array {
 		$numAttacks = $query->count();
 
@@ -896,7 +896,7 @@ class AttacksController extends ModuleInstance {
 		);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function nwOutcomesCmd(QueryBuilder $query, string $title, string $command, int $page): array {
 		$numOutcomes = $query->count();
 		$attacks = $query
@@ -979,7 +979,7 @@ class AttacksController extends ModuleInstance {
 		return $grouped;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function renderAttackList(
 		string $baseCommand,
 		int $page,
@@ -1076,7 +1076,7 @@ class AttacksController extends ModuleInstance {
 		return (array)$msg;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function renderOutcomeList(
 		string $baseCommand,
 		int $page,

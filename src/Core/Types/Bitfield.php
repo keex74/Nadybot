@@ -8,7 +8,7 @@ use Stringable;
 
 /** @template T of BackedEnum */
 class Bitfield implements Stringable {
-	/** @var BackedEnum[] */
+	/** @var list<BackedEnum> */
 	private array $flags = [];
 	private int $value = 0;
 

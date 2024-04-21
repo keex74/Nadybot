@@ -13,6 +13,10 @@ class DiscordAllowedMentions implements Stringable {
 	 * @param string[]                    $roles        Array of role_ids to mention (Max size of 100)
 	 * @param string[]                    $users        Array of user_ids to mention (Max size of 100)
 	 * @param bool                        $replied_user For replies, whether to mention the author of the message being replied to (default false)
+	 *
+	 * @psalm-param list<DiscordAllowedMentionType> $parse
+	 * @psalm-param list<string>                    $roles
+	 * @psalm-param list<string>                    $users
 	 */
 	public function __construct(
 		#[CastListToType(DiscordAllowedMentionType::class)] public array $parse=[],

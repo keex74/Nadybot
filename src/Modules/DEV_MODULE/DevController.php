@@ -123,7 +123,7 @@ class DevController extends ModuleInstance {
 		});
 
 		// get calls for handlers
-		/** @var string[] */
+		/** @var list<string> */
 		$calls = array_reduce(
 			$handlers,
 			static function (array $handlers, CommandHandler $handler): array {
@@ -187,7 +187,7 @@ class DevController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @return CommandHandler[] */
+	/** @return list<CommandHandler> */
 	public function getAllCommandHandlers(?string $command, string $channel): array {
 		$handlers = [];
 		if (!isset($command)) {

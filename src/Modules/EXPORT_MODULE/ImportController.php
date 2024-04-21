@@ -170,7 +170,7 @@ class ImportController extends ModuleInstance {
 		$context->reply('The import finished successfully.');
 	}
 
-	/** @param Schema\Auction[] $auctions */
+	/** @param list<Schema\Auction> $auctions */
 	public function importAuctions(array $auctions): void {
 		$this->logger->notice('Importing {num_auctions} auction(s)', [
 			'num_auctions' => count($auctions),
@@ -197,7 +197,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All auctions imported');
 	}
 
-	/** @param Schema\Ban[] $banlist */
+	/** @param list<Schema\Ban> $banlist */
 	public function importBanlist(array $banlist): void {
 		$numImported = 0;
 		$this->logger->notice('Importing {num_bans} ban(s)', [
@@ -233,7 +233,7 @@ class ImportController extends ModuleInstance {
 		]);
 	}
 
-	/** @param Schema\CloakEntry[] $cloakActions */
+	/** @param list<Schema\CloakEntry> $cloakActions */
 	public function importCloak(array $cloakActions): void {
 		$this->logger->notice('Importing {num_actions} cloak action(s)', [
 			'num_actions' => count($cloakActions),
@@ -257,7 +257,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All cloak actions imported');
 	}
 
-	/** @param Schema\Link[] $links */
+	/** @param list<Schema\Link> $links */
 	public function importLinks(array $links): void {
 		$this->logger->notice('Importing {num_links} links', [
 			'num_links' => count($links),
@@ -283,7 +283,7 @@ class ImportController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Schema\Member[]      $members
+	 * @param list<Schema\Member>  $members
 	 * @param array<string,string> $rankMap
 	 */
 	public function importMembers(array $members, array $rankMap=[]): void {
@@ -366,7 +366,7 @@ class ImportController extends ModuleInstance {
 		]);
 	}
 
-	/** @param Schema\Event[] $events */
+	/** @param list<Schema\Event> $events */
 	public function importEvents(array $events): void {
 		$this->logger->notice('Importing {num_events} events', [
 			'num_events' => count($events),
@@ -400,7 +400,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All events imported');
 	}
 
-	/** @param Schema\News[] $news */
+	/** @param list<Schema\News> $news */
 	public function importNews(array $news): void {
 		$this->logger->notice('Importing {num_news} news', [
 			'num_news' => count($news),
@@ -439,7 +439,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All news imported');
 	}
 
-	/** @param Schema\Note[] $notes */
+	/** @param list<Schema\Note> $notes */
 	public function importNotes(array $notes): void {
 		$this->logger->notice('Importing {num_notes} notes', [
 			'num_notes' => count($notes),
@@ -475,7 +475,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All notes imported');
 	}
 
-	/** @param Schema\OrgNote[] $notes */
+	/** @param list<Schema\OrgNote> $notes */
 	public function importOrgNotes(array $notes): void {
 		$this->logger->notice('Importing {num_notes} org notes', [
 			'num_notes' => count($notes),
@@ -504,7 +504,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All org notes imported');
 	}
 
-	/** @param Schema\Poll[] $polls */
+	/** @param list<Schema\Poll> $polls */
 	public function importPolls(array $polls): void {
 		$this->logger->notice('Importing {num_polls} polls', [
 			'num_polls' => count($polls),
@@ -549,7 +549,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All polls imported');
 	}
 
-	/** @param Schema\Quote[] $quotes */
+	/** @param list<Schema\Quote> $quotes */
 	public function importQuotes(array $quotes): void {
 		$this->logger->notice('Importing {num_quotes} quotes', [
 			'num_quotes' => count($quotes),
@@ -573,7 +573,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All quotes imported');
 	}
 
-	/** @param Schema\RaffleBonus[] $bonuses */
+	/** @param list<Schema\RaffleBonus> $bonuses */
 	public function importRaffleBonus(array $bonuses): void {
 		$this->logger->notice('Importing {num_bonuses} raffle bonuses', [
 			'num_bonuses' => count($bonuses),
@@ -600,7 +600,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raffle bonuses imported');
 	}
 
-	/** @param Schema\RaidBlock[] $blocks */
+	/** @param list<Schema\RaidBlock> $blocks */
 	public function importRaidBlocks(array $blocks): void {
 		$this->logger->notice('Importing {num_blocks} raid blocks', [
 			'num_blocks' => count($blocks),
@@ -631,7 +631,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raid blocks imported');
 	}
 
-	/** @param Schema\Raid[] $raids */
+	/** @param list<Schema\Raid> $raids */
 	public function importRaids(array $raids): void {
 		$this->logger->notice('Importing {num_raids} raids', [
 			'num_raids' => count($raids),
@@ -714,7 +714,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raids imported');
 	}
 
-	/** @param Schema\RaidPointEntry[] $points */
+	/** @param list<Schema\RaidPointEntry> $points */
 	public function importRaidPoints(array $points): void {
 		$this->logger->notice('Importing {num_points} raid points', [
 			'num_points' => count($points),
@@ -741,7 +741,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raid points imported');
 	}
 
-	/** @param Schema\RaidPointLog[] $points */
+	/** @param list<Schema\RaidPointLog> $points */
 	public function importRaidPointsLog(array $points): void {
 		$this->logger->notice('Importing {num_point_logs} raid point logs', [
 			'num_point_logs' => count($points),
@@ -774,7 +774,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All raid point logs imported');
 	}
 
-	/** @param Schema\Timer[] $timers */
+	/** @param list<Schema\Timer> $timers */
 	public function importTimers(array $timers): void {
 		$this->logger->notice('Importing {num_timers} timers', [
 			'num_timers' => count($timers),
@@ -822,7 +822,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All timers imported');
 	}
 
-	/** @param TrackedUser[] $trackedUsers */
+	/** @param list<TrackedUser> $trackedUsers */
 	public function importTrackedCharacters(array $trackedUsers): void {
 		$this->logger->notice('Importing {num_tracked_users} tracked users', [
 			'num_tracked_users' => count($trackedUsers),
@@ -864,8 +864,8 @@ class ImportController extends ModuleInstance {
 	}
 
 	/**
-	 * @param Schema\CommentCategory[] $categories
-	 * @param array<string,string>     $rankMap
+	 * @param list<Schema\CommentCategory> $categories
+	 * @param array<string,string>         $rankMap
 	 */
 	public function importCommentCategories(array $categories, array $rankMap): void {
 		$this->logger->notice('Importing {num_categories} comment categories', [
@@ -903,7 +903,7 @@ class ImportController extends ModuleInstance {
 		$this->logger->notice('All comment categories imported');
 	}
 
-	/** @param Schema\Comment[] $comments */
+	/** @param list<Schema\Comment> $comments */
 	public function importComments(array $comments): void {
 		$this->logger->notice('Importing {num_comments} comment(s)', [
 			'num_comments' => count($comments),
@@ -974,11 +974,11 @@ class ImportController extends ModuleInstance {
 	}
 
 	/**
-	 * @param string[] $mappings
+	 * @param iterable<string> $mappings
 	 *
 	 * @return array<string,string>
 	 */
-	protected function parseRankMapping(array $mappings): array {
+	protected function parseRankMapping(iterable $mappings): array {
 		$mapping = [];
 		foreach ($mappings as $part) {
 			[$key, $value] = explode('=', $part);
@@ -987,7 +987,7 @@ class ImportController extends ModuleInstance {
 		return $mapping;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	protected function getRanks(object $import): array {
 		$ranks = [];
 		foreach ($import->members??[] as $member) {
@@ -1006,7 +1006,6 @@ class ImportController extends ModuleInstance {
 				$ranks[$poll->minRankToVote] = true;
 			}
 		}
-		// @phpstan-ignore-next-line
 		return array_keys($ranks);
 	}
 
@@ -1023,7 +1022,7 @@ class ImportController extends ModuleInstance {
 		return $name;
 	}
 
-	/** @param AltMain[] $alts */
+	/** @param list<AltMain> $alts */
 	protected function importAlts(array $alts): void {
 		$this->logger->notice('Importing alts for {num_alts} character(s)', [
 			'num_alts' => count($alts),
@@ -1072,7 +1071,7 @@ class ImportController extends ModuleInstance {
 		return $mapping[$rank] ?? null;
 	}
 
-	/** @param Schema\Channel[] $channels */
+	/** @param list<Schema\Channel> $channels */
 	protected function channelsToMode(array $channels): string {
 		return implode(',', array_map(static fn (Schema\Channel $channel) => $channel->toNadybot(), $channels));
 	}

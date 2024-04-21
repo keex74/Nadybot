@@ -144,6 +144,7 @@ class RandomController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
+
 		$options = [];
 		$itemRegexp = PItem::getRegexp();
 		preg_match_all(chr(1) . $itemRegexp . chr(1), $listOfNames, $matches);
@@ -152,9 +153,10 @@ class RandomController extends ModuleInstance {
 			$listOfNames = Safe::pregReplace(chr(1) . $itemRegexp . chr(1), '', $listOfNames);
 		}
 
+		/** @var list<string> */
 		$options = array_merge(
 			$options,
-			preg_split("/(,\s+|\s+|,)/", $listOfNames)
+			Safe::pregSplit("/(,\s+|\s+|,)/", $listOfNames)
 		);
 		if ($amount > count($options)) {
 			$msg = 'Cannot pick more items than are on the list.';
@@ -197,6 +199,7 @@ class RandomController extends ModuleInstance {
 			$listOfNames = Safe::pregReplace(chr(1) . $itemRegexp . chr(1), '', $listOfNames);
 		}
 
+		/** @var list<string> */
 		$options = array_merge(
 			$options,
 			preg_split("/(,\s+|\s+|,)/", $listOfNames)
@@ -243,14 +246,12 @@ class RandomController extends ModuleInstance {
 	/**
 	 * Roll and record the result
 	 *
-	 * @param string   $sender  Name of the person rolling
-	 * @param string[] $options The options to roll between
+	 * @param string       $sender  Name of the person rolling
+	 * @param list<string> $options The options to roll between
 	 *
 	 * @return array An array with the roll number and the chosen option
 	 *
 	 * @psalm-return array{0:int, 1:string}
-	 *
-	 * @phpstan-return array{0:int, 1:string}
 	 *
 	 * @throws SQLException on SQL errors
 	 */
@@ -275,8 +276,8 @@ class RandomController extends ModuleInstance {
 	/**
 	 * Join options in the style "A, B and C"
 	 *
-	 * @param string[]    $options The options to join
-	 * @param null|string $color   If set, highlight the values with that color
+	 * @param list<string> $options The options to join
+	 * @param null|string  $color   If set, highlight the values with that color
 	 *
 	 * @return string The joined string
 	 */

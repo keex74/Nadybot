@@ -31,7 +31,7 @@ class SchemaBuilder {
 	) {
 	}
 
-	/** @param mixed[] $arguments */
+	/** @param list<mixed> $arguments */
 	public function __call(string $name, array $arguments): mixed {
 		return $this->builder->{$name}(...$arguments);
 	}
@@ -95,11 +95,11 @@ class SchemaBuilder {
 	/**
 	 * Get the column listing for a given table.
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getColumnListing(string $table): array {
 		$table = $this->nadyDB->formatSql($table);
-		return $this->builder->getColumnListing($table);
+		return array_values($this->builder->getColumnListing($table));
 	}
 
 	/** Get the data type for the given column name. */

@@ -34,7 +34,7 @@ use Nadybot\Core\{
 	)
 ]
 class RemoveEvent implements EventModifier {
-	/** @param string[] $filter */
+	/** @param list<string> $filter */
 	public function __construct(
 		protected array $filter,
 		protected ?string $from=null

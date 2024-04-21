@@ -13,6 +13,8 @@ use Illuminate\Contracts\Support\CanBeEscapedWhenCastToString;
  * @implements \ArrayAccess<TKey, TValue>
  * @implements \Illuminate\Support\Enumerable<TKey, TValue>
  *
+ * @method list<TValue> toList()
+ *
  * @phpstan-ignore-next-line
  */
 class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable {
@@ -22,5 +24,13 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
 	 * @return array<TKey, TValue>
 	 */
 	public function toArray(): array {
+	}
+
+	/**
+	 * Get the collection of items as a plain list.
+	 *
+	 * @return list<TValue>
+	 */
+	public function toList(): array {
 	}
 }

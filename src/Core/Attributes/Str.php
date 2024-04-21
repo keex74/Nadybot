@@ -8,11 +8,11 @@ use ReflectionParameter;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
 class Str implements ParamAttribute {
-	/** @var string[] */
+	/** @var list<string> */
 	public array $values = [];
 
 	public function __construct(string $value, string ...$values) {
-		$this->values = array_unique(array_merge([$value], $values));
+		$this->values = array_values(array_unique(array_merge([$value], array_values($values))));
 	}
 
 	public function renderParameter(ReflectionParameter $param): string {

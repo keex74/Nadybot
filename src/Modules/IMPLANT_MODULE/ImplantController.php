@@ -217,7 +217,7 @@ class ImplantController extends ModuleInstance {
 	 * @param string $type self::REGULAR or self::JOBE
 	 * @param int    $ql   The QL to render for
 	 *
-	 * @return string[] the full link to the blob
+	 * @return list<string> the full link to the blob
 	 */
 	public function renderBlob(string $type, int $ql): array {
 		$specs = $this->getImplantQLSpecs($type, $ql);
@@ -314,7 +314,9 @@ class ImplantController extends ModuleInstance {
 	 * @param int    $slot  The cluster slot type (0 => faded, 1 => bright, 2 => shiny)
 	 * @param int    $bonus The bonus for which to return the QL-range
 	 *
-	 * @return int[] An array with the min- and the max-ql
+	 * @return ?list<int> An array with the min- and the max-ql
+	 *
+	 * @psalm-return ?list{int,int}
 	 */
 	public function getBonusQLRange(string $type, int $slot, int $bonus): ?array {
 		$breakpoints = $this->getBreakpoints($type, $slot);

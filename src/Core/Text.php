@@ -21,11 +21,11 @@ class Text {
 	/**
 	 * Wraps a block in a before and after part
 	 *
-	 * @param string          $before String before the link
-	 * @param string|string[] $blob   The blob to wrap
-	 * @param string|null     $after  The optional string after the blob
+	 * @param string              $before String before the link
+	 * @param string|list<string> $blob   The blob to wrap
+	 * @param string|null         $after  The optional string after the blob
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public static function blobWrap(string $before, string|array $blob, ?string $after=''): array {
 		$blob = (array)$blob;
@@ -42,7 +42,7 @@ class Text {
 	 * @param string      $content The content of the info window
 	 * @param string|null $header  If set, use $header as header, otherwise $name
 	 *
-	 * @return string|string[] The string with link and reference or an array of strings if the message would be too big
+	 * @return string|list<string> The string with link and reference or an array of strings if the message would be too big
 	 */
 	public function makeBlob(string $name, string $content, ?string $header=null, ?string $permanentHeader=''): string|array {
 		$header ??= $name;
@@ -105,11 +105,11 @@ class Text {
 	/**
 	 * Convert a single long string into multiple pages of maximum $maxLength size
 	 *
-	 * @param string   $input     The text to paginate
-	 * @param int      $maxLength The maximum allowed length of one page
-	 * @param string[] $symbols   An array of strings at which we allow page breaks
+	 * @param string       $input     The text to paginate
+	 * @param int          $maxLength The maximum allowed length of one page
+	 * @param list<string> $symbols   An array of strings at which we allow page breaks
 	 *
-	 * @return string[] An array of strings with the resulting pages
+	 * @return list<string> An array of strings with the resulting pages
 	 */
 	public function paginate(string $input, int $maxLength, array $symbols): array {
 		if (count($symbols) === 0) {
@@ -376,14 +376,14 @@ class Text {
 	 * @param string $format  The sprintf-style format
 	 * @param string $strings The words to change
 	 *
-	 * @return string[] The formatted array
+	 * @return list<string> The formatted array
 	 */
 	public static function arraySprintf(string $format, string ...$strings): array {
 		return array_map(
 			static function (string $text) use ($format): string {
 				return sprintf($format, $text);
 			},
-			$strings
+			array_values($strings)
 		);
 	}
 
@@ -406,7 +406,7 @@ class Text {
 		return $message;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public static function getPopups(string $message): array {
 		$popups = [];
 		$message = preg_replace_callback(
@@ -421,9 +421,9 @@ class Text {
 	}
 
 	/**
-	 * @param string[] $msgs
+	 * @param list<string> $msgs
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public static function unbreakPopups(array $msgs): array {
 		if (count($msgs) < 2) {

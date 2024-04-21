@@ -16,6 +16,7 @@ use Nadybot\Core\{
 	Filesystem,
 	ModuleInstance,
 	ParamClass\PCharacter,
+	Safe,
 	Text,
 };
 use Nadybot\Modules\RAFFLE_MODULE\RaffleItem;
@@ -43,7 +44,7 @@ class BankController extends ModuleInstance {
 	/**
 	 * Location/URL of the AO Items Assistant CSV dump file
 	 *
-	 * @var string[]
+	 * @var list<string>
 	 */
 	#[NCA\Setting\ArrayOfText]
 	public array $bankFileLocation = ['./data/bank.csv'];
@@ -51,6 +52,7 @@ class BankController extends ModuleInstance {
 	/** Number of items shown in search results */
 	#[NCA\Setting\Number(options: [20, 50, 100])]
 	public int $maxBankItems = 50;
+
 	#[NCA\Inject]
 	private HttpClientBuilder $builder;
 
@@ -210,11 +212,11 @@ class BankController extends ModuleInstance {
 
 		$bodies = await($procs);
 
-		/** @var string[] */
+		/** @var list<string> */
 		$lines = array_merge(
 			...array_map(
-				/** @return string[] */
-				static fn (string $body): array => preg_split("/(?:\r\n|\r|\n)/", $body),
+				/** @return list<string> */
+				static fn (string $body): array => Safe::pregSplit("/(?:\r\n|\r|\n)/", $body),
 				$bodies
 			)
 		);

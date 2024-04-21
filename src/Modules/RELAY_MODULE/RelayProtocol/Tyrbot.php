@@ -171,6 +171,9 @@ class Tyrbot implements RelayProtocolInterface {
 
 	/** @return array<string,mixed> */
 	protected function nadyPathToTyr(RoutableEvent $event): array {
+		if (count($event->path) === 0) {
+			return [];
+		}
 		$source = [
 			'name' => $event->path[0]->name,
 			'server' => $event->path[0]->server,

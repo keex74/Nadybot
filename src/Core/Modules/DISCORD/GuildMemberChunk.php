@@ -9,17 +9,19 @@ class GuildMemberChunk implements Stringable {
 	use ReducedStringableTrait;
 
 	/**
-	 * @param string             $guild_id    the id of the guild
-	 * @param int                $chunk_index the chunk index in the expected chunks for this
-	 *                                        response (0 <= chunk_index < chunk_count)
-	 * @param int                $chunk_count the total number of expected chunks for this
-	 *                                        response
-	 * @param GuildMember[]      $members     set of guild members
-	 * @param ?string[]          $not_found   if passing an invalid id to
-	 *                                        REQUEST_GUILD_MEMBERS, it will be returned here
-	 * @param ?DiscordPresence[] $presences   if passing true to REQUEST_GUILD_MEMBERS,
-	 *                                        presences of the returned members will be here
-	 * @param ?string            $nonce       the nonce used in the RequestGuildMembers-request
+	 * @param string        $guild_id    the id of the guild
+	 * @param int           $chunk_index the chunk index in the expected chunks for this
+	 *                                   response (0 <= chunk_index < chunk_count)
+	 * @param int           $chunk_count the total number of expected chunks for this
+	 *                                   response
+	 * @param GuildMember[] $members     set of guild members
+	 * @param ?string[]     $not_found   if passing an invalid id to
+	 *                                   REQUEST_GUILD_MEMBERS, it will be returned here
+	 *                                   presences of the returned members will be here
+	 * @param ?string       $nonce       the nonce used in the RequestGuildMembers-request
+	 *
+	 * @psalm-param list<GuildMember>      $members
+	 * @psalm-param ?list<DiscordPresence> $presences
 	 */
 	public function __construct(
 		public string $guild_id,

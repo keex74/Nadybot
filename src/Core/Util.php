@@ -286,18 +286,18 @@ class Util {
 	/**
 	 * Get an array with all files (not dirs) in a directory
 	 *
-	 * @return Collection<array-key,string> An array of file names in that directory
+	 * @return Collection<int,string> An array of file names in that directory
 	 */
 	public function getFilesInDirectory(string $path): Collection {
 		try {
 			$files = collect($this->fs->listFiles($path));
 		} catch (FilesystemException) {
-			/** @var string[] $empty */
+			/** @var array<int,string> $empty */
 			$empty = [];
 			return collect($empty);
 		}
 
-		/** @var Collection<array-key,string> */
+		/** @var Collection<int,string> */
 		$result = $files->filter(
 			fn (string $f): bool => !$this->fs->isDirectory($path . \DIRECTORY_SEPARATOR . $f)
 		)->values();
@@ -307,7 +307,7 @@ class Util {
 	/**
 	 * Get an array with all directories in a directory, excluding . and ..
 	 *
-	 * @return string[] An array of dir names in that directory
+	 * @return list<string> An array of dir names in that directory
 	 */
 	public function getDirectoriesInDirectory(string $path): array {
 		try {
@@ -316,7 +316,7 @@ class Util {
 			return [];
 		}
 
-		/** @var string[] */
+		/** @var list<string> */
 		$result = array_values(array_filter(
 			$files,
 			fn (string $f): bool => $f !== '.' && $f !== '..' && $this->fs->isDirectory($path . \DIRECTORY_SEPARATOR . $f)
@@ -350,9 +350,9 @@ class Util {
 	/**
 	 * Calculate the level range from the player's title level
 	 *
-	 * @return int[]
+	 * @return list<int>
 	 *
-	 * @phpstan-return array{int,int}
+	 * @psalm-return array{int,int}
 	 */
 	public static function tlToLevelRange(int $tl): array {
 		if ($tl === 1) {
@@ -393,7 +393,7 @@ class Util {
 		/** @phpstan-var class-string */
 		$name = $attrObj->name;
 
-		/** @var FunctionParameter[] */
+		/** @var list<FunctionParameter> */
 		$params = [];
 		$i = 1;
 		foreach ($reflection->getAttributes(NCA\Param::class) as $paramAttr) {

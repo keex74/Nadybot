@@ -7,7 +7,7 @@ use Nadybot\Core\Events\Event;
 class AssistClearEvent extends Event {
 	public const EVENT_MASK = 'assist(clear)';
 
-	/** @param CallerList[] $lists An empty list */
+	/** @param list<CallerList> $lists An empty list */
 	public function __construct(
 		public array $lists=[],
 	) {

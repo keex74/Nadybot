@@ -9,7 +9,11 @@ use Stringable;
 class RequestGuildMembers implements Stringable {
 	use ReducedStringableTrait;
 
-	/** @param string[] $user_ids */
+	/**
+	 * @param string[] $user_ids
+	 *
+	 * @psalm-param list<string>
+	 */
 	public function __construct(
 		public string $guild_id,
 		public ?string $query='',

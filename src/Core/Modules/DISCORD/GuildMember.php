@@ -16,6 +16,8 @@ class GuildMember implements Stringable {
 	 * @param bool               $mute          whether the user is muted in voice channels
 	 * @param ?string            $nick          this users guild nickname
 	 * @param ?DateTimeImmutable $premium_since when the user started boosting the guild
+	 *
+	 * @psalm-param list<string> $roles
 	 */
 	public function __construct(
 		#[CastListToType('string')] public array $roles,

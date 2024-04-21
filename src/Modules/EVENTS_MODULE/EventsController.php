@@ -252,7 +252,7 @@ class EventsController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @return null|string[] */
+	/** @return ?list<string> */
 	public function getEvents(): ?array {
 		$data = $this->db->table(EventModel::getTable())
 			->orderByDesc('event_date')

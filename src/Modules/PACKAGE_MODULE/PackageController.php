@@ -111,7 +111,7 @@ class PackageController extends ModuleInstance {
 	/**
 	 * @param iterable<array-key,Package> $packages
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function renderPackageList(iterable $packages): string|array {
 		/** @var array<string,PackageGroup> */
@@ -774,7 +774,7 @@ class PackageController extends ModuleInstance {
 	/**
 	 * @param iterable<array-key,Package> $packages
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	private function getPackageDetail(iterable $packages): string|array {
 		$packages = collect($packages);

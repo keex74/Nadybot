@@ -102,7 +102,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	)]
 	public string $highnetPrefix = '@';
 
-	/** @var string[] */
+	/** @var list<string> */
 	public array $channels = [];
 
 	/** @var Collection<int,FilterEntry> */
@@ -174,7 +174,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			&& isset($package->extraInfo['channels'])
 			&& is_array($package->extraInfo['channels'])
 		) {
-			$this->channels = $package->extraInfo['channels'];
+			$this->channels = array_values($package->extraInfo['channels']);
 		}
 		$this->feedSupportsHighnet = true;
 		if ($this->highnetEnabled) {
@@ -431,15 +431,15 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	): void {
 		$colors = $this->msgHub::$colors;
 
-		/** @var int[] */
+		/** @var list<int> */
 		$colorIds = $colors->filter(static function (RouteHopColor $color): bool {
 			return strncasecmp($color->hop, 'highnet', 7) === 0;
-		})->pluck('id')->toArray();
+		})->pluck('id')->toList();
 
-		/** @var int[] */
+		/** @var list<int> */
 		$formatIds = Source::$format->filter(static function (RouteHopFormat $format): bool {
 			return strncasecmp($format->hop, 'highnet', 7) === 0;
-		})->pluck('id')->toArray();
+		})->pluck('id')->toList();
 
 		$routes = $this->msgHub->getRoutes();
 		$deleteIds = [];
@@ -915,7 +915,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 	 * Get a list of routing destinations that would receive Highnet messages
 	 * from $channel, but not messages from the origin of $event.
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	private function getInternalRoutingReceivers(RoutableEvent $event, string $channel): array {
 		$sourceHop = $this->getSourceHop($event);

@@ -473,10 +473,10 @@ class GcrProtocol implements RelayProtocolInterface {
 			return null;
 		}
 		$path = $event->getPath();
-		$lastHop = $path[count($path)-1] ?? null;
-		if (!isset($lastHop)) {
+		if (!count($path)) {
 			return null;
 		}
+		$lastHop = $path[count($path)-1];
 		$onlineUpdate = $this->prefix.$this->command . 'c buddy '.
 			(int)$event->getData()->online . " {$player->name} ";
 		if ($lastHop->type === Source::ORG) {
@@ -492,6 +492,9 @@ class GcrProtocol implements RelayProtocolInterface {
 			return null;
 		}
 		$path = $event->getPath();
+		if (!count($path)) {
+			return null;
+		}
 		$lastHop = $path[count($path)-1] ?? null;
 		if (!isset($lastHop) || $lastHop->type !== Source::ORG) {
 			return null;

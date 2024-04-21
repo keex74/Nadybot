@@ -243,7 +243,7 @@ class ItemsController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	public function findItems(?int $ql, string $search): string|array {
 		if (isset($ql)) {
 			if ($ql < 1 || $ql > 500) {
@@ -351,7 +351,7 @@ class ItemsController extends ModuleInstance {
 	/**
 	 * @param iterable<array-key,ItemSearchResult> $data
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function createItemsBlob(iterable $data, string $search, ?int $ql, string $version, string $footer, mixed $elapsed=null): string|array {
 		$data = collect($data);
@@ -734,7 +734,7 @@ class ItemsController extends ModuleInstance {
 			->exists();
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	protected function flagsToText(int $flags): array {
 		$result = [];
 		$refClass = new \ReflectionClass(Flag::class);
@@ -747,7 +747,7 @@ class ItemsController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	protected function slotToText(int $flags): array {
 		$result = [];
 		$refClass = new \ReflectionClass(Slot::class);

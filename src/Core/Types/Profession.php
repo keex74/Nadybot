@@ -45,7 +45,7 @@ enum Profession: string {
 		};
 	}
 
-	/** @return string[]  */
+	/** @return list<string>  */
 	public static function shortNames(): array {
 		return [
 			'Adv', 'Agent', 'Crat', 'Doc', 'Enf', 'Eng', 'Fix', 'Keep',

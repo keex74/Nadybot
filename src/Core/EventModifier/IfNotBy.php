@@ -29,10 +29,10 @@ use Nadybot\Core\{
 	)
 ]
 class IfNotBy implements EventModifier {
-	/** @var string[] */
+	/** @var list<string> */
 	protected array $senders = [];
 
-	/** @param string[] $senders */
+	/** @param list<string> $senders */
 	public function __construct(
 		array $senders,
 		public bool $inverse=false

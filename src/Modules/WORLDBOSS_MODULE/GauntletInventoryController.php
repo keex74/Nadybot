@@ -144,7 +144,7 @@ class GauntletInventoryController extends ModuleInstance {
 		return true;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function renderBastionInventory(string $name, int $numArmors): array {
 		$inventory = $this->getData($name);
 		if (($numArmors < 1) || ($numArmors > 3)) {

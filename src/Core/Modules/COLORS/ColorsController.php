@@ -257,7 +257,7 @@ class ColorsController extends ModuleInstance {
 		return $blob;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function getColorAttributes(): array {
 		$attributes = [
 			'window_color',

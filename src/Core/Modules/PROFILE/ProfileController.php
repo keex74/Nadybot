@@ -109,7 +109,7 @@ class ProfileController extends ModuleInstance {
 	/**
 	 * Get a list of all stored profiles
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getProfileList(): array {
 		$fileList = $this->fs->listFiles($this->path);
@@ -275,7 +275,6 @@ class ProfileController extends ModuleInstance {
 		$contents .= "\n# Route format\n".
 			"!route format remall\n";
 
-		/** @var RouteHopFormat[] */
 		$data = $this->db->table(RouteHopFormat::getTable())
 			->asObj(RouteHopFormat::class);
 		foreach ($data as $row) {
@@ -450,13 +449,13 @@ class ProfileController extends ModuleInstance {
 	}
 
 	private function loadPermissions(string $export, CommandReply $reply): void {
+		/** @var list<ExtCmdPermissionSet> */
 		$sets = json_decode($export);
 		$this->db->table(CmdPermission::getTable())->delete();
 		$this->db->table(CmdPermissionSet::getTable())->delete();
 		$this->db->table(CmdPermSetMapping::getTable())->delete();
 		$reply->reply('All permissions reset');
 
-		/** @var ExtCmdPermissionSet[] $sets */
 		$this->commandManager->commands = [];
 		$this->subcommandManager->subcommands = [];
 		foreach ($sets as $set) {

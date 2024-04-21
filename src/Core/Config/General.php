@@ -3,11 +3,15 @@
 namespace Nadybot\Core\Config;
 
 use EventSauce\ObjectHydrator\MapFrom;
-use EventSauce\ObjectHydrator\PropertyCasters\CastToType;
+use EventSauce\ObjectHydrator\PropertyCasters\{CastToType};
 use Nadybot\Core\Attributes\ForceList;
 
 class General {
-	/** @param string[] $superAdmins */
+	/**
+	 * @param string[] $superAdmins
+	 *
+	 * @psalm-param list<string> $superAdmins
+	 */
 	public function __construct(
 		public string $orgName,
 		#[ForceList] #[MapFrom('super_admins')] public array $superAdmins,

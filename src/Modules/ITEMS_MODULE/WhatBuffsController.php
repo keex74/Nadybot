@@ -388,7 +388,7 @@ class WhatBuffsController extends ModuleInstance {
 	/**
 	 * Gives a blob with all items buffing $skill in slot $category
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function getSearchResults(string $category, Skill $skill, bool $froobFriendly): string|array {
 		$suffix = $froobFriendly ? 'Froob' : '';
@@ -782,7 +782,7 @@ class WhatBuffsController extends ModuleInstance {
 	/**
 	 * Show what buffs $skillName in slot $category
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function showSearchResults(string $category, string $skillName, bool $froobFriendly): string|array {
 		$category = ucfirst(strtolower($category));

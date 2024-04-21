@@ -565,7 +565,7 @@ class LootListsController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @return string[]|null */
+	/** @return ?list<string> */
 	public function getPandemoniumLoot(string $raid, string $category, CmdContext $context): ?array {
 		$category = ucwords(strtolower($category));
 		try {
@@ -752,7 +752,7 @@ class LootListsController extends ModuleInstance {
 			}
 		}
 
-		if ($loot->count() === 0) {
+		if ($loot->isEmpty()) {
 			throw new Exception("No loot for type {$raid} found in the database");
 		}
 		$auctionsEnabled = false;
@@ -767,7 +767,6 @@ class LootListsController extends ModuleInstance {
 		$blob = "\n<pagebreak><header2>{$category}<end>\n\n";
 		$showLootPics = $this->showRaidLootPics;
 		foreach ($loot as $row) {
-			/** @var RaidLoot $row */
 			$actions = [];
 			if ($lootEnabled && $this->showLootLootLinks) {
 				$actions []= Text::makeChatcmd(

@@ -132,7 +132,7 @@ class RateIgnoreController extends ModuleInstance {
 	/**
 	 * Get all rateignorelist entries
 	 *
-	 * @return Collection<array-key,RateIgnoreList>
+	 * @return Collection<int,RateIgnoreList>
 	 *
 	 * @throws SQLException
 	 */

@@ -161,11 +161,11 @@ class ExportController extends ModuleInstance {
 		);
 	}
 
-	/** @return Schema\AltMain[] */
+	/** @return list<Schema\AltMain> */
 	protected function exportAlts(): array {
 		$alts = $this->db->table(Alt::getTable())->asObj(Alt::class);
 
-		/** @var array<string,Schema\AltChar[]> */
+		/** @var array<string,list<Schema\AltChar>> */
 		$data = [];
 		foreach ($alts as $alt) {
 			if ($alt->main === $alt->alt) {
@@ -179,7 +179,7 @@ class ExportController extends ModuleInstance {
 			);
 		}
 
-		/** @var Schema\AltMain[] */
+		/** @var list<Schema\AltMain> */
 		$result = [];
 		foreach ($data as $main => $altInfo) {
 			$result []= new Schema\AltMain(
@@ -191,14 +191,13 @@ class ExportController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return Schema\Member[] */
+	/** @return list<Schema\Member> */
 	protected function exportMembers(): array {
 		$exported = [];
 
-		/** @var Schema\Member[] */
+		/** @var list<Schema\Member> */
 		$result = [];
 
-		/** @var Member[] */
 		$members = $this->db->table(Member::getTable())
 			->asObj(Member::class);
 		foreach ($members as $member) {
@@ -211,7 +210,6 @@ class ExportController extends ModuleInstance {
 			$exported[$member->name] = true;
 		}
 
-		/** @var RaidRank[] */
 		$members = $this->db->table(RaidRank::getTable())
 			->asObj(RaidRank::class);
 		foreach ($members as $member) {
@@ -239,7 +237,6 @@ class ExportController extends ModuleInstance {
 			$exported[$member->name] = true;
 		}
 
-		/** @var Admin[] */
 		$members = $this->db->table(Admin::getTable())
 			->asObj(Admin::class);
 		foreach ($members as $member) {
@@ -285,7 +282,7 @@ class ExportController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return Schema\Quote[] */
+	/** @return list<Schema\Quote> */
 	protected function exportQuotes(): array {
 		return $this->db->table(Quote::getTable())
 			->orderBy('id')
@@ -296,10 +293,10 @@ class ExportController extends ModuleInstance {
 					time: $quote->dt,
 					contributor: $this->toChar($quote->poster),
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Ban[] */
+	/** @return list<Schema\Ban> */
 	protected function exportBanlist(): array {
 		return $this->db->table(BanEntry::getTable())
 			->asObj(BanEntry::class)
@@ -315,10 +312,10 @@ class ExportController extends ModuleInstance {
 					$ban->banEnd = $banEntry->banend;
 				}
 				return $ban;
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\CloakEntry[] */
+	/** @return list<Schema\CloakEntry> */
 	protected function exportCloak(): array {
 		return $this->db->table(OrgCity::getTable())
 			->asObj(OrgCity::class)
@@ -329,10 +326,10 @@ class ExportController extends ModuleInstance {
 					cloakOn: ($cloakEntry->action === 'on'),
 					time: $cloakEntry->time,
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Poll[] */
+	/** @return list<Schema\Poll> */
 	protected function exportPolls(): array {
 		return $this->db->table(Poll::getTable())
 			->asObj(Poll::class)
@@ -352,7 +349,6 @@ class ExportController extends ModuleInstance {
 					);
 				}
 
-				/** @var Vote[] */
 				$votes = $this->db->table(Vote::getTable())
 					->where('poll_id', $poll->id)
 					->asObj(Vote::class);
@@ -371,10 +367,10 @@ class ExportController extends ModuleInstance {
 				}
 				$export->answers = array_values($answers);
 				return $export;
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\RaffleBonus[] */
+	/** @return list<Schema\RaffleBonus> */
 	protected function exportRaffleBonus(): array {
 		return $this->db->table(RaffleBonus::getTable())
 			->orderBy('name')
@@ -384,10 +380,10 @@ class ExportController extends ModuleInstance {
 					character: $this->toChar($bonus->name),
 					raffleBonus: $bonus->bonus,
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\RaidBlock[] */
+	/** @return list<Schema\RaidBlock> */
 	protected function exportRaidBlocks(): array {
 		return $this->db->table(RaidBlock::getTable())
 			->orderBy('player')
@@ -404,16 +400,15 @@ class ExportController extends ModuleInstance {
 					$entry->blockEnd = $block->expiration;
 				}
 				return $entry;
-			})->toArray();
+			})->toList();
 	}
 
 	protected function nullIf(int $value, int $nullvalue=0): ?int {
 		return ($value === $nullvalue) ? null : $value;
 	}
 
-	/** @return Schema\Raid[] */
+	/** @return list<Schema\Raid> */
 	protected function exportRaidLogs(): array {
-		/** @var RaidLog[] */
 		$data = $this->db->table(RaidLog::getTable())
 			->orderBy('raid_id')
 			->asObj(RaidLog::class)
@@ -443,7 +438,6 @@ class ExportController extends ModuleInstance {
 			);
 		}
 
-		/** @var RaidMember[] */
 		$data = $this->db->table(RaidMember::getTable())
 			->asObj(RaidMember::class)
 			->toArray();
@@ -460,7 +454,7 @@ class ExportController extends ModuleInstance {
 		return array_values($raids);
 	}
 
-	/** @return Schema\RaidPointEntry[] */
+	/** @return list<Schema\RaidPointEntry> */
 	protected function exportRaidPoints(): array {
 		return $this->db->table(RaidPoints::getTable())
 			->orderBy('username')
@@ -470,10 +464,10 @@ class ExportController extends ModuleInstance {
 					character: $this->toChar($datum->username),
 					raidPoints: (float)$datum->points,
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\RaidPointLog[] */
+	/** @return list<Schema\RaidPointLog> */
 	protected function exportRaidPointsLog(): array {
 		return $this->db->table(RaidPointsLog::getTable())
 			->orderBy('time')
@@ -493,15 +487,23 @@ class ExportController extends ModuleInstance {
 					$raidLog->raidId = $datum->raid_id;
 				}
 				return $raidLog;
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Timer[] */
+	/** @return list<Schema\Timer> */
 	protected function exportTimers(): array {
 		$timers = $this->timerController->getAllTimers();
 		$result = [];
 		foreach ($timers as $timer) {
-			$channels = array_diff(explode(',', str_replace(['guild', 'both', 'msg'], ['org', 'priv,org', 'tell'], $timer->mode??'')), ['']);
+			$channels = array_values(
+				array_diff(
+					explode(
+						',',
+						str_replace(['guild', 'both', 'msg'], ['org', 'priv,org', 'tell'], $timer->mode??'')
+					),
+					['']
+				)
+			);
 			$data = new Schema\Timer(
 				startTime: $timer->settime,
 				timerName: $timer->name,
@@ -524,9 +526,8 @@ class ExportController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return Schema\TrackedCharacter[] */
+	/** @return list<Schema\TrackedCharacter> */
 	protected function exportTrackedCharacters(): array {
-		/** @var TrackedUser[] */
 		$users = $this->db->table(TrackedUser::getTable())
 			->orderBy('added_dt')
 			->asObj(TrackedUser::class)
@@ -541,11 +542,9 @@ class ExportController extends ModuleInstance {
 			);
 		}
 
-		/** @var Tracking[] */
 		$events = $this->db->table(Tracking::getTable())
 			->orderBy('dt')
-			->asObj(Tracking::class)
-			->toArray();
+			->asObj(Tracking::class);
 		foreach ($events as $event) {
 			if (!isset($result[$event->uid])) {
 				continue;
@@ -558,15 +557,13 @@ class ExportController extends ModuleInstance {
 		return array_values($result);
 	}
 
-	/** @return Schema\Auction[] */
+	/** @return list<Schema\Auction> */
 	protected function exportAuctions(): array {
-		/** @var DBAuction[] */
 		$auctions = $this->db->table(DBAuction::getTable())
 			->orderBy('id')
-			->asObj(DBAuction::class)
-			->toArray();
+			->asObj(DBAuction::class);
 
-		/** @var Schema\Auction[] $result */
+		/** @var list<Schema\Auction> $result */
 		$result = [];
 		foreach ($auctions as $auction) {
 			$auctionObj = new Schema\Auction(
@@ -587,7 +584,7 @@ class ExportController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return Schema\News[] */
+	/** @return list<Schema\News> */
 	protected function exportNews(): array {
 		return $this->db->table(News::getTable())
 			->asObj(News::class)
@@ -602,11 +599,9 @@ class ExportController extends ModuleInstance {
 					confirmedBy: [],
 				);
 
-				/** @var NewsConfirmed[] */
 				$confirmations = $this->db->table(NewsConfirmed::getTable())
 					->where('id', $topic->id)
-					->asObj(NewsConfirmed::class)
-					->toArray();
+					->asObj(NewsConfirmed::class);
 				foreach ($confirmations as $confirmation) {
 					$data->confirmedBy []= new Schema\NewsConfirmation(
 						character: $this->toChar($confirmation->player),
@@ -614,10 +609,10 @@ class ExportController extends ModuleInstance {
 					);
 				}
 				return $data;
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Note[] */
+	/** @return list<Schema\Note> */
 	protected function exportNotes(): array {
 		return $this->db->table(Note::getTable())
 			->asObj(Note::class)
@@ -634,10 +629,10 @@ class ExportController extends ModuleInstance {
 					$data->remind = 'author';
 				}
 				return $data;
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\OrgNote[] */
+	/** @return list<Schema\OrgNote> */
 	protected function exportOrgNotes(): array {
 		return $this->db->table(OrgNote::getTable())
 			->asObj(OrgNote::class)
@@ -648,10 +643,10 @@ class ExportController extends ModuleInstance {
 					text: $note->note,
 					uuid: $note->uuid,
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Event[] */
+	/** @return list<Schema\Event> */
 	protected function exportEvents(): array {
 		return $this->db->table(EventModel::getTable())
 			->asObj(EventModel::class)
@@ -668,10 +663,10 @@ class ExportController extends ModuleInstance {
 				);
 
 				return $data;
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Link[] */
+	/** @return list<Schema\Link> */
 	protected function exportLinks(): array {
 		return $this->db->table(Link::getTable())
 			->asObj(Link::class)
@@ -682,10 +677,10 @@ class ExportController extends ModuleInstance {
 					url: $link->website,
 					description: $link->comments,
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\CommentCategory[] */
+	/** @return list<Schema\CommentCategory> */
 	protected function exportCommentCategories(): array {
 		return $this->db->table(CommentCategory::getTable())
 			->asObj(CommentCategory::class)
@@ -698,10 +693,10 @@ class ExportController extends ModuleInstance {
 					minRankToWrite: $category->min_al_write,
 					systemEntry: !$category->user_managed,
 				);
-			})->toArray();
+			})->toList();
 	}
 
-	/** @return Schema\Comment[] */
+	/** @return list<Schema\Comment> */
 	protected function exportComments(): array {
 		return $this->db->table(Comment::getTable())
 			->asObj(Comment::class)
@@ -713,7 +708,7 @@ class ExportController extends ModuleInstance {
 					createdAt: $comment->created_at,
 					category: $comment->category,
 				);
-			})->toArray();
+			})->toList();
 	}
 
 	/**

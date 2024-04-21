@@ -44,6 +44,8 @@ class ApplicationCommand implements Stringable {
 	 *                                                               Indicates whether the command is enabled by
 	 *                                                               default when the app is added to a guild,
 	 *                                                               defaults to true
+	 *
+	 * @psalm-param list<ApplicationCommandOption> $options
 	 */
 	public function __construct(
 		public ?string $id,

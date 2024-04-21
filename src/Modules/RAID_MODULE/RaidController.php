@@ -1238,7 +1238,7 @@ class RaidController extends ModuleInstance {
 	/**
 	 * @param array<null|Player> $players
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function reportNotInResult(array $players): array {
 		$blob = "<header2>Players that were warned<end>\n";

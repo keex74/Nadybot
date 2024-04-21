@@ -83,7 +83,7 @@ class HelpController extends ModuleInstance {
 		$this->commandAlias->register($this->moduleName, 'help modules', 'modules');
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	public function getAbout(): string|array {
 		$data = $this->fs->read(__DIR__ . '/about.txt');
 		$version = BotRunner::getVersion();
@@ -168,7 +168,7 @@ class HelpController extends ModuleInstance {
 		}
 		ksort($data);
 
-		/** @var string[] */
+		/** @var list<string> */
 		$blobs = [];
 		foreach ($data as $module => $description) {
 			$blobs []= "<pagebreak><header2>{$module}<end>\n<tab>".

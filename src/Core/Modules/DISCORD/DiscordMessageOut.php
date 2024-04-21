@@ -33,7 +33,7 @@ class DiscordMessageOut {
 		}
 	}
 
-	/** @return self[] */
+	/** @return list<self> */
 	public function split(): array {
 		$totalLength = 0;
 		if (!isset($this->embeds)) {

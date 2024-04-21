@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
+use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -74,23 +75,25 @@ class PremadeImplantController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	/** @return PremadeSearchResult[] */
-	public function searchByProfession(Profession $profession): array {
-		$query = $this->getBaseQuery()->where('p2.Name', $profession->value);
-		return $query->asObj(PremadeSearchResult::class)->toArray();
+	/** @return Collection<int,PremadeSearchResult> */
+	public function searchByProfession(Profession $profession): Collection {
+		return $this->getBaseQuery()->where('p2.Name', $profession->value)
+			->asObj(PremadeSearchResult::class);
 	}
 
-	/** @return PremadeSearchResult[] */
-	public function searchBySlot(ImplantSlot $slot): array {
-		$query = $this->getBaseQuery()->where('i.ShortName', $slot->designSlotName());
-		return $query->asObj(PremadeSearchResult::class)->toArray();
+	/** @return Collection<int,PremadeSearchResult> */
+	public function searchBySlot(ImplantSlot $slot): Collection {
+		return $this->getBaseQuery()->where('i.ShortName', $slot->designSlotName())
+			->asObj(PremadeSearchResult::class);
 	}
 
-	/** @return PremadeSearchResult[] */
-	public function searchByModifier(string $modifier): array {
+	/** @return Collection<int,PremadeSearchResult> */
+	public function searchByModifier(string $modifier): Collection {
 		$skills = $this->whatBuffsController->searchForSkill($modifier);
 		if (!count($skills)) {
-			return [];
+			/** @var Collection<int,PremadeSearchResult> */
+			$empty = new Collection();
+			return $empty;
 		}
 		$skillIds = array_map(
 			static function (Skill $s): int {
@@ -103,7 +106,7 @@ class PremadeImplantController extends ModuleInstance {
 			->orWhereIn('c2.SkillID', $skillIds)
 			->orWhereIn('c3.SkillID', $skillIds);
 
-		return $query->asObj(PremadeSearchResult::class)->toArray();
+		return $query->asObj(PremadeSearchResult::class);
 	}
 
 	/** @param iterable<PremadeSearchResult> $implants */

@@ -312,7 +312,7 @@ class UsageController extends ModuleInstance {
 				->groupBy('relay_id')
 				->map(static function (Collection $group): string {
 					return $group->firstOrFail()->layer;
-				})->flatten()->unique()->toArray(),
+				})->flatten()->unique()->toList(),
 			aodb_db_version        : $this->settingManager->getString('aodb_db_version')??'unknown',
 			max_blob_size          : $this->settingManager->getInt('max_blob_size')??0,
 			online_show_org_guild  : $this->settingManager->getInt('online_show_org_guild')??-1,

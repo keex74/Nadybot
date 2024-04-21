@@ -358,7 +358,7 @@ class WhoisController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	private function playerToWhois(?Player $whois, string $name, bool $online): string|array {
 		$charID = $this->chatBot->getUid($name);
 		$lookupNameLink = Text::makeChatcmd('lookup', "/tell <myname> lookup {$name}");

@@ -417,7 +417,7 @@ class RaidMemberController extends ModuleInstance {
 	/**
 	 * Get the blob for the !raid list command
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getRaidListBlob(Raid $raid, bool $justBlob=false): array {
 		ksort($raid->raiders);
@@ -468,7 +468,7 @@ class RaidMemberController extends ModuleInstance {
 	/**
 	 * Get the blob for the !raid check command to $sendto
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function getRaidCheckBlob(Raid $raid): string|array {
 		$activeNames = [];

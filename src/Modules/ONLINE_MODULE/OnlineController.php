@@ -761,7 +761,7 @@ class OnlineController extends ModuleInstance {
 	/**
 	 * Get a page or multiple pages with the online list
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getOnlineList(?int $includeRelay=null): array {
 		$includeRelay ??= $this->onlineShowRelay;
@@ -920,7 +920,7 @@ class OnlineController extends ModuleInstance {
 	}
 
 	/**
-	 * @return string[]
+	 * @return list<string>
 	 *
 	 * @psalm-return array{0: string, 1: string}
 	 *

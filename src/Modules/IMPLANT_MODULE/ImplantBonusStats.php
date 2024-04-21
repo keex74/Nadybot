@@ -5,7 +5,11 @@ namespace Nadybot\Modules\IMPLANT_MODULE;
 class ImplantBonusStats {
 	public string $slot = 'Faded';
 
-	/** @param int[] $range */
+	/**
+	 * @param int[] $range
+	 *
+	 * @psalm-param list{int,int} $range
+	 */
 	public function __construct(
 		public int $buff,
 		public array $range,

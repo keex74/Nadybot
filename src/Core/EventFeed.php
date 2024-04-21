@@ -35,7 +35,7 @@ class EventFeed {
 	public const URI = 'wss://ws.nadybot.org';
 	public const RECONNECT_DELAY = 5;
 
-	/** @var array<string,EventFeedHandler[]> */
+	/** @var array<string,list<EventFeedHandler>> */
 	public array $roomHandlers = [];
 
 	public ?Highway\Connection $connection=null;
@@ -329,7 +329,7 @@ class EventFeed {
 			$body = json_decode($body, true);
 		}
 
-		/** @var EventFeedHandler[] */
+		/** @var list<EventFeedHandler> */
 		$handlers = $this->roomHandlers[$event->highwayPackage->room] ?? [];
 		foreach ($handlers as $handler) {
 			try {

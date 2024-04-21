@@ -639,9 +639,9 @@ final class Filesystem {
 	 *
 	 * @param string $filename Path to the file.
 	 *
-	 * @return string[] Returns the file in an array. Each element of the array corresponds to a
-	 *                  line in the file, without the newline. Upon failure,
-	 *                  file throws a FilesystemException
+	 * @return list<string> Returns the file in an array. Each element of the array corresponds to a
+	 *                      line in the file, without the newline. Upon failure,
+	 *                      file throws a FilesystemException
 	 *
 	 * @throws FilesystemException
 	 */
@@ -652,7 +652,7 @@ final class Filesystem {
 			'filename' => $filename,
 		]);
 		try {
-			return \Safe\preg_split("/\r\n|\n|\r/", $this->read($filename));
+			return Safe::pregSplit("/\r\n|\n|\r/", $this->read($filename));
 		} catch (\Safe\Exceptions\FilesystemException $e) {
 			throw new FilesystemException($e->getMessage(), $e);
 		} finally {

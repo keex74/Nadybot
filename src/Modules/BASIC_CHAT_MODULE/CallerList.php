@@ -4,9 +4,9 @@ namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
 class CallerList {
 	/**
-	 * @param string   $name    Name of this list of callers, e.g. "RI1", "east", or empty string if default
-	 * @param string   $creator Name of the character who created this list
-	 * @param Caller[] $callers List of the characters who are callers
+	 * @param string       $name    Name of this list of callers, e.g. "RI1", "east", or empty string if default
+	 * @param string       $creator Name of the character who created this list
+	 * @param list<Caller> $callers List of the characters who are callers
 	 */
 	public function __construct(
 		public string $name,
@@ -15,7 +15,7 @@ class CallerList {
 	) {
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getNames(): array {
 		return array_column($this->callers, 'name');
 	}
@@ -37,7 +37,7 @@ class CallerList {
 	 * @param bool   $partialMatch Do a partial match on $search
 	 * @param bool   $invert       if true, remove those NOT matching
 	 *
-	 * @return Caller[] The removed callers
+	 * @return list<Caller> The removed callers
 	 */
 	public function removeCallersAddedBy(string $search, bool $partialMatch, bool $invert): array {
 		if (!$partialMatch) {

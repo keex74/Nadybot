@@ -46,7 +46,7 @@ use Nadybot\Core\{
 	)
 ]
 class IfMatches implements EventModifier {
-	/** @param string[] $text */
+	/** @param list<string> $text */
 	public function __construct(
 		protected array $text,
 		protected bool $caseSensitive=false,

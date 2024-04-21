@@ -61,7 +61,7 @@ class TimezoneController extends ModuleInstance {
 			return;
 		}
 
-		/** @var string[] */
+		/** @var list<string> */
 		$timezones = DateTimeZone::listIdentifiers($code);
 		$count = count($timezones);
 

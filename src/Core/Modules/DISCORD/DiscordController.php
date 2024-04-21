@@ -250,7 +250,7 @@ class DiscordController extends ModuleInstance {
 		return $text;
 	}
 
-	/** @param string[] $matches */
+	/** @param array<array-key,string> $matches */
 	protected function parsePopupToEmbed(array $matches): DiscordEmbed {
 		$fix = static function (string $s): string {
 			return htmlspecialchars_decode(strip_tags($s), \ENT_QUOTES|\ENT_HTML401);

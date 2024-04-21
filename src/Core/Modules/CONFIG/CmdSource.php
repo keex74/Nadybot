@@ -6,7 +6,7 @@ class CmdSource {
 	/**
 	 * A list of permission set mappings this command source maps to
 	 *
-	 * @var CmdSourceMapping[]
+	 * @var list<CmdSourceMapping>
 	 */
 	public array $mappings = [];
 

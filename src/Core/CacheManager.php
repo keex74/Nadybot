@@ -141,7 +141,7 @@ class CacheManager {
 	 *
 	 * @param string $groupName The "name" of the cache, e.g. "guild_roster"
 	 *
-	 * @return Collection<array-key,string>
+	 * @return Collection<int,string>
 	 */
 	public function getFilesInGroup(string $groupName): Collection {
 		$path = $this->cacheDir . \DIRECTORY_SEPARATOR . $groupName . \DIRECTORY_SEPARATOR;
@@ -152,7 +152,7 @@ class CacheManager {
 	/**
 	 * Get a list of all existing cache groups
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getGroups(): array {
 		return $this->util->getDirectoriesInDirectory($this->cacheDir);

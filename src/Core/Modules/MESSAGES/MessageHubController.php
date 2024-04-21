@@ -84,16 +84,22 @@ class MessageHubController extends ModuleInstance {
 
 	/** Load defined routes from the database and activate them */
 	public function loadRouting(): void {
+		/** @var Collection<array-key,Collection<int,RouteModifierArgument>> */
 		$arguments = $this->db->table(RouteModifierArgument::getTable())
 			->orderBy('id')
 			->asObj(RouteModifierArgument::class)
 			->groupBy('route_modifier_id');
+
+		/** @var Collection<array-key,Collection<int,RouteModifier>> */
 		$modifiers = $this->db->table(RouteModifier::getTable())
 			->orderBy('id')
 			->asObj(RouteModifier::class)
 			->each(static function (RouteModifier $mod) use ($arguments): void {
 				assert(isset($mod->id));
-				$mod->arguments = $arguments->get($mod->id, new Collection())->toArray();
+
+				/** @var list<RouteModifierArgument> */
+				$modArguments = $arguments->get($mod->id, new Collection())->toList();
+				$mod->arguments = $modArguments;
 			})
 			->groupBy('route_id');
 		$this->db->table(Route::getTable())
@@ -101,7 +107,10 @@ class MessageHubController extends ModuleInstance {
 			->asObj(Route::class)
 			->each(function (Route $route) use ($modifiers): void {
 				assert(isset($route->id));
-				$route->modifiers = $modifiers->get($route->id, new Collection())->toArray();
+
+				/** @var list<RouteModifier> */
+				$routeModifiers = $modifiers->get($route->id, new Collection())->toList();
+				$route->modifiers = $routeModifiers;
 				try {
 					$msgRoute = $this->messageHub->createMessageRoute($route);
 					$this->messageHub->addRoute($msgRoute);
@@ -437,7 +446,7 @@ class MessageHubController extends ModuleInstance {
 			return;
 		}
 
-		/** @var int[] List of modifier-ids for the route */
+		/** @var list<int> List of modifier-ids for the route */
 		$modifiers = array_column($route->modifiers, 'id');
 		$this->db->awaitBeginTransaction();
 		try {
@@ -1060,14 +1069,12 @@ class MessageHubController extends ModuleInstance {
 		$route->modifiers = $this->db->table(RouteModifier::getTable())
 		->where('route_id', $id)
 		->orderBy('id')
-		->asObj(RouteModifier::class)
-		->toArray();
+		->asObjArr(RouteModifier::class);
 		foreach ($route->modifiers as $modifier) {
 			$modifier->arguments = $this->db->table(RouteModifierArgument::getTable())
 			->where('route_modifier_id', $modifier->id)
 			->orderBy('id')
-			->asObj(RouteModifierArgument::class)
-			->toArray();
+			->asObjArr(RouteModifierArgument::class);
 		}
 		return $route;
 	}

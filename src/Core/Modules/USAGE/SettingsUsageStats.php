@@ -3,7 +3,11 @@
 namespace Nadybot\Core\Modules\USAGE;
 
 class SettingsUsageStats {
-	/** @param string[] $relay_protocols */
+	/**
+	 * @param string[] $relay_protocols
+	 *
+	 * @psalm-param list<string> $relay_protocols
+	 */
 	public function __construct(
 		public int $dimension,
 		public bool $is_guild_bot,

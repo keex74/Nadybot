@@ -425,11 +425,7 @@ class ApiSpecGenerator {
 		return $result;
 	}
 
-	/**
-	 * @return mixed[]
-	 *
-	 * @psalm-return array{0: string, 1: string|list<string>}
-	 */
+	/** @return array{0: string, 1: string|list<string>} */
 	protected function getRegularNameAndType(ReflectionProperty $refProp): array {
 		$propName = $refProp->getName();
 		if (!$refProp->hasType()) {
@@ -458,7 +454,7 @@ class ApiSpecGenerator {
 		$refTypes = [];
 		$refType = $refProp->getType();
 		if ($refType instanceof ReflectionUnionType) {
-			/** @var \ReflectionNamedType[]|\ReflectionIntersectionType[] */
+			/** @var list<\ReflectionNamedType>|list<\ReflectionIntersectionType> */
 			$refTypes = $refType->getTypes();
 		} elseif ($refType instanceof ReflectionNamedType) {
 			$refTypes = [$refType];

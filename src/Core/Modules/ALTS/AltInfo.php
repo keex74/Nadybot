@@ -68,7 +68,7 @@ class AltInfo {
 	/**
 	 * Get a list of all validated alts and the main of $sender
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getAllValidated(string $sender): array {
 		if (!$this->isValidated($sender)) {
@@ -86,7 +86,7 @@ class AltInfo {
 	/**
 	 * Get a list of all validated alts
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 *
 	 * @psalm-return list<string>
 	 */
@@ -103,7 +103,7 @@ class AltInfo {
 	/**
 	 * Get a list of all alts requiring validation from main
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getAllMainUnvalidatedAlts(bool $onlyMine=true): array {
 		$alts = [];
@@ -118,7 +118,7 @@ class AltInfo {
 		return $alts;
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	public function getAltsBlob(bool $firstPageOnly=false): string|array {
 		if (count($this->alts) === 0) {
 			return 'No registered alts.';
@@ -131,7 +131,7 @@ class AltInfo {
 	/**
 	 * Get a list of the names of all alts who are online
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getOnlineAlts(): array {
 		$online_list = [];
@@ -152,7 +152,7 @@ class AltInfo {
 	/**
 	 * Get a list of the names of all alts
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getAllAlts(): array {
 		$online_list = [$this->main, ...array_map('strval', array_keys($this->alts))];
@@ -210,7 +210,7 @@ class AltInfo {
 		return $text;
 	}
 
-	/** @return string|string[] */
+	/** @return string|list<string> */
 	protected function getAltsBlobForPlayer(?Player $player, bool $firstPageOnly): string|array {
 		if (!isset($player)) {
 			return 'Main character not found.';

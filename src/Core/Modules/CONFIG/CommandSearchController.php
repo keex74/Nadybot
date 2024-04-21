@@ -103,7 +103,7 @@ class CommandSearchController extends ModuleInstance {
 	/**
 	 * @param Collection<int,CommandSearchResult> $results
 	 *
-	 * @return string|string[]
+	 * @return string|list<string>
 	 */
 	public function render(Collection $results, bool $hasAccess, bool $exactMatch): string|array {
 		$blob = '';

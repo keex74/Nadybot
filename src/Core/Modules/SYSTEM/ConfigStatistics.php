@@ -9,6 +9,8 @@ class ConfigStatistics {
 	 * @param int                   $active_aliases       Number of aliases
 	 * @param int                   $active_events        Number of currently active events
 	 * @param int                   $active_help_commands Number of active help texts for commands
+	 *
+	 * @psalm-param list<ChannelCommandStats> $active_commands
 	 */
 	public function __construct(
 		public array $active_commands=[],

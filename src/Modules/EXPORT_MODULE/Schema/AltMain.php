@@ -8,6 +8,8 @@ class AltMain {
 	/**
 	 * @param Character $main The main character.
 	 * @param AltChar[] $alts
+	 *
+	 * @psalm-param list<AltChar> $alts
 	 */
 	public function __construct(
 		public Character $main,

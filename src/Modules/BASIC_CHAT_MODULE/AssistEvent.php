@@ -8,7 +8,7 @@ abstract class AssistEvent extends Event {
 	/**
 	 * The names of the players added to the assist list, or empty on list clear
 	 *
-	 * @var CallerList[]
+	 * @var list<CallerList>
 	 */
 	public array $lists = [];
 }

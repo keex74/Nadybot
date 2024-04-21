@@ -40,12 +40,12 @@ class DiscController extends ModuleInstance {
 	/**
 	 * Get the instruction disc from its name and return an array with results
 	 *
-	 * @return Disc[] An array of database entries that matched
+	 * @return list<Disc> An array of database entries that matched
 	 */
 	public function getDiscsByName(string $discName): array {
 		$query = $this->db->table(Disc::getTable());
 		$this->db->addWhereFromParams($query, explode(' ', $discName), 'disc_name');
-		return $query->asObj(Disc::class)->toArray();
+		return $query->asObj(Disc::class)->toList();
 	}
 
 	/** Get the instruction disc from its id and return the result or null */
@@ -128,7 +128,7 @@ class DiscController extends ModuleInstance {
 	 *
 	 * @param iterable<Disc> $discs The discs that matched the search
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getDiscChoiceDialogue(iterable $discs): array {
 		$blob = [];

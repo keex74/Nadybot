@@ -28,14 +28,14 @@ class ArraySetting extends DefineSetting {
 		$this->type = 'array';
 	}
 
-	/** @return bool[]|int[]|string[] */
+	/** @return list<bool>|list<int>|list<string> */
 	public function toArray(string $value): array {
 		$type = substr($this->type, 0, -2);
 		if (!strlen($value)) {
 			return [];
 		}
 		return array_map(
-			fn ($item) => $this->typeValue($type, $item),
+			fn (string $item): bool|int|string => $this->typeValue($type, $item),
 			explode('|', $value)
 		);
 	}

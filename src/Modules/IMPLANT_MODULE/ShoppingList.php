@@ -4,10 +4,10 @@ namespace Nadybot\Modules\IMPLANT_MODULE;
 
 class ShoppingList {
 	/**
-	 * @param string[] $implants
-	 * @param string[] $shinyClusters
-	 * @param string[] $brightClusters
-	 * @param string[] $fadedClusters
+	 * @param list<string> $implants
+	 * @param list<string> $shinyClusters
+	 * @param list<string> $brightClusters
+	 * @param list<string> $fadedClusters
 	 */
 	public function __construct(
 		public array $implants=[],

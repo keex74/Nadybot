@@ -27,7 +27,7 @@ use Nadybot\Core\{
 	),
 ]
 class ChatGroupingController extends ModuleInstance {
-	/** @var string[] */
+	/** @var list<string> */
 	public array $joined = [];
 
 	/** @var array<int,string[]> */
@@ -125,7 +125,7 @@ class ChatGroupingController extends ModuleInstance {
 			$context->reply("You're not in the grouping.");
 			return;
 		}
-		$this->joined = array_diff($this->joined, [$context->char->name]);
+		$this->joined = array_values(array_diff($this->joined, [$context->char->name]));
 		$context->reply('You left the grouping.');
 	}
 
@@ -137,7 +137,7 @@ class ChatGroupingController extends ModuleInstance {
 		if (!in_array($eventObj->sender, $this->joined, true)) {
 			return;
 		}
-		$this->joined = array_diff($this->joined, [$eventObj->sender]);
+		$this->joined = array_values(array_diff($this->joined, [$eventObj->sender]));
 	}
 
 	/** @param iterable<int,iterable<string>> $groups */

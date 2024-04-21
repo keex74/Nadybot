@@ -198,7 +198,7 @@ class TrickleController extends ModuleInstance {
 		return $msg;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function processAbilities(AbilityConfig $abilities): array {
 		$headerParts = [];
 		$msgParts = [];

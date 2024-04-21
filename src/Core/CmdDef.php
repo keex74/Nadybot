@@ -8,7 +8,7 @@ class CmdDef {
 		public string $accessLevel='mod',
 		public ?int $defaultStatus=null,
 		public ?string $help=null,
-		/** @var string[] */
+		/** @var list<string> */
 		public array $handlers=[],
 		public ?string $parentCommand=null,
 	) {

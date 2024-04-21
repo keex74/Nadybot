@@ -69,12 +69,10 @@ class PocketbossController extends ModuleInstance {
 	}
 
 	public function singlePbBlob(string $name): string {
-		/** @var Pocketboss[] */
 		$data = $this->db->table(Pocketboss::getTable())
 			->where('pb', $name)
 			->orderBy('ql')
-			->asObj(Pocketboss::class)
-			->toArray();
+			->asObj(Pocketboss::class);
 		if (empty($data)) {
 			return '';
 		}
@@ -87,6 +85,7 @@ class PocketbossController extends ModuleInstance {
 			}
 			$symbs .= Text::makeItem($symb->itemid, $symb->itemid, $symb->ql, $name) . " ({$symb->ql})\n";
 		}
+		assert(isset($symb));
 
 		$blob = "Location: <highlight>{$symb->pb_location}, {$symb->bp_location}<end>\n";
 		$blob .= "Found on: <highlight>{$symb->bp_mob}, Level {$symb->bp_lvl}<end>\n\n";
@@ -95,7 +94,7 @@ class PocketbossController extends ModuleInstance {
 		return $blob;
 	}
 
-	/** @return Pocketboss[] */
+	/** @return list<Pocketboss> */
 	public function pbSearchResults(string $search): array {
 		if ($search === 'tnh') {
 			$search = 'The Night Heart';
@@ -115,11 +114,11 @@ class PocketbossController extends ModuleInstance {
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $tmp, 'pb');
 
-		$pb =$query->asObj(Pocketboss::class);
-		return $pb->groupBy('pb')
+		return $query->asObj(Pocketboss::class)
+			->groupBy('pb')
 			->map(static fn (Collection $col): Pocketboss => $col->firstOrFail())
 			->values()
-			->toArray();
+			->toList();
 	}
 
 	/**
@@ -200,9 +199,8 @@ class PocketbossController extends ModuleInstance {
 		$symbtype = '%';
 		$line = '%';
 
-		/** @var string[] */
 		$lines = $this->db->table(Pocketboss::getTable())->select('line')->distinct()
-			->pluckStrings('line')->toArray();
+			->pluckStrings('line');
 
 		for ($i = 0; $i < $paramCount; $i++) {
 			try {
@@ -227,14 +225,13 @@ class PocketbossController extends ModuleInstance {
 			}
 
 			// check if it's a line, but be less strict this time
-			$matchingLines = array_filter(
-				$lines,
+			$matchingLines = $lines->filter(
 				static function (string $line) use ($args, $i): bool {
 					return strncasecmp($line, $args[$i], strlen($args[$i])) === 0;
 				}
 			);
 			if (count($matchingLines) === 1) {
-				$line = array_shift($matchingLines);
+				$line = $matchingLines->firstOrFail();
 				break;
 			}
 			$context->reply(
@@ -254,8 +251,7 @@ class PocketbossController extends ModuleInstance {
 			->addBinding('Beta')
 			->orderBy('type');
 
-		/** @var Pocketboss[] */
-		$data = $query->asObj(Pocketboss::class)->toArray();
+		$data = $query->asObj(Pocketboss::class);
 		$numrows = count($data);
 		if ($numrows === 0) {
 			$msg = 'Could not find any symbiants that matched your search criteria.';

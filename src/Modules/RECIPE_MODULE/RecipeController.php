@@ -159,7 +159,7 @@ class RecipeController extends ModuleInstance {
 		return $input;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function createRecipeBlob(Recipe $row): array {
 		$recipe_name = $row->name;
 		$author = empty($row->author) ? 'Unknown' : $row->author;

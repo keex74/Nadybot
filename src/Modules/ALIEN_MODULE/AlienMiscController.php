@@ -262,7 +262,7 @@ class AlienMiscController extends ModuleInstance {
 		'<tab>1, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, and 300.'
 	)]
 	public function ofabweaponsCommand(CmdContext $context): void {
-		/** @var int[] */
+		/** @var list<int> */
 		$qls = $this->db->table(OfabWeaponCost::getTable())
 			->orderBy('ql')
 			->select('ql')->distinct()

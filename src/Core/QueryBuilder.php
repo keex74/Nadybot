@@ -32,12 +32,28 @@ class QueryBuilder extends Builder {
 	 *
 	 * @param class-string<T> $class
 	 *
-	 * @return Collection<array-key,T>
+	 * @return Collection<int,T>
 	 */
 	public function asObj(string $class): Collection {
-		/** @var T[] */
+		/** @var list<T> */
 		$result = $this->fetchAll($class, $this->toSql(), ...$this->getBindings());
-		return collect($result);
+
+		/** @var Collection<int,T> $x */
+		$x = collect($result);
+		return $x;
+	}
+
+	/**
+	 * @template T of object
+	 *
+	 * @param class-string<T> $class
+	 *
+	 * @return list<T>
+	 */
+	public function asObjArr(string $class): array {
+		/** @var list<T> */
+		$result = $this->fetchAll($class, $this->toSql(), ...$this->getBindings());
+		return $result;
 	}
 
 	/**
@@ -163,8 +179,8 @@ class QueryBuilder extends Builder {
 	}
 
 	/**
-	 * @param class-string<T>        $className
-	 * @param array<int,null|string> $values
+	 * @param class-string<T> $className
+	 * @param list<?string>   $values
 	 *
 	 * @template T of object
 	 *
@@ -219,6 +235,7 @@ class QueryBuilder extends Builder {
 				}
 				continue;
 			}
+			assert(isset($values[$col]));
 			try {
 				if (!$refClass->hasProperty($propName)) {
 					$this->logger->error("Unable to load data into {class}::\${property}: property doesn't exist", [
@@ -375,7 +392,9 @@ class QueryBuilder extends Builder {
 		$data = $ps->fetchAll(
 			PDO::FETCH_FUNC,
 			function (mixed ...$values) use ($ps, $className): object {
-				/** @var mixed[] $values */
+				assert(array_is_list($values));
+
+				/** @var list<mixed> $values */
 				return $this->convertToClass($ps, $className, $values);
 			}
 		);

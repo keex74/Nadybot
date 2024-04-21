@@ -18,7 +18,7 @@ class EventModel extends DBTable {
 	) {
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getAttendees(): array {
 		return array_values(array_diff(explode(',', $this->event_attendees ?? ''), ['']));
 	}

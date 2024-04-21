@@ -45,7 +45,7 @@ class MessageHub {
 
 	public bool $routingLoaded = false;
 
-	/** @var RoutableEvent[] */
+	/** @var list<RoutableEvent> */
 	public array $eventQueue = [];
 
 	/** @var array<string,MessageReceiver> */
@@ -343,7 +343,7 @@ class MessageHub {
 	/**
 	 * Get all the routing targets for a sender
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getReceiversFor(string $sender): array {
 		$receivers = [];
@@ -597,7 +597,7 @@ class MessageHub {
 		}
 	}
 
-	/** @return MessageRoute[] */
+	/** @return list<MessageRoute> */
 	public function getRoutes(): array {
 		$allRoutes = [];
 		foreach ($this->routes as $source => $destData) {
@@ -613,7 +613,7 @@ class MessageHub {
 	/**
 	 * Get a list of commands to re-create all routes
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getRouteDump(bool $useForce=false): array {
 		$routes = $this->getRoutes();
@@ -716,7 +716,7 @@ class MessageHub {
 		return $msgRoute;
 	}
 
-	/** @param Source[] $path */
+	/** @param list<Source> $path */
 	public function getHopColor(array $path, string $where, Source $source, string $color): ?RouteHopColor {
 		$colorDefs = static::$colors;
 		if (isset($source->name)) {
@@ -760,7 +760,10 @@ class MessageHub {
 
 	/** Get a font tag for the text of a routable message */
 	public function getTextColor(RoutableEvent $event, string $where): string {
-		$path = $event->path ?? [];
+		$path = $event->path;
+		if (!count($path)) {
+			return '';
+		}
 
 		/** @var ?Source */
 		$hop = $path[count($path)-1] ?? null;
@@ -770,7 +773,7 @@ class MessageHub {
 				return $sysColor;
 			}
 		}
-		if (!count($path) || !isset($hop)) {
+		if (!isset($hop)) {
 			return '';
 		}
 		$color = $this->getHopColor($path, $where, $hop, 'text_color');
@@ -783,7 +786,7 @@ class MessageHub {
 	/**
 	 * Check if $via is part of $path
 	 *
-	 * @param Source[] $path
+	 * @param list<Source> $path
 	 */
 	protected function isSentVia(string $via, array $path): bool {
 		for ($i = 0; $i < count($path)-1; $i++) {

@@ -5,10 +5,10 @@ namespace Nadybot\Api;
 use Nadybot\Core\Attributes as NCA;
 
 class PathDoc {
-	/** @var string[] */
+	/** @var list<string> */
 	public array $tags = [];
 
-	/** @var string[] */
+	/** @var list<string> */
 	public array $methods = [];
 
 	/** @var array<int,NCA\ApiResult> */

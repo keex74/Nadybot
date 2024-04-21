@@ -24,7 +24,6 @@ final class CastListToEnums implements PropertyCaster, PropertySerializer {
 		assert(is_array($value), 'value is expected to be an array');
 		$class = $this->enumClass;
 		foreach ($value as $i => $item) {
-			// assert(is_string($item) || is_int($item), 'Must be a string[] or int[]');
 			$value[$i] = $class::from($item);
 		}
 
@@ -34,7 +33,7 @@ final class CastListToEnums implements PropertyCaster, PropertySerializer {
 	public function serialize(mixed $value, ObjectMapper $hydrator): mixed {
 		assert(is_array($value), 'value should be an array');
 
-		/** @var BackedEnum[] $value */
+		/** @var array<array-key,BackedEnum> $value */
 
 		foreach ($value as $i => $item) {
 			$value[$i] = $item->value;

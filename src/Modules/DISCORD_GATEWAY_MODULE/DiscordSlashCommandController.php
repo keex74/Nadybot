@@ -115,7 +115,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 	 * Calculate which slash-commands should be enabled
 	 * and return them as an array of ApplicationCommands
 	 *
-	 * @return ApplicationCommand[]
+	 * @return list<ApplicationCommand>
 	 */
 	public function calcSlashCommands(): array {
 		$enabledCommands = $this->db->table(DiscordSlashCommand::getTable())
@@ -124,7 +124,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			return [];
 		}
 
-		/** @var ApplicationCommand[] */
+		/** @var list<ApplicationCommand> */
 		$cmds = [];
 		$cmdDefs = $this->getCmdDefinitions(...$enabledCommands);
 		foreach ($cmdDefs as $cmdCfg) {
@@ -294,11 +294,10 @@ class DiscordSlashCommandController extends ModuleInstance {
 		#[NCA\Str('slash')] string $action,
 		#[NCA\Str('pick')] string $subAction,
 	): void {
-		/** @var string[] */
 		$exposedCmds = $this->db->table(DiscordSlashCommand::getTable())
 			->orderBy('cmd')
 			->pluckStrings('cmd')
-			->toArray();
+			->toList();
 
 		/** @var Collection<int,CmdCfg> */
 		$cmds = new Collection($this->cmdManager->getAll(false));
@@ -410,6 +409,8 @@ class DiscordSlashCommandController extends ModuleInstance {
 		$this->logger->info('{count} Slash-commands already registered', [
 			'count' => $registeredCmds->count(),
 		]);
+
+		/** @var Collection<int,ApplicationCommand> */
 		$commands = collect($this->calcSlashCommands());
 
 		$numModifiedCommands = $this->getNumChangedSlashCommands($registeredCmds, $commands);
@@ -484,7 +485,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			description: $cmdCfg->description,
 		);
 
-		/** @var int[] */
+		/** @var list<int> */
 		$types = [];
 		$methods = explode(',', $cmdCfg->file);
 		foreach ($methods as $methodDef) {

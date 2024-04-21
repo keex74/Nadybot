@@ -920,7 +920,7 @@ class GuildController extends ModuleInstance {
 		/**
 		 * All alts/main of $char that are in the private channel
 		 *
-		 * @var string[]
+		 * @var list<string>
 		 */
 		$altsInChat = array_values(
 			array_filter(
@@ -931,7 +931,7 @@ class GuildController extends ModuleInstance {
 			)
 		);
 
-		/** @var string[] */
+		/** @var list<string> */
 		$altsInOrgOnline = [];
 		if ($this->isGuildBot()) {
 			$altsInOrgOnline = array_values(

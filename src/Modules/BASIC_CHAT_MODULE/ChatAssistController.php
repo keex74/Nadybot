@@ -223,6 +223,8 @@ class ChatAssistController extends ModuleInstance {
 					unset($list->callers[$i]);
 				}
 			}
+
+			/** @psalm-suppress RedundantFunctionCall */
 			$list->callers = array_values($list->callers);
 		}
 		if (!$removed) {
@@ -620,7 +622,7 @@ class ChatAssistController extends ModuleInstance {
 	 * From a list of character names, return only those whose profession
 	 * is not in the never_auto_callers profession list
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function removeNeverCallers(string ...$members): array {
 		$forbiddenProfs = array_map(
@@ -636,6 +638,6 @@ class ChatAssistController extends ModuleInstance {
 				|| !in_array($member->profession, $forbiddenProfs);
 		})->pluck('name')
 		->values()
-		->toArray();
+		->toList();
 	}
 }

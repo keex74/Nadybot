@@ -8,13 +8,13 @@ use EventSauce\ObjectHydrator\{ObjectMapper, PropertyCaster};
 
 #[Attribute(Attribute::TARGET_PARAMETER | Attribute::IS_REPEATABLE)]
 final class StrFuncIn implements PropertyCaster {
-	/** @var Closure[] */
+	/** @var list<Closure> */
 	private array $hydrate;
 
 	public function __construct(
 		callable ...$hydrate,
 	) {
-		$this->hydrate = array_map(Closure::fromCallable(...), $hydrate);
+		$this->hydrate = array_map(Closure::fromCallable(...), array_values($hydrate));
 	}
 
 	public function cast(mixed $value, ObjectMapper $hydrator): mixed {

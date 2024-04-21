@@ -3,7 +3,7 @@
 namespace Nadybot\Core\Types;
 
 enum Government: string {
-	/** @return string[] */
+	/** @return list<string> */
 	public function getOrgRanks(): array {
 		return match ($this) {
 			self::Anarchism =>  ['Anarchist'],

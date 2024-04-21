@@ -8,7 +8,7 @@ class LeakyBucket {
 	/**
 	 * The packet queue for one sender
 	 *
-	 * @var Message[]
+	 * @var list<Message>
 	 */
 	public array $queue;
 

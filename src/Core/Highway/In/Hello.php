@@ -6,12 +6,15 @@ use EventSauce\ObjectHydrator\MapFrom;
 use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 
 class Hello extends InPackage {
-	/** @var string[] */
+	/** @var list<string> */
 	public array $publicRooms = [];
 
 	/**
 	 * @param null|string[] $publicRoomsOld
 	 * @param null|string[] $publicRoomsNew
+	 *
+	 * @psalm-param ?list<string> $publicRoomsOld
+	 * @psalm-param ?list<string> $publicRoomsNew
 	 */
 	public function __construct(
 		string $type,

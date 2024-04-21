@@ -323,7 +323,7 @@ class MassMsgController extends ModuleInstance {
 	 *
 	 * @param array<string,string> $result
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function getMassResultPopup(array $result): array {
 		ksort($result);

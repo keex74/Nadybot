@@ -14,6 +14,8 @@ class BasicSystemInformation {
 	 * @param string   $fs          Which file system driver are we running?
 	 * @param string   $os          Which operating system/kernel are we running?
 	 * @param string   $db_type     Which database type (mysql/sqlite) are we using?
+	 *
+	 * @psalm-param list<string> $superadmins
 	 */
 	public function __construct(
 		public string $bot_name,

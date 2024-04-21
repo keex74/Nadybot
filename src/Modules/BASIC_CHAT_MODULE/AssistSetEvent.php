@@ -7,7 +7,7 @@ use Nadybot\Core\Events\Event;
 class AssistSetEvent extends Event {
 	public const EVENT_MASK = 'assist(set)';
 
-	/** @param CallerList[] $lists The names of the players on the assist list */
+	/** @param list<CallerList> $lists The names of the players on the assist list */
 	public function __construct(
 		public array $lists=[],
 	) {

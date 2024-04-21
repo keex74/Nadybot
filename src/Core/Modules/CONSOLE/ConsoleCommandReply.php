@@ -39,7 +39,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 		return Source::CONSOLE;
 	}
 
-	/** @param string|string[] $msg */
+	/** @param string|list<string> $msg */
 	public function reply(string|array $msg): void {
 		$msg = Text::unbreakPopups((array)$msg);
 		foreach ($msg as $text) {
@@ -52,7 +52,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 		}
 	}
 
-	/** @param string|string[] $msg */
+	/** @param string|list<string> $msg */
 	public function replyOnly(string|array $msg): void {
 		$msg = Text::unbreakPopups((array)$msg);
 		foreach ($msg as $text) {

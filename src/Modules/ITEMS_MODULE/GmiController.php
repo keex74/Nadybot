@@ -167,7 +167,7 @@ class GmiController extends ModuleInstance {
 		$context->reply($message);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	protected function renderGmiResult(GmiResult $gmi, AOItemSpec&AOIcon $item, ?int $ql=null): array {
 		if (!count($gmi->buyOrders) && !count($gmi->sellOrders)) {
 			return ['There are no orders on GMI.'];

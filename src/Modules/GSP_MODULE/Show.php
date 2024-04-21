@@ -6,6 +6,9 @@ class Show {
 	/**
 	 * @param Song[]   $history
 	 * @param Stream[] $stream
+	 *
+	 * @psalm-param list<Song>   $history
+	 * @psalm-param list<Stream> $stream
 	 */
 	public function __construct(
 		public string $date,

@@ -170,7 +170,7 @@ class DiscordGatewayController extends ModuleInstance {
 	#[NCA\Setting\Text]
 	public string $discordAssignRole = '';
 
-	/** @var array<string,DiscordChannelInvite[]> */
+	/** @var array<string,list<DiscordChannelInvite>> */
 	public array $invites = [];
 
 	protected ?int $lastSequenceNumber = null;
@@ -1659,7 +1659,7 @@ class DiscordGatewayController extends ModuleInstance {
 		);
 	}
 
-	/** @param DiscordChannelInvite[] $invites */
+	/** @param list<DiscordChannelInvite> $invites */
 	private function cacheInvites(string $guildId, array $invites): void {
 		$this->invites[$guildId] = $invites;
 	}
@@ -1737,10 +1737,10 @@ class DiscordGatewayController extends ModuleInstance {
 	/**
 	 * Try to find out if a newly joined user used one of our AO invitations
 	 *
-	 * @param DiscordChannelInvite[] $invites
+	 * @param list<DiscordChannelInvite> $invites
 	 */
 	private function connectJoinedUserToAO(string $guildId, array $invites, string $userId): void {
-		/** @var DiscordChannelInvite[] */
+		/** @var list<DiscordChannelInvite> */
 		$oldInvites = $this->invites[$guildId] ?? [];
 		$this->invites[$guildId] = $invites;
 		$validOldInvites = [];
@@ -1924,7 +1924,7 @@ class DiscordGatewayController extends ModuleInstance {
 					$this->db->table(DBEmoji::getTable())->delete($emoji->id);
 					$guild->emojis = collect($guild->emojis)
 						->where('id', '!=', $emoji->emoji_id)
-						->toArray();
+						->toList();
 				}
 				return;
 			}
@@ -1968,7 +1968,7 @@ class DiscordGatewayController extends ModuleInstance {
 					]);
 					$guild->emojis = collect($guild->emojis)
 						->where('id', '!=', $oldEmoji->id)
-						->toArray();
+						->toList();
 					unset($oldEmoji);
 				}
 				if (!isset($oldEmoji)) {
@@ -2289,7 +2289,7 @@ class DiscordGatewayController extends ModuleInstance {
 		return true;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function renderInvites(): array {
 		$blobs = [];
 		$numInvites = 0;
@@ -2341,7 +2341,7 @@ class DiscordGatewayController extends ModuleInstance {
 		return $msg;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function getInviteReply(DiscordChannelInvite $invite): array {
 		$guildName = $invite->guild->name ?? 'Discord server';
 		$joinLink = Text::makeChatcmd('this link', "/start https://discord.gg/{$invite->code}");

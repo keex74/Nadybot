@@ -11,6 +11,8 @@ class RoomInfo extends InPackage {
 	/**
 	 * @param string[]                                $users
 	 * @param null|string|int|bool|float|array<mixed> $extraInfo
+	 *
+	 * @psalm-param list<string> $users
 	 */
 	public function __construct(
 		string $type,

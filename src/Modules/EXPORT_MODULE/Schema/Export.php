@@ -27,6 +27,28 @@ class Export {
 	 * @param RaidPointLog[]     $raidPointsLog
 	 * @param Timer[]            $timers
 	 * @param TrackedCharacter[] $trackedCharacters
+	 *
+	 * @psalm-param list<AltMain>          $alts
+	 * @psalm-param list<Auction>          $auctions
+	 * @psalm-param list<Ban>              $banlist
+	 * @psalm-param list<CommentCategory>  $commentCategories
+	 * @psalm-param list<Comment>          $comments
+	 * @psalm-param list<CloakEntry>       $cityCloak
+	 * @psalm-param list<Event>            $events
+	 * @psalm-param list<Link>             $links
+	 * @psalm-param list<Member>           $members
+	 * @psalm-param list<News>             $news
+	 * @psalm-param list<Note>             $notes
+	 * @psalm-param list<OrgNote>          $orgNotes
+	 * @psalm-param list<Poll>             $polls
+	 * @psalm-param list<Quote>            $quotes
+	 * @psalm-param list<RaffleBonus>      $raffleBonus
+	 * @psalm-param list<RaidBlock>        $raidBlocks
+	 * @psalm-param list<Raid>             $raids
+	 * @psalm-param list<RaidPointEntry>   $raidPoints
+	 * @psalm-param list<RaidPointLog>     $raidPointsLog
+	 * @psalm-param list<Timer>            $timers
+	 * @psalm-param list<TrackedCharacter> $trackedCharacters
 	 */
 	public function __construct(
 		#[CastListToType(AltMain::class)] public array $alts=[],

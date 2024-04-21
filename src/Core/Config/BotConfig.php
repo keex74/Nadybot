@@ -4,6 +4,7 @@ namespace Nadybot\Core\Config;
 
 use function Safe\json_decode;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use EventSauce\ObjectHydrator\{MapFrom, MapperSettings, ObjectMapperUsingReflection};
 use Nadybot\Core\Attributes\Instance;
 use Nadybot\Core\Filesystem;
@@ -28,6 +29,8 @@ class BotConfig {
 	 * @param ?AutoUnfreeze             $autoUnfreeze Settings for automatic unfreezing of accounts
 	 * @param Credentials[]             $worker       Credentials of the worker characters
 	 * @param array<string,null|scalar> $settings     Define settings values which will be immutable
+	 *
+	 * @psalm-param list<Credentials> $worker
 	 */
 	public function __construct(
 		private string $filePath,
@@ -38,7 +41,7 @@ class BotConfig {
 		public General $general,
 		public ?Proxy $proxy=null,
 		#[MapFrom('auto-unfreeze')] public ?AutoUnfreeze $autoUnfreeze=null,
-		public array $worker=[],
+		#[CastListToType(Credentials::class)] public array $worker=[],
 		public array $settings=[],
 	) {
 	}

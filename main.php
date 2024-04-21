@@ -1,5 +1,8 @@
 <?php declare(strict_types=1);
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
+
 /*
 xdebug_start_code_coverage(XDEBUG_CC_UNUSED);
 xdebug_set_filter(
@@ -10,7 +13,7 @@ xdebug_set_filter(
 */
 if (!@file_exists(__DIR__ . '/vendor/autoload.php')) { // @phpstan-ignore-line
 	fwrite( // @phpstan-ignore-line
-		STDERR,
+		\STDERR,
 		"Nadybot cannot find the composer modules in 'vendor'.\n".
 		"Please run 'composer install' to install all missing modules\n".
 		"or download one of the Nadybot bundles and copy the 'vendor'\n".
@@ -24,6 +27,12 @@ if (!@file_exists(__DIR__ . '/vendor/autoload.php')) { // @phpstan-ignore-line
 }
 
 require 'vendor/autoload.php';
+
+/** @return list<TValue> */
+$toList = function (): array {
+	return array_values($this->map(static fn ($value) => $value instanceof Arrayable ? array_values($value->toArray()) : $value)->all());
+};
+Collection::macro('toList', $toList);
 
 $runner = new Nadybot\Core\BotRunner($argv);
 $runner->run();
