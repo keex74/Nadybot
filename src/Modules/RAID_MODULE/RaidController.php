@@ -1249,11 +1249,11 @@ class RaidController extends ModuleInstance {
 				$addLink = Text::makeChatcmd('Add to raid', "/tell <myname> <symbol>raid add {$player->name}");
 				$profIcon = $player->profession->toIcon();
 				$blob .= "<tab>{$profIcon} {$player->name} - {$player->level}/{$player->ai_level} [{$addLink}]\n";
-				$charNames[] = $player->name;
+				$charNames []= $player->name;
 			} else {
 				$addLink = Text::makeChatcmd('Add to raid', "/tell <myname> <symbol>raid add {$name}");
 				$blob .= "<tab>{$name} [{$addLink}]\n";
-				$charNames[] = $name;
+				$charNames []= $name;
 			}
 		}
 		$addAllLink = Text::makeChatcmd(

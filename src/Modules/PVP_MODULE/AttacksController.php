@@ -924,10 +924,9 @@ class AttacksController extends ModuleInstance {
 		$firstAttack = $attacks->first();
 		$lastAttack = $attacks->last();
 
-		/** @var array<string,DBOutcome[]> $outcomes */
+		/** @var array<string,list<DBOutcome>> $outcomes */
 		$outcomes = [];
 		if (isset($firstAttack) && isset($lastAttack)) {
-			/** A hash with site/owner key and a list of outcomes for this combination */
 			$outcomes = $this->db->table(DBOutcome::getTable())
 				->where('timestamp', '>', $lastAttack->timestamp)
 				->where('timestamp', '<', $firstAttack->timestamp)
@@ -935,15 +934,15 @@ class AttacksController extends ModuleInstance {
 				->asObj(DBOutcome::class)
 				->groupBy(static function (DBOutcome $outcome): string {
 					return "{$outcome->losing_org}:{$outcome->playfield->value}:{$outcome->site_id}";
-				})->toArray();
+				})->toList();
 
-			/** @var array<string,DBOutcome[]> $outcomes */
+			/** @var array<string,list<DBOutcome>> $outcomes */
 		}
 
 		/**
 		 * A hash with site/owner key and a list of attacks for this combination
 		 *
-		 * @var array<string,DBTowerAttack[]>
+		 * @var array<string,list<DBTowerAttack>>
 		 */
 		$groups = $attacks
 			->reduce(static function (array $groups, DBTowerAttack $attack): array {
@@ -994,18 +993,17 @@ class AttacksController extends ModuleInstance {
 		$groupTowerAttacks ??= $this->groupTowerAttacks;
 		if ($groupTowerAttacks) {
 			$groups = $this->groupAttackList(...$attacks);
+
+			/** @param Collection<int,DBTowerAttack> $attacks */
 			$blocks = $groups->map(function (Collection $attacks): string {
-				/** @var DBTowerAttack */
 				$first = $attacks->firstOrFail();
 
-				/** @var ?DBTowerAttack */
 				$last = $attacks->last();
 				$pf = $first->playfield;
 				$site = $this->nwCtrl->state[$pf->value][$first->site_id] ?? null;
 				assert(isset($last));
 				assert(isset($site));
 
-				/** @var ?DBOutcome */
 				$outcome = $this->db->table(DBOutcome::getTable())
 					->where('losing_org', $first->def_org)
 					->where('timestamp', '>', $last->timestamp)
@@ -1020,7 +1018,6 @@ class AttacksController extends ModuleInstance {
 
 				$blocks = [];
 
-				/** @var DBTowerAttack[] $attacks */
 				foreach ($attacks as $attack) {
 					$blocks []= Util::date($attack->timestamp) . ': '.
 						$this->renderDBAttacker($attack);
@@ -1043,7 +1040,7 @@ class AttacksController extends ModuleInstance {
 							: "\n"
 					) . '<tab>'.
 					implode("\n<tab>", $blocks);
-			})->toArray();
+			})->toList();
 		} else {
 			$blocks = [];
 			foreach ($attacks as $attack) {

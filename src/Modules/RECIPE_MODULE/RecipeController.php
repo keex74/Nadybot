@@ -121,8 +121,7 @@ class RecipeController extends ModuleInstance {
 			$this->db->addWhereFromParams($query, explode(' ', $search), 'recipe');
 		}
 
-		/** @var Recipe[] */
-		$data = $query->asObj(Recipe::class)->toArray();
+		$data = $query->asObjArr(Recipe::class);
 
 		$count = count($data);
 
@@ -250,7 +249,11 @@ class RecipeController extends ModuleInstance {
 		);
 	}
 
-	/** @param string[] $arr */
+	/**
+	 * @param string[] $arr
+	 *
+	 * @psalm-assert list{string,numeric-string,string} $arr
+	 */
 	private function replaceItem(array $arr): string {
 		$id = (int)$arr[2];
 		$row = $this->itemsController->findById($id);

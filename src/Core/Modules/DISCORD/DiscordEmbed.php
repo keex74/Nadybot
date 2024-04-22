@@ -9,7 +9,11 @@ use Stringable;
 class DiscordEmbed implements Stringable {
 	use ReducedStringableTrait;
 
-	/** @param ?DiscordEmbedField[] $fields */
+	/**
+	 * @param ?DiscordEmbedField[] $fields
+	 *
+	 * @psalm-param ?list<DiscordEmbedField> $fields
+	 */
 	public function __construct(
 		public ?string $title=null,
 		public ?string $type='rich',

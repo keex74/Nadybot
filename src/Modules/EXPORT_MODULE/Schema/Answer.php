@@ -8,6 +8,8 @@ class Answer {
 	/**
 	 * @param string  $answer The choice for this answer
 	 * @param ?Vote[] $votes
+	 *
+	 * @psalm-param ?list<Vote> $votes
 	 */
 	public function __construct(
 		public string $answer,

@@ -34,7 +34,7 @@ class ImplantController extends ModuleInstance {
 	public const REGULAR = 'reqRegular';
 	public const JOBE = 'reqJobe';
 
-	/** @var array<string,array<int,int[]>> */
+	/** @var array<string,array<int,list<int>>> */
 	protected array $implantBreakpoints = [
 		'skills' => [
 			  1 => [2,  3,   6],

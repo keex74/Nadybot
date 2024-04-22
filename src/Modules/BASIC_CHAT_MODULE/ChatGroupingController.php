@@ -30,8 +30,9 @@ class ChatGroupingController extends ModuleInstance {
 	/** @var list<string> */
 	public array $joined = [];
 
-	/** @var array<int,string[]> */
+	/** @var array<int,list<string>> */
 	public array $grouped = [];
+
 	#[NCA\Inject]
 	private Text $text;
 

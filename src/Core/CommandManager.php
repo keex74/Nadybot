@@ -907,9 +907,10 @@ class CommandManager implements MessageEmitter {
 	/**
 	 * @param Collection<int,ReflectionMethod> $methods
 	 *
-	 * @return Collection<int,ReflectionMethod[]>
+	 * @return Collection<int,list<ReflectionMethod>>
 	 */
 	public function groupRefMethods(Collection $methods): Collection {
+		/** @var array<string,list<ReflectionMethod>> */
 		$lookup = [];
 		$empty = [];
 		foreach ($methods as $m) {
@@ -923,9 +924,9 @@ class CommandManager implements MessageEmitter {
 			$lookup[$headline] []= $m;
 		}
 
-		/** @var array<int,ReflectionMethod[]> */
-		$result = array_merge(array_values($lookup), $empty);
-		return collect($result);
+		/** @var Collection<int,list<ReflectionMethod>> */
+		$result = collect(array_merge(array_values($lookup), $empty));
+		return $result;
 	}
 
 	/**
@@ -974,7 +975,7 @@ class CommandManager implements MessageEmitter {
 
 		/** @var string $cmdName */
 		foreach ($groupedByCmd as $cmdName => $refGroups) {
-			/** @var Collection<int,ReflectionMethod[]> $refGroups */
+			/** @var Collection<int,list<ReflectionMethod>> $refGroups */
 			$header = "<header2>'{$cmdName}' command".
 				((count($refGroups) > 1 || count($refGroups[0]) > 1) ? 's' : '');
 			if ($showRights) {
@@ -1583,9 +1584,9 @@ class CommandManager implements MessageEmitter {
 	}
 
 	/**
-	 * @param Collection<int,ReflectionMethod[]> $list
+	 * @param Collection<int,list<ReflectionMethod>> $list
 	 *
-	 * @return Collection<string,ReflectionMethod[]>
+	 * @return Collection<string,list<ReflectionMethod>>
 	 */
 	private function groupBySubcmd(Collection $list): Collection {
 		/**
@@ -1602,7 +1603,7 @@ class CommandManager implements MessageEmitter {
 		/**
 		 * @param list<ReflectionMethod> $refMethods
 		 *
-		 * @var Collection<string,ReflectionMethod[]> $grouped
+		 * @var Collection<string,list<ReflectionMethod>> $grouped
 		 */
 		$grouped = $sList->groupBy(static function (array $refMethods): string {
 			if (empty($refMethods)) {

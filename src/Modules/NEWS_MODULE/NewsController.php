@@ -403,11 +403,9 @@ class NewsController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'News[]', desc: 'A list of news items')
 	]
 	public function apiNewsEndpoint(Request $request): Response {
-		/** @var News[] */
 		$result = $this->db->table(News::getTable())
 			->where('deleted', 0)
-			->asObj(News::class)
-			->toArray();
+			->asObjArr(News::class);
 		return ApiResponse::create($result);
 	}
 

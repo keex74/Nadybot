@@ -40,7 +40,7 @@ class OrglistController extends ModuleInstance {
 	#[NCA\Setting\Boolean]
 	public bool $orglistShowOffline = true;
 
-	/** @var array<string,string[]> */
+	/** @var array<string,list<string>> */
 	protected array $orgrankmap = [
 		'Anarchism'  => ['Anarchist'],
 		'Monarchy'   => ['Monarch',   'Counsil',      'Follower'],
@@ -133,7 +133,7 @@ class OrglistController extends ModuleInstance {
 	 * If $search is a character name, this character's org will be
 	 * included as well.
 	 *
-	 * @return Organization[]
+	 * @return list<Organization>
 	 */
 	public function getOrgsMatchingSearch(string $search): array {
 		$orgs = $this->findOrgController->lookupOrg($search);

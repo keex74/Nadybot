@@ -26,7 +26,7 @@ class SettingValue {
 		}
 	}
 
-	/** @return null|bool|int|string|mixed[] */
+	/** @return null|bool|int|string|list<mixed> */
 	public function typed(): null|bool|int|string|array {
 		if (str_ends_with($this->type, '[]')) {
 			if (is_null($this->value) || !strlen($this->value)) {

@@ -141,7 +141,7 @@ class AuctionController extends ModuleInstance {
 	/**
 	 * A list of suggested bids for the auction popup
 	 *
-	 * @var string[]
+	 * @var list<string>
 	 */
 	#[NCA\Setting\ArrayOfText]
 	public array $bidPresets = [];
@@ -659,11 +659,9 @@ class AuctionController extends ModuleInstance {
 	}
 
 	/**
-	 * @return string[]
+	 * @return list<string>
 	 *
 	 * @psalm-return array{0:string, 1:string}
-	 *
-	 * @phpstan-return array{0:string, 1:string}
 	 */
 	public function getAnnouncementBorders(): array {
 		$layout = $this->auctionAnnouncementLayout;

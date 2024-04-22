@@ -12,7 +12,7 @@ class RequestGuildMembers implements Stringable {
 	/**
 	 * @param string[] $user_ids
 	 *
-	 * @psalm-param list<string>
+	 * @psalm-param list<string> $user_ids
 	 */
 	public function __construct(
 		public string $guild_id,

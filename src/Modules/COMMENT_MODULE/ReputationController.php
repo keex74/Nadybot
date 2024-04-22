@@ -147,8 +147,6 @@ class ReputationController extends ModuleInstance {
 			$comments = array_slice($comments, 0, 10);
 		}
 
-		/** @var Comment[] $comments */
-
 		if (!count($comments)) {
 			$msg = "<highlight>{$name}<end> has no reputation.";
 			$context->reply($msg);

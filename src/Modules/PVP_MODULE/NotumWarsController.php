@@ -124,10 +124,10 @@ class NotumWarsController extends ModuleInstance {
 	/** @var array<int,PlayfieldState> */
 	public array $state = [];
 
-	/** @var TowerAttack[] */
+	/** @var list<TowerAttack> */
 	public array $attacks = [];
 
-	/** @var TowerOutcome[] */
+	/** @var list<TowerOutcome> */
 	public array $outcomes = [];
 
 	/** By what to group hot/penaltized sites */
@@ -448,7 +448,7 @@ class NotumWarsController extends ModuleInstance {
 			->map(static function (DBTowerAttack $attack): FeedMessage\TowerAttack {
 				return $attack->toTowerAttack();
 			})
-			->toArray();
+			->toList();
 
 		$this->outcomes = $this->db->table(DBOutcome::getTable())
 			->where('timestamp', '>=', time() - 7_200)
@@ -457,7 +457,7 @@ class NotumWarsController extends ModuleInstance {
 			->map(static function (DBOutcome $outcome): TowerOutcome {
 				return $outcome->toTowerOutcome();
 			})
-			->toArray();
+			->toList();
 	}
 
 	#[NCA\Event('connect', 'Load all attacks from the API')]
@@ -557,7 +557,7 @@ class NotumWarsController extends ModuleInstance {
 				->map(static function (DBOutcome $outcome): TowerOutcome {
 					return $outcome->toTowerOutcome();
 				})
-				->toArray();
+				->toList();
 		} catch (JsonException $e) {
 			$this->logger->error('Invalid outcome-data received: {error}', [
 				'error' => $e->getMessage(),
@@ -602,7 +602,7 @@ class NotumWarsController extends ModuleInstance {
 	public function registerAttack(FeedMessage\TowerAttack $attack): void {
 		$this->attacks = collect([$attack, ...$this->attacks])
 			->where('timestamp', '>=', time() - 6 * 3_600)
-			->toArray();
+			->toList();
 	}
 
 	#[NCA\Event('site-update', 'Update tower information from the API')]
@@ -626,7 +626,7 @@ class NotumWarsController extends ModuleInstance {
 		$this->db->insert($dbOutcome);
 		$this->outcomes = collect([$event->outcome, ...$this->outcomes])
 			->where('timestamp', '>=', time() - 3_600)
-			->toArray();
+			->toList();
 	}
 
 	#[NCA\Event('tower-attack', 'Update tower attacks from the API')]
@@ -1474,7 +1474,7 @@ class NotumWarsController extends ModuleInstance {
 			"<tab>Level 200 - 220: <highlight>4<end> towers\n";
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	private function getUnplantedSites(): array {
 		$unplantedSites = [];
 		foreach ($this->state as $pfId => $sites) {
@@ -1654,7 +1654,7 @@ class NotumWarsController extends ModuleInstance {
 	private function getPlantTimer(FeedMessage\SiteUpdate $site, int $timestamp): Timer {
 		$pf = $site->playfield;
 
-		/** @var Alert[] */
+		/** @var list<Alert> */
 		$alerts = [];
 
 		$siteDetails = $this->renderSite($site, false, false);

@@ -280,7 +280,7 @@ class MessageHubController extends ModuleInstance {
 			}
 		}
 
-		/** @var null|RouteModifier[] $modifiers */
+		/** @var ?list<RouteModifier> $modifiers */
 		try {
 			$route->id = $this->db->insert($route);
 			foreach ($modifiers??[] as $modifier) {
@@ -512,6 +512,8 @@ class MessageHubController extends ModuleInstance {
 			$context->reply('There are no routes defined.');
 			return;
 		}
+
+		/** @var array<string,list<MessageRoute>> $grouped */
 		$grouped = [];
 		$numTotal = count($routes);
 		$numShown = 0;
@@ -535,7 +537,6 @@ class MessageHubController extends ModuleInstance {
 			$numShown++;
 		}
 
-		/** @var array<string,MessageRoute[]> $grouped */
 		$result = [];
 		foreach ($grouped as $receiver => $recRoutes) {
 			$result[$receiver] = [];

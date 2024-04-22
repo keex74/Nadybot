@@ -348,10 +348,10 @@ class RaidMemberController extends ModuleInstance {
 	/**
 	 * Warn everyone on the private channel who's not in the raid $raid
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function sendNotInRaidWarning(Raid $raid): array {
-		/** @var string[] */
+		/** @var list<string> */
 		$notInRaid = [];
 		$allowMultilog = $this->raidAllowMultiJoining;
 		foreach ($this->chatBot->chatlist as $player => $online) {
@@ -390,10 +390,10 @@ class RaidMemberController extends ModuleInstance {
 	/**
 	 * kick everyone on the private channel who's not in the raid $raid
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function kickNotInRaid(Raid $raid, bool $all): array {
-		/** @var string[] */
+		/** @var list<string> */
 		$notInRaid = [];
 		foreach ($this->chatBot->chatlist as $player => $online) {
 			if (isset($raid->raiders[$player])) {

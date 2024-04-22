@@ -438,7 +438,7 @@ class NotesController extends ModuleInstance {
 	/**
 	 * Read all notes or reminders for player $main
 	 *
-	 * @return Note[]
+	 * @return list<Note>
 	 */
 	protected function readNotes(string $main, bool $remindersOnly=false): array {
 		return $this->db->table(Note::getTable())
@@ -446,7 +446,7 @@ class NotesController extends ModuleInstance {
 			->where('reminder', '>', $remindersOnly ? 0 : -1)
 			->orderBy('added_by')
 			->orderByDesc('dt')
-			->asObj(Note::class)->toArray();
+			->asObjArr(Note::class);
 	}
 
 	/**

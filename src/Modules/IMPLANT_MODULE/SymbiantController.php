@@ -197,8 +197,10 @@ class SymbiantController extends ModuleInstance {
 					continue;
 				}
 
-				/** @var Symbiant[] */
+				/** @var list<Symbiant> */
 				$symbs = array_slice($config->{$slot}, 0, 3);
+
+				/** @var list<string> */
 				$links = array_map(
 					static function (Symbiant $symb): string {
 						$name =  "QL{$symb->QL}";
@@ -322,8 +324,7 @@ class SymbiantController extends ModuleInstance {
 		$query->orderByRaw($query->grammar->wrap('s.Name') . ' like ? desc', ['%Beta']);
 		$query->orderByDesc('s.QL');
 
-		/** @var Symbiant[] */
-		$symbiants = $query->asObj(Symbiant::class)->toArray();
+		$symbiants = $query->asObj(Symbiant::class);
 
 		/** @var array<string,SymbiantConfig> */
 		$configs = [];

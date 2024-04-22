@@ -65,7 +65,7 @@ class ApiSpecGenerator {
 		return $instances;
 	}
 
-	/** @return array<string,ReflectionMethod[]> */
+	/** @return array<string,list<ReflectionMethod>> */
 	public function getPathMapping(): array {
 		$instances = $this->getInstances();
 		$paths = [];
@@ -229,7 +229,7 @@ class ApiSpecGenerator {
 	}
 
 	/**
-	 * @param array<string,ReflectionMethod[]> $mapping
+	 * @param array<string,list<ReflectionMethod>> $mapping
 	 *
 	 * @return array<string,mixed>
 	 */
@@ -491,9 +491,7 @@ class ApiSpecGenerator {
 	/**
 	 * @return null|array<mixed>
 	 *
-	 * @psalm-return null|array{0: string, 1: string|string[], 2?: string}
-	 *
-	 * @phpstan-return null|array{0: string, 1: string|string[], 2?: string}
+	 * @psalm-return null|array{0: string, 1: string|list<string>, 2?: string}
 	 */
 	protected function getNameAndType(ReflectionProperty $refProperty): ?array {
 		if (count($refProperty->getAttributes(NCA\JSON\Ignore::class))) {

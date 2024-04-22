@@ -8,6 +8,9 @@ class GmiResult {
 	/**
 	 * @param GmiBuyOrder[]  $buyOrders
 	 * @param GmiSellOrder[] $sellOrders
+	 *
+	 * @psalm-param list<GmiBuyOrder>  $buyOrders
+	 * @psalm-param list<GmiSellOrder> $sellOrders
 	 */
 	public function __construct(
 		#[CastListToType(GmiBuyOrder::class)] public array $buyOrders,

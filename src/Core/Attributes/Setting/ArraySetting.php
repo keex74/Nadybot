@@ -12,9 +12,9 @@ class ArraySetting extends DefineSetting {
 	/**
 	 * @inheritDoc
 	 *
-	 * @param null|int|float|string|bool|mixed[] $defaultValue
-	 * @param array<string|int,int|string>       $options      An optional list of values that the setting can be, semi-colon delimited.
-	 *                                                         Alternatively, use an associative array [label => value], where label is optional.
+	 * @param null|int|float|string|bool|list<mixed> $defaultValue
+	 * @param array<string|int,int|string>           $options      An optional list of values that the setting can be, semi-colon delimited.
+	 *                                                             Alternatively, use an associative array [label => value], where label is optional.
 	 */
 	public function __construct(
 		public string $type='text[]',

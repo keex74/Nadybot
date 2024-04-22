@@ -3,7 +3,11 @@
 namespace Nadybot\Modules\ONLINE_MODULE;
 
 class OnlineList {
-	/** @param string[] $mains */
+	/**
+	 * @param string[] $mains
+	 *
+	 * @psalm-param list<string> $mains
+	 */
 	public function __construct(
 		public int $count,
 		public int $countMains,

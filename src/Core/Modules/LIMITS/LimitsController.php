@@ -103,7 +103,7 @@ class LimitsController extends ModuleInstance {
 	/** Ratelimit: Ignore ratelimit for everyone of this rank or higher */
 	#[NCA\Setting\Rank] public string $limitsExemptRank = 'mod';
 
-	/** @var array<string,int[]> */
+	/** @var array<string,list<int>> */
 	public array $limitBucket = [];
 
 	/** @var array<string,int> */
@@ -338,12 +338,12 @@ class LimitsController extends ModuleInstance {
 		$now = time();
 		$timeWindow = $this->limitsWindow;
 		foreach ($this->limitBucket as $user => &$bucket) {
-			$bucket = array_filter(
+			$bucket = array_values(array_filter(
 				$bucket,
 				static function (int $ts) use ($now, $timeWindow): bool {
 					return $ts >= $now - $timeWindow;
 				}
-			);
+			));
 			if (empty($bucket)) {
 				unset($this->limitBucket[$user]);
 			}

@@ -4,8 +4,8 @@ namespace Nadybot\Modules\PVP_MODULE;
 
 class TrackerConfig {
 	/**
-	 * @param TrackerArgument[] $arguments
-	 * @param string[]          $events
+	 * @param list<TrackerArgument> $arguments
+	 * @param list<string>          $events
 	 */
 	public function __construct(
 		public array $arguments=[],

@@ -7,7 +7,11 @@ use Nadybot\Core\DBTable;
 
 #[Table(name: 'nanos', shared: Shared::Yes)]
 class Nano extends DBTable {
-	/** @param string[] $professions */
+	/**
+	 * @param string[] $professions
+	 *
+	 * @psalm-param list<string> $professions
+	 */
 	public function __construct(
 		#[PK] public int $nano_id,
 		public int $ql,
@@ -44,7 +48,7 @@ class Nano extends DBTable {
 		return "<a href='itemref://{$this->crystal_id}/{$this->crystal_id}/{$ql}'>{$text}</a>";
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public static function parseProfessions(string $professions): array {
 		return explode(':', $professions);
 	}

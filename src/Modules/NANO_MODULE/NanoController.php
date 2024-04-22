@@ -435,9 +435,9 @@ class NanoController extends ModuleInstance {
 				return $nanos;
 			}, []);
 
-		/** @var Nano[] */
-		$bestNanos = array_values($nanos);
-		return collect($bestNanos);
+		/** @var Collection<int,Nano> */
+		$bestNanos = collect(array_values($nanos));
+		return $bestNanos;
 	}
 
 	/** @param Collection<int,Nano> $nanos */
@@ -646,8 +646,7 @@ class NanoController extends ModuleInstance {
 			$query->where('froob_friendly', true);
 		}
 
-		/** @var SchoolAndStrain[] */
-		$data = $query->asObj(SchoolAndStrain::class)->toArray();
+		$data = $query->asObj(SchoolAndStrain::class);
 
 		$shortProf = $profession;
 		if ($profession !== 'General') {

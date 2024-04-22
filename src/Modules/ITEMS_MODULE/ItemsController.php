@@ -220,9 +220,8 @@ class ItemsController extends ModuleInstance {
 		$tmp = explode(' ', $search);
 		$this->db->addWhereFromParams($query, $tmp, 'a.name');
 
-		/** @var AODBEntry[] */
-		$items = $query->asObj(AODBEntry::class)->toArray();
-		if (!count($items)) {
+		$items = $query->asObj(AODBEntry::class);
+		if ($items->isEmpty()) {
 			$context->reply("No items found matching <highlight>{$search}<end>.");
 			return;
 		}
@@ -278,7 +277,7 @@ class ItemsController extends ModuleInstance {
 	 * @param string   $search The searchterm
 	 * @param null|int $ql     The QL to return the results in
 	 *
-	 * @return ItemSearchResult[]
+	 * @return list<ItemSearchResult>
 	 */
 	public function findItemsFromLocal(string $search, ?int $ql, bool $dontExclude=false): array {
 		$innerQuery = $this->db->table(AODBEntry::getTable(), 'a')
@@ -345,7 +344,7 @@ class ItemsController extends ModuleInstance {
 				}
 			}
 		}
-		return $result->toArray();
+		return $result->toList();
 	}
 
 	/**

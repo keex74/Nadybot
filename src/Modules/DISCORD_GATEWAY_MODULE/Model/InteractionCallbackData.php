@@ -24,6 +24,9 @@ class InteractionCallbackData implements Stringable {
 	 *                                                       (only SUPPRESS_EMBEDS and EPHEMERAL can be set)
 	 * @param ?DiscordActionRowComponent[] $components       message components
 	 * @param ?DiscordAttachment[]         $attachments      attachment objects with filename and description
+	 *
+	 * @psalm-param ?list<DiscordEmbed>              $embeds
+	 * @psalm-param ?list<DiscordActionRowComponent> $components
 	 */
 	public function __construct(
 		public ?bool $tts=null,

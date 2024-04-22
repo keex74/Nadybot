@@ -46,7 +46,7 @@ class SettingManager {
 	#[NCA\Inject]
 	private BotConfig $config;
 
-	/** @var array<string,ChangeListener[]> */
+	/** @var array<string,list<ChangeListener>> */
 	private array $changeListeners = [];
 
 	/** @var array<string,string> */
@@ -244,7 +244,7 @@ class SettingManager {
 		return false;
 	}
 
-	/** @return int|bool|string|mixed[]|null */
+	/** @return int|bool|string|list<mixed>|null */
 	public function getTyped(string $name): null|int|bool|string|array {
 		$name = strtolower($name);
 		if ($this->exists($name)) {

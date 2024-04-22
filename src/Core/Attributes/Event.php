@@ -6,8 +6,8 @@ use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD|Attribute::IS_REPEATABLE)]
 class Event {
+	/** @param string|list<string> $name */
 	public function __construct(
-		/** @var string|string[] */
 		public string|array $name,
 		public string $description,
 		public ?string $help=null,

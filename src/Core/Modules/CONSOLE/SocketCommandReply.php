@@ -75,7 +75,7 @@ class SocketCommandReply implements CommandReply {
 			preg_replace_callback(
 				"/<a\s+href\s*=\s*([\"'])text:\/\/(.+?)\\1\s*>(.*?)<\/a>/s",
 				function (array $matches) use (&$parts): string {
-					$parts[] = html_entity_decode($this->handleColors($matches[2], true), \ENT_QUOTES);
+					$parts []= html_entity_decode($this->handleColors($matches[2], true), \ENT_QUOTES);
 					return $this->handleColors("<link>{$matches[3]}</link>", false);
 				},
 				$message

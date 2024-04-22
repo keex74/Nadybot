@@ -186,7 +186,7 @@ class BestQLController extends ModuleInstance {
 		}
 		$pages = [];
 		for ($i = 0; $i < count($blob); $i++) {
-			$pages[] = "Found <highlight>{$numFoundItems}<end> ".$blob[$i].' with different stats.';
+			$pages []= "Found <highlight>{$numFoundItems}<end> ".$blob[$i].' with different stats.';
 		}
 		$context->reply($pages);
 	}

@@ -30,8 +30,8 @@ class DiscordMessageIn implements Stringable {
 	 * @param ?int                 $flags             message flags ORd together, describes extra
 	 *                                                features of the message
 	 *
-	 * @psalm-param list<DiscordEmbed>
-	 * @psalm-param list<DiscordUser>
+	 * @psalm-param list<DiscordEmbed> $embeds
+	 * @psalm-param list<DiscordUser>  $mentions
 	 */
 	public function __construct(
 		public string $id,

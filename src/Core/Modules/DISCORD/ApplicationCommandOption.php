@@ -43,6 +43,9 @@ class ApplicationCommandOption implements Stringable {
 	 * @param null|int|float                    $min_value                 If the option is an INTEGER or NUMBER type, the minimum value permitted
 	 * @param null|int|float                    $max_value                 If the option is an INTEGER or NUMBER type, the maximum value permitted
 	 * @param ?bool                             $autocomplete              If autocomplete interactions are enabled for this STRING, INTEGER, or NUMBER type option
+	 *
+	 * @psalm-param ?list<ApplicationCommandOptionChoice> $choices
+	 * @psalm-param ?list<ApplicationCommandOption>       $options
 	 */
 	public function __construct(
 		public int $type,

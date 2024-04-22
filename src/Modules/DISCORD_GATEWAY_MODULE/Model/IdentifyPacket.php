@@ -20,6 +20,8 @@ class IdentifyPacket implements Stringable {
 	 * @param ?bool         $guild_subscriptions enables dispatching of guild subscription events (presence and typing events)
 	 * @param ?int          $intents             the Gateway Intents you wish to receive
 	 * @param ?UpdateStatus $presence            presence structure for initial presence information
+	 *
+	 * @psalm-param ?list<int> $shard
 	 */
 	public function __construct(
 		public string $token,

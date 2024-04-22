@@ -262,7 +262,7 @@ class RaffleController extends ModuleInstance {
 				if (isset($oldSlot)) {
 					$oldSlot->amount += $slot->amount;
 				} else {
-					$this->raffle->slots[] = $slot;
+					$this->raffle->slots []= $slot;
 				}
 			}
 			$event = new RaffleAddEvent(raffle: $raffle);
@@ -470,6 +470,7 @@ class RaffleController extends ModuleInstance {
 		}
 		$myMain = $this->altsController->getMainOf($context->char->name);
 		foreach ($this->raffle->slots as $slotNum => &$raffleSlot) {
+			/** @psalm-suppress RedundantCast: */
 			$sameSlot = ($slot === (int)$slotNum);
 			foreach ($raffleSlot->participants as $participant) {
 				$sameChar = ($participant === $context->char->name);
@@ -628,6 +629,8 @@ class RaffleController extends ModuleInstance {
 		}
 		$participants = $raffle->getParticipantNames();
 		$winners = $raffle->getWinnerNames();
+
+		/** @var list<string> */
 		$losers = array_values(array_diff($participants, $winners));
 		if ($this->shareRaffleBonusOnAlts) {
 			$winners = $this->getMainCharacters(...$winners);
@@ -635,11 +638,11 @@ class RaffleController extends ModuleInstance {
 		}
 		$losersUpdate = [];
 		if (count($losers)) {
-			/** @var string[] */
+			/** @var list<string> */
 			$losersUpdate = $this->db->table(RaffleBonus::getTable())
 					->whereIn('name', $losers)
 					->select('name')
-					->pluckStrings('name')->toArray();
+					->pluckStrings('name')->toList();
 		}
 		$losersInsert = array_diff($losers, $losersUpdate);
 		if (count($losersUpdate)) {
@@ -704,6 +707,9 @@ class RaffleController extends ModuleInstance {
 			return;
 		}
 		$blobMsg = $this->text->makeBlob('Details', $blob, 'Raffle result details');
+		if (count($raffle->slots) === 0) {
+			throw new \Exception('Invalid raffle state. Raffle without slots.');
+		}
 		$winners = $raffle->slots[0]->getWinnerNames();
 		if ($raffle->slots[0]->amount === 1 || count($winners) === 1) {
 			$winner = $winners[0];
@@ -732,7 +738,7 @@ class RaffleController extends ModuleInstance {
 			'<yellow>' . str_repeat('-', 70) . "<end>\n";
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	protected function getJoinLeaveLinks(): array {
 		if (!isset($this->raffle)) {
 			return [];
@@ -814,11 +820,11 @@ class RaffleController extends ModuleInstance {
 		return $points->count() === $points->unique()->count();
 	}
 
-	/** @return RaffleResultItem[] */
+	/** @return list<RaffleResultItem> */
 	protected function getSlotResult(RaffleSlot $slot): array {
 		srand();
 
-		/** @var RaffleResultItem[] */
+		/** @var list<RaffleResultItem> */
 		$result = [];
 		if (!count($slot->participants)) {
 			return $result;
@@ -826,7 +832,7 @@ class RaffleController extends ModuleInstance {
 		foreach ($slot->participants as $player) {
 			$playerResult = new RaffleResultItem($player);
 			$playerResult->bonus_points = $this->getBonusPoints($player);
-			$result[] = $playerResult;
+			$result []= $playerResult;
 		}
 		$numParticipants = count($slot->participants);
 		$iteration = 0;
@@ -851,14 +857,14 @@ class RaffleController extends ModuleInstance {
 		return $result;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	protected function getMainCharacters(string ...$players): array {
-		return array_map(
+		return array_values(array_map(
 			function (string $player): string {
 				return $this->altsController->getMainOf($player);
 			},
 			$players
-		);
+		));
 	}
 
 	private function getMatchingSlot(RaffleSlot $check): ?RaffleSlot {

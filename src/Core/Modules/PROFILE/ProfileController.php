@@ -118,7 +118,7 @@ class ProfileController extends ModuleInstance {
 		foreach ($fileList as $fileName) {
 			// if file has the correct extension, it's a profile file
 			if (str_ends_with($fileName, static::FILE_EXT)) {
-				$profileList[] = str_replace(static::FILE_EXT, '', $fileName);
+				$profileList []= str_replace(static::FILE_EXT, '', $fileName);
 			}
 		}
 

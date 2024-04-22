@@ -13,6 +13,8 @@ class News {
 	 * @param ?bool               $pinned      Whether the news are sticky, i.e. pinned to be on top
 	 * @param ?bool               $deleted     Whether the news were deleted
 	 * @param ?NewsConfirmation[] $confirmedBy
+	 *
+	 * @psalm-param ?list<NewsConfirmation> $confirmedBy
 	 */
 	public function __construct(
 		public string $news,

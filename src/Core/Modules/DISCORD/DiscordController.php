@@ -170,7 +170,7 @@ class DiscordController extends ModuleInstance {
 	/**
 	 * Send a message to the configured Discord channel (if configured)
 	 *
-	 * @param string|string[] $text
+	 * @param string|list<string> $text
 	 */
 	public function sendDiscord(string|array $text, bool $allowGroupMentions=false): void {
 		if ($this->discordBotToken === '' || $this->discordBotToken === 'off') {

@@ -54,7 +54,7 @@ class MessageHub {
 	/** @var array<string,MessageEmitter> */
 	protected array $emitters = [];
 
-	/** @var array<string,array<string,MessageRoute[]>> */
+	/** @var array<string,array<string,list<MessageRoute>>> */
 	protected array $routes = [];
 
 	#[NCA\Logger]
@@ -62,9 +62,6 @@ class MessageHub {
 
 	#[NCA\Inject]
 	private BuddylistManager $buddyListManager;
-
-	#[NCA\Inject]
-	private Filesystem $fs;
 
 	#[NCA\Inject]
 	private BotConfig $config;
@@ -656,10 +653,12 @@ class MessageHub {
 						}
 					}
 				}
+
+				/** @psalm-suppress RedundantFunctionCallGivenDocblockType */
 				$this->routes[$source][$dest] = array_values(
 					$this->routes[$source][$dest]
 				);
-				if (empty($this->routes[$source][$dest])) {
+				if (!count($this->routes[$source][$dest])) {
 					unset($this->routes[$source][$dest]);
 				}
 			}

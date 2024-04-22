@@ -12,12 +12,12 @@ class TrackerEntry extends DBTable implements MessageEmitter {
 	public int $created_on;
 
 	/**
-	 * @param int      $id         The id of the tracker entry
-	 * @param string   $created_by Name of the character who created this entry
-	 * @param string   $expression The expression to filter on
-	 * @param string[] $events     The events to trigger for this tracker
-	 * @param Base[]   $handlers
-	 * @param ?int     $created_on Timestamp when the entry was created
+	 * @param int          $id         The id of the tracker entry
+	 * @param string       $created_by Name of the character who created this entry
+	 * @param string       $expression The expression to filter on
+	 * @param list<string> $events     The events to trigger for this tracker
+	 * @param list<Base>   $handlers
+	 * @param ?int         $created_on Timestamp when the entry was created
 	 */
 	public function __construct(
 		#[NCA\DB\AutoInc] public int $id,
@@ -39,7 +39,7 @@ class TrackerEntry extends DBTable implements MessageEmitter {
 		return true;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public static function decodeEvents(string $events): array {
 		return explode(',', $events);
 	}

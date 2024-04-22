@@ -55,7 +55,7 @@ class MockCommandReply implements CommandReply {
 		)->ignore();
 	}
 
-	/** @param string|string[] $msg */
+	/** @param string|list<string> $msg */
 	public function reply(string|array $msg): void {
 		foreach ((array)$msg as $result) {
 			if (isset($this->logger)) {

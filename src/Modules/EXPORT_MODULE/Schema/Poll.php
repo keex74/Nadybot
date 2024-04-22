@@ -12,6 +12,8 @@ class Poll {
 	 * @param ?int       $startTime     When did/does the poll start?
 	 * @param ?int       $endTime       When did/does the poll end?
 	 * @param ?Answer[]  $answers
+	 *
+	 * @psalm-param ?list<Answer> $answers
 	 */
 	public function __construct(
 		public string $question,

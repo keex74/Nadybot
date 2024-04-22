@@ -7,8 +7,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Argument {
 	/**
-	 * @param string[] $names
-	 * @param string[] $examples
+	 * @param list<string> $names
+	 * @param list<string> $examples
 	 *
 	 * @psalm-param non-empty-array<string> $names
 	 */

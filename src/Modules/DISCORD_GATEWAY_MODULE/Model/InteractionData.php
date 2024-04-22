@@ -35,6 +35,8 @@ class InteractionData implements Stringable {
 	 * @param ?string                  $target_id      id the of user or message targeted
 	 *                                                 by a user or message command
 	 * @param ?stdClass[]              $components     the values submitted by the user
+	 *
+	 * @psalm-param ?list<stdClass> $components
 	 */
 	public function __construct(
 		public string $id,

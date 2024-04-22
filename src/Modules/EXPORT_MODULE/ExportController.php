@@ -429,7 +429,7 @@ class ExportController extends ModuleInstance {
 			if ($raid->seconds_per_point > 0) {
 				$raids[$raid->raid_id]->raidSecondsPerPoint = $raid->seconds_per_point;
 			}
-			$raids[$raid->raid_id]->history[] = new Schema\RaidState(
+			$raids[$raid->raid_id]->history []= new Schema\RaidState(
 				time: $raid->time,
 				raidDescription: $raid->description,
 				raidLocked: $raid->locked,

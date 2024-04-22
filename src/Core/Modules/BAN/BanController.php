@@ -744,7 +744,7 @@ class BanController extends ModuleInstance {
 	/**
 	 * This helper method bans player with given arguments.
 	 *
-	 * @return array{bool,string[]}
+	 * @return array{bool,list<string>}
 	 */
 	private function banPlayer(string $who, string $sender, ?int $length, ?string $reason, CmdContext $context): array {
 		$toBan = [$who];

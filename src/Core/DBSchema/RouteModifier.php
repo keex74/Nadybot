@@ -37,9 +37,10 @@ class RouteModifier extends DBTable {
 		return $modName . '(' . implode(', ', $arguments) . ')';
 	}
 
-	/** @return array<string,string|string[]> */
+	/** @return array<string,string|list<string>> */
 	public function getKVArguments(): array {
-		return array_reduce(
+		/** @var array<string,string|list<string>> */
+		$result = array_reduce(
 			$this->arguments,
 			static function (array $kv, RouteModifierArgument $argument): array {
 				if (isset($kv[$argument->name])) {
@@ -55,5 +56,6 @@ class RouteModifier extends DBTable {
 			},
 			[]
 		);
+		return $result;
 	}
 }

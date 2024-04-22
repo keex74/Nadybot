@@ -194,10 +194,12 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		if (!count($show->stream)) {
 			return '';
 		}
+
+		/** @var list<string> */
 		$streams = [];
 		$blob = "<header2>Available qualities<end>\n<tab>";
 		foreach ($show->stream as $stream) {
-			$streams[] = sprintf(
+			$streams []= sprintf(
 				'%s: %s',
 				$stream->id,
 				Text::makeChatcmd('tune in', '/start '.$stream->url)
@@ -340,6 +342,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 	 * @return list<string> Rendered song information about the playlist
 	 */
 	protected function getPlaylistInfos(iterable $history): array {
+		/** @var list<string> */
 		$songs = [];
 		foreach ($history as $song) {
 			$time = DateTimeImmutable::createFromFormat(
@@ -356,7 +359,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 			if (isset($song->duration) && $song->duration > 0) {
 				$info .= ' ['.$this->msToTime($song->duration).']';
 			}
-			$songs[] = $info;
+			$songs []= $info;
 		}
 		return $songs;
 	}

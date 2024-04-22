@@ -14,6 +14,8 @@ class DiscordPresence implements Stringable {
 	 * @param ?string              $status        Either "idle", "dnd", "online", or "offline"
 	 * @param ?Activity[]          $activities    User's current activities
 	 * @param ?DiscordClientStatus $client_status User's platform-dependent status
+	 *
+	 * @psalm-param ?list<Activity> $activities
 	 */
 	public function __construct(
 		public DiscordUser $user,

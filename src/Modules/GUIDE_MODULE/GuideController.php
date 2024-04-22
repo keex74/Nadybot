@@ -64,7 +64,7 @@ class GuideController extends ModuleInstance {
 	/** See a list of all the guides in alphabetical order */
 	#[NCA\HandlesCommand('guides')]
 	public function guidesListCommand(CmdContext $context): void {
-		/** @var string[] */
+		/** @var array<string,string> */
 		$topicList = [];
 		try {
 			$fileList = $this->fs->listFiles($this->path);

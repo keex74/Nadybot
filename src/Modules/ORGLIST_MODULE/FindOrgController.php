@@ -126,7 +126,7 @@ class FindOrgController extends ModuleInstance {
 	}
 
 	/**
-	 * @return Organization[]
+	 * @return list<Organization>
 	 *
 	 * @throws SQLException
 	 */
@@ -143,7 +143,7 @@ class FindOrgController extends ModuleInstance {
 		if ($exactMatches->count() === 1) {
 			return [$exactMatches->firstOrFail()];
 		}
-		return $orgs->toArray();
+		return $orgs->toList();
 	}
 
 	/** @param iterable<array-key,Organization> $orgs */

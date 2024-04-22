@@ -578,8 +578,7 @@ class PackageController extends ModuleInstance {
 			->where('module', $cmd->package);
 		$query->orderByColFunc('LENGTH', 'file', 'desc');
 
-		/** @var PackageFile[] */
-		$oldFiles = $query->asObj(PackageFile::class)->toArray();
+		$oldFiles = $query->asObj(PackageFile::class);
 		foreach ($oldFiles as $oldFile) {
 			$fullFilename = "{$targetDir}/{$oldFile->file}";
 			if (!$this->fs->exists($fullFilename)) {
@@ -683,7 +682,7 @@ class PackageController extends ModuleInstance {
 	/**
 	 * Download and parse the full package index
 	 *
-	 * @return Package[]
+	 * @return list<Package>
 	 */
 	private function getPackages(): array {
 		$cache = new FileCache(
@@ -712,7 +711,7 @@ class PackageController extends ModuleInstance {
 	/**
 	 * Download and parse the package index for $package
 	 *
-	 * @return Package[]
+	 * @return list<Package>
 	 */
 	private function getPackage(string $package): array {
 		$cache = new FileCache(
@@ -740,7 +739,7 @@ class PackageController extends ModuleInstance {
 		return $packages;
 	}
 
-	/** @return Package[] */
+	/** @return list<Package> */
 	private function parsePackages(string $body): array {
 		try {
 			$data = json_decode($body, true);
@@ -767,7 +766,7 @@ class PackageController extends ModuleInstance {
 			$package->compatible = $this->isVersionCompatible($package->bot_version);
 			$package->state = $this->getInstalledModuleType($package->name);
 		})->values()
-		->toArray();
+		->toList();
 		return $packages;
 	}
 

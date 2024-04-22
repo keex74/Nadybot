@@ -12,6 +12,8 @@ class Event {
 	 * @param ?int         $startTime    Time when this event starts
 	 * @param ?string      $description  Description, what the event is about
 	 * @param ?Character[] $attendees    List of all attending characters
+	 *
+	 * @psalm-param ?list<Character> $attendees
 	 */
 	public function __construct(
 		public string $name,

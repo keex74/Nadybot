@@ -13,13 +13,13 @@ class Raffle {
 	public ?int $lastAnnounce = null;
 
 	/**
-	 * @param CommandReply $sendto           Where to send announcements, etc. to
-	 * @param string       $raffler          Name of the character giving away items
-	 * @param RaffleSlot[] $slots
-	 * @param ?int         $start            Timestamp when the raffle was started
-	 * @param ?int         $end              If set, this is the unix timestamp when the raffle will end
-	 * @param ?int         $announceInterval Interval (in second) between 2 announcements
-	 * @param bool         $allowMultiJoin   Allow someone to join for more than 1 item at a time
+	 * @param CommandReply     $sendto           Where to send announcements, etc. to
+	 * @param string           $raffler          Name of the character giving away items
+	 * @param list<RaffleSlot> $slots
+	 * @param ?int             $start            Timestamp when the raffle was started
+	 * @param ?int             $end              If set, this is the unix timestamp when the raffle will end
+	 * @param ?int             $announceInterval Interval (in second) between 2 announcements
+	 * @param bool             $allowMultiJoin   Allow someone to join for more than 1 item at a time
 	 */
 	public function __construct(
 		public CommandReply $sendto,
@@ -60,7 +60,7 @@ class Raffle {
 		}
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function toList(): array {
 		$slots = [];
 		foreach ($this->slots as $slot) {
@@ -69,15 +69,15 @@ class Raffle {
 		return $slots;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getParticipantNames(): array {
-		return array_reduce(
+		return array_values(array_reduce(
 			$this->slots,
 			static function (array $carry, RaffleSlot $slot): array {
 				return array_unique([...$carry, ...$slot->participants]);
 			},
 			[]
-		);
+		));
 	}
 
 	public function isInRaffle(string $player, ?int $slot=null): ?bool {
@@ -92,17 +92,17 @@ class Raffle {
 		return in_array($player, $participants);
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getWinnerNames(): array {
-		/** @var string[][] */
+		/** @var list<list<string>> */
 		$winners = array_map(
+			/** @return list<string> */
 			static function (RaffleSlot $slot): array {
 				return $slot->getWinnerNames();
 			},
 			$this->slots
 		);
 
-		/** @psalm-suppress NamedArgumentNotAllowed */
 		return array_merge(...$winners);
 	}
 }

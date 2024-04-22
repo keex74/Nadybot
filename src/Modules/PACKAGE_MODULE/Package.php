@@ -15,6 +15,8 @@ class Package {
 	 * @param string               $bot_version       Semver range of required bot version(s)
 	 * @param ?string              $github            If set, name of the GitHub repo from which to get updates
 	 * @param PackageRequirement[] $requires          Array of requirements to run the module
+	 *
+	 * @psalm-param list<PackageRequirement> $requires
 	 */
 	public function __construct(
 		public string $name,

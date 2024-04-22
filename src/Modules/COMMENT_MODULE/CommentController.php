@@ -537,7 +537,7 @@ class CommentController extends ModuleInstance {
 	 * @param iterable<array-key,Comment> $comments
 	 */
 	public function formatComments(iterable $comments, bool $groupByMain, bool $addCategory=false): FormattedComments {
-		/** @var array<string,Comment[]> */
+		/** @var array<string,list<Comment>> */
 		$chars = [];
 		$numComments = 0;
 		foreach ($comments as $comment) {

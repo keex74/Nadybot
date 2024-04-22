@@ -154,11 +154,11 @@ class LevelController extends ModuleInstance {
 			->first();
 	}
 
-	/** @return Level[] */
+	/** @return list<Level> */
 	public function findAllLevels(): array {
 		return $this->db->table(Level::getTable())
 			->orderBy('level')
 			->asObj(Level::class)
-			->toArray();
+			->toList();
 	}
 }

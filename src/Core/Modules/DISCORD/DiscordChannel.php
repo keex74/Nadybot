@@ -3,6 +3,7 @@
 namespace Nadybot\Core\Modules\DISCORD;
 
 use DateTimeImmutable;
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Stringable;
 
 class DiscordChannel implements Stringable {
@@ -70,6 +71,8 @@ class DiscordChannel implements Stringable {
 	 *                                                  (each parent category can contain up to
 	 *                                                  50 channels)
 	 * @param ?DateTimeImmutable $last_pin_timestamp    when the last pinned message was pinned
+	 *
+	 * @psalm-param ?list<DiscordUser> $recipients
 	 */
 	public function __construct(
 		public string $id,
@@ -84,7 +87,7 @@ class DiscordChannel implements Stringable {
 		public ?int $bitrate=null,
 		public ?int $user_limit=null,
 		public ?int $rate_limit_per_user=null,
-		public ?array $recipients=null,
+		#[CastListToType(DiscordUser::class)] public ?array $recipients=null,
 		public ?string $icon=null,
 		public ?string $owner_id=null,
 		public ?string $application_id=null,

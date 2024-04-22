@@ -13,6 +13,7 @@ use AO\Group\{GroupId, GroupType};
 use AO\Package\OutPackage;
 use AO\{FrozenAccount, Group, Package, Utils};
 use Exception;
+use Illuminate\Support\Collection;
 use Nadybot\Core\Attributes\Setting\ArraySetting;
 use Nadybot\Core\DBSchema\{
 	Audit,
@@ -528,13 +529,13 @@ class Nadybot {
 	/**
 	 * Send a message to a private channel
 	 *
-	 * @param string|string[] $message      One or more messages to send
-	 * @param bool            $disableRelay Set to true to disable relaying the message into the org/guild channel
-	 * @param string          $group        Name of the private group to send message into or null for the bot's own
+	 * @param string|iterable<string> $message      One or more messages to send
+	 * @param bool                    $disableRelay Set to true to disable relaying the message into the org/guild channel
+	 * @param string                  $group        Name of the private group to send message into or null for the bot's own
 	 */
-	public function sendPrivate($message, bool $disableRelay=false, ?string $group=null, bool $addDefaultColor=true): void {
+	public function sendPrivate(string|iterable $message, bool $disableRelay=false, ?string $group=null, bool $addDefaultColor=true): void {
 		// for when $text->makeBlob generates several pages
-		if (is_array($message)) {
+		if (is_iterable($message)) {
 			foreach ($message as $page) {
 				$this->sendPrivate($page, $disableRelay, $group);
 			}
@@ -586,17 +587,17 @@ class Nadybot {
 	/**
 	 * Send one or more messages into the org/guild channel
 	 *
-	 * @param string|string[] $message      One or more messages to send
-	 * @param bool            $disableRelay Set to true to disable relaying the message into the bot's private channel
-	 * @param int             $priority     The priority of the message or medium if unset
+	 * @param string|iterable<string> $message      One or more messages to send
+	 * @param bool                    $disableRelay Set to true to disable relaying the message into the bot's private channel
+	 * @param int                     $priority     The priority of the message or medium if unset
 	 */
-	public function sendGuild($message, bool $disableRelay=false, ?int $priority=null, bool $addDefaultColor=true): void {
+	public function sendGuild(string|iterable $message, bool $disableRelay=false, ?int $priority=null, bool $addDefaultColor=true): void {
 		if (!isset($this->orgGroup) || $this->settingManager->get('guild_channel_status') != 1) {
 			return;
 		}
 
 		// for when $text->makeBlob generates several pages
-		if (is_array($message)) {
+		if (is_iterable($message)) {
 			foreach ($message as $page) {
 				$this->sendGuild($page, $disableRelay, $priority);
 			}
@@ -662,21 +663,25 @@ class Nadybot {
 	/**
 	 * Send one or more messages to another player/bot
 	 *
-	 * @param string|string[] $message       One or more messages to send
-	 * @param string          $character     Name of the person to send the tell to
-	 * @param int             $priority      The priority of the message or medium if unset
-	 * @param bool            $formatMessage If set, replace tags with their corresponding colors
+	 * @param string|iterable<string> $message       One or more messages to send
+	 * @param string                  $character     Name of the person to send the tell to
+	 * @param int                     $priority      The priority of the message or medium if unset
+	 * @param bool                    $formatMessage If set, replace tags with their corresponding colors
 	 */
-	public function sendTell($message, string $character, ?int $priority=null, bool $formatMessage=true): void {
+	public function sendTell(string|iterable $message, string $character, ?int $priority=null, bool $formatMessage=true): void {
 		if ($this->config->proxy?->enabled
 			&& $this->settingManager->getBool('force_mass_tells')
 			&& $this->settingManager->getBool('allow_mass_tells')
 		) {
+			if (is_iterable($message)) {
+				/** @var Collection<int,string> */
+				$message = new Collection($message);
+			}
 			$this->sendMassTell($message, $character, $priority, $formatMessage);
 			return;
 		}
 		// for when $text->makeBlob generates several pages
-		if (is_array($message)) {
+		if (is_iterable($message)) {
 			foreach ($message as $page) {
 				$this->sendTell($page, $character, $priority, $formatMessage);
 			}
@@ -712,9 +717,9 @@ class Nadybot {
 	/**
 	 * Send a mass message via the chatproxy to another player/bot
 	 *
-	 * @param string|string[] $message
+	 * @param string|list<string>|Collection<int,string> $message
 	 */
-	public function sendMassTell($message, string $character, ?int $priority=null, bool $formatMessage=true, null|int|string $worker=null): void {
+	public function sendMassTell(string|array|Collection $message, string $character, ?int $priority=null, bool $formatMessage=true, null|int|string $worker=null): void {
 		$priority ??= QueueInterface::PRIORITY_HIGH;
 		$numWorkers =count($this->config->worker);
 
@@ -725,7 +730,9 @@ class Nadybot {
 			return;
 		}
 		$this->numSpamMsgsSent++;
-		$message = (array)$message;
+		if (is_string($message)) {
+			$message = (array)$message;
+		}
 		$sendToWorker = isset($worker)
 			&& $this->settingManager->getBool('reply_on_same_worker');
 		$sendByMsg = $this->settingManager->getBool('paging_on_same_worker')
@@ -756,11 +763,11 @@ class Nadybot {
 	/**
 	 * Send one or more messages into a public channel
 	 *
-	 * @param string|string[] $message  One or more messages to send
-	 * @param string          $channel  Name of the channel to send the message to
-	 * @param int             $priority The priority of the message or medium if unset
+	 * @param string|iterable<string> $message  One or more messages to send
+	 * @param string                  $channel  Name of the channel to send the message to
+	 * @param int                     $priority The priority of the message or medium if unset
 	 */
-	public function sendPublic($message, string $channel, ?int $priority=null): void {
+	public function sendPublic(string|iterable $message, string $channel, ?int $priority=null): void {
 		$group = $this->getGroupByName($channel);
 		if (!isset($group)) {
 			$this->logger->warning("Trying to send to unknown group '{group}'", [
@@ -769,7 +776,7 @@ class Nadybot {
 			return;
 		}
 		// for when $text->makeBlob generates several pages
-		if (is_array($message)) {
+		if (is_iterable($message)) {
 			foreach ($message as $page) {
 				$this->sendPublic($page, $channel, $priority);
 			}

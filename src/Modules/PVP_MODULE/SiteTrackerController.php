@@ -289,7 +289,7 @@ class SiteTrackerController extends ModuleInstance {
 		#[NCA\Str('track', 'tracker')] string $action,
 		#[NCA\Str('pattern', 'patterns')] string $subAction,
 	): void {
-		/** @psalm-var class-string[] */
+		/** @psalm-var list<class-string> */
 		$classes = array_unique(array_values($this->handlers));
 		$blocks = [];
 		foreach ($classes as $class) {

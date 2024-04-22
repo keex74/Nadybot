@@ -228,7 +228,7 @@ class WhatBuffsController extends ModuleInstance {
 			$data = $query->asObj(SkillBuffItemCount::class);
 		}
 
-		/** @var SkillBuffItemCount[] $data */
+		/** @var iterable<SkillBuffItemCount> $data */
 		$blob = "<header2>Choose the skill to buff<end>\n";
 		foreach ($data as $row) {
 			$blob .= '<tab>'.
@@ -524,7 +524,7 @@ class WhatBuffsController extends ModuleInstance {
 	/**
 	 * Search for all skills and skill aliases matching $skill
 	 *
-	 * @return Skill[]
+	 * @return list<Skill>
 	 */
 	public function searchForSkill(string $skill): array {
 		// check for exact match first, in order to disambiguate
@@ -541,7 +541,7 @@ class WhatBuffsController extends ModuleInstance {
 					->distinct()
 			)->asObj(Skill::class);
 		if ($results->count() === 1) {
-			return $results->toArray();
+			return $results->toList();
 		}
 
 		$skillsQuery = $this->db->table(Skill::getTable())
@@ -565,7 +565,7 @@ class WhatBuffsController extends ModuleInstance {
 			->orderBy('name')
 			->select(['id', 'name', 'unit'])
 			->asObj(Skill::class)
-			->toArray();
+			->toList();
 		return $skills;
 	}
 

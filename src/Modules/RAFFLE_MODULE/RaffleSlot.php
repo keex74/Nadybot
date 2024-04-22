@@ -9,13 +9,13 @@ use Nadybot\Core\Safe;
 class RaffleSlot {
 	public int $amount = 1;
 
-	/** @var RaffleItem[] */
+	/** @var list<RaffleItem> */
 	public array $items = [];
 
-	/** @var string[] */
+	/** @var list<string> */
 	public array $participants = [];
 
-	/** @var RaffleResultItem[] */
+	/** @var list<RaffleResultItem> */
 	public array $result = [];
 
 	public function fromString(string $text): void {
@@ -77,7 +77,7 @@ class RaffleSlot {
 		return true;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getWinnerNames(): array {
 		return array_values(
 			array_map(

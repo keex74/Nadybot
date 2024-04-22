@@ -10,6 +10,8 @@ class TrackedCharacter {
 	 * @param ?int            $addedTime Time when we started tracking this character
 	 * @param ?Character      $addedBy   The character who added this character to the tracking list
 	 * @param ?TrackerEvent[] $events
+	 *
+	 * @psalm-param ?list<TrackerEvent> $events
 	 */
 	public function __construct(
 		public Character $character,

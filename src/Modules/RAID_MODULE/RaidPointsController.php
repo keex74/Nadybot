@@ -388,13 +388,11 @@ class RaidPointsController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('top')] string $action
 	): void {
-		/** @var RaidPoints[] */
 		$topRaiders = $this->db->table(RaidPoints::getTable())
 			->orderByDesc('points')
 			->limit($this->raidTopAmount)
-			->asObj(RaidPoints::class)
-			->toArray();
-		if (count($topRaiders) === 0) {
+			->asObj(RaidPoints::class);
+		if ($topRaiders->isEmpty()) {
 			$context->reply('No raiders have received any points yet.');
 			return;
 		}
@@ -404,7 +402,7 @@ class RaidPointsController extends ModuleInstance {
 			$blob .= "\n<tab>" . Text::alignNumber($raider->points, $maxDigits) . "    {$raider->username}";
 		}
 		$context->reply(
-			$this->text->makeBlob('Top raiders (' . count($topRaiders) . ')', $blob)
+			$this->text->makeBlob("Top raiders ({$topRaiders->count()})", $blob)
 		);
 	}
 
@@ -471,7 +469,6 @@ class RaidPointsController extends ModuleInstance {
 			$pointLogs = $this->getRaidpointLogsForChar($char);
 		}
 
-		/** @var RaidPointsLog[] $pointLogs */
 		if (count($pointLogs) === 0) {
 			$context->reply("{$char} has never received any raid points at <myname>.");
 			return;
@@ -490,11 +487,13 @@ class RaidPointsController extends ModuleInstance {
 	/**
 	 * Get the popup text with a detailed with of all points given/taken
 	 *
-	 * @param RaidPointsLog[] $pointLogs
+	 * @param iterable<RaidPointsLog> $pointLogs
 	 *
-	 * @return string[] Header and The popup text
+	 * @return list<string> Header and The popup text
+	 *
+	 * @psalm-return list{string,string}
 	 */
-	public function getPointsLogBlob(array $pointLogs, bool $showUsername=false): array {
+	public function getPointsLogBlob(iterable $pointLogs, bool $showUsername=false): array {
 		$header =  "<header2><u>When                       |   Delta   |  Why                              </u><end>\n";
 		$rows = [];
 		foreach ($pointLogs as $log) {
@@ -868,7 +867,7 @@ class RaidPointsController extends ModuleInstance {
 	/**
 	 * Get all the raidpoint log entries for main and confirmed alts of $sender
 	 *
-	 * @return RaidPointsLog[]
+	 * @return list<RaidPointsLog>
 	 */
 	protected function getRaidpointLogsForAccount(string $sender): array {
 		$main = $this->altsController->getMainOf($sender);
@@ -877,23 +876,21 @@ class RaidPointsController extends ModuleInstance {
 			->whereIn('username', array_merge([$sender], $alts))
 			->orderByDesc('time')
 			->limit(50)
-			->asObj(RaidPointsLog::class)
-			->toArray();
+			->asObjArr(RaidPointsLog::class);
 	}
 
 	/**
 	 * Get all the raidpoint log entries for a single character $sender, not
 	 * including alts
 	 *
-	 * @return RaidPointsLog[]
+	 * @return list<RaidPointsLog>
 	 */
 	protected function getRaidpointLogsForChar(string $sender): array {
 		return $this->db->table(RaidPointsLog::getTable())
 			->where('username', $sender)
 			->orderByDesc('time')
 			->limit(50)
-			->asObj(RaidPointsLog::class)
-			->toArray();
+			->asObjArr(RaidPointsLog::class);
 	}
 
 	private function raidPunish(

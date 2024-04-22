@@ -73,7 +73,7 @@ class PocketbossController extends ModuleInstance {
 			->where('pb', $name)
 			->orderBy('ql')
 			->asObj(Pocketboss::class);
-		if (empty($data)) {
+		if ($data->isEmpty()) {
 			return '';
 		}
 		$symbs = '';

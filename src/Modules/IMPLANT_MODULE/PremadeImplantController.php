@@ -65,7 +65,7 @@ class PremadeImplantController extends ModuleInstance {
 			$results = $this->searchByModifier($searchTerms);
 		}
 
-		if (!empty($results)) {
+		if (count($results)) {
 			$blob = trim($this->formatResults($results));
 			$msg = $this->text->makeBlob("Implant Search Results for '{$searchTerms}'", $blob);
 		} else {
@@ -113,7 +113,7 @@ class PremadeImplantController extends ModuleInstance {
 	public function formatResults(iterable $implants): string {
 		$blob = '';
 
-		/** @var array<string,PremadeSearchResult[]> */
+		/** @var array<string,list<PremadeSearchResult>> */
 		$slotMap = [];
 		foreach ($implants as $implant) {
 			$slotMap[$implant->slot] ??= [];

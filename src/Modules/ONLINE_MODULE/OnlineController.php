@@ -733,11 +733,10 @@ class OnlineController extends ModuleInstance {
 		$this->buildOnlineQuery($sender, $channelType)->delete();
 	}
 
-	/** @return OnlineHide[] */
+	/** @return list<OnlineHide> */
 	public function getHiddenPlayerMasks(): array {
 		return $this->db->table(OnlineHide::getTable())
-			->asObj(OnlineHide::class)
-			->toArray();
+			->asObjArr(OnlineHide::class);
 	}
 
 	/**
@@ -745,7 +744,7 @@ class OnlineController extends ModuleInstance {
 	 *
 	 * @param iterable<OnlinePlayer> $characters
 	 *
-	 * @return OnlinePlayer[]
+	 * @return list<OnlinePlayer>
 	 */
 	public function filterHiddenCharacters(iterable $characters, string $group): array {
 		$hiddenMasks = $this->getHiddenPlayerMasks();
@@ -1047,7 +1046,7 @@ class OnlineController extends ModuleInstance {
 		return $list;
 	}
 
-	/** @return OnlinePlayer[] */
+	/** @return list<OnlinePlayer> */
 	public function getPlayers(string $channelType, ?string $limitToBot=null): array {
 		$query = $this->db->table(Online::getTable(), 'o')
 			->where('o.channel_type', $channelType);
@@ -1079,7 +1078,7 @@ class OnlineController extends ModuleInstance {
 		} else {
 			$op = $op->sortBy('name');
 		}
-		return $op->values()->toArray();
+		return $op->values()->toList();
 	}
 
 	/** Get a list of all people online in all linked channels */
@@ -1102,7 +1101,7 @@ class OnlineController extends ModuleInstance {
 	 *
 	 * @param array<string,Relay> $relays
 	 *
-	 * @return array<string|int,OnlinePlayer[]>
+	 * @return array<string|int,list<OnlinePlayer>>
 	 */
 	protected function groupRelayList(array $relays): array {
 		$groupBy = $this->onlineRelayGroupBy;
@@ -1155,6 +1154,8 @@ class OnlineController extends ModuleInstance {
 		uksort($result, static function (string $a, string $b): int {
 			return strcasecmp(strip_tags($a), strip_tags($b));
 		});
+
+		/** @var array<string|int,list<OnlinePlayer>> $result */
 
 		return $result;
 	}

@@ -140,7 +140,7 @@ class AliasController extends ModuleInstance {
 	public function aliasListCommand(CmdContext $context, #[NCA\Str('list')] string $action): void {
 		$blob = '';
 
-		/** @var array<string,CmdAlias[]> */
+		/** @var array<string,list<CmdAlias>> */
 		$grouped = [];
 		foreach ($this->commandAlias->getEnabledAliases() as $alias) {
 			$key = explode(' ', $alias->cmd)[0];

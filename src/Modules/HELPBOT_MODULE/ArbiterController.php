@@ -228,7 +228,7 @@ class ArbiterController extends ModuleInstance {
 			}
 			$currentEvent->start += static::CYCLE_LENGTH;
 			$currentEvent->end += static::CYCLE_LENGTH;
-			$upcomingEvents[] = $currentEvent;
+			$upcomingEvents []= $currentEvent;
 		} else {
 			if (isset($timeGiven)) {
 				$msg = 'On ' . ((new DateTimeImmutable("@{$time}"))->format('d-M-Y')) . ', the arbiter is not here.';

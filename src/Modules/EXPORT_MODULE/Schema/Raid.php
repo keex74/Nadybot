@@ -14,6 +14,9 @@ class Raid {
 	 * @param ?int         $raidSecondsPerPoint  If this is set, then raiders are automatically awarded raid points and this is the interval between receiving 1 point.
 	 * @param ?Raider[]    $raiders              A list of all raiders who, at one point, were in the raid
 	 * @param ?RaidState[] $history              A list of all raiders who, at one point, were in the raid
+	 *
+	 * @psalm-param ?list<Raider>    $raiders
+	 * @psalm-param ?list<RaidState> $history
 	 */
 	public function __construct(
 		public ?int $raidId=null,

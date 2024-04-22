@@ -1000,13 +1000,11 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			return;
 		}
 
-		/** @var Member[] */
 		$data = $this->db->table(Member::getTable())
 			->where('name', $sender)
 			->where('autoinv', 1)
-			->asObj(Member::class)
-			->toArray();
-		if (!count($data)) {
+			->asObj(Member::class);
+		if ($data->isEmpty()) {
 			return;
 		}
 		$uid = $this->chatBot->getUid($eventObj->sender);
@@ -1475,7 +1473,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	 *
 	 * @param OnlinePlayer[] $chars
 	 *
-	 * @return array{?string,OnlinePlayer[]}
+	 * @return array{?string,list<OnlinePlayer>}
 	 */
 	private function filterRaid(array $chars): array {
 		$raid = $this->raidController->raid;

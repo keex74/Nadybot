@@ -12,7 +12,7 @@ class DiscordMessageOut {
 	/** @var ?DiscordEmbed[] */
 	public ?array $embeds = null;
 
-	/** @var ?DiscordActionRowComponent[] */
+	/** @var ?list<DiscordActionRowComponent> */
 	public ?array $components = null;
 	public ?DiscordAllowedMentions $allowed_mentions = null;
 	public ?DiscordMessageReference $message_reference = null;

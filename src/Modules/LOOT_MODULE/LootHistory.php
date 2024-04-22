@@ -20,6 +20,8 @@ class LootHistory extends DBTable {
 	 * @param ?string  $winner    If someone won the item, name of the winner
 	 * @param ?int     $id        Artificial primary key
 	 * @param string[] $winners
+	 *
+	 * @psalm-param list<string> $winners
 	 */
 	public function __construct(
 		public int $roll,

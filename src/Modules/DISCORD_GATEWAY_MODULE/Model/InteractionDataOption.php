@@ -38,6 +38,8 @@ class InteractionDataOption implements Stringable {
 	 * @param ?self[]               $options Present if this option is a group or subcommand
 	 * @param ?bool                 $focused true if this option is the currently
 	 *                                       focused option for autocomplete
+	 *
+	 * @psalm-param ?list<self> $options
 	 */
 	public function __construct(
 		public string $name,

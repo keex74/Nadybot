@@ -1006,7 +1006,10 @@ class ImportController extends ModuleInstance {
 				$ranks[$poll->minRankToVote] = true;
 			}
 		}
-		return array_keys($ranks);
+
+		/** @var list<string> */
+		$result = array_values(array_filter(array_keys($ranks), is_string(...)));
+		return $result;
 	}
 
 	protected function characterToName(?Schema\Character $char): ?string {
