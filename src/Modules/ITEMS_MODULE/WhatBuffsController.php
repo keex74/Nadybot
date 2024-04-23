@@ -564,8 +564,7 @@ class WhatBuffsController extends ModuleInstance {
 			->groupBy('id', 'name', 'unit')
 			->orderBy('name')
 			->select(['id', 'name', 'unit'])
-			->asObj(Skill::class)
-			->toList();
+			->asObjArr(Skill::class);
 		return $skills;
 	}
 

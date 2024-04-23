@@ -411,8 +411,7 @@ class ExportController extends ModuleInstance {
 	protected function exportRaidLogs(): array {
 		$data = $this->db->table(RaidLog::getTable())
 			->orderBy('raid_id')
-			->asObj(RaidLog::class)
-			->toArray();
+			->asObjArr(RaidLog::class);
 
 		/** @var array<string,Schema\Raid> */
 		$raids = [];
@@ -439,8 +438,7 @@ class ExportController extends ModuleInstance {
 		}
 
 		$data = $this->db->table(RaidMember::getTable())
-			->asObj(RaidMember::class)
-			->toArray();
+			->asObjArr(RaidMember::class);
 		foreach ($data as $raidMember) {
 			$raider = new Schema\Raider(
 				character: $this->toChar($raidMember->player),
@@ -530,8 +528,7 @@ class ExportController extends ModuleInstance {
 	protected function exportTrackedCharacters(): array {
 		$users = $this->db->table(TrackedUser::getTable())
 			->orderBy('added_dt')
-			->asObj(TrackedUser::class)
-			->toArray();
+			->asObjArr(TrackedUser::class);
 		$result = [];
 		foreach ($users as $user) {
 			$result[$user->uid] = new Schema\TrackedCharacter(

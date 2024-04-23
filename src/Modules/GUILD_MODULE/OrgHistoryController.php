@@ -207,6 +207,6 @@ class OrgHistoryController extends ModuleInstance {
 			$query->where('action', strtolower($action));
 		}
 
-		return ApiResponse::create($query->asObj(OrgHistory::class)->toArray());
+		return ApiResponse::create($query->asObjArr(OrgHistory::class));
 	}
 }

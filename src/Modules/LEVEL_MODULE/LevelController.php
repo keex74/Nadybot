@@ -158,7 +158,6 @@ class LevelController extends ModuleInstance {
 	public function findAllLevels(): array {
 		return $this->db->table(Level::getTable())
 			->orderBy('level')
-			->asObj(Level::class)
-			->toList();
+			->asObjArr(Level::class);
 	}
 }

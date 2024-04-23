@@ -363,11 +363,9 @@ class GreetController extends ModuleInstance {
 	 * @return ?string A matching greeting, or null;
 	 */
 	private function getMatchingGreeting(string $target): ?string {
-		/** @var array<Fun> */
 		$data = $this->db->table(Fun::getTable())
 			->whereIn('type', explode(',', $this->greetSource))
-			->asObj(Fun::class)
-			->toArray();
+			->asObjArr(Fun::class);
 		while (count($data) > 0) {
 			$key = array_rand($data, 1);
 

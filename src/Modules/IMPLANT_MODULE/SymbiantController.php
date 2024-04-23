@@ -169,8 +169,7 @@ class SymbiantController extends ModuleInstance {
 	protected function configsToBlob(iterable $configs): string {
 		/** @var list<ImplantType> */
 		$types = $this->db->table(ImplantType::getTable())
-			->asObj(ImplantType::class)
-			->toList();
+			->asObjArr(ImplantType::class);
 
 		/** @var array<string,string> */
 		$typeMap = array_column($types, 'Name', 'ShortName');
@@ -289,8 +288,7 @@ class SymbiantController extends ModuleInstance {
 			->join('ImplantType AS it', 'it.ImplantTypeID', 'sym.SlotID')
 			->select(['sym.*', 'it.ShortName AS SlotName', 'it.Name AS SlotLongName'])
 			->where('c.SkillID', $skill->id)
-			->asObj(Symbiant::class)
-			->toList();
+			->asObjArr(Symbiant::class);
 	}
 
 	/** @return list<string> */

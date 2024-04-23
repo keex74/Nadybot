@@ -172,7 +172,7 @@ class AuditController extends ModuleInstance {
 			$query->where('action', strtolower($action));
 		}
 
-		return ApiResponse::create($query->asObj(Audit::class)->toArray());
+		return ApiResponse::create($query->asObjArr(Audit::class));
 	}
 
 	/** @param array<mixed> $params */

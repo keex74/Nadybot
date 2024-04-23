@@ -633,7 +633,7 @@ class CommentController extends ModuleInstance {
 			$query->where('category', $category->name);
 		}
 
-		$comments = $query->asObj(Comment::class)->toList();
+		$comments = $query->asObjArr(Comment::class);
 		return $comments;
 	}
 
@@ -661,8 +661,7 @@ class CommentController extends ModuleInstance {
 		return $this->db->table(Comment::getTable())
 			->whereIlike('category', $category->name)
 			->orderBy('created_at')
-			->asObj(Comment::class)
-			->toList();
+			->asObjArr(Comment::class);
 	}
 
 	/**

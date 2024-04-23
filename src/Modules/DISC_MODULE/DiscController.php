@@ -45,7 +45,7 @@ class DiscController extends ModuleInstance {
 	public function getDiscsByName(string $discName): array {
 		$query = $this->db->table(Disc::getTable());
 		$this->db->addWhereFromParams($query, explode(' ', $discName), 'disc_name');
-		return $query->asObj(Disc::class)->toList();
+		return $query->asObjArr(Disc::class);
 	}
 
 	/** Get the instruction disc from its id and return the result or null */

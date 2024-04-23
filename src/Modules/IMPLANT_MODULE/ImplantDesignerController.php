@@ -278,14 +278,14 @@ class ImplantDesignerController extends ModuleInstance {
 					->join(Ability::getTable(as: 'a'), 's.AbilityID', 'a.AbilityID')
 					->where('SymbiantID', $symbRow->ID)
 					->select(['a.Name', 's.Amount'])
-					->asObj(AbilityAmount::class)->toArray();
+					->asObjArr(AbilityAmount::class);
 
 				// add mods
 				$symb->mods = $this->db->table(SymbiantClusterMatrix::getTable(), 's')
 					->join(Cluster::getTable(as: 'c'), 's.ClusterID', 'c.ClusterID')
 					->where('SymbiantID', $symbRow->ID)
 					->select(['c.LongName AS Name', 's.Amount'])
-					->asObj(AbilityAmount::class)->toArray();
+					->asObjArr(AbilityAmount::class);
 
 				$slotObj->symb = $symb;
 				$msg = "<highlight>{$slot->longName()}(symb)<end> has been set to <highlight>{$symb->name}<end>.";

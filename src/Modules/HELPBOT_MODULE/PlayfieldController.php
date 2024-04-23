@@ -66,8 +66,7 @@ class PlayfieldController extends ModuleInstance {
 		$this->db->addWhereFromParams($query, explode(' ', $search), 'long_name');
 		$this->db->addWhereFromParams($query, explode(' ', $search), 'short_name', 'or');
 
-		/** @var list<Playfield> */
-		$data = $query->asObj(Playfield::class)->toList();
+		$data = $query->asObjArr(Playfield::class);
 
 		$count = count($data);
 

@@ -1360,8 +1360,7 @@ class CommandManager implements MessageEmitter {
 	public function clonePermissionSet(string $oldName, string $name, string $letter): void {
 		$perms = $this->db->table(CmdPermission::getTable())
 			->where('permission_set', $oldName)
-			->asObj(CmdPermission::class)
-			->toArray();
+			->asObjArr(CmdPermission::class);
 		$this->insertPermissionSet($name, $letter, ...$perms);
 	}
 
