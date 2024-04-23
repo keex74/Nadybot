@@ -562,7 +562,7 @@ class BotRunner {
 
 	/** Set the title of the command prompt window in Windows */
 	private function setWindowTitle(BotConfig $config): void {
-		if ($this->isWindows() === false) {
+		if (self::isWindows() === false) {
 			return;
 		}
 		async(Process::start(...), "title {$config->main->character} - Nadybot")->ignore();

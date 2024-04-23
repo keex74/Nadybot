@@ -287,7 +287,7 @@ class WeatherController extends ModuleInstance {
 		$tempUnit = $this->nameToDegree($weather->properties->meta->units->air_temperature);
 		$blob = $this->text->makeBlob('details', $blob, strip_tags($header));
 
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			"{$header}: <highlight>{$currentTemp}{$tempUnit}<end>, ".
 			"<highlight>{$currentSummary}<end> [",
 			$blob,

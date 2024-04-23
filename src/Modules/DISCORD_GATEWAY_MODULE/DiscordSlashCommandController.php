@@ -182,7 +182,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			})
 			->unique()
 			->filter(static function (string $cmd) use ($cmds): bool {
-				return !in_array($cmd, $cmds);
+				return !in_array($cmd, $cmds, true);
 			});
 		$illegalCommands = $newCommands
 			->filter(function (string $cmd): bool {
@@ -256,7 +256,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 			})
 			->unique()
 			->filter(static function (string $cmd) use ($cmds): bool {
-				return in_array($cmd, $cmds);
+				return in_array($cmd, $cmds, true);
 			});
 		if ($delCommands->isEmpty()) {
 			$context->reply('None of the given commands are currently exposed as Slash-commands.');
@@ -305,7 +305,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		$parts = $cmds
 			->sortBy('module')
 			->filter(static function (CmdCfg $cmd) use ($exposedCmds): bool {
-				return !in_array($cmd->cmd, $exposedCmds);
+				return !in_array($cmd->cmd, $exposedCmds, true);
 			})->groupBy('module')
 			->map(static function (Collection $cmds, string $module): string {
 				$lines = $cmds->sortBy('cmd')->map(static function (CmdCfg $cmd): string {
@@ -439,7 +439,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 		try {
 			$newCmds = $this->api->registerGlobalApplicationCommands(
 				$appId,
-				$this->api->encode($cmds)
+				$this->api::encode($cmds)
 			);
 		} catch (DiscordException $e) {
 			if ($e->getCode() === 403) {

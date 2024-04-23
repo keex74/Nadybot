@@ -1048,7 +1048,7 @@ class Nadybot {
 	}
 
 	public function getWorkerId(string $worker): int {
-		$workerId = array_search($worker, array_column($this->config->worker, 'character'));
+		$workerId = array_search($worker, array_column($this->config->worker, 'character'), true);
 		if ($workerId === false) {
 			$workerId = 0;
 		}
@@ -1074,7 +1074,7 @@ class Nadybot {
 
 		// If this UID was added via the queue, then every UID before its
 		// queue entry is an inactive or non-existing player
-		$queuePos = array_search($userId, $this->buddyQueue);
+		$queuePos = array_search($userId, $this->buddyQueue, true);
 		if (count($this->config->worker) === 0 && $queuePos !== false) {
 			$remUid = array_shift($this->buddyQueue);
 			while (isset($remUid) && $remUid !== $userId) {
@@ -1327,7 +1327,7 @@ class Nadybot {
 				$this->messageHub->handle($rMessage);
 			}
 		}
-		if (in_array($channel->name, $this->channelsToIgnore)) {
+		if (in_array($channel->name, $this->channelsToIgnore, true)) {
 			return;
 		}
 

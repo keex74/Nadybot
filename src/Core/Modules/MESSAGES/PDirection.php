@@ -21,7 +21,7 @@ class PDirection extends Base {
 	}
 
 	public function isTwoWay(): bool {
-		return in_array($this->value, ['<->', '&lt;-&gt;']);
+		return in_array($this->value, ['<->', '&lt;-&gt;'], true);
 	}
 
 	public static function getExample(): ?string {

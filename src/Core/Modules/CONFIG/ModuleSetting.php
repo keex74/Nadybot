@@ -44,7 +44,7 @@ class ModuleSetting {
 			$options = explode(';', $setting->options??'');
 			$values = $options;
 			if (isset($setting->intoptions) && strlen($setting->intoptions)) {
-				if (in_array($setting->type, ['number', 'time'])) {
+				if (in_array($setting->type, ['number', 'time'], true)) {
 					$values = array_map('intval', explode(';', $setting->intoptions));
 				} else {
 					$values = explode(';', $setting->intoptions);

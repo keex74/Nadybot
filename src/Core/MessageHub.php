@@ -187,7 +187,7 @@ class MessageHub {
 			if (isset($value)) {
 				switch ($parameter->type) {
 					case $parameter::TYPE_BOOL:
-						if (!is_string($value) || !in_array($value, ['true', 'false'])) {
+						if (!is_string($value) || !in_array($value, ['true', 'false'], true)) {
 							throw new Exception(
 								"Argument <highlight>{$parameter->name}<end> to ".
 								"<highlight>{$name}<end> must be 'true' or 'false', ".
@@ -528,7 +528,7 @@ class MessageHub {
 			$charLink = $routedName . ': ';
 			if (
 				$this->config->main->dimension === $char->dimension
-				&& in_array($lastHop->type??null, $aoSources)
+				&& in_array($lastHop->type??null, $aoSources, true)
 				&& $withUserLink
 			) {
 				$charLink = "<a href=user://{$char->name}>{$routedName}</a>: ";

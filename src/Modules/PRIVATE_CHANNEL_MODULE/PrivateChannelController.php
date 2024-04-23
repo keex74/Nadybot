@@ -1110,7 +1110,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 		// check faction limit
 		if (
-			in_array($reqFaction, ['Omni', 'Clan', 'Neutral'])
+			in_array($reqFaction, ['Omni', 'Clan', 'Neutral'], true)
 			&& $reqFaction === $whois->faction->value
 		) {
 			return;

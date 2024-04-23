@@ -132,7 +132,7 @@ class ArbiterController extends ModuleInstance {
 	): void {
 		$setWeek = strtolower($setWeek);
 		$validTypes = [static::AI, static::BS, static::DIO];
-		$pos = array_search($setWeek, $validTypes);
+		$pos = array_search($setWeek, $validTypes, true);
 		if ($pos === false) {
 			return;
 		}
@@ -242,12 +242,12 @@ class ArbiterController extends ModuleInstance {
 		}
 		$blob .= "\n\n<i>All arbiter weeks last for 8 days (Sunday 00:00 to Sunday 23:59)</i>";
 		if ($upcomingEvents[0]->isActiveOn($time)) {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				"{$msg} ",
 				$this->text->makeBlob('Upcoming arbiter events', $blob)
 			);
 		} else {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				"{$msg} ",
 				$this->text->makeBlob('Next arbiter event', $blob, 'Upcoming arbiter events'),
 				' is ' . $upcomingEvents[0]->longName . ' in '.

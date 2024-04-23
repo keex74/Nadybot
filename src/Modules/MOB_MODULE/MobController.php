@@ -387,7 +387,7 @@ class MobController extends ModuleInstance {
 			return;
 		}
 		$blob = $this->renderMob($mob);
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			'',
 			$this->text->makeBlob($mob->name, $blob),
 			': ' . $this->renderMobStatus($mob)

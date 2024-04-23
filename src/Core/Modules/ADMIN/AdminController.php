@@ -298,7 +298,7 @@ class AdminController extends ModuleInstance {
 	}
 
 	private function addArticle(string $rank): string {
-		return in_array(substr($rank, 0, 1), ['a', 'e', 'i', 'o', 'u'])
+		return in_array(substr($rank, 0, 1), ['a', 'e', 'i', 'o', 'u'], true)
 			? "an {$rank}"
 			: "a {$rank}";
 	}

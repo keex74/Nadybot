@@ -171,7 +171,7 @@ class NewsController extends ModuleInstance {
 				$blob
 			);
 		} elseif ($layout === 2) {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				"<yellow>NEWS:<end> <highlight>{$latestNews->news}<end>\n".
 					"By {$latestNews->name} (".
 					Util::date($latestNews->time) . ') ',

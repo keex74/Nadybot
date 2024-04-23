@@ -1088,7 +1088,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		$blob = implode("\n\n", $guildBlobs);
 		$context->reply(
-			$this->text->blobWrap(
+			Text::blobWrap(
 				"Connected as {$this->me->getName()} to ",
 				$this->text->makeBlob(
 					count($this->guilds) . ' Discord server'.
@@ -1365,7 +1365,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		$guilds = array_filter(
 			$this->guilds,
-			static fn (Guild $guild): bool => in_array('COMMUNITY', $guild->features)
+			static fn (Guild $guild): bool => in_array('COMMUNITY', $guild->features, true)
 		);
 		if (!count($guilds)) {
 			$context->reply('This bot is not a member of a Discord server with community features.');
@@ -1460,7 +1460,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 
 		$blob = $this->renderEvent($guild, $event);
-		$msgs = $this->text->blobWrap(
+		$msgs = Text::blobWrap(
 			'New Discord event: ',
 			$this->text->makeBlob($event->name, $blob),
 		);
@@ -1491,7 +1491,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 
 		$blob = $this->renderEvent($guild, $event);
-		$msgs = $this->text->blobWrap(
+		$msgs = Text::blobWrap(
 			'Discord event started: ',
 			$this->text->makeBlob($event->name, $blob),
 		);
@@ -1642,7 +1642,8 @@ class DiscordGatewayController extends ModuleInstance {
 				CloseEvents::INVALID_API_VERSION,
 				CloseEvents::INVALID_INTENT,
 				CloseEvents::DISALLOWED_INTENT,
-			]
+			],
+			true
 		);
 	}
 
@@ -1655,7 +1656,8 @@ class DiscordGatewayController extends ModuleInstance {
 			[
 				CloseEvents::INVALID_SEQ,
 				CloseEvents::SESSION_TIMED_OUT,
-			]
+			],
+			true
 		);
 	}
 

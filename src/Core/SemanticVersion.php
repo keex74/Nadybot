@@ -10,7 +10,7 @@ class SemanticVersion implements Stringable {
 	protected string $version;
 
 	public function __construct(protected string $origVersion) {
-		$this->version = $this->normalizeVersion($origVersion);
+		$this->version = static::normalizeVersion($origVersion);
 	}
 
 	public function __toString(): string {

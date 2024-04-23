@@ -143,7 +143,7 @@ class ItemsController extends ModuleInstance {
 		}
 		$row = ItemSearchResult::fromItem($row->atQL($ql));
 		$blob .= "\n" . $this->formatSearchResults([$row], null, true);
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			'Details about item ID ',
 			$this->text->makeBlob((string)$id, $blob, "Details about item ID {$id}"),
 			" ({$row->name})"

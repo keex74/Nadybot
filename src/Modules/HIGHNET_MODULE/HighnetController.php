@@ -320,7 +320,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			return;
 		}
 		$popup = $this->getInfoPopup($message);
-		$msgs = $this->text->blobWrap(
+		$msgs = Text::blobWrap(
 			$message->message . ' [',
 			$this->text->makeBlob('details', $popup, 'Message details'),
 			']'
@@ -413,7 +413,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 				) . " with <highlight>{$numClients}<end> attached"
 			)
 			: '&lt;none&gt;');
-		$msgs = $this->text->blobWrap(
+		$msgs = Text::blobWrap(
 			$channelMsg . ' [',
 			$this->text->makeBlob('instructions', $popup, 'Instructions how to use Highnet'),
 			']'
@@ -968,7 +968,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		$lowerChannels = array_map('strtolower', $this->channels);
 		$currentChannels = array_keys($this->handlers);
 		foreach ($currentChannels as $channel) {
-			if (!in_array($channel, $lowerChannels)) {
+			if (!in_array($channel, $lowerChannels, true)) {
 				unset($this->handlers[$channel]);
 				$routes = $this->msgHub->getRoutes();
 				foreach ($routes as $route) {

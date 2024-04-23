@@ -224,7 +224,7 @@ class ApiSpecGenerator {
 				'name' => 'GPL3',
 				'url' => 'https://www.gnu.org/licenses/gpl-3.0.en.html',
 			],
-			'version' => (new BotRunner([]))->getVersion(false),
+			'version' => BotRunner::getVersion(false),
 		];
 	}
 
@@ -537,7 +537,7 @@ class ApiSpecGenerator {
 	 * @psalm-return array{"type"?: string, "$ref"?: string}
 	 */
 	protected function getSimpleClassRef(string $class): array {
-		if (in_array($class, ['string', 'bool', 'int', 'float'])) {
+		if (in_array($class, ['string', 'bool', 'int', 'float'], true)) {
 			return ['type' => str_replace(['int', 'bool'], ['integer', 'boolean'], $class)];
 		}
 		if (is_a($class, \DateTimeInterface::class, true)) {

@@ -544,7 +544,7 @@ class OnlineController extends ModuleInstance {
 
 		foreach ($this->chatBot->guildmembers as $name => $rank) {
 			if ($this->buddylistManager->isOnline($name)) {
-				if (in_array($name, $guildArray)) {
+				if (in_array($name, $guildArray, true)) {
 					$this->buildOnlineQuery($name, 'guild')
 						->update(['dt' => $time]);
 				} else {
@@ -560,7 +560,7 @@ class OnlineController extends ModuleInstance {
 		}
 
 		foreach ($this->chatBot->chatlist as $name => $value) {
-			if (in_array($name, $privArray)) {
+			if (in_array($name, $privArray, true)) {
 				$this->buildOnlineQuery($name, 'priv')
 						->update(['dt' => $time]);
 			} else {

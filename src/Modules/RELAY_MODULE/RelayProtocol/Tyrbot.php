@@ -430,7 +430,7 @@ class Tyrbot implements RelayProtocolInterface {
 			"/<\/(.*?)>/s",
 			static function (array $matches): string {
 				$keep = ['font', 'a', 'img', 'u', 'i'];
-				if (in_array($matches[1], $keep)) {
+				if (in_array($matches[1], $keep, true)) {
 					return $matches[0];
 				}
 				return '<end>';

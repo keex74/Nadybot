@@ -389,7 +389,7 @@ class NotumWarsController extends ModuleInstance {
 			$announcement = count($unplantedSites) . ' unplanted sites';
 		}
 
-		$msgs = $this->text->blobWrap(
+		$msgs = Text::blobWrap(
 			$announcementPre,
 			$this->text->makeBlob(
 				$announcement,
@@ -1244,7 +1244,7 @@ class NotumWarsController extends ModuleInstance {
 		} else {
 			$msg = "Your level ({$player->level}) allows you to have <highlight>4<end> towers.";
 		}
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			$msg . ' ',
 			$this->text->makeBlob('See full list', $blob, 'Towers by level')
 		);

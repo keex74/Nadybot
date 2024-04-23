@@ -73,7 +73,7 @@ class DiscordSlashCommandReply implements CommandReply {
 			$this->discordAPIClient->sendInteractionResponse(...),
 			$this->interactionId,
 			$this->interactionToken,
-			$this->discordAPIClient->encode($response),
+			$this->discordAPIClient::encode($response),
 		)->catch(Nadybot::asyncErrorHandler(...));
 	}
 
@@ -131,7 +131,7 @@ class DiscordSlashCommandReply implements CommandReply {
 				$this->discordAPIClient->queueToWebhook(
 					$this->applicationId,
 					$this->interactionToken,
-					$this->discordAPIClient->encode($msgPart),
+					$this->discordAPIClient::encode($msgPart),
 				);
 			}
 		}

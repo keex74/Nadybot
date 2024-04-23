@@ -351,7 +351,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 				return $reply;
 			}
 		}
-		if (!in_array($request->getMethod(), ['HEAD', 'GET'])) {
+		if (!in_array($request->getMethod(), ['HEAD', 'GET'], true)) {
 			return new Response(status: HttpStatus::METHOD_NOT_ALLOWED);
 		}
 

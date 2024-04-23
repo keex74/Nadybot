@@ -41,7 +41,7 @@ class ArraySetting extends DefineSetting {
 	}
 
 	private function typeValue(string $type, string $value): bool|int|string {
-		if (in_array($type, ['number', 'time', 'int', 'integer'])) {
+		if (in_array($type, ['number', 'time', 'int', 'integer'], true)) {
 			return (int)$value;
 		}
 		if ($type === 'bool') {

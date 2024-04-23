@@ -443,7 +443,7 @@ class AttacksController extends ModuleInstance {
 			$this->towerAttackFormat,
 			$tokens
 		);
-		$msg = $this->text->blobWrap("{$msg} [", $detailsLink, ']');
+		$msg = Text::blobWrap("{$msg} [", $detailsLink, ']');
 
 		foreach ($msg as $page) {
 			if (isset($site->org_id) && $this->config->orgId === $site->org_id) {
@@ -492,7 +492,7 @@ class AttacksController extends ModuleInstance {
 			$shortSite,
 			$details,
 		);
-		$msg = $this->text->blobWrap("{$msg} [", $detailsLink, ']');
+		$msg = Text::blobWrap("{$msg} [", $detailsLink, ']');
 
 		foreach ($msg as $page) {
 			if (isset($site->org_id) && $this->config->orgId === $site->org_id) {

@@ -214,7 +214,7 @@ class WebsocketController extends ModuleInstance implements WebsocketClientHandl
 			$data = json_decode($body, true);
 			$mapper = new ObjectMapperUsingReflection();
 			$command = $mapper->hydrateObject(WebsocketCommand::class, $data);
-			if (!in_array($command->command, $command::ALLOWED_COMMANDS)) {
+			if (!in_array($command->command, $command::ALLOWED_COMMANDS, true)) {
 				throw new Exception();
 			}
 		} catch (Throwable) {

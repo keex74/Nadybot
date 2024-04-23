@@ -359,7 +359,7 @@ class BuddylistManager {
 		if (self::$lastWorker === null) {
 			return self::$lastWorker = $names[0];
 		}
-		$lastPos = array_search(self::$lastWorker, $names);
+		$lastPos = array_search(self::$lastWorker, $names, true);
 		if ($lastPos === false) {
 			return self::$lastWorker = $names[0];
 		}

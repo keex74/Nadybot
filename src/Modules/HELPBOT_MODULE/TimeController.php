@@ -93,7 +93,7 @@ class TimeController extends ModuleInstance {
 		$link .= '<tab><tab>' . time() . "\n";
 
 		$msg = '<highlight>'.Util::date(time()).'<end>';
-		$context->reply($this->text->blobWrap(
+		$context->reply(Text::blobWrap(
 			"{$msg} ",
 			$this->text->makeBlob('All Timezones', $link)
 		));

@@ -76,7 +76,7 @@ class LevelController extends ModuleInstance {
 
 		foreach ($this->findAllLevels() as $row) {
 			$array = explode(',', $row->missions);
-			if (in_array($missionQL, $array)) {
+			if (in_array((string)$missionQL, $array, true)) {
 				$msg .= ' ' . $row->level;
 			}
 		}

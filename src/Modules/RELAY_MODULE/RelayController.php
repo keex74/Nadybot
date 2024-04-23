@@ -383,7 +383,7 @@ class RelayController extends ModuleInstance {
 		}
 		$blob = $this->quickRelayController->getRouteInformation(
 			$name,
-			isset($layer) && in_array($layer->layer, ['tyrbot', 'nadynative'])
+			isset($layer) && in_array($layer->layer, ['tyrbot', 'nadynative'], true)
 		);
 		$msg = "Relay <highlight>{$name}<end> added.";
 		// @phpstan-ignore-next-line
@@ -924,7 +924,7 @@ class RelayController extends ModuleInstance {
 			if (isset($value)) {
 				switch ($parameter->type) {
 					case $parameter::TYPE_BOOL:
-						if (!in_array($value, ['true', 'false'])) {
+						if (!in_array($value, ['true', 'false'], true)) {
 							throw new Exception(
 								"Argument <highlight>{$parameter->name}<end> to ".
 								"<highlight>{$name}<end> must be 'true' or 'false', ".

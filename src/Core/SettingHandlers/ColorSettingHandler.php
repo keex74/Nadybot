@@ -23,7 +23,7 @@ class ColorSettingHandler extends SettingHandler {
 		$msg .= "You can change it manually with the command: \n\n";
 		$msg .= "/tell <myname> settings save {$this->row->name} <i>HTML-Color</i>\n\n";
 		$msg .= "Or you can choose one of the following Colors\n\n";
-		$examples = $this->getExampleColors();
+		$examples = static::getExampleColors();
 		foreach ($examples as $color => $name) {
 			$msg .= "[<a href='chatcmd:///tell <myname> settings save {$this->row->name} {$color}'>Save it</a>] <font color='{$color}'>Example Text</font> ({$name})\n";
 		}

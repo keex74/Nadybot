@@ -56,7 +56,7 @@ class ClassLoader {
 
 	/** Load all classes that provide an #[Instance] */
 	public function loadInstances(): void {
-		$newInstances = $this->getInstancesOfClasses(...get_declared_classes());
+		$newInstances = static::getInstancesOfClasses(...get_declared_classes());
 		unset($newInstances['logger']);
 		unset($newInstances[strtolower(Registry::formatName(BotConfig::class))]);
 		$newInstances = array_merge($newInstances, $this->getNewInstancesInDir(__DIR__));
@@ -266,7 +266,7 @@ class ClassLoader {
 				continue;
 			}
 			while (false !== ($moduleName = $d->read())) {
-				if (in_array($moduleName, ['BIGBOSS_MODULE', 'GAUNTLET_MODULE'])) {
+				if (in_array($moduleName, ['BIGBOSS_MODULE', 'GAUNTLET_MODULE'], true)) {
 					continue;
 				}
 				if ($this->isModuleDir($path, $moduleName)) {

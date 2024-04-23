@@ -66,7 +66,7 @@ class ApplicationCommand implements Stringable {
 
 	public function isSameAs(self $cmd): bool {
 		foreach (get_object_vars($this) as $key => $myValue) {
-			if (in_array($key, ['id', 'application_id', 'version'])) {
+			if (in_array($key, ['id', 'application_id', 'version'], true)) {
 				continue;
 			}
 			if (is_array($myValue)) {

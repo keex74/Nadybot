@@ -45,7 +45,7 @@ class SettingValue {
 		if (is_null($value)) {
 			return null;
 		}
-		if (in_array($type, ['number', 'time'])) {
+		if (in_array($type, ['number', 'time'], true)) {
 			return (int)$value;
 		}
 		if ($type === 'bool') {

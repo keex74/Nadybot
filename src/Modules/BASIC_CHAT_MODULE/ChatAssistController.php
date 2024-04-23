@@ -454,7 +454,7 @@ class ChatAssistController extends ModuleInstance {
 		$this->storeBackup($backup);
 
 		$blob = $this->getAssistMessage();
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			"{$msg}. ",
 			$this->text->makeBlob('List of callers', $blob)
 		);
@@ -480,7 +480,7 @@ class ChatAssistController extends ModuleInstance {
 		$this->callers = array_splice($this->lastCallers, -1 * $steps)[0]->callers;
 		$msg = 'Callers configuration restored. ';
 		if (count($this->callers) > 0) {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				$msg,
 				$this->text->makeBlob('List of callers', $this->getAssistMessage())
 			);
@@ -534,7 +534,7 @@ class ChatAssistController extends ModuleInstance {
 		$blob = "<header2>Assist macro<end>\n".
 			'<tab>' . Text::makeChatcmd('Click me for a macro', "/macro {$name} /assist {$name}");
 		$context->reply(
-			$this->text->blobWrap(
+			Text::blobWrap(
 				'Please all ',
 				$this->text->makeBlob("assist {$name}", $blob, "Quick assist macro for {$name}")
 			)
@@ -598,7 +598,7 @@ class ChatAssistController extends ModuleInstance {
 		$this->storeBackup($backup);
 
 		$blob = $this->getAssistMessage();
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			"{$msg}. ",
 			$this->text->makeBlob('List of callers', $blob)
 		);
@@ -635,7 +635,7 @@ class ChatAssistController extends ModuleInstance {
 		);
 		return $players->filter(static function (Player $member) use ($forbiddenProfs): bool {
 			return !isset($member->profession)
-				|| !in_array($member->profession, $forbiddenProfs);
+				|| !in_array($member->profession, $forbiddenProfs, true);
 		})->pluck('name')
 		->values()
 		->toList();

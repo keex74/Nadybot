@@ -350,7 +350,7 @@ class StartpageController extends ModuleInstance {
 		}
 		$delta = (strtolower($direction) === 'up') ? -1 : 1;
 		$tileKeys = array_keys($currentTiles);
-		$oldPos = array_search($tileName, $tileKeys);
+		$oldPos = array_search($tileName, $tileKeys, true);
 		if ($oldPos === false) {
 			$context->reply("<highlight>{$tileName}<end> is currently not on your startpage.");
 			return;

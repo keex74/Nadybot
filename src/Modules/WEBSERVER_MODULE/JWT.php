@@ -82,7 +82,7 @@ class JWT {
 		if (!isset(static::$supported_algs[$header->alg])) {
 			throw new UnexpectedValueException('Algorithm not supported');
 		}
-		if (count($allowed_algs) && !in_array($header->alg, $allowed_algs)) {
+		if (count($allowed_algs) && !in_array($header->alg, $allowed_algs, true)) {
 			throw new UnexpectedValueException('Algorithm not allowed');
 		}
 		if ($header->alg === 'ES256' || $header->alg === 'ES384') {

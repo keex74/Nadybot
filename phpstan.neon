@@ -32,7 +32,7 @@ parameters:
     closureUsesThis: false
     matchingInheritedMethodNames: false
     numericOperandsInArithmeticOperators: false
-    strictCalls: false
+    strictCalls: true
     switchConditionsMatchingType: false
     noVariableVariables: false
     strictArrayFilter: false

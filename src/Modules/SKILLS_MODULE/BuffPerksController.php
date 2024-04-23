@@ -298,14 +298,14 @@ class BuffPerksController extends ModuleInstance {
 			$skill = $skills[0];
 		}
 		$perks = $this->perks->filter(static function (Perk $perk) use ($profession, $level): bool {
-			return in_array($profession->value, $perk->levels[1]->professions)
+			return in_array($profession->value, $perk->levels[1]->professions, true)
 				&& $perk->levels[1]->required_level <= $level;
 		});
 		$perks = $perks->map(static function (Perk $perk) use ($profession, $level): Perk {
 			$p = clone $perk;
 			$p->levels = collect($p->levels)->filter(
 				static function (PerkLevel $pl) use ($profession, $level): bool {
-					return in_array($profession->value, $pl->professions)
+					return in_array($profession->value, $pl->professions, true)
 						&& $pl->required_level <= $level;
 				}
 			)->toArray();

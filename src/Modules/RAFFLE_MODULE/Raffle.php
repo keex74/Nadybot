@@ -89,7 +89,7 @@ class Raffle {
 		} else {
 			$participants = $this->getParticipantNames();
 		}
-		return in_array($player, $participants);
+		return in_array($player, $participants, true);
 	}
 
 	/** @return list<string> */

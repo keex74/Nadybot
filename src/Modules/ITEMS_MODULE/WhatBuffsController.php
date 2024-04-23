@@ -177,7 +177,7 @@ class WhatBuffsController extends ModuleInstance {
 					$skills = [];
 					foreach ($perk->levels as $perkLevel) {
 						foreach ($perkLevel->buffs as $skillId => $amount) {
-							if (in_array($skillId, [382, 318]) ? $amount < 0 : $amount > 0) {
+							if (in_array($skillId, [382, 318], true) ? $amount < 0 : $amount > 0) {
 								$skills[$skillId] = true;
 							}
 						}
@@ -256,7 +256,7 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	public function filterGoodPerkBuffs(PerkLevelBuff $buff): bool {
-		return in_array($buff->skill_id, [382, 318])
+		return in_array($buff->skill_id, [382, 318], true)
 			? $buff->amount < 0
 			: $buff->amount > 0;
 	}
@@ -267,7 +267,7 @@ class WhatBuffsController extends ModuleInstance {
 				if (!isset($perkLevel->buffs[$skillId])) {
 					continue;
 				}
-				$matches = in_array($skillId, [382, 318])
+				$matches = in_array($skillId, [382, 318], true)
 					? $perkLevel->buffs[$skillId] < 0
 					: $perkLevel->buffs[$skillId] > 0;
 				if ($matches) {
@@ -613,7 +613,7 @@ class WhatBuffsController extends ModuleInstance {
 			}
 		}
 		$multiplier = 1;
-		if (in_array($skill->name, ['SkillLockModifier', '% Add. Nano Cost'])) {
+		if (in_array($skill->name, ['SkillLockModifier', '% Add. Nano Cost'], true)) {
 			$multiplier = -1;
 		}
 		$items = $items->sort(

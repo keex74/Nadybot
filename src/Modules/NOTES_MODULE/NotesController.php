@@ -367,7 +367,7 @@ class NotesController extends ModuleInstance {
 		$blob .= "\n<i>Your reminder format preference is the same for all of your alts</i>.";
 
 		$blobLink = $this->text->makeBlob('Details', $blob, 'The available reminder formats');
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			"Your reminder format is <highlight>{$reminderFormat}<end> :: [",
 			$blobLink,
 			']'

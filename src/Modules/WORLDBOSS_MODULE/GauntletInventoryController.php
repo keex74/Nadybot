@@ -137,7 +137,7 @@ class GauntletInventoryController extends ModuleInstance {
 
 	protected function altCheck(CmdContext $context, string $sender, string $name): bool {
 		$altInfo = $this->altsController->getAltInfo($sender);
-		if ($altInfo->main !== $name && !in_array($name, $altInfo->getAllValidatedAlts())) {
+		if ($altInfo->main !== $name && !in_array($name, $altInfo->getAllValidatedAlts(), true)) {
 			$context->reply("Player \"{$name}\" is not your alt.");
 			return false;
 		}

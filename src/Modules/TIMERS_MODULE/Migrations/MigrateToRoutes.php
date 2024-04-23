@@ -110,7 +110,7 @@ class MigrateToRoutes implements SchemaMigration {
 	/** @param list<string> $defaultMode */
 	private function migrateChannelToRoute(DiscordChannel $channel, DB $db, string $table, array $defaultMode): void {
 		$this->rewriteTimerMode($db, $table, $defaultMode, Source::DISCORD_PRIV . "({$channel->name})");
-		if (!in_array('discord', $defaultMode)) {
+		if (!in_array('discord', $defaultMode, true)) {
 			return;
 		}
 		$route = $this->addRoute(

@@ -93,14 +93,14 @@ class LogsController extends ModuleInstance {
 			return;
 		}
 		try {
-			if (!$this->fs->exists($logger->getLoggingDirectory())) {
+			if (!$this->fs->exists($logger::getLoggingDirectory())) {
 				$context->reply(
 					'Your bot is either not configured to create log files, '.
 					'lacks the logging directory, or has no permission to access it.'
 				);
 				return;
 			}
-			$files = $this->fs->listFiles($logger->getLoggingDirectory());
+			$files = $this->fs->listFiles($logger::getLoggingDirectory());
 		} catch (FilesystemException $e) {
 			$prev = $e->getPrevious();
 			if (isset($prev)) {
@@ -142,7 +142,7 @@ class LogsController extends ModuleInstance {
 			$context->reply('Your current logging driver does not support this command');
 			return;
 		}
-		$filename = $logger->getLoggingDirectory() . \DIRECTORY_SEPARATOR . $file();
+		$filename = $logger::getLoggingDirectory() . \DIRECTORY_SEPARATOR . $file();
 		$readsize = ($this->settingManager->getInt('max_blob_size')??10_000) - 500;
 
 		try {
@@ -218,7 +218,7 @@ class LogsController extends ModuleInstance {
 		foreach ($loggers as $logger) {
 			foreach ($logger->getHandlers() as $handler) {
 				if ($handler instanceof AbstractHandler) {
-					$names[$logger->getName()] = $logger->getLevelName($handler->getLevel());
+					$names[$logger->getName()] = $logger::getLevelName($handler->getLevel());
 				}
 			}
 		}
@@ -263,7 +263,7 @@ class LogsController extends ModuleInstance {
 		foreach ($names as $name => $changes) {
 			$blob .= "\n<tab>- {$name}: <highlight>{$changes[0]} -> {$changes[1]}<end>";
 		}
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			'Changed ',
 			$this->text->makeBlob(
 				"{$numChanged} " . Text::pluralize('logger', $numChanged),
@@ -304,7 +304,7 @@ class LogsController extends ModuleInstance {
 		foreach ($names as $name => $changes) {
 			$blob .= "\n<tab>- {$name}: <highlight>{$changes[0]} -> {$changes[1]}<end>";
 		}
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			'Changed ',
 			$this->text->makeBlob(
 				"{$numChanged} " . Text::pluralize('logger', $numChanged),

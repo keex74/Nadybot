@@ -82,7 +82,7 @@ class RandomController extends ModuleInstance {
 		$msg = 'Randomized order: <highlight>' . implode('<end> -&gt; <highlight>', $list) . '<end>';
 		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
 			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
-		$context->reply($this->text->blobWrap(
+		$context->reply(Text::blobWrap(
 			$msg . ' [',
 			$this->text->makeBlob('announce', $blob, 'Announce result'),
 			']'
@@ -122,7 +122,7 @@ class RandomController extends ModuleInstance {
 		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
 			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 
-		$context->reply($this->text->blobWrap(
+		$context->reply(Text::blobWrap(
 			$msg . ' [',
 			$this->text->makeBlob('announce', $blob, 'Announce result'),
 			']'
@@ -175,7 +175,7 @@ class RandomController extends ModuleInstance {
 		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
 			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 
-		$context->reply($this->text->blobWrap(
+		$context->reply(Text::blobWrap(
 			$msg . ' [',
 			$this->text->makeBlob('announce', $blob, 'Announce result'),
 			']'
@@ -210,7 +210,7 @@ class RandomController extends ModuleInstance {
 		$blob = Text::makeChatcmd('Send to team chat', "/t {$msg}") . "\n".
 			Text::makeChatcmd('Send to raid chat', "/g raid {$msg}");
 
-		$context->reply($this->text->blobWrap(
+		$context->reply(Text::blobWrap(
 			$msg . ' [',
 			$this->text->makeBlob('announce', $blob, 'Announce result'),
 			']'

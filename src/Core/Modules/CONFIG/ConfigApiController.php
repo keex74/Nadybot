@@ -161,7 +161,8 @@ class ConfigApiController extends ModuleInstance {
 					$modSet::TYPE_INT_OPTIONS,
 					$modSet::TYPE_NUMBER,
 					$modSet::TYPE_TIME,
-				]
+				],
+				true
 			)
 		) {
 			if (!is_int($value)) {

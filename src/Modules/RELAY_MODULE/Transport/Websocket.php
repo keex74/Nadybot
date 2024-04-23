@@ -94,7 +94,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 		if ($scheme === null || $urlParts->getHost() === null) {
 			throw new Exception("Invalid URI <highlight>{$uri}<end>.");
 		}
-		if (!in_array($scheme, ['ws', 'wss'])) {
+		if (!in_array($scheme, ['ws', 'wss'], true)) {
 			throw new Exception("<highlight>{$scheme}<end> is not a valid schema. Valid are ws and wss.");
 		}
 		$this->authorization = $authorization;

@@ -22,7 +22,7 @@ class CallerList {
 
 	/** Check if $name is in this caller list */
 	public function isInList(string $name): bool {
-		return in_array($name, $this->getNames());
+		return in_array($name, $this->getNames(), true);
 	}
 
 	/** Get the amount of callers on this list */

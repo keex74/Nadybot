@@ -339,7 +339,7 @@ class ImportController extends ModuleInstance {
 						name: $name,
 						rank: (int)$matches[1] + 6,
 					));
-				} elseif (in_array($newRank, ['rl', 'all'])) {
+				} elseif (in_array($newRank, ['rl', 'all'], true)) {
 					// Nothing, we just ignore that
 				}
 				if (isset($member->logonMessage)) {

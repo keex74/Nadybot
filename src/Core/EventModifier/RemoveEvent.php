@@ -51,7 +51,7 @@ class RemoveEvent implements EventModifier {
 		if (!is_object($event->data)) {
 			return $event;
 		}
-		if (!in_array($event->data->type, $this->filter)) {
+		if (!in_array($event->data->type, $this->filter, true)) {
 			return $event;
 		}
 		if (!isset($this->from) || !count($event->path)) {

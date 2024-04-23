@@ -563,7 +563,7 @@ class DB {
 	 * @return int Number of updates records
 	 */
 	public function update(DBTable $row, null|string|array $key=null): int {
-		$table = $row->tryGetTable();
+		$table = $row::tryGetTable();
 		if ($table === null) {
 			throw new InvalidArgumentException(__CLASS__ . '::' . __FUNCTION__ . '(): unable to derive a table to update');
 		}
@@ -614,7 +614,7 @@ class DB {
 
 	/** Get a schema builder instance. */
 	public function schema(?string $connection=null): SchemaBuilder {
-		$schema = $this->capsule->schema($connection);
+		$schema = $this->capsule::schema($connection);
 		$logger = new LoggerWrapper('Core/QueryBuilder');
 		Registry::injectDependencies($logger);
 		$builder = new SchemaBuilder($schema, $this);
@@ -630,7 +630,7 @@ class DB {
 		if (is_string($table)) {
 			$table = $this->formatSql($table);
 		}
-		$builder = $this->capsule->table($table, $as, $connection);
+		$builder = $this->capsule::table($table, $as, $connection);
 		$myBuilder = new QueryBuilder($builder->getConnection(), $builder->getGrammar(), $builder->getProcessor());
 		Registry::injectDependencies($myBuilder);
 		foreach (get_object_vars($builder) as $attr => $value) {
@@ -927,7 +927,7 @@ class DB {
 		$fullDir = rtrim(dirname($fullFile) . \DIRECTORY_SEPARATOR . $migDir->dir, \DIRECTORY_SEPARATOR);
 		$fullDir = str_replace('/', \DIRECTORY_SEPARATOR, $fullDir);
 		foreach (get_declared_classes() as $class) {
-			if (!in_array(SchemaMigration::class, class_implements($class))) {
+			if (!in_array(SchemaMigration::class, class_implements($class), true)) {
 				continue;
 			}
 			$refClass = new ReflectionClass($class);

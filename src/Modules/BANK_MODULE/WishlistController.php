@@ -445,7 +445,7 @@ class WishlistController extends ModuleInstance {
 		);
 		$entry->id = $this->db->insert($entry);
 		$context->reply("Item added to your wishlist as #{$entry->id}.");
-		if (!in_array($entry->from, $fromChars)) {
+		if (!in_array($entry->from, $fromChars, true)) {
 			$this->buddylistManager->addName($character(), 'wishlist');
 		}
 	}
@@ -589,8 +589,8 @@ class WishlistController extends ModuleInstance {
 			$context->reply("There is no fulfilment #{$fulfilmentId}.");
 			return;
 		}
-		$canAccess = in_array($fullfillment->fulfilled_by, $allChars)
-			|| in_array($entry->created_by, $allChars);
+		$canAccess = in_array($fullfillment->fulfilled_by, $allChars, true)
+			|| in_array($entry->created_by, $allChars, true);
 		if (!$canAccess) {
 			$context->reply("You don't have the right to remove this fulfilment.");
 			return;
@@ -829,7 +829,7 @@ class WishlistController extends ModuleInstance {
 				if ($wish->getRemaining() > 1) {
 					$doAllLink = Text::makeChatcmd('give all', "/tell <myname> wish fulfil {$wish->id}");
 				}
-				if (isset($wish->from) && in_array($wish->from, $allChars)) {
+				if (isset($wish->from) && in_array($wish->from, $allChars, true)) {
 					$denyLink = Text::makeChatcmd('deny', "/tell <myname> wish deny {$wish->id}");
 					$line .= " [{$do1Link}]";
 					if (isset($doAllLink)) {
@@ -840,7 +840,7 @@ class WishlistController extends ModuleInstance {
 				$lines []= $line;
 				foreach ($wish->fulfilments as $fulfilment) {
 					$delLink = null;
-					if (in_array($fulfilment->fulfilled_by, $allChars)) {
+					if (in_array($fulfilment->fulfilled_by, $allChars, true)) {
 						$delLink = Text::makeChatcmd('del', "/tell <myname> wish rem fulfilment {$fulfilment->id}");
 					}
 					$line = "<tab><tab><grey>{$fulfilment->amount} given by {$fulfilment->fulfilled_by} on ".

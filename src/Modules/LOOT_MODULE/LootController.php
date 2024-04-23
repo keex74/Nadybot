@@ -674,14 +674,14 @@ class LootController extends ModuleInstance {
 		$msg = '';
 		if ($numItems > 1) {
 			$blob = $this->text->makeBlob('All remaining items', $list, 'These items are FFA');
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				'',
 				$blob,
 				" were declared <green>free for all<end> by <highlight>{$context->char->name}."
 			);
 		} else {
 			$blob = $this->text->makeBlob('The remaining item', $list, 'This item is FFA');
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				'',
 				$blob,
 				" was declared <green>free for all<end> by <highlight>{$context->char->name}."
@@ -791,7 +791,7 @@ class LootController extends ModuleInstance {
 		}
 		$msg = $this->text->makeBlob('Winner List', $list);
 		if (count($this->residual) > 0) {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				'',
 				$msg,
 				' (There are item(s) left to be rolled. To re-add, type <symbol>reroll, or '.
@@ -1004,7 +1004,7 @@ class LootController extends ModuleInstance {
 		}
 		$lootList = $this->getCurrentLootList();
 		$this->chatBot->sendPrivate(
-			$this->text->blobWrap(
+			Text::blobWrap(
 				"{$context->char->name} added " . count($items) . ' items to the ',
 				$lootList,
 				'.'

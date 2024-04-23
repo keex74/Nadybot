@@ -149,9 +149,9 @@ class LegacyLogger {
 			foreach ($handlers as $name => $handler) {
 				if ($handler instanceof AbstractHandler) {
 					if (static::$dynamicHandlers->contains($handler)) {
-						$oldLevel = $logger->getLevelName($handler->getLevel());
+						$oldLevel = $logger::getLevelName($handler->getLevel());
 						$handler->setLevel($newLevel);
-						$setLevel = $logger->getLevelName($newLevel);
+						$setLevel = $logger::getLevelName($newLevel);
 					}
 				}
 			}

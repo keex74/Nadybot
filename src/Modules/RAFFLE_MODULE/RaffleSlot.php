@@ -68,7 +68,7 @@ class RaffleSlot {
 	}
 
 	public function removeParticipant(string $player): bool {
-		if (!in_array($player, $this->participants)) {
+		if (!in_array($player, $this->participants, true)) {
 			return false;
 		}
 		$this->participants = array_values(

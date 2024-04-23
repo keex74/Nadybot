@@ -78,7 +78,7 @@ class PocketbossController extends ModuleInstance {
 		}
 		$symbs = '';
 		foreach ($data as $symb) {
-			if (in_array($symb->line, ['Alpha', 'Beta'])) {
+			if (in_array($symb->line, ['Alpha', 'Beta'], true)) {
 				$name = "Xan {$symb->slot} Symbiant, {$symb->type} Unit {$symb->line}";
 			} else {
 				$name = "{$symb->line} {$symb->slot} Symbiant, {$symb->type} Unit Aban";
@@ -261,7 +261,7 @@ class PocketbossController extends ModuleInstance {
 		$implantDesignerLink = Text::makeChatcmd('implant designer', '/tell <myname> implantdesigner');
 		$blob = "Click '[add]' to add symbiant to {$implantDesignerLink}.\n\n";
 		foreach ($data as $row) {
-			if (in_array($row->line, ['Alpha', 'Beta'])) {
+			if (in_array($row->line, ['Alpha', 'Beta'], true)) {
 				$name = "Xan {$row->slot} Symbiant, {$row->type} Unit {$row->line}";
 			} else {
 				$name = "{$row->line} {$row->slot} Symbiant, {$row->type} Unit Aban";

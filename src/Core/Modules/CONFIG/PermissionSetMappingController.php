@@ -126,7 +126,7 @@ class PermissionSetMappingController extends ModuleInstance {
 		}
 		$this->cmdManager->loadPermsetMappings();
 		$context->reply(
-			$this->text->blobWrap(
+			Text::blobWrap(
 				"Mapping from {$source} to {$permissionSet} created. ",
 				$this->text->makeBlob(
 					'Configure it',

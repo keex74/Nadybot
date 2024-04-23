@@ -924,7 +924,7 @@ class WorldBossController extends ModuleInstance {
 		$ourTimer = $this->getWorldBossTimer($mobName);
 		$apiTimer = $this->apiTimerToWorldbossTimer($timer, $mobName);
 		if (isset($ourTimer) && $apiTimer->next_spawn <= $ourTimer->next_spawn) {
-			if (in_array($ourTimer->submitter_name, ['Timer-API', 'Nadybot', '_Nadybot'])) {
+			if (in_array($ourTimer->submitter_name, ['Timer-API', 'Nadybot', '_Nadybot'], true)) {
 				$this->lastSpawnPrecise[$mobName] = true;
 			}
 			return false;

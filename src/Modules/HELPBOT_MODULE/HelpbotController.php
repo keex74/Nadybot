@@ -139,7 +139,7 @@ class HelpbotController extends ModuleInstance {
 			"<black>0<end>0%: <highlight>{$oe25}<end> or higher\n\n".
 			'WARNING: May be plus/minus 1 point!';
 
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			"<highlight>{$lowOE100}<end> - {$skillRequirement} - <highlight>{$oe100}<end> ",
 			$this->text->makeBlob('More info', $blob, 'Over-equipped Calculation')
 		);

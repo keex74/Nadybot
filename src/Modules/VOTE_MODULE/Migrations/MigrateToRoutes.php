@@ -34,7 +34,7 @@ class MigrateToRoutes implements SchemaMigration {
 		} else {
 			$showWhere = (int)$showWhere->value;
 		}
-		if (in_array($showWhere, [0, 2])) {
+		if (in_array($showWhere, [0, 2], true)) {
 			$route = [
 				'source' => $this->voteController->getChannelName(),
 				'destination' => Source::PRIV . '(' . $db->getMyname() . ')',
@@ -42,7 +42,7 @@ class MigrateToRoutes implements SchemaMigration {
 			];
 			$db->table($table)->insert($route);
 		}
-		if (in_array($showWhere, [1, 2])) {
+		if (in_array($showWhere, [1, 2], true)) {
 			$route = [
 				'source' => $this->voteController->getChannelName(),
 				'destination' => Source::ORG,

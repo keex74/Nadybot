@@ -89,7 +89,7 @@ class MgmtInterfaceController extends ModuleInstance {
 			);
 		}
 		$scheme = strstr($new, '://', true);
-		if (!in_array($scheme, stream_get_transports())) {
+		if (!in_array($scheme, stream_get_transports(), true)) {
 			throw new UserException(
 				'Your operating system or PHP installation does not support '.
 				"{$scheme}-sockets."

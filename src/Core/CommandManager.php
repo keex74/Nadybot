@@ -779,7 +779,7 @@ class CommandManager implements MessageEmitter {
 						break;
 					case 'bool':
 						foreach ((array)$context->args[$var] as $val) {
-							$args []= in_array(strtolower($val), ['yes', 'true', '1', 'on', 'enable', 'enabled']);
+							$args []= in_array(strtolower($val), ['yes', 'true', '1', 'on', 'enable', 'enabled'], true);
 						}
 						break;
 					case 'float':

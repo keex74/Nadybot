@@ -22,12 +22,12 @@ class OptionsSettingHandler extends SettingHandler {
 		$options = explode(';', $this->row->options??'');
 		if (isset($this->row->intoptions) && $this->row->intoptions !== '') {
 			$intoptions = explode(';', $this->row->intoptions);
-			if (in_array($newValue, $intoptions)) {
+			if (in_array($newValue, $intoptions, true)) {
 				return $newValue;
 			}
 			throw new Exception('This is not a correct option for this setting.');
 		}
-		if (in_array($newValue, $options)) {
+		if (in_array($newValue, $options, true)) {
 			return $newValue;
 		}
 		throw new Exception('This is not a correct option for this setting.');

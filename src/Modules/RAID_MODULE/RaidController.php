@@ -476,7 +476,7 @@ class RaidController extends ModuleInstance {
 			$context->reply(static::ERR_NO_RAID);
 			return;
 		}
-		$noLimit = in_array(strtolower($maxMembers), ['0', 'off']);
+		$noLimit = in_array(strtolower($maxMembers), ['0', 'off'], true);
 		$this->raid->max_members = $noLimit ? null : (int)$maxMembers;
 		$this->logRaidChanges($this->raid);
 		if ($noLimit) {

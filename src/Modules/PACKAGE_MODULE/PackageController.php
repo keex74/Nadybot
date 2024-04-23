@@ -147,7 +147,7 @@ class PackageController extends ModuleInstance {
 					->where('module', $package->name)
 					->max('version');
 			}
-			if (in_array($package->name, ClassLoader::INTEGRATED_MODULES)) {
+			if (in_array($package->name, ClassLoader::INTEGRATED_MODULES, true)) {
 				$installLink = '<i>Included in Nadybot now</i>';
 			} elseif (isset($pGroup->highest_supported) && $package->state !== static::BUILT_INT) {
 				// @phpstan-ignore-next-line

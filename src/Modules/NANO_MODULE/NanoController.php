@@ -168,7 +168,7 @@ class NanoController extends ModuleInstance {
 			assert(isset($info, $gmiLink));
 
 			/** @psalm-suppress PossiblyInvalidOperand */
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				str_replace($gmiLink, '', $info) . ' [',
 				$this->text->makeBlob('details', $blob),
 				']'
@@ -240,7 +240,7 @@ class NanoController extends ModuleInstance {
 		$nanoArgs = explode(' > ', $arg);
 		$profArg = array_shift($nanoArgs);
 		$profession = Profession::tryByName($profArg)?->value;
-		if (in_array($profArg, ['general', 'General'])) {
+		if (in_array($profArg, ['general', 'General'], true)) {
 			$profession = 'General';
 		}
 		if (!isset($profession)) {
@@ -582,7 +582,7 @@ class NanoController extends ModuleInstance {
 			$query->whereIlike('professions', "%{$prof}%");
 		}
 		if ($froobOnly) {
-			if ($prof !== null && in_array($prof, ['Keeper', 'Shade'])) {
+			if ($prof !== null && in_array($prof, ['Keeper', 'Shade'], true)) {
 				$msg = "<highlight>{$prof}<end> is not playable as froob.";
 				$context->reply($msg);
 				return;

@@ -169,7 +169,7 @@ class EventManager {
 		} elseif ($type === 'connect' && $this->areConnectEventsFired) {
 			$this->callEventHandler(new ConnectEvent(), $filename, []);
 		} elseif ($this->isValidEventType($type)) {
-			if (!isset($this->events[$type]) || !in_array($filename, $this->events[$type])) {
+			if (!isset($this->events[$type]) || !in_array($filename, $this->events[$type], true)) {
 				$this->events[$type] []= $filename;
 			} elseif ($this->chatBot->isReady()) {
 				$this->logger->error('Error activating {event}: Event already activated!', [
@@ -296,7 +296,7 @@ class EventManager {
 
 		$found = false;
 		if ($this->isValidEventType($type)) {
-			if (in_array($filename, $this->events[$type]??[])) {
+			if (in_array($filename, $this->events[$type]??[], true)) {
 				$found = true;
 				$temp = array_flip($this->events[$type]);
 				unset($this->events[$type][$temp[$filename]]);
@@ -348,7 +348,7 @@ class EventManager {
 				return;
 			}
 			if ($this->isValidEventType($type)) {
-				if (isset($this->events[$type]) && in_array($call, $this->events[$type])) {
+				if (isset($this->events[$type]) && in_array($call, $this->events[$type], true)) {
 					// event already activated
 					continue;
 				}
@@ -395,7 +395,7 @@ class EventManager {
 				return;
 			}
 			if ($this->isValidEventType($type)) {
-				if (!isset($this->events[$type]) || !in_array($call, $this->events[$type])) {
+				if (!isset($this->events[$type]) || !in_array($call, $this->events[$type], true)) {
 					// event already deactivated
 					continue;
 				}

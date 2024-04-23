@@ -61,7 +61,7 @@ class NewsTile {
 					'as first argument'
 				);
 			}
-			if (!in_array('string', $typeNames)) {
+			if (!in_array('string', $typeNames, true)) {
 				throw new InvalidArgumentException(
 					"The news tile {$name}'s callback {$funcHint} does not accept ".
 					'a string as first argument'

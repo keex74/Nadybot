@@ -29,7 +29,7 @@ class CreateRaidPointsLogTable implements SchemaMigration {
 					->where('reason', (string)$log->reason)
 					->where('ticker', (int)$log->ticker)
 					->update([
-						'individual' => !$log->ticker && !in_array((string)$log->reason, ['reward', 'penalty']),
+						'individual' => !$log->ticker && !in_array((string)$log->reason, ['reward', 'penalty'], true),
 					]);
 			});
 			return;

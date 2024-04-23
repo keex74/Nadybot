@@ -437,7 +437,7 @@ class ApiController extends ModuleInstance {
 		} elseif ($status === HttpStatus::OK && $request->getMethod() === 'POST') {
 			$response->setBody('');
 			$response->setStatus(HttpStatus::CREATED);
-		} elseif ($status === HttpStatus::OK && in_array($request->getMethod(), ['PUT', 'PATCH', 'DELETE'])) {
+		} elseif ($status === HttpStatus::OK && in_array($request->getMethod(), ['PUT', 'PATCH', 'DELETE'], true)) {
 			$response->setStatus(HttpStatus::NO_CONTENT);
 		}
 		return $response;
@@ -519,7 +519,7 @@ class ApiController extends ModuleInstance {
 	}
 
 	protected function checkBodyFormat(Request $request, ApiHandler $apiHandler): bool {
-		if (in_array($request->getMethod(), ['GET', 'HEAD', 'DELETE'])) {
+		if (in_array($request->getMethod(), ['GET', 'HEAD', 'DELETE'], true)) {
 			return true;
 		}
 		$rqBodyAttrs = $apiHandler->reflectionMethod->getAttributes(NCA\RequestBody::class);

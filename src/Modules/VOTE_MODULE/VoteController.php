@@ -360,7 +360,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 
-		if (!$topic->allow_other_answers && !in_array($answer, $topic->answers)) {
+		if (!$topic->allow_other_answers && !in_array($answer, $topic->answers, true)) {
 			$msg = 'You have to pick one of the options '.
 				Text::enumerate(...Text::arraySprintf("'%s'", ...$topic->answers)) . '. '.
 				'Custom answers are not allowed for this poll.';

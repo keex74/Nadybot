@@ -76,7 +76,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 	public function setup(): void {
 		$uiBranches = ['off', 'stable', 'unstable'];
 		if (count($matches = Safe::pregMatch('/@(?<branch>.+)$/', BotRunner::getVersion()))) {
-			if (!in_array($matches['branch'], $uiBranches)) {
+			if (!in_array($matches['branch'], $uiBranches, true)) {
 				$uiBranches []= $matches['branch'];
 			}
 		}

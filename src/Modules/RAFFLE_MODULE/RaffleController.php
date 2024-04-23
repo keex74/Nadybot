@@ -197,7 +197,7 @@ class RaffleController extends ModuleInstance {
 		$this->eventManager->fireEvent($event);
 
 		$this->announceRaffleStart();
-		$adminMsg = $this->text->blobWrap(
+		$adminMsg = Text::blobWrap(
 			'You can control the raffle via the ',
 			$this->text->makeBlob('Raffle Admin Menu', $this->getRaffleAdminPage($context->char->name)),
 			'.'
@@ -271,7 +271,7 @@ class RaffleController extends ModuleInstance {
 
 		if ($newRaffle) {
 			$this->announceRaffleStart();
-			$adminMsg = $this->text->blobWrap(
+			$adminMsg = Text::blobWrap(
 				'You can control the raffle via the ',
 				$this->text->makeBlob('Raffle Admin Menu', $this->getRaffleAdminPage($context->char->name)),
 				'.'
@@ -291,13 +291,13 @@ class RaffleController extends ModuleInstance {
 		$blob = $this->getJoinLeaveBlob();
 		if (isset($this->raffle->end) && $this->raffle->end > 0) {
 			$endTime = Util::unixtimeToReadable($this->raffle->end - $this->raffle->start);
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				"{$msg}The raffle will end in <highlight>{$endTime}<end> :: [",
 				$this->text->makeBlob('Join', $blob, 'Raffle actions'),
 				']'
 			);
 		} else {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				$msg,
 				$this->text->makeBlob('Join the raffle', $blob, 'Raffle actions')
 			);
@@ -316,13 +316,13 @@ class RaffleController extends ModuleInstance {
 		$blob = $this->getJoinLeaveBlob();
 		if (isset($this->raffle->end) && $this->raffle->end > 0) {
 			$endTime = Util::unixtimeToReadable($this->raffle->end - time());
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				"{$msg}The raffle will end in <highlight>{$endTime}<end> :: [",
 				$this->text->makeBlob('Join', $blob, 'Raffle actions'),
 				']'
 			);
 		} else {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				$msg,
 				$this->text->makeBlob('Join the raffle', $blob, 'Raffle actions')
 			);
@@ -713,14 +713,14 @@ class RaffleController extends ModuleInstance {
 		$winners = $raffle->slots[0]->getWinnerNames();
 		if ($raffle->slots[0]->amount === 1 || count($winners) === 1) {
 			$winner = $winners[0];
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				'The winner of <highlight>' . $raffle->slots[0]->toString() . '<end>'.
 				" is: <highlight>{$winner}<end> :: [",
 				$blobMsg,
 				']'
 			);
 		} else {
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				'The winners of <highlight>' . $raffle->slots[0]->toString() . '<end> are :: [',
 				$blobMsg,
 				"]:\n".
@@ -794,7 +794,7 @@ class RaffleController extends ModuleInstance {
 		}
 		$msg .= $participantsString . ' :: [';
 		$blob = $this->getJoinLeaveBlob();
-		$msg = $this->text->blobWrap(
+		$msg = Text::blobWrap(
 			$msg,
 			$this->text->makeBlob('Join', $blob, 'Raffle actions'),
 			']'

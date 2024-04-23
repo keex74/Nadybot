@@ -214,11 +214,11 @@ class AlienBioController extends ModuleInstance {
 		$ql = min(300, max(1, $ql));
 
 		$msg = 'Unknown Bio-Material';
-		if (in_array($bio, self::LE_ARMOR_TYPES)) {
+		if (in_array($bio, self::LE_ARMOR_TYPES, true)) {
 			$msg = $this->ofabArmorBio($ql, $bio);
-		} elseif (in_array($bio, self::LE_WEAPON_TYPES)) {
+		} elseif (in_array($bio, self::LE_WEAPON_TYPES, true)) {
 			$msg = $this->ofabWeaponBio($ql, $bio);
-		} elseif (in_array($bio, self::AI_WEAPON_TYPES)) {
+		} elseif (in_array($bio, self::AI_WEAPON_TYPES, true)) {
 			$msg = $this->alienWeaponBio($ql, $bio);
 		}
 
@@ -233,7 +233,7 @@ class AlienBioController extends ModuleInstance {
 		$ql = min(300, max(1, $ql));
 
 		$msg = 'Unknown Bio-Material';
-		if (in_array($bio, self::AI_ARMOR_TYPES)) {
+		if (in_array($bio, self::AI_ARMOR_TYPES, true)) {
 			$msg = $this->alienArmorBio($ql, $bio);
 		} elseif ($bio === 'serum') {
 			$msg = $this->serumBio($ql);

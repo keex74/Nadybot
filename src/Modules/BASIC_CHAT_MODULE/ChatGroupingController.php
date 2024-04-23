@@ -61,7 +61,7 @@ class ChatGroupingController extends ModuleInstance {
 				implode("\n<tab>- ", $this->joined) . "\n\n".
 				'<i>Use <highlight><symbol>group divide &lt;number of groups&gt;<end> to divide into groups.</i>';
 			$msg = $this->text->makeBlob(count($this->joined) . ' players joined', $blob);
-			$msg = $this->text->blobWrap(
+			$msg = Text::blobWrap(
 				'No current groups, ',
 				$msg,
 				'.'

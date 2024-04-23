@@ -166,7 +166,7 @@ class EventsController extends ModuleInstance {
 		}
 		// cannot join an event after 3 hours past its starttime
 		$attendees = $row->getAttendees();
-		if (in_array($context->char->name, $attendees)) {
+		if (in_array($context->char->name, $attendees, true)) {
 			$msg = 'You are already on the event list.';
 			$context->reply($msg);
 			return;
@@ -194,7 +194,7 @@ class EventsController extends ModuleInstance {
 			return;
 		}
 		$attendees = $row->getAttendees();
-		if (!in_array($context->char->name, $attendees)) {
+		if (!in_array($context->char->name, $attendees, true)) {
 			$msg = 'You are not on the event list.';
 			$context->reply($msg);
 			return;

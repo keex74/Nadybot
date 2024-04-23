@@ -232,7 +232,7 @@ class DiscordGatewayCommandHandler extends ModuleInstance implements AccessLevel
 				Text::makeChatcmd('Reject', "/tell <myname> extauth reject {$uid}").
 			']';
 		$msg = $this->text->makeBlob("Request to link your account with {$context->char->name}", $blob);
-		$msg = $this->text->blobWrap('You have received a ', $msg, '.');
+		$msg = Text::blobWrap('You have received a ', $msg, '.');
 		$this->chatBot->sendMassTell($msg, $name);
 
 		$context->reply(

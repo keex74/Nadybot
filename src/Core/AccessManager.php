@@ -324,7 +324,7 @@ class AccessManager {
 		if (!$this->auditController->auditEnabled) {
 			return;
 		}
-		if (isset($audit->value) && in_array($audit->action, [static::ADD_RANK, static::DEL_RANK])) {
+		if (isset($audit->value) && in_array($audit->action, [static::ADD_RANK, static::DEL_RANK], true)) {
 			$revLook = array_flip(self::$ACCESS_LEVELS);
 			$audit->value = $audit->value . ' (' . $revLook[(int)$audit->value] . ')';
 		}

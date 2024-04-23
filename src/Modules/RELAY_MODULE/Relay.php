@@ -394,7 +394,7 @@ class Relay implements MessageReceiver {
 
 	/** Check id the relay protocol supports a certain feature */
 	public function protocolSupportsFeature(int $feature): bool {
-		return $this->relayProtocol->supportsFeature($feature);
+		return $this->relayProtocol::supportsFeature($feature);
 	}
 
 	/**

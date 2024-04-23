@@ -604,8 +604,8 @@ class ImplantDesignerController extends ModuleInstance {
 		usort($clusters, static function (object $cluster1, object $cluster2) use ($grades): int {
 			$val = strcmp($cluster1->name, $cluster2->name);
 			if ($val === 0) {
-				$val1 = array_search($cluster1->grade, $grades);
-				$val2 = array_search($cluster2->grade, $grades);
+				$val1 = array_search($cluster1->grade, $grades, true);
+				$val2 = array_search($cluster2->grade, $grades, true);
 				return $val1 <=> $val2;
 			}
 			return $val <=> 0;

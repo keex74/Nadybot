@@ -276,7 +276,7 @@ class GuildController extends ModuleInstance {
 			->asObj(OrgMember::class);
 
 		foreach ($data as $row) {
-			if (in_array($row->name, $onlineAlts)) {
+			if (in_array($row->name, $onlineAlts, true)) {
 				// skip
 				continue;
 			} elseif (!isset($row->logged_off) || $row->logged_off === 0) {
