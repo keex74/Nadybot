@@ -1430,7 +1430,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		}
 		if (count($altInfo->getAllValidatedAlts()) > 0) {
 			$blob = $altInfo->getAltsBlob(true);
-			$tokens['alt-list'] = (string)((array)$blob)[0];
+			$tokens['alt-list'] = ((array)$blob)[0];
 		}
 		return $tokens;
 	}

@@ -249,7 +249,7 @@ class PlayerManager extends ModuleInstance {
 					$baseUrl = self::PORK_URL;
 				} catch (TimeoutException) {
 					/** @psalm-suppress RedundantCast */
-					$delay = (int)pow($try, 2);
+					$delay = (int)pow($try, 2); // @phpstan-ignore-line
 					$this->logger->info('Lookup for {name}.{dimension} timed out, retrying in {delay}s ({try}/{retries})', [
 						'name' => $name,
 						'dimension' => $dimension,

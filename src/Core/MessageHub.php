@@ -180,6 +180,8 @@ class MessageHub {
 		if (!isset($spec)) {
 			return null;
 		}
+
+		/** @var list<mixed> */
 		$arguments = [];
 		$paramPos = 0;
 		foreach ($spec->params as $parameter) {
@@ -209,13 +211,12 @@ class MessageHub {
 						unset($params[$parameter->name]);
 						break;
 					case $parameter::TYPE_STRING_ARRAY:
-						$value = array_map(static fn ($x) => (string)$x, (array)$value);
-						$arguments []= $value;
+						$arguments []= (array)$value;
 						unset($params[$parameter->name]);
 						break;
 					default:
 						foreach ((array)$value as $v) {
-							$arguments []= (string)$v;
+							$arguments []= $v;
 						}
 						unset($params[$parameter->name]);
 				}
@@ -547,7 +548,7 @@ class MessageHub {
 		if ($hopPos === false) {
 			return null;
 		}
-		$lastHop = ($hopPos === 0) ? null : $hops[(int)$hopPos-1];
+		$lastHop = ($hopPos === 0) ? null : $hops[$hopPos-1];
 		$name = $source->render($lastHop);
 		if (!isset($name)) {
 			return null;

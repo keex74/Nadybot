@@ -25,11 +25,11 @@ parameters:
     allRules: false
     disallowedLooseComparison: true
     booleansInConditions: false
-    uselessCast: false
+    uselessCast: true
     requireParentConstructorCall: false
     disallowedConstructs: true
     overwriteVariablesWithLoop: true
-    closureUsesThis: false
+    closureUsesThis: true
     matchingInheritedMethodNames: true
     numericOperandsInArithmeticOperators: false
     strictCalls: true

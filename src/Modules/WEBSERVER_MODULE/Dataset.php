@@ -45,7 +45,7 @@ class Dataset {
 				',',
 				array_map(
 					static function (string $tag) use ($tags): string {
-						return "{$tag}=" . json_encode((string)$tags[$tag]);
+						return "{$tag}=" . json_encode($tags[$tag]);
 					},
 					$this->tags
 				)

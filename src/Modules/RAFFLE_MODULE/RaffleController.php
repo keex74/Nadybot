@@ -471,7 +471,7 @@ class RaffleController extends ModuleInstance {
 		$myMain = $this->altsController->getMainOf($context->char->name);
 		foreach ($this->raffle->slots as $slotNum => &$raffleSlot) {
 			/** @psalm-suppress RedundantCast: */
-			$sameSlot = ($slot === (int)$slotNum);
+			$sameSlot = ($slot === (int)$slotNum); // @phpstan-ignore-line
 			foreach ($raffleSlot->participants as $participant) {
 				$sameChar = ($participant === $context->char->name);
 				$sameMain = ($myMain === $this->altsController->getMainOf($participant));

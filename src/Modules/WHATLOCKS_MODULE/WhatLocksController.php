@@ -144,7 +144,7 @@ class WhatLocksController extends ModuleInstance {
 			if (!isset($item->item)) {
 				return null;
 			}
-			return $this->prettyDuration($item->duration, (int)$longestSuperfluous)[1].
+			return $this->prettyDuration($item->duration, $longestSuperfluous)[1].
 				' - ' .
 				$item->item->getLink($item->item->lowql);
 		});

@@ -1551,7 +1551,7 @@ class Nadybot {
 			$this->commandManager->register(
 				$moduleName,
 				implode(',', $definition->handlers),
-				(string)$command,
+				$command,
 				$definition->accessLevel,
 				$definition->description,
 				$definition->defaultStatus,

@@ -138,7 +138,7 @@ class BestQLController extends ModuleInstance {
 		$oldRequirement = 0;
 		$maxAttribute = $specPairs[count($specPairs)-1];
 		$oldValue = null;
-		for ($searchedQL = (int)min(array_keys($itemSpecs)); $searchedQL <= max(array_keys($itemSpecs)); $searchedQL++) {
+		for ($searchedQL = min(array_keys($itemSpecs)); $searchedQL <= max(array_keys($itemSpecs)); $searchedQL++) {
 			$value = $this->calcStatFromQL($itemSpecs, $searchedQL);
 			if ($value === null) {
 				$msg = 'I was unable to find any breakpoints for the given stats.';

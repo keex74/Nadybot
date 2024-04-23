@@ -568,8 +568,8 @@ class BuffPerksController extends ModuleInstance {
 					foreach ($level->resistances as $strain => $amount) {
 						$resInserts []= [
 							'perk_level_id' => $level->id,
-							'strain_id' => (int)$strain,
-							'amount' => (int)$amount,
+							'strain_id' => $strain,
+							'amount' => $amount,
 						];
 					}
 
@@ -581,8 +581,8 @@ class BuffPerksController extends ModuleInstance {
 					foreach ($level->buffs as $skillId => $amount) {
 						$buffInserts []= [
 							'perk_level_id' => $level->id,
-							'skill_id' => (int)$skillId,
-							'amount' => (int)$amount,
+							'skill_id' => $skillId,
+							'amount' => $amount,
 						];
 					}
 				}

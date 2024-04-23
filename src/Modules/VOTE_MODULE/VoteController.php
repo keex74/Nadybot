@@ -502,7 +502,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			$blob .= '<tab>' . Text::alignNumber($val, 3) . '% ';
 
 			if ($timeleft > 0) {
-				$blob .= Text::makeChatcmd((string)$answer, "/tell <myname> vote {$topic->id} {$answer}") . " (Votes: {$votes})\n";
+				$blob .= Text::makeChatcmd($answer, "/tell <myname> vote {$topic->id} {$answer}") . " (Votes: {$votes})\n";
 			} else {
 				$blob .= "<highlight>{$answer}<end> (Votes: {$votes})\n";
 			}

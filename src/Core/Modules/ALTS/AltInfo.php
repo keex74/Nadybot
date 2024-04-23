@@ -77,7 +77,7 @@ class AltInfo {
 		$arr = [$this->main];
 		foreach ($this->alts as $alt => $validated) {
 			if ($validated->validated_by_alt && $validated->validated_by_main) {
-				$arr []= (string)$alt;
+				$arr []= $alt;
 			}
 		}
 		return $arr;
@@ -93,8 +93,8 @@ class AltInfo {
 	public function getAllValidatedAlts(): array {
 		$alts = [];
 		foreach ($this->alts as $alt => $status) {
-			if ($this->isValidated((string)$alt)) {
-				$alts []= (string)$alt;
+			if ($this->isValidated($alt)) {
+				$alts []= $alt;
 			}
 		}
 		return $alts;
@@ -112,7 +112,7 @@ class AltInfo {
 				continue;
 			}
 			if (!$status->validated_by_main) {
-				$alts []= (string)$alt;
+				$alts []= $alt;
 			}
 		}
 		return $alts;
@@ -141,8 +141,8 @@ class AltInfo {
 		}
 
 		foreach ($this->alts as $name => $validated) {
-			if ($this->buddylistManager->isOnline((string)$name)) {
-				$online_list []= (string)$name;
+			if ($this->buddylistManager->isOnline($name)) {
+				$online_list []= $name;
 			}
 		}
 
@@ -162,7 +162,7 @@ class AltInfo {
 
 	public function hasUnvalidatedAlts(): bool {
 		foreach ($this->getAllAlts() as $alt) {
-			if (!$this->isValidated((string)$alt)) {
+			if (!$this->isValidated($alt)) {
 				return true;
 			}
 		}

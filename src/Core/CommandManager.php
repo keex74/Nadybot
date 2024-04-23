@@ -974,13 +974,12 @@ class CommandManager implements MessageEmitter {
 		$showRights = $this->helpController->helpShowAL
 			&& $this->accessManager->checkSingleAccess($context->char->name, 'mod');
 
-		/** @var string $cmdName */
 		foreach ($groupedByCmd as $cmdName => $refGroups) {
 			/** @var Collection<int,list<ReflectionMethod>> $refGroups */
 			$header = "<header2>'{$cmdName}' command".
 				((count($refGroups) > 1 || count($refGroups[0]) > 1) ? 's' : '');
 			if ($showRights) {
-				$cmdCfg = $this->get((string)$cmdName);
+				$cmdCfg = $this->get($cmdName);
 				if (isset($cmdCfg, $cmdCfg->permissions[$context->permissionSet])) {
 					$al = $cmdCfg->permissions[$context->permissionSet]->access_level;
 					$al = $this->accessManager->getDisplayName($al);

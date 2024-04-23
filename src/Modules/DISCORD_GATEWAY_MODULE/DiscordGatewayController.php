@@ -1283,7 +1283,7 @@ class DiscordGatewayController extends ModuleInstance {
 		}
 		$invitations = await($queue);
 		foreach ($invitations as $guildId => $invites) {
-			$this->cacheInvites((string)$guildId, $invites);
+			$this->cacheInvites($guildId, $invites);
 		}
 		$context->reply($this->renderInvites());
 	}
@@ -1819,7 +1819,7 @@ class DiscordGatewayController extends ModuleInstance {
 		foreach ($this->guilds as $guildId => $guild) {
 			foreach ($guild->voice_states as $voice) {
 				if ($voice->user_id === $userId) {
-					$voice->guild_id = (string)$guildId;
+					$voice->guild_id = $guildId;
 					return $voice;
 				}
 			}
