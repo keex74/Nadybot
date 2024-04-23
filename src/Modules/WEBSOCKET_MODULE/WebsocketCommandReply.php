@@ -47,11 +47,13 @@ class WebsocketCommandReply implements CommandReply, MessageEmitter {
 		return Source::WEB;
 	}
 
-	public function reply($msg): void {
+	/** @param string|list<string> $msg */
+	public function reply(string|array $msg): void {
 		$msg = (array)$msg;
-		if (empty($msg)) {
+		if (!count($msg)) {
 			return;
 		}
+
 		foreach ($msg as $text) {
 			$rMessage = new RoutableMessage($text);
 			$rMessage->setCharacter(new Character(
@@ -63,6 +65,8 @@ class WebsocketCommandReply implements CommandReply, MessageEmitter {
 			];
 			$this->messageHub->handle($rMessage);
 		}
+
+		assert(isset($rMessage));
 		$msgs = $this->webChatConverter->convertMessages($msg);
 		foreach ($msgs as $msg) {
 			$path = new WebSource(type: Source::WEB, name: 'Web', color: '');

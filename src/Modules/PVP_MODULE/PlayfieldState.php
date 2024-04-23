@@ -36,7 +36,7 @@ class PlayfieldState implements ArrayAccess, Iterator {
 
 	public function offsetSet(mixed $offset, mixed $value): void {
 		$offset = (int)$offset;
-		if (!($value instanceof SiteUpdate)) {
+		if (!($value instanceof SiteUpdate)) { // @phpstan-ignore-line
 			throw new Exception('Invalid data stored in PlayfieldState');
 		}
 		$this->sites[$offset] = $value;
@@ -58,7 +58,7 @@ class PlayfieldState implements ArrayAccess, Iterator {
 		reset($this->sites);
 	}
 
-	public function key(): ?int {
+	public function key(): int {
 		return key($this->sites);
 	}
 

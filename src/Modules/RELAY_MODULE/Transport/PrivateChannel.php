@@ -109,9 +109,6 @@ class PrivateChannel implements TransportInterface, StatusProvider {
 	}
 
 	public function receiveLeave(OtherLeavePrivEvent $event): void {
-		if (!is_string($event->sender)) {
-			return;
-		}
 		if (strtolower($event->channel) !== strtolower($this->channel)) {
 			return;
 		}

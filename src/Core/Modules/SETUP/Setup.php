@@ -33,9 +33,6 @@ class Setup {
 	public function readInput(string $output=''): string {
 		echo $output;
 		$input = (new BufferedReader(getStdin()))->readUntil(\PHP_EOL);
-		if (!is_string($input)) {
-			exit();
-		}
 		return $input;
 	}
 

@@ -621,7 +621,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 	private function guessContentType(string $fileName): string {
 		$info = pathinfo($fileName);
 		$extension = '';
-		if (is_array($info) && isset($info['extension'])) {
+		if (isset($info['extension'])) {
 			$extension = $info['extension'];
 		}
 		switch ($extension) {

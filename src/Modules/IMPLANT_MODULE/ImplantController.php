@@ -110,6 +110,7 @@ class ImplantController extends ModuleInstance {
 				return $searchedQL-1;
 			}
 		}
+		assert(isset($searchedQL));
 		return $searchedQL-1;
 	}
 

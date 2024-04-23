@@ -92,9 +92,6 @@ class RulesController extends ModuleInstance {
 		description: 'If you defined rules, send them to people joining the private channel'
 	)]
 	public function joinPrivateChannelShowRulesEvent(JoinMyPrivEvent $eventObj): void {
-		if (!is_string($eventObj->sender)) {
-			return;
-		}
 		$rulesPath = "{$this->config->paths->data}/rules.txt";
 		try {
 			if (!$this->fs->exists($rulesPath)) {

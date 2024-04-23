@@ -71,11 +71,7 @@ class MdbController extends ModuleInstance {
 	public function mdbInstanceCommand(CmdContext $context, int $categoryId, int $instanceId): void {
 		$client = AsyncMMDBClient::createDefault();
 		$messageString = $client->getMessageString($categoryId, $instanceId) ?? '- not found -';
-		$msg = "Unable to find MDB string category <highlight>{$categoryId}<end>, ".
-			"instance <highlight>{$instanceId}<end>.";
-		if ($messageString !== null) {
-			$msg = "[{$categoryId} : {$instanceId}] {$messageString}";
-		}
+		$msg = "[{$categoryId} : {$instanceId}] {$messageString}";
 		$context->reply($msg);
 	}
 }

@@ -4,7 +4,7 @@ namespace Nadybot\Core;
 
 use function Amp\ByteStream\splitLines;
 use function Amp\delay;
-use function Safe\{class_implements, preg_match, preg_split};
+use function Safe\{class_implements, preg_match};
 
 use Amp\File\FilesystemException;
 use BackedEnum;
@@ -370,7 +370,6 @@ class DB {
 		}
 		foreach ($this->sqlRegexpReplacements as $search => $replace) {
 			$sql = Safe::pregReplace($search, $replace, $sql);
-			assert(is_string($sql));
 		}
 		return $sql;
 	}
@@ -424,7 +423,7 @@ class DB {
 	public function rollback(): void {
 		$this->logCaller('Rolling back transaction');
 		$this->logger->info('Rolling back transaction');
-		$this->sql?->rollback();
+		$this->sql?->rollBack();
 		$this->transactionOpened = null;
 	}
 
@@ -769,7 +768,7 @@ class DB {
 			$value = $matches[2];
 			switch (strtolower($matches[1])) {
 				case 'replaces':
-					$where = preg_split("/\s*=\s*/", $value);
+					$where = Safe::pregSplit("/\s*=\s*/", $value);
 					break;
 				case 'version':
 					$version = $value;
@@ -815,7 +814,7 @@ class DB {
 		$items = [];
 		$itemCount = 0;
 		try {
-			if (isset($where) && is_countable($where) && count($where)) {
+			if (isset($where) && count($where)) {
 				$this->table($table)->where(...$where)->delete();
 			} else {
 				$this->table($table)->delete();

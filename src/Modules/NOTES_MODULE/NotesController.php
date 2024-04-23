@@ -253,7 +253,6 @@ class NotesController extends ModuleInstance {
 	public function showRemindersOnLogonEvent(LogonEvent $eventObj): void {
 		$sender = $eventObj->sender;
 		if (!$this->chatBot->isReady()
-			|| !is_string($sender)
 			|| $eventObj->wasOnline !== false
 		) {
 			return;
@@ -267,7 +266,7 @@ class NotesController extends ModuleInstance {
 	)]
 	public function showRemindersOnPrivJoinEvent(JoinMyPrivEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender) || $this->buddylistManager->isOnline($sender)) {
+		if ($this->buddylistManager->isOnline($sender)) {
 			return;
 		}
 		$this->showReminders($sender);

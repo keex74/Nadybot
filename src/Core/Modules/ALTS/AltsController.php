@@ -435,7 +435,6 @@ class AltsController extends ModuleInstance {
 	)]
 	public function checkUnvalidatedAltsEvent(LogonEvent $eventObj): void {
 		if (!$this->chatBot->isReady()
-			|| !is_string($eventObj->sender)
 			|| $eventObj->wasOnline !== false
 		) {
 			return;

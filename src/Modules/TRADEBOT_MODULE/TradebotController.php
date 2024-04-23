@@ -114,7 +114,7 @@ class TradebotController extends ModuleInstance {
 	)]
 	public function acceptPrivJoinEvent(ExtJoinPrivRequest $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender) || !$this->isTradebot($sender)) {
+		if (!$this->isTradebot($sender)) {
 			return;
 		}
 		$this->logger->notice("Joining {character}'s private channel.", ['character' => $sender]);
@@ -205,7 +205,7 @@ class TradebotController extends ModuleInstance {
 		description: 'Join tradebot private channels'
 	)]
 	public function tradebotOnlineEvent(LogonEvent $eventObj): void {
-		if (is_string($eventObj->sender) && $this->isTradebot($eventObj->sender)) {
+		if ($this->isTradebot($eventObj->sender)) {
 			$this->joinPrivateChannel($eventObj->sender);
 		}
 	}
@@ -228,7 +228,6 @@ class TradebotController extends ModuleInstance {
 	)]
 	public function receiveRelayMessageExtPrivEvent(PrivateChannelMsgEvent $eventObj): void {
 		if (!$this->isTradebot($eventObj->channel)
-			|| !is_string($eventObj->sender)
 			|| !$this->isTradebot($eventObj->sender)) {
 			return;
 		}
@@ -241,7 +240,7 @@ class TradebotController extends ModuleInstance {
 		description: 'Relay incoming tells from the tradebots to org/private channel'
 	)]
 	public function receiveMessageEvent(RecvMsgEvent $eventObj): void {
-		if (!is_string($eventObj->sender) || !$this->isTradebot($eventObj->sender)) {
+		if (!$this->isTradebot($eventObj->sender)) {
 			return;
 		}
 		$this->processIncomingTradebotMessage($eventObj->sender, $eventObj->message);

@@ -996,9 +996,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	)]
 	public function logonAutoinviteEvent(LogonEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender)) {
-			return;
-		}
 
 		$data = $this->db->table(Member::getTable())
 			->where('name', $sender)
@@ -1055,9 +1052,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		description: 'Displays a message when a character joins the private channel'
 	)]
 	public function joinPrivateChannelMessageEvent(JoinMyPrivEvent $eventObj): void {
-		if (!is_string($eventObj->sender)) {
-			return;
-		}
 		$sender = $eventObj->sender;
 
 		$msg = $this->getLogonMessage($sender);
@@ -1098,7 +1092,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	)]
 	public function autobanOnJoin(JoinMyPrivEvent $eventObj): void {
 		$reqFaction = $this->onlyAllowFaction;
-		if ($reqFaction === 'all' || !is_string($eventObj->sender)) {
+		if ($reqFaction === 'all') {
 			return;
 		}
 		$player = $this->playerManager->byName($eventObj->sender);
@@ -1168,7 +1162,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			'<$1>',
 			$leaveMessage
 		);
-		assert(is_string($leaveMessage));
 
 		return $leaveMessage;
 	}
@@ -1179,9 +1172,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	)]
 	public function leavePrivateChannelMessageEvent(LeaveMyPrivEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender)) {
-			return;
-		}
 
 		$msg = $this->getLogoffMessage($sender);
 
@@ -1209,9 +1199,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	)]
 	public function joinPrivateChannelRecordEvent(JoinMyPrivEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender)) {
-			return;
-		}
 		$this->onlineController->addPlayerToOnlineList(
 			$sender,
 			$this->config->general->orgName . ' Guests',
@@ -1224,11 +1211,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 		description: 'Updates the database when a character leaves the private channel'
 	)]
 	public function leavePrivateChannelRecordEvent(LeaveMyPrivEvent $eventObj): void {
-		$sender = $eventObj->sender;
-		if (!is_string($sender)) {
-			return;
-		}
-		$this->onlineController->removePlayerFromOnlineList($sender, 'priv');
+		$this->onlineController->removePlayerFromOnlineList($eventObj->sender, 'priv');
 	}
 
 	#[NCA\Event(
@@ -1237,9 +1220,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 	)]
 	public function joinPrivateChannelShowOnlineEvent(JoinMyPrivEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender)) {
-			return;
-		}
 		$msg = $this->onlineController->getOnlineList();
 		$this->chatBot->sendMassTell($msg, $sender);
 	}
@@ -1463,7 +1443,6 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			'<$1>',
 			$joinMessage
 		);
-		assert(is_string($joinMessage));
 
 		return $joinMessage;
 	}

@@ -94,7 +94,7 @@ class ClassLoader {
 			$entries = parse_ini_string($this->fs->read("{$baseDir}/{$moduleName}/module.ini"));
 			// check that current PHP version is greater or equal than module's
 			// minimum required PHP version
-			if (is_array($entries) && isset($entries['minimum_php_version'])) {
+			if (isset($entries['minimum_php_version'])) {
 				$minimum = $entries['minimum_php_version'];
 				$current = \PHP_VERSION;
 				if (strnatcmp($minimum, $current) > 0) {

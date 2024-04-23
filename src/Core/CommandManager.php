@@ -219,7 +219,7 @@ class CommandManager implements MessageEmitter {
 			));
 		} catch (SQLException $e) {
 			$this->logger->error("Error registering method '{method}' for command '{command}': {error}", [
-				'method' => $handler,
+				'method' => $filename,
 				'command' => $command,
 				'error' => $e->getMessage(),
 				'exception' => $e,

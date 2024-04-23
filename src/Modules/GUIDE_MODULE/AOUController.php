@@ -133,7 +133,7 @@ class AOUController extends ModuleInstance {
 		}
 
 		$content = $dom->getElementsByTagName('content')->item(0);
-		if ($content == null || !($content instanceof DOMElement)) {
+		if (!isset($content) || !($content instanceof DOMElement)) { // @phpstan-ignore-line
 			throw new Exception('Invalid XML structure');
 		}
 		$title = $content->getElementsByTagName('name')->item(0)->nodeValue;

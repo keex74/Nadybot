@@ -1,4 +1,5 @@
 parameters:
+  reportMaybesInPropertyPhpDocTypes: false
   level: 7
   paths:
     - src
@@ -20,8 +21,24 @@ parameters:
     enableContextRequireExceptionKeyRule: true
     reportContextExceptionLogLevel: 'info'
     contextKeyOriginalPattern: '#\A[A-Za-z0-9-_]+\z#'
+  strictRules:
+    allRules: false
+    disallowedLooseComparison: false
+    booleansInConditions: false
+    uselessCast: false
+    requireParentConstructorCall: false
+    disallowedConstructs: false
+    overwriteVariablesWithLoop: false
+    closureUsesThis: false
+    matchingInheritedMethodNames: false
+    numericOperandsInArithmeticOperators: false
+    strictCalls: false
+    switchConditionsMatchingType: false
+    noVariableVariables: false
+    strictArrayFilter: false
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/nadyita/phpstan-amp-file-rule/phpstan-amp-file-rule.neon
     - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
     - vendor/struggle-for-php/sfp-phpstan-psr-log/rules.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon

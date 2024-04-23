@@ -687,7 +687,7 @@ class ConfigController extends ModuleInstance {
 			}
 
 			$blob .= "<tab>{$cmdNameLink} (" . implode('|', $status) . '): [' . implode('] [', $statusLinks) . ']';
-			if ($row->description !== null && $row->description !== '') {
+			if ($row->description !== '') {
 				$blob .= " - ({$row->description})\n";
 			} else {
 				$blob .= "\n";
@@ -715,7 +715,7 @@ class ConfigController extends ModuleInstance {
 				$status = '<off>Disabled<end>';
 			}
 
-			if ($row->description !== null && $row->description !== 'none') {
+			if ($row->description !== '' && $row->description !== 'none') {
 				$blob .= "<tab><highlight>{$row->type}<end> ({$row->description}) - ({$status}): [{$statusLink}]\n";
 			} else {
 				$blob .= "<tab><highlight>{$row->type}<end> - ({$status}): [{$statusLink}]\n";

@@ -126,7 +126,7 @@ class ApiSpecGenerator {
 	/** @param array<string,array<mixed>> $result */
 	public function addSchema(array &$result, string $className): void {
 		$className = Safe::pregReplace("/\[\]$/", '', $className);
-		if (!is_string($className) || isset($result[$className])) {
+		if (isset($result[$className])) {
 			return;
 		}
 		$class = $this->getFullClass($className);

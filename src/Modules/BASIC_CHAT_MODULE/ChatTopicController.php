@@ -122,7 +122,6 @@ class ChatTopicController extends ModuleInstance {
 		if ($this->topic === ''
 			|| !isset($this->chatBot->guildmembers[$eventObj->sender])
 			|| !$this->chatBot->isReady()
-			|| !is_string($eventObj->sender)
 			|| $eventObj->wasOnline !== false
 		) {
 			return;
@@ -136,7 +135,7 @@ class ChatTopicController extends ModuleInstance {
 		description: 'Shows topic when someone joins the private channel'
 	)]
 	public function joinPrivEvent(JoinMyPrivEvent $eventObj): void {
-		if ($this->topic === '' || !is_string($eventObj->sender)) {
+		if ($this->topic === '') {
 			return;
 		}
 		$msg = $this->buildTopicMessage();

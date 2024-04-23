@@ -238,7 +238,7 @@ class ConfigApiController extends ModuleInstance {
 			if (isset($exception) && $exception instanceof InsufficientAccessException) {
 				return new Response(status: HttpStatus::FORBIDDEN);
 			}
-			if (isset($exception) && $exception instanceof Exception) {
+			if (isset($exception)) {
 				return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);
 			}
 		}

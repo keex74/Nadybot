@@ -63,7 +63,7 @@ class EventlistController extends ModuleInstance {
 				$lastType = $row->type;
 			}
 			$blob .= "<tab>{$on}  {$off}  {$row->module} ({$status})";
-			if ($row->description !== null && $row->description !== '') {
+			if ($row->description !== '') {
 				$blob .= " - {$row->description}\n";
 			}
 		}

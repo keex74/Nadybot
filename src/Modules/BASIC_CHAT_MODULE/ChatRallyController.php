@@ -207,7 +207,7 @@ class ChatRallyController extends ModuleInstance {
 		$sender = $eventObj->sender;
 
 		$rally = $this->get();
-		if ($rally !== '' && is_string($sender)) {
+		if ($rally !== '') {
 			$this->chatBot->sendMassTell($rally, $sender);
 		}
 	}

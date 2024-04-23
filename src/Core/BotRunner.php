@@ -351,7 +351,7 @@ class BotRunner {
 			}
 		}
 		foreach ($path->modules as $dir) {
-			if (is_string($dir) && !self::$fs->exists($dir)) {
+			if (!self::$fs->exists($dir)) {
 				self::$fs->createDirectory($dir, 0700);
 			}
 		}

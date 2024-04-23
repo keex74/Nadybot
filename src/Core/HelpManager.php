@@ -109,9 +109,7 @@ class HelpManager {
 			if ($this->checkAccessLevels($accessLevel, explode(',', $row->admin_list))) {
 				$output .= $this->configController->getAliasInfo($row->name);
 				$content = $this->fs->read($row->file);
-				if (is_string($content)) {
-					$output .= trim($content) . "\n\n";
-				}
+				$output .= trim($content) . "\n\n";
 				$shown[$row->file] = true;
 			}
 		}

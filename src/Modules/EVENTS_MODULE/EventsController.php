@@ -320,8 +320,7 @@ class EventsController extends ModuleInstance {
 	)]
 	public function logonEvent(LogonEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender)
-			|| !$this->chatBot->isReady()
+		if (!$this->chatBot->isReady()
 			|| !isset($this->chatBot->guildmembers[$sender])
 			|| $eventObj->wasOnline !== false
 			|| !$this->hasRecentEvents()
@@ -340,10 +339,10 @@ class EventsController extends ModuleInstance {
 	)]
 	public function joinPrivEvent(JoinMyPrivEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!is_string($sender) || !$this->hasRecentEvents()) {
+		if (!$this->hasRecentEvents()) {
 			return;
 		}
-		$events =$this->getEvents();
+		$events = $this->getEvents();
 		if (!isset($events)) {
 			return;
 		}

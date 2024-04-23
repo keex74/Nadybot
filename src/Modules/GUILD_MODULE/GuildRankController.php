@@ -109,7 +109,7 @@ class GuildRankController extends ModuleInstance implements AccessLevelProvider 
 			$context->reply('The bot must be in an org.');
 			return;
 		}
-		$org = $this->guildManager->ById($this->config->orgId??0, null, false);
+		$org = $this->guildManager->byId($this->config->orgId??0, null, false);
 		$this->displayRankMappings($org, $context);
 	}
 

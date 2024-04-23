@@ -199,9 +199,6 @@ class LoggerWrapper implements LoggerInterface {
 	/** Get the relative path of the directory where logs of this bot are stored */
 	public static function getLoggingDirectory(): string {
 		$errorLog = ini_get('error_log');
-		if (!is_string($errorLog)) {
-			throw new Exception('Your php.ini error_log is misconfigured.');
-		}
 		$logDir = dirname($errorLog);
 		if (substr($logDir, 0, 1) !== '/') {
 			try {

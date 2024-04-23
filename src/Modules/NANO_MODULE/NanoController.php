@@ -603,8 +603,7 @@ class NanoController extends ModuleInstance {
 		$lastSubStrain = null;
 		$blob = "<header2>{$data[0]->strain}<end>\n";
 		foreach ($data as $nano) {
-			/** @var Nano $nano */
-			if ($nano->sub_strain !== null && $nano->sub_strain !== '' && $nano->sub_strain !== $lastSubStrain) {
+			if ($nano->sub_strain !== '' && $nano->sub_strain !== $lastSubStrain) {
 				$blob .= "\n<highlight>{$nano->sub_strain}<end>\n";
 				$lastSubStrain = $nano->sub_strain;
 			}
@@ -638,7 +637,7 @@ class NanoController extends ModuleInstance {
 			->orderBy('strain')
 			->select(['school', 'strain'])->distinct();
 		if ($froobOnly) {
-			if ($profession !== null && in_array($profession, ['Keeper', 'Shade'])) {
+			if (in_array($profession, ['Keeper', 'Shade'], true)) {
 				$msg = "<highlight>{$profession}<end> is not playable as froob.";
 				$context->reply($msg);
 				return;

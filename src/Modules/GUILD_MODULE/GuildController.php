@@ -659,7 +659,6 @@ class GuildController extends ModuleInstance {
 			'<$1>',
 			$logonMessage
 		);
-		assert(is_string($logonMessage));
 
 		return $logonMessage;
 	}
@@ -672,7 +671,6 @@ class GuildController extends ModuleInstance {
 		$sender = $eventObj->sender;
 		if (!isset($this->chatBot->guildmembers[$sender])
 			|| !$this->chatBot->isReady()
-			|| !is_string($sender)
 			|| $eventObj->wasOnline !== false) {
 			return;
 		}
@@ -720,7 +718,6 @@ class GuildController extends ModuleInstance {
 			'<$1>',
 			$logoffMessage
 		);
-		assert(is_string($logoffMessage));
 
 		return $logoffMessage;
 	}
@@ -733,7 +730,6 @@ class GuildController extends ModuleInstance {
 		$sender = $eventObj->sender;
 		if (!isset($this->chatBot->guildmembers[$sender])
 			|| !$this->chatBot->isReady()
-			|| !is_string($sender)
 			|| $eventObj->wasOnline !== true) {
 			return;
 		}
@@ -765,7 +761,6 @@ class GuildController extends ModuleInstance {
 		$sender = $eventObj->sender;
 		if (!isset($this->chatBot->guildmembers[$sender])
 			|| !$this->chatBot->isReady()
-			|| !is_string($sender)
 		) {
 			return;
 		}

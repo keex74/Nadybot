@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Safe\{json_decode, preg_split};
+use function Safe\{json_decode};
 use Amp\Http\Client\Connection\{DefaultConnectionFactory, UnlimitedConnectionPool};
 use Amp\Http\Client\Interceptor\SetRequestHeader;
 use Amp\Http\Client\{HttpClient, HttpClientBuilder, Request, SocketException, TimeoutException};
@@ -107,10 +107,8 @@ class AccountUnfreezer {
 		$cookies = $response->getHeaderArray('Set-Cookie');
 		$cookieValues = [];
 		foreach ($cookies as $cookie) {
-			$cookieParts = preg_split("/;\s*/", $cookie);
-			if ($cookieParts !== false) {
-				$cookieValues []= $cookieParts[0];
-			}
+			$cookieParts = Safe::pregSplit("/;\s*/", $cookie);
+			$cookieValues []= $cookieParts[0];
 		}
 		return implode('; ', $cookieValues);
 	}

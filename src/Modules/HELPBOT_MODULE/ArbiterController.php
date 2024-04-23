@@ -204,7 +204,7 @@ class ArbiterController extends ModuleInstance {
 		$upcomingEvents = [
 			$this->getNextBS($time),
 			$this->getNextAI($time),
-			$this->getNextDIO($time),
+			$this->getNextDio($time),
 		];
 
 		// Sort them by start date, to the next one coming up or currently on is the first
@@ -270,7 +270,7 @@ class ArbiterController extends ModuleInstance {
 		$upcomingEvents = [
 			$this->getNextBS(),
 			$this->getNextAI(),
-			$this->getNextDIO(),
+			$this->getNextDio(),
 		];
 
 		// Sort them by start date, to the next one coming up or currently on is the first
@@ -303,7 +303,7 @@ class ArbiterController extends ModuleInstance {
 		$upcomingEvents = [
 			$this->getNextBS(),
 			$this->getNextAI(),
-			$this->getNextDIO(),
+			$this->getNextDio(),
 		];
 
 		// Sort them by start date, to the next one coming up or currently on is the first

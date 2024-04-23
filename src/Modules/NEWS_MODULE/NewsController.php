@@ -190,7 +190,6 @@ class NewsController extends ModuleInstance {
 
 		if (!$this->chatBot->isReady()
 			|| !isset($this->chatBot->guildmembers[$sender])
-			|| !is_string($sender)
 			|| $eventObj->wasOnline !== false
 			|| !$this->hasRecentNews($sender)
 		) {
@@ -207,9 +206,7 @@ class NewsController extends ModuleInstance {
 		description: 'Sends news to players joining private channel'
 	)]
 	public function privateChannelJoinEvent(JoinMyPrivEvent $eventObj): void {
-		if (!is_string($eventObj->sender)
-			|| !$this->hasRecentNews($eventObj->sender)
-		) {
+		if (!$this->hasRecentNews($eventObj->sender)) {
 			return;
 		}
 		$news = $this->getNews($eventObj->sender, true);

@@ -84,7 +84,6 @@ class WishlistController extends ModuleInstance {
 	)]
 	public function sendWishlistOnLogon(LogonEvent $event): void {
 		if (!$this->chatBot->isReady()
-			|| !is_string($event->sender)
 			|| $event->wasOnline !== false
 		) {
 			return;

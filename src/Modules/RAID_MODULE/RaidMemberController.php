@@ -522,9 +522,6 @@ class RaidMemberController extends ModuleInstance {
 		description: 'Remove players from the raid when they leave the channel'
 	)]
 	public function leavePrivateChannelMessageEvent(LeaveMyPrivEvent $eventObj): void {
-		if (!is_string($eventObj->sender)) {
-			return;
-		}
 		$this->leaveRaid(null, $eventObj->sender);
 	}
 

@@ -463,7 +463,7 @@ class OnlineController extends ModuleInstance {
 	)]
 	public function recordLogonEvent(LogonEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!isset($this->chatBot->guildmembers[$sender]) || !is_string($sender)) {
+		if (!isset($this->chatBot->guildmembers[$sender])) {
 			return;
 		}
 		$player = $this->addPlayerToOnlineList($sender, $this->config->general->orgName, 'guild');
@@ -483,7 +483,7 @@ class OnlineController extends ModuleInstance {
 	)]
 	public function recordLogoffEvent(LogoffEvent $eventObj): void {
 		$sender = $eventObj->sender;
-		if (!isset($this->chatBot->guildmembers[$sender]) || !is_string($sender)) {
+		if (!isset($this->chatBot->guildmembers[$sender])) {
 			return;
 		}
 		$this->removePlayerFromOnlineList($sender, 'guild');
@@ -502,7 +502,6 @@ class OnlineController extends ModuleInstance {
 		$sender = $eventObj->sender;
 		if (!isset($this->chatBot->guildmembers[$sender])
 			|| !$this->chatBot->isReady()
-			|| !is_string($sender)
 			|| $eventObj->wasOnline !== false
 		) {
 			return;
@@ -615,9 +614,6 @@ class OnlineController extends ModuleInstance {
 		),
 	]
 	public function afkPrivateChannelEvent(MyPrivateChannelMsgEvent $eventObj): void {
-		if (!is_string($eventObj->sender)) {
-			return;
-		}
 		$this->afk($eventObj->sender, $eventObj->message, $eventObj->type);
 	}
 

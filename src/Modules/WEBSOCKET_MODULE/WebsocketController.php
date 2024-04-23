@@ -211,9 +211,6 @@ class WebsocketController extends ModuleInstance implements WebsocketClientHandl
 		$body = $message->buffer();
 		$this->logger->info('[Data inc.] {data}', ['data' => $body]);
 		try {
-			if (!is_string($body)) {
-				throw new Exception();
-			}
 			$data = json_decode($body, true);
 			$mapper = new ObjectMapperUsingReflection();
 			$command = $mapper->hydrateObject(WebsocketCommand::class, $data);

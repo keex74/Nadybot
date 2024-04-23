@@ -150,9 +150,6 @@ class GreetController extends ModuleInstance {
 		description: 'Greet players joining the private channel',
 	)]
 	public function sendRandomJoinGreeting(JoinMyPrivEvent $event): void {
-		if (!is_string($event->sender)) {
-			return;
-		}
 		if (!$this->needsGreeting($event->sender)) {
 			return;
 		}
@@ -178,7 +175,6 @@ class GreetController extends ModuleInstance {
 		$sender = $event->sender;
 		if (!isset($this->chatBot->guildmembers[$sender])
 			|| !$this->chatBot->isReady()
-			|| !is_string($sender)
 			|| $event->wasOnline !== false) {
 			return;
 		}

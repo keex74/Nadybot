@@ -336,7 +336,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		description: 'Records a tracked user logging on'
 	)]
 	public function trackLogonEvent(LogonEvent $eventObj): void {
-		if (!$this->chatBot->isReady() || !is_string($eventObj->sender)) {
+		if (!$this->chatBot->isReady()) {
 			return;
 		}
 		$uid = $this->chatBot->getUid($eventObj->sender);
@@ -429,7 +429,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 		description: 'Records a tracked user logging off'
 	)]
 	public function trackLogoffEvent(LogoffEvent $eventObj): void {
-		if (!$this->chatBot->isReady() || !is_string($eventObj->sender)) {
+		if (!$this->chatBot->isReady()) {
 			return;
 		}
 		$uid = $this->chatBot->getUid($eventObj->sender);
