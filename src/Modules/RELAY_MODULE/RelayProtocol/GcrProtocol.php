@@ -447,7 +447,7 @@ class GcrProtocol implements RelayProtocolInterface {
 	public function init(callable $callback): array {
 		$callback();
 		if ($this->syncOnline) {
-			return array_values(array_filter([
+			return array_values(Safe::removeNull([
 				$this->getOnlineList(),
 				$this->prefix.$this->command . 'c onlinereq',
 			]));

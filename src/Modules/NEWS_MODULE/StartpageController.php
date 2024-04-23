@@ -22,6 +22,7 @@ use Nadybot\Core\{
 	Nadybot,
 	ParamClass\PRemove,
 	Registry,
+	Safe,
 	SettingManager,
 	Text,
 	Types\CommandReply,
@@ -236,7 +237,7 @@ class StartpageController extends ModuleInstance {
 			$calls []= async($tile->call(...), $sender);
 		}
 		$callResults = await($calls);
-		$dataParts = array_filter(array_values($callResults));
+		$dataParts = Safe::removeNull(array_values($callResults));
 		if (!count($dataParts)) {
 			if ($showEmpty) {
 				$sendto->reply('Your startpage is currently <highlight>empty<end>.');

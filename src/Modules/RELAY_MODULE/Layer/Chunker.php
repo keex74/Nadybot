@@ -7,6 +7,7 @@ use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use InvalidArgumentException;
 use Nadybot\Core\{
 	Attributes as NCA,
+	Safe,
 	Util,
 };
 use Nadybot\Modules\RELAY_MODULE\{
@@ -150,7 +151,7 @@ class Chunker implements RelayLayerInterface {
 			$this->logger->debug('Removed chunks from memory.');
 			unset($this->queue[$chunk->id]);
 		}
-		$msg->packages = array_values(array_filter($msg->packages));
+		$msg->packages = array_values(Safe::removeNull($msg->packages));
 		return $msg;
 	}
 

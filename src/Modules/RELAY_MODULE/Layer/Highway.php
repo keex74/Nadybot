@@ -6,7 +6,7 @@ use function Safe\json_encode;
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToSerializeObject};
 use Exception;
 use Nadybot\Core\Highway\{In, Out, Parser, ParserHighwayException, ParserJsonException};
-use Nadybot\Core\{Attributes as NCA};
+use Nadybot\Core\{Attributes as NCA, Safe};
 use Nadybot\Modules\RELAY_MODULE\{
 	Relay,
 	RelayLayerInterface,
@@ -260,7 +260,7 @@ class Highway implements RelayLayerInterface, StatusProvider {
 			$data = $package->body;
 			$msg->sender = $package->user;
 		}
-		$msg->packages = array_values(array_filter($msg->packages));
+		$msg->packages = array_values(Safe::removeNull($msg->packages));
 		$this->logger->debug('Decoding highway message on relay {relay} done', [
 			'relay' => $this->relay->getName(),
 			'message' => $msg,

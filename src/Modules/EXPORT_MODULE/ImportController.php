@@ -144,7 +144,8 @@ class ImportController extends ModuleInstance {
 			return;
 		}
 		$usedRanks = $this->getRanks($import);
-		$rankMapping = $this->parseRankMapping(array_filter($mappings));
+		$validMappings = Safe::removeNull(array_values($mappings));
+		$rankMapping = $this->parseRankMapping($validMappings);
 		foreach ($usedRanks as $rank) {
 			if (!isset($rankMapping[$rank])) {
 				$context->reply("Please define a mapping for <highlight>{$rank}<end> by appending '{$rank}=&lt;rank&gt;' to your command");

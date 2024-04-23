@@ -30,12 +30,12 @@ parameters:
     disallowedConstructs: true
     overwriteVariablesWithLoop: true
     closureUsesThis: false
-    matchingInheritedMethodNames: false
+    matchingInheritedMethodNames: true
     numericOperandsInArithmeticOperators: false
     strictCalls: true
     switchConditionsMatchingType: false
     noVariableVariables: false
-    strictArrayFilter: false
+    strictArrayFilter: true
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/nadyita/phpstan-amp-file-rule/phpstan-amp-file-rule.neon

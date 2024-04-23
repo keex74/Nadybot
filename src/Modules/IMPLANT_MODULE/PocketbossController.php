@@ -10,6 +10,7 @@ use Nadybot\Core\{
 	DB,
 	ModuleInstance,
 	ParamClass\PWord,
+	Safe,
 	Text,
 	Types\ImplantSlot,
 };
@@ -191,8 +192,8 @@ class PocketbossController extends ModuleInstance {
 	): void {
 		$args = $context->args;
 
-		/** @var string[] */
-		$args = array_filter([$args[1], $args[2]??null, $args[3]??null]);
+		/** @var list<string> */
+		$args = Safe::removeNull([$args[1], $args[2]??null, $args[3]??null]);
 		$paramCount = count($args);
 
 		$slot = '%';

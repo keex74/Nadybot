@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\RELAY_MODULE\Layer;
 
 use function Safe\{json_decode, json_encode};
-use Nadybot\Core\{Attributes as NCA};
+use Nadybot\Core\{Attributes as NCA, Safe};
 use Nadybot\Modules\RELAY_MODULE\{
 	Relay,
 	RelayLayerInterface,
@@ -123,7 +123,7 @@ class TyrRelay implements RelayLayerInterface, StatusProvider {
 			}
 			$data = $json->payload;
 		}
-		$msg->packages = array_values(array_filter($msg->packages));
+		$msg->packages = array_values(Safe::removeNull($msg->packages));
 		return $msg;
 	}
 }

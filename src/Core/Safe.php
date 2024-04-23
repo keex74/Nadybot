@@ -164,4 +164,21 @@ class Safe {
 		$result = preg_split($pattern, $subject, $limit);
 		return $result;
 	}
+
+	/**
+	 * Remove all null-values from a given array
+	 *
+	 * @template TKey as array-key
+	 * @template TValue
+	 *
+	 * @param array<TKey, TValue|null> $values
+	 *
+	 * @return array<TKey, TValue>
+	 *
+	 * @psalm-pure
+	 */
+	public static function removeNull(array $values): array {
+		$result = array_filter($values, static fn (mixed $value): bool => !is_null($value));
+		return $result;
+	}
 }

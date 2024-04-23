@@ -16,6 +16,7 @@ use Nadybot\Core\{
 	Routing\Events\Online,
 	Routing\RoutableEvent,
 	Routing\Source,
+	Safe,
 	SettingManager,
 	SyncEventFactory,
 };
@@ -295,7 +296,7 @@ class NadyNative implements RelayProtocolInterface {
 			$hops []= $source->render($lastHop);
 			$lastHop = $source;
 		}
-		$hops = array_filter($hops);
+		$hops = Safe::removeNull($hops);
 		$where = implode(' ', $hops);
 		foreach ($block->users as $user) {
 			$this->relay->setOnline(
@@ -316,7 +317,7 @@ class NadyNative implements RelayProtocolInterface {
 			$hops []= $hop->render($lastHop);
 			$lastHop = $hop;
 		}
-		$hops = array_filter($hops);
+		$hops = Safe::removeNull($hops);
 		$where = implode(' ', $hops);
 
 		/** @var Online */
