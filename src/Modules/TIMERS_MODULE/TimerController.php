@@ -563,9 +563,9 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		if (!preg_match("/^\d+$/", (string)$name)) {
 			return null;
 		}
-		foreach ($this->timers as $tName => $timer) {
-			if ($timer->id === (int)$name) {
-				return $timer;
+		foreach ($this->timers as $tName => $curTimer) {
+			if ($curTimer->id === (int)$name) {
+				return $curTimer;
 			}
 		}
 		return null;

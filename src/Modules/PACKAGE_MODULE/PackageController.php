@@ -219,12 +219,12 @@ class PackageController extends ModuleInstance {
 			return;
 		}
 		$packages = collect($packages);
-		$package = $packages->first();
-		if (!isset($package)) {
+		$firstPackage = $packages->first();
+		if (!isset($firstPackage)) {
 			$context->reply("{$packageName} is not compatible with Nadybot.");
 			return;
 		}
-		if ($package->state === static::EXTRA) {
+		if ($firstPackage->state === static::EXTRA) {
 			$installedVersion = (string)$this->db->table(PackageFile::getTable())
 				->where('module', $packages[0]->name)
 				->max('version');
@@ -233,7 +233,7 @@ class PackageController extends ModuleInstance {
 		$blob .= "\n\n<header2>Details<end>\n".
 			"<tab>Name: <highlight>{$packages[0]->name}<end>\n".
 			"<tab>Author: <highlight>{$packages[0]->author}<end>\n";
-		if ($package->state === static::BUILT_INT) {
+		if ($firstPackage->state === static::BUILT_INT) {
 			$blob .= "<tab>Status: <highlight>Included in Nadybot now<end>\n";
 		} elseif (isset($installedVersion)) {
 			$blob .= '<tab>Installed: <highlight>'.
@@ -241,7 +241,7 @@ class PackageController extends ModuleInstance {
 				'<end> ['.
 				Text::makeChatcmd(
 					'uninstall',
-					"/tell <myname> package uninstall {$packages[0]->name}"
+					"/tell <myname> package uninstall {$firstPackage->name}"
 				) . "]\n";
 		}
 		$blob .= "\n<header2>Available versions<end>\n";
@@ -777,20 +777,20 @@ class PackageController extends ModuleInstance {
 	 */
 	private function getPackageDetail(iterable $packages): string|array {
 		$packages = collect($packages);
-		$package = $packages->first();
-		if (!isset($package)) {
+		$firstPackage = $packages->first();
+		if (!isset($firstPackage)) {
 			return 'This package is not compatible with Nadybot.';
 		}
-		if ($package->state === static::EXTRA) {
+		if ($firstPackage->state === static::EXTRA) {
 			$installedVersion = (string)$this->db->table(PackageFile::getTable())
-				->where('module', $package->name)
+				->where('module', $firstPackage->name)
 				->max('version');
 		}
-		$blob = trim($this->renderHTML($package->description));
+		$blob = trim($this->renderHTML($firstPackage->description));
 		$blob .= "\n\n<header2>Details<end>\n".
-			"<tab>Name: <highlight>{$package->name}<end>\n".
-			"<tab>Author: <highlight>{$package->author}<end>\n";
-		if ($package->state === static::BUILT_INT) {
+			"<tab>Name: <highlight>{$firstPackage->name}<end>\n".
+			"<tab>Author: <highlight>{$firstPackage->author}<end>\n";
+		if ($firstPackage->state === static::BUILT_INT) {
 			$blob .= "<tab>Status: <highlight>Included in Nadybot now<end>\n";
 		} elseif (isset($installedVersion)) {
 			$blob .= '<tab>Installed: <highlight>'.
@@ -798,7 +798,7 @@ class PackageController extends ModuleInstance {
 				'<end> ['.
 				Text::makeChatcmd(
 					'uninstall',
-					"/tell <myname> package uninstall {$package->name}"
+					"/tell <myname> package uninstall {$firstPackage->name}"
 				) . "]\n";
 		}
 		$blob .= "\n<header2>Available versions<end>\n";

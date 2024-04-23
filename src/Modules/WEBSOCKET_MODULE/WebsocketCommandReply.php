@@ -67,8 +67,8 @@ class WebsocketCommandReply implements CommandReply, MessageEmitter {
 		}
 
 		assert(isset($rMessage));
-		$msgs = $this->webChatConverter->convertMessages($msg);
-		foreach ($msgs as $msg) {
+		$xmlMsgs = $this->webChatConverter->convertMessages($msg);
+		foreach ($xmlMsgs as $xmlMsg) {
 			$path = new WebSource(type: Source::WEB, name: 'Web', color: '');
 			$path->renderAs = $path->render(null);
 			$hopColor = $this->messageHub->getHopColor($rMessage->path, Source::WEB, new Source(Source::WEB, 'Web'), 'tag_color');
@@ -82,7 +82,7 @@ class WebsocketCommandReply implements CommandReply, MessageEmitter {
 				$color = $matches[1];
 			}
 			$xmlMessage = new AOWebChatEvent(
-				message: $msg,
+				message: $xmlMsg,
 				sender: $this->config->main->character,
 				channel: 'web',
 				path: [$path],

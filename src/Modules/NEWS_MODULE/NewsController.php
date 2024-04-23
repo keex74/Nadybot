@@ -512,8 +512,8 @@ class NewsController extends ModuleInstance {
 	]
 	public function newsTile(string $sender): ?string {
 		$thirtyDays = time() - (86_400 * 30);
-		$news = $this->getNewsItems($sender);
-		$unreadNews = $news->where('confirmed', false)
+		$unreadNews = $this->getNewsItems($sender)
+			->where('confirmed', false)
 			->where('time', '>', $thirtyDays);
 		if ($unreadNews->isEmpty()) {
 			return null;

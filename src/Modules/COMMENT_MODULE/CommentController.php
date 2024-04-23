@@ -547,23 +547,23 @@ class CommentController extends ModuleInstance {
 		}
 		if ($groupByMain) {
 			$grouped = [];
-			foreach ($chars as $char => $comments) {
+			foreach ($chars as $char => $charsComments) {
 				$main = $this->altsController->getMainOf($char);
 				$grouped[$main] ??= [];
-				$grouped[$main] = [...$grouped[$main], ...$comments];
+				$grouped[$main] = [...$grouped[$main], ...$charsComments];
 			}
 		} else {
 			$grouped = $chars;
 		}
 		$blob = '';
-		foreach ($grouped as $main => $comments) {
+		foreach ($grouped as $main => $mainsComments) {
 			$blob .= "<pagebreak><header2>{$main}<end>\n";
 			$blob .= '<tab>' . implode(
 				"\n<tab>",
 				array_map(
 					$this->formatComment(...),
-					$comments,
-					array_fill(0, count($comments), $addCategory)
+					$mainsComments,
+					array_fill(0, count($mainsComments), $addCategory)
 				)
 			) . "\n\n";
 		}

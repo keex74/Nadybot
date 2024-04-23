@@ -1380,7 +1380,7 @@ class DiscordGatewayController extends ModuleInstance {
 			}
 			$guildIds = [$guildId];
 		} else {
-			foreach ($guilds as $guildId => $guild) {
+			foreach ($guilds as $id => $guild) {
 				$guildIds []= $guild->id;
 			}
 		}
@@ -1388,10 +1388,10 @@ class DiscordGatewayController extends ModuleInstance {
 
 		/** @var DiscordScheduledEvent[] */
 		$allEvents = [];
-		foreach ($guildIds as $guildId) {
-			$guildName = $guilds[$guildId]->name;
+		foreach ($guildIds as $id) {
+			$guildName = $guilds[$id]->name;
 			try {
-				$events = $this->discordAPIClient->getGuildEvents($guildId);
+				$events = $this->discordAPIClient->getGuildEvents($id);
 				$allEvents = array_merge($allEvents, $events);
 			} catch (Throwable $e) {
 				$this->logger->error(

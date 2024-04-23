@@ -286,17 +286,17 @@ class TradebotController extends ModuleInstance {
 	/** List the currently custom defined colors */
 	#[NCA\HandlesCommand('tradecolor')]
 	public function listTradecolorsCommand(CmdContext $context): void {
-		$colors = $this->db->table(TradebotColors::getTable())
+		$allColors = $this->db->table(TradebotColors::getTable())
 			->orderBy('tradebot')
 			->orderBy('id')
 			->asObj(TradebotColors::class);
-		if ($colors->isEmpty()) {
+		if ($allColors->isEmpty()) {
 			$context->reply('No colors have been defined yet.');
 			return;
 		}
 
 		/** @var array<string,list<TradebotColors>> */
-		$colorDefs = $colors->groupBy('tradebot')->toArray();
+		$colorDefs = $allColors->groupBy('tradebot')->toArray();
 		$blob = '';
 		foreach ($colorDefs as $tradebot => $colors) {
 			$blob = "<pagebreak><header2>{$tradebot}<end>\n";
@@ -318,7 +318,7 @@ class TradebotController extends ModuleInstance {
 			$blob .= "\n";
 		}
 		$msg = $this->text->makeBlob(
-			'Tradebot colors (' . count($colors) . ')',
+			'Tradebot colors (' . count($allColors) . ')',
 			$blob
 		);
 		$context->reply($msg);

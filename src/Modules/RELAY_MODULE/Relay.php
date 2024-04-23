@@ -353,7 +353,7 @@ class Relay implements MessageReceiver {
 	public function receiveFromMember(RelayStackMemberInterface $member, array $data): void {
 		$i = count($this->stack);
 		if ($member !== $this->relayProtocol) {
-			for ($i = count($this->stack); $i--;) {
+			while ($i--) {
 				/** @psalm-suppress InvalidArrayOffset */
 				if ($this->stack[$i] === $member) {
 					break;

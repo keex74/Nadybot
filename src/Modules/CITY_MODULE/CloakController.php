@@ -109,26 +109,26 @@ class CloakController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 
-		/** @var OrgCity $row */
-		$row = $data->shift();
-		$timeSinceChange = time() - $row->time;
+		/** @var OrgCity */
+		$firstRow = $data->shift();
+		$timeSinceChange = time() - $firstRow->time;
 		$timeString = Util::unixtimeToReadable(3_600 - $timeSinceChange, false);
 
-		if ($timeSinceChange >= 3_600 && $row->action === 'off') {
+		if ($timeSinceChange >= 3_600 && $firstRow->action === 'off') {
 			$msg = 'The cloaking device is <off>disabled<end>. It is possible to enable it.';
-		} elseif ($timeSinceChange < 3_600 && $row->action === 'off') {
+		} elseif ($timeSinceChange < 3_600 && $firstRow->action === 'off') {
 			$msg = "The cloaking device is <off>disabled<end>. It is possible in {$timeString} to enable it.";
-		} elseif ($timeSinceChange >= 3_600 && $row->action === 'on') {
+		} elseif ($timeSinceChange >= 3_600 && $firstRow->action === 'on') {
 			$msg = 'The cloaking device is <on>enabled<end>. It is possible to disable it.';
-		} elseif ($timeSinceChange < 3_600 && $row->action === 'on') {
+		} elseif ($timeSinceChange < 3_600 && $firstRow->action === 'on') {
 			$msg = "The cloaking device is <on>enabled<end>. It is possible in {$timeString} to disable it.";
 		} else {
 			$msg = 'The cloaking device is in an unknown state.';
 		}
 
-		$list = 'Time: <highlight>' . Util::date($row->time) . "<end>\n";
-		$list .= 'Action: <highlight>Cloaking device turned ' . $row->action . "<end>\n";
-		$list .= 'Character: <highlight>' . $row->player . "<end>\n\n";
+		$list = 'Time: <highlight>' . Util::date($firstRow->time) . "<end>\n";
+		$list .= 'Action: <highlight>Cloaking device turned ' . $firstRow->action . "<end>\n";
+		$list .= 'Character: <highlight>' . $firstRow->player . "<end>\n\n";
 
 		foreach ($data as $row) {
 			$list .= 'Time: <highlight>' . Util::date($row->time) . "<end>\n";

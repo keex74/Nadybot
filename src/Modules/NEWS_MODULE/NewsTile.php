@@ -50,9 +50,9 @@ class NewsTile {
 				);
 			} elseif ($type instanceof ReflectionUnionType) {
 				$typeNames = [];
-				foreach ($type->getTypes() as $type) {
-					if ($type instanceof ReflectionNamedType) {
-						$typeNames []= $type->getName();
+				foreach ($type->getTypes() as $partType) {
+					if ($partType instanceof ReflectionNamedType) {
+						$typeNames []= $partType->getName();
 					}
 				}
 			} else {

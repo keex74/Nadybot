@@ -755,22 +755,22 @@ class BanController extends ModuleInstance {
 		$numSuccess = 0;
 		$numErrors = 0;
 		$msgs = [];
-		foreach ($toBan as $who) {
-			$charId = $this->chatBot->getUid($who);
+		foreach ($toBan as $charName) {
+			$charId = $this->chatBot->getUid($charName);
 			if (!isset($charId)) {
-				$msgs []= "Character <highlight>{$who}<end> does not exist.";
+				$msgs []= "Character <highlight>{$charName}<end> does not exist.";
 				$numErrors++;
 				continue;
 			}
 
 			if ($this->isBanned($charId)) {
-				$msgs []= "Character <highlight>{$who}<end> is already banned.";
+				$msgs []= "Character <highlight>{$charName}<end> is already banned.";
 				$numErrors++;
 				continue;
 			}
 
-			if ($this->accessManager->compareCharacterAccessLevels($sender, $who) <= 0) {
-				$msgs []= "You must have an access level higher than <highlight>{$who}<end> ".
+			if ($this->accessManager->compareCharacterAccessLevels($sender, $charName) <= 0) {
+				$msgs []= "You must have an access level higher than <highlight>{$charName}<end> ".
 					'to perform this action.';
 				$numErrors++;
 				continue;
@@ -785,7 +785,7 @@ class BanController extends ModuleInstance {
 				$this->chatBot->sendPackage($package);
 				$audit = new Audit(
 					actor: $sender,
-					actee: $who,
+					actee: $charName,
 					action: AccessManager::KICK,
 					value: 'banned',
 				);
@@ -794,14 +794,14 @@ class BanController extends ModuleInstance {
 
 				$event = new SyncBanEvent(
 					uid: $charId,
-					name: $who,
+					name: $charName,
 					banned_by: $sender,
 					banned_until: $length,
 					reason: $reason,
 					forceSync: $context->forceSync,
 				);
 				$this->eventManager->fireEvent($event);
-				async($this->playerManager->byName(...), $who)->ignore();
+				async($this->playerManager->byName(...), $charName)->ignore();
 			} else {
 				$numErrors++;
 			}

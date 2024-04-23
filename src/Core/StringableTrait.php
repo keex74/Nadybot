@@ -23,8 +23,8 @@ trait StringableTrait {
 			return '[' . implode(',', array_map(self::__valueToString(...), $value)) . ']';
 		} elseif (is_array($value)) {
 			$values = [];
-			foreach ($value as $key => $value) {
-				$values []= "{$key}=" . self::__valueToString($value);
+			foreach ($value as $k => $v) {
+				$values []= "{$k}=" . self::__valueToString($v);
 			}
 			return '{' . implode(',', $values) . '}';
 		}

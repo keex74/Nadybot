@@ -28,7 +28,7 @@ parameters:
     uselessCast: false
     requireParentConstructorCall: false
     disallowedConstructs: false
-    overwriteVariablesWithLoop: false
+    overwriteVariablesWithLoop: true
     closureUsesThis: false
     matchingInheritedMethodNames: false
     numericOperandsInArithmeticOperators: false

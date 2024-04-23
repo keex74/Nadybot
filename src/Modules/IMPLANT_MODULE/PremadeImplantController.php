@@ -119,9 +119,9 @@ class PremadeImplantController extends ModuleInstance {
 			$slotMap[$implant->slot] ??= [];
 			$slotMap[$implant->slot] []= $implant;
 		}
-		foreach ($slotMap as $slot => $implants) {
+		foreach ($slotMap as $slot => $slotImplants) {
 			$blob .= "<header2>{$slot}<end>\n";
-			foreach ($implants as $implant) {
+			foreach ($slotImplants as $implant) {
 				$blob .= $this->getFormattedLine($implant);
 			}
 		}

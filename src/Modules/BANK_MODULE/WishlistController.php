@@ -210,16 +210,16 @@ class WishlistController extends ModuleInstance {
 		}
 		$charGroups = [];
 		$numItems = 0;
-		foreach ($wishlistGrouped as $char => $wishlist) {
+		foreach ($wishlistGrouped as $char => $charsWishlist) {
 			$lines = [];
-			$wishlist = $wishlist->sortBy(static function (Wish $wish): int {
+			$charsWishlist = $charsWishlist->sortBy(static function (Wish $wish): int {
 				if ($wish->fulfilled) {
 					return \PHP_INT_MAX;
 				}
 				return $wish->created_on;
 			});
 			$lines []= "<header2>{$char}<end>";
-			foreach ($wishlist as $wish) {
+			foreach ($charsWishlist as $wish) {
 				/** @var Wish $wish */
 				$numItems++;
 				$line = '<tab>';
@@ -786,8 +786,8 @@ class WishlistController extends ModuleInstance {
 		$this->db->commit();
 		$newFrom = $this->getActiveFroms();
 		$toDelete = array_diff($oldFrom, $newFrom);
-		foreach ($toDelete as $char) {
-			$this->buddylistManager->remove($char, 'wishlist');
+		foreach ($toDelete as $charName) {
+			$this->buddylistManager->remove($charName, 'wishlist');
 		}
 		return $numDeleted;
 	}

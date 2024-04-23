@@ -49,9 +49,9 @@ class MigrateGauntletData implements SchemaMigration {
 			$this->timerController->remove('Gauntlet');
 		}
 		$timers = $this->timerController->getAllTimers();
-		foreach ($timers as $timer) {
-			if ($timer->callback ===  'GauntletController.gaubuffcallback') {
-				$timer->callback = 'GauntletBuffController.gaubuffcallback';
+		foreach ($timers as $timer2) {
+			if ($timer2->callback ===  'GauntletController.gaubuffcallback') {
+				$timer2->callback = 'GauntletBuffController.gaubuffcallback';
 			}
 		}
 		$db->table($table)

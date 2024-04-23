@@ -280,11 +280,11 @@ class BuffPerksController extends ModuleInstance {
 			}
 			if ($count > 1) {
 				$blob = "<header2>Choose a skill<end>\n";
-				foreach ($skills as $skill) {
+				foreach ($skills as $skill2) {
 					$blob .= '<tab>'.
 						Text::makeChatcmd(
-							$skill->name,
-							"/tell <myname> perks {$level} {$profession->value} {$skill->name}"
+							$skill2->name,
+							"/tell <myname> perks {$level} {$profession->value} {$skill2->name}"
 						).
 						"\n";
 				}
@@ -676,9 +676,9 @@ class BuffPerksController extends ModuleInstance {
 					continue;
 				}
 
-				$skill = trim(substr($buff, 0, $pos + 1));
+				$skillName = trim(substr($buff, 0, $pos + 1));
 				$amount = trim(substr($buff, $pos + 1));
-				$skills = $this->expandSkill($skill);
+				$skills = $this->expandSkill($skillName);
 				foreach ($skills as $skill) {
 					$skillSearch = $skillCache[$skill]
 						?? $this->whatBuffsController->searchForSkill($skill);

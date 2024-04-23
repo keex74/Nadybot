@@ -452,12 +452,12 @@ class ApiSpecGenerator {
 			return [$propName, $types];
 		}
 		$refTypes = [];
-		$refType = $refProp->getType();
-		if ($refType instanceof ReflectionUnionType) {
+		$refPropType = $refProp->getType();
+		if ($refPropType instanceof ReflectionUnionType) {
 			/** @var list<\ReflectionNamedType>|list<\ReflectionIntersectionType> */
-			$refTypes = $refType->getTypes();
-		} elseif ($refType instanceof ReflectionNamedType) {
-			$refTypes = [$refType];
+			$refTypes = $refPropType->getTypes();
+		} elseif ($refPropType instanceof ReflectionNamedType) {
+			$refTypes = [$refPropType];
 		} else {
 			throw new Exception('Unknown ReflectionClass');
 		}

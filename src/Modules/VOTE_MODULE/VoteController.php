@@ -466,7 +466,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function getPollBlob(Poll $topic, ?string $sender=null): string {
-		$votes = $this->db->table(Vote::getTable())
+		$pollVotes = $this->db->table(Vote::getTable())
 			->where('poll_id', $topic->id)
 			->asObjArr(Vote::class);
 
@@ -475,8 +475,8 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			$results[$answer] = 0;
 		}
 		$totalresults = 0;
-		foreach ($votes as $vote) {
-			$answer = $vote->answer;
+		foreach ($pollVotes as $pollVote) {
+			$answer = $pollVote->answer;
 			if (isset($answer)) {
 				$results[$answer]++;
 				$totalresults++;

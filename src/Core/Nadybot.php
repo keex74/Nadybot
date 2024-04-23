@@ -301,7 +301,7 @@ class Nadybot {
 		$this->logger->notice('Setups done in {duration}s', [
 			'duration' => number_format($duration, 3),
 		]);
-		$reaper = EventLoop::delay(6, function (string $identifier): void {
+		$reaper = EventLoop::delay(6, function (string $delayIdentifier): void {
 			if ($this->db->inTransaction()) {
 				$this->logger->warning('Open transaction detected!');
 			}

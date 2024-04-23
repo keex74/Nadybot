@@ -234,8 +234,8 @@ class RaidBlockController extends ModuleInstance {
 			$query->where('blocked_from', $blockFrom);
 			$this->blocks[$player][$blockFrom]->expiration = time();
 		} else {
-			foreach ($this->blocks[$player] as $name => $blockFrom) {
-				$blockFrom->expiration = time();
+			foreach ($this->blocks[$player] as $name => $oldBlockFrom) {
+				$oldBlockFrom->expiration = time();
 			}
 		}
 		$query->update(['expiration' => time()]);

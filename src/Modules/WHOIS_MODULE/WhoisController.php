@@ -323,11 +323,11 @@ class WhoisController extends ModuleInstance {
 
 		/** @var Collection<int,Audit> */
 		$result = new Collection();
-		foreach ($auditGroups as $time => $audits) {
+		foreach ($auditGroups as $time => $audits2) {
 			$wasMember = count($rank) > 0;
 			$addAction = null;
 			$delAction = null;
-			foreach ($audits as $audit) {
+			foreach ($audits2 as $audit) {
 				if (!isset($audit->value)) {
 					continue;
 				}
