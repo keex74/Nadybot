@@ -113,7 +113,7 @@ class AgcrProtocol implements RelayProtocolInterface {
 		return [];
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function renderMessage(RoutableEvent $event): array {
 		$path = $this->messageHub->renderPath($event, 'relay', false, $this->sendUserLinks);
 		if ($this->forceSingleHop) {

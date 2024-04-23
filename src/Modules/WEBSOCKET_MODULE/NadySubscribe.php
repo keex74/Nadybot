@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\WEBSOCKET_MODULE;
 
 class NadySubscribe {
-	/** @param string[] $events */
+	/** @param list<string> $events */
 	public function __construct(
 		public array $events=[],
 	) {

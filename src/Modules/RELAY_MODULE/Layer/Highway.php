@@ -46,7 +46,7 @@ class Highway implements RelayLayerInterface, StatusProvider {
 	public const TYPE_ERROR = 'error';
 	public const TYPE_HELLO = 'hello';
 
-	/** @var string[] */
+	/** @var list<string> */
 	protected array $rooms = [];
 
 	protected Relay $relay;
@@ -62,7 +62,7 @@ class Highway implements RelayLayerInterface, StatusProvider {
 	#[NCA\Logger]
 	private LoggerInterface $logger;
 
-	/** @param string[] $rooms */
+	/** @param list<string> $rooms */
 	public function __construct(array $rooms) {
 		foreach ($rooms as $room) {
 			if (strlen($room) < 32) {

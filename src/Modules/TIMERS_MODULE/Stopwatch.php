@@ -13,7 +13,7 @@ use Safe\{DateTimeImmutable};
 class Stopwatch {
 	public DateTimeInterface $start;
 
-	/** @var StopwatchLap[] */
+	/** @var list<StopwatchLap> */
 	public array $laps = [];
 
 	public ?DateTimeInterface $end = null;

@@ -86,7 +86,7 @@ class WhoisController extends ModuleInstance {
 	#[NCA\Inject]
 	private CommentController $commentController;
 
-	/** @var CharData[] */
+	/** @var list<CharData> */
 	private array $nameHistoryCache = [];
 
 	#[NCA\Event(
@@ -170,13 +170,11 @@ class WhoisController extends ModuleInstance {
 			$this->saveCharIds(new TimerEvent(60));
 		}
 
-		/** @var NameHistory[] */
 		$players = $this->db->table(NameHistory::getTable())
-		->where('charid', $charID)
+			->where('charid', $charID)
 			->where('dimension', $this->db->getDim())
 			->orderByDesc('dt')
-			->asObj(NameHistory::class)
-			->toArray();
+			->asObj(NameHistory::class);
 		$count = count($players);
 
 		$blob = "<header2>Known names for {$charID}<end>\n";
@@ -200,13 +198,11 @@ class WhoisController extends ModuleInstance {
 	public function lookupNameCommand(CmdContext $context, PCharacter $char): void {
 		$name = $char();
 
-		/** @var NameHistory[] */
 		$players = $this->db->table(NameHistory::getTable())
 			->where('name', $name)
 			->where('dimension', $this->db->getDim())
 			->orderByDesc('dt')
-			->asObj(NameHistory::class)
-			->toArray();
+			->asObj(NameHistory::class);
 		$count = count($players);
 
 		$blob = "<header2>Known IDs of {$name}<end>\n";
@@ -225,13 +221,11 @@ class WhoisController extends ModuleInstance {
 	}
 
 	public function getNameHistory(int $charID, int $dimension): string {
-		/** @var NameHistory[] */
 		$data = $this->db->table(NameHistory::getTable())
 			->where('charid', $charID)
 			->where('dimension', $dimension)
 			->orderByDesc('dt')
-			->asObj(NameHistory::class)
-			->toArray();
+			->asObj(NameHistory::class);
 
 		$blob = "<header2>Name History<end>\n";
 		if (count($data) > 0) {

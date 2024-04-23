@@ -63,15 +63,13 @@ class SpiritsController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Spirit[] */
 		$data = $this->db->table(Spirit::getTable())
 			->where('spot', $slot->designSlotName())
 			->where('ql', '>=', $lowQL)
 			->where('ql', '<=', $highQL)
 			->orderBy('ql')
-			->asObj(Spirit::class)
-			->toArray();
-		if (empty($data)) {
+			->asObj(Spirit::class);
+		if ($data->isEmpty()) {
 			$context->reply("No {$slot->longName()} spirits found in ql {$lowQL} to {$highQL}.");
 			return;
 		}
@@ -95,19 +93,17 @@ class SpiritsController extends ModuleInstance {
 		$slot = $slot();
 		$title = "Spirits Database for {$name} {$slot->longName()}";
 
-		/** @var Spirit[] */
 		$data = $this->db->table(Spirit::getTable())
 			->whereIlike('name', "%{$name}%")
 			->where('spot', $slot->designSlotName())
 			->orderBy('level')
-			->asObj(Spirit::class)
-			->toArray();
-		if (empty($data)) {
+			->asObj(Spirit::class);
+		if ($data->isEmpty()) {
 			$context->reply("No {$slot->longName()} implants found matching '<highlight>{$name}<end>'.");
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
-		$spirits = $this->text->makeBlob('Spirits (' . count($data) . ')', $spirits, $title);
+		$spirits = $this->text->makeBlob("Spirits ({$data->count()})", $spirits, $title);
 		$context->reply($spirits);
 	}
 
@@ -122,17 +118,15 @@ class SpiritsController extends ModuleInstance {
 		}
 		$title = "Spirits QL {$ql}";
 
-		/** @var Spirit[] */
 		$data = $this->db->table(Spirit::getTable())
 			->where('ql', $ql)
-			->asObj(Spirit::class)
-			->toArray();
-		if (empty($data)) {
+			->asObj(Spirit::class);
+		if ($data->isEmpty()) {
 			$context->reply("No spirits found in ql {$ql}.");
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
-		$spirits = $this->text->makeBlob('Spirits (' . count($data) . ')', $spirits, $title);
+		$spirits = $this->text->makeBlob("Spirits ({$data->count()})", $spirits, $title);
 		$context->reply($spirits);
 	}
 
@@ -150,19 +144,17 @@ class SpiritsController extends ModuleInstance {
 		}
 		$title = "Spirits QL {$lowQL} to {$highQL}";
 
-		/** @var Spirit[] */
 		$data = $this->db->table(Spirit::getTable())
 			->where('ql', '>=', $lowQL)
 			->where('ql', '<=', $highQL)
 			->orderBy('ql')
-			->asObj(Spirit::class)
-			->toArray();
-		if (empty($data)) {
+			->asObj(Spirit::class);
+		if ($data->isEmpty()) {
 			$context->reply("No spirits found in ql {$lowQL} to {$highQL}.");
 			return;
 		}
 		$spirits .= $this->formatSpiritOutput($data);
-		$spirits = $this->text->makeBlob('Spirits (' . count($data) . ')', $spirits, $title);
+		$spirits = $this->text->makeBlob("Spirits ({$data->count()})", $spirits, $title);
 		$context->reply($spirits);
 	}
 
@@ -185,18 +177,16 @@ class SpiritsController extends ModuleInstance {
 			return;
 		}
 
-		/** @var Spirit[] */
 		$data = $this->db->table(Spirit::getTable())
 			->where('spot', $slot->designSlotName())
 			->where('ql', $ql)
-			->asObj(Spirit::class)
-			->toArray();
-		if (empty($data)) {
+			->asObj(Spirit::class);
+		if ($data->isEmpty()) {
 			$context->reply("No {$slot->longName()} spirits found in ql {$ql}.");
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
-		$spirits = $this->text->makeBlob('Spirits (' . count($data) . ')', $spirits, $title);
+		$spirits = $this->text->makeBlob("Spirits ({$data->count()})", $spirits, $title);
 		$context->reply($spirits);
 	}
 
@@ -210,14 +200,12 @@ class SpiritsController extends ModuleInstance {
 			$name = (new PImplantSlot($name))()->designSlotName();
 		}
 
-		/** @var Spirit[] */
 		$data = $this->db->table(Spirit::getTable())
 			->whereIlike('name', "%{$name}%")
 			->orWhereIlike('spot', "%{$name}%")
 			->orderBy('level')
-			->asObj(Spirit::class)
-			->toArray();
-		if (count($data) === 0) {
+			->asObj(Spirit::class);
+		if ($data->isEmpty()) {
 			$msg = "There were no matches found for <highlight>{$name}<end>. ".
 				'Try putting a comma between search values. '.
 				$this->getValidSlotTypes();
@@ -225,16 +213,12 @@ class SpiritsController extends ModuleInstance {
 			return;
 		}
 		$spirits = $this->formatSpiritOutput($data);
-		$spirits = $this->text->makeBlob('Spirits (' . count($data) . ')', $spirits, $title);
+		$spirits = $this->text->makeBlob("Spirits ({$data->count()})", $spirits, $title);
 		$context->reply($spirits);
 	}
 
-	/** @param Spirit[] $spirits */
-	public function formatSpiritOutput(array $spirits): string {
-		if (count($spirits) === 0) {
-			return 'No matches found.';
-		}
-
+	/** @param iterable<Spirit> $spirits */
+	public function formatSpiritOutput(iterable $spirits): string {
 		$msg = '';
 		foreach ($spirits as $spirit) {
 			/** @var ?AODBEntry */
@@ -251,6 +235,9 @@ class SpiritsController extends ModuleInstance {
 				$msg .= $dbSpirit->getLink(ql: $dbSpirit->highql) . "\n";
 				$msg .= "Minimum Level={$spirit->level}   Slot={$spirit->spot}   Agility/Sense Needed={$spirit->agility}\n\n";
 			}
+		}
+		if ($msg === '') {
+			return 'No matches found.';
 		}
 		return $msg;
 	}

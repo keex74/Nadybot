@@ -295,7 +295,7 @@ class TradebotController extends ModuleInstance {
 			return;
 		}
 
-		/** @var array<string,TradebotColors[]> */
+		/** @var array<string,list<TradebotColors>> */
 		$colorDefs = $colors->groupBy('tradebot')->toArray();
 		$blob = '';
 		foreach ($colorDefs as $tradebot => $colors) {
@@ -419,10 +419,10 @@ class TradebotController extends ModuleInstance {
 	 *
 	 * @param string $botNames Colon-separated list of botnames
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function normalizeBotNames(string $botNames): array {
-		return array_diff(
+		return array_values(array_diff(
 			array_map(
 				'ucfirst',
 				explode(
@@ -431,7 +431,7 @@ class TradebotController extends ModuleInstance {
 				)
 			),
 			['', static::NONE]
-		);
+		));
 	}
 
 	/** Join the private channel of the tradebot $botName */

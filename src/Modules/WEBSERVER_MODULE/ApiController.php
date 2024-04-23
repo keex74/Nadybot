@@ -287,11 +287,11 @@ class ApiController extends ModuleInstance {
 	/**
 	 * Add a HTTP route handler for a path
 	 *
-	 * @param string[]                           $paths
-	 * @param string[]                           $methods
+	 * @param iterable<string>                   $paths
+	 * @param list<string>                       $methods
 	 * @param Closure(Request,mixed...):Response $callback
 	 */
-	public function addApiRoute(array $paths, array $methods, Closure $callback, ?string $alf, ?string $al, ReflectionMethod $refMet): void {
+	public function addApiRoute(iterable $paths, array $methods, Closure $callback, ?string $alf, ?string $al, ReflectionMethod $refMet): void {
 		foreach ($paths as $path) {
 			$route = $this->webserverController->routeToRegExp($path);
 			$this->logger->info('Adding route to {path}', ['path' => $path]);
@@ -357,6 +357,8 @@ class ApiController extends ModuleInstance {
 					}
 				}
 			}
+
+			/** @var list<mixed> $parts */
 			$handler->args = $parts;
 			return $handler;
 		}

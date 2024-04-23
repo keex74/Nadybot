@@ -65,7 +65,7 @@ class StopwatchController extends ModuleInstance {
 			return;
 		}
 		$lapName ??= '';
-		$this->stopwatches[$context->char->name]->laps[] = new StopwatchLap(trim($lapName));
+		$this->stopwatches[$context->char->name]->laps []= new StopwatchLap(trim($lapName));
 		$msg = 'Lap added.';
 		if (strlen($lapName)) {
 			$msg = "Lap <highlight>{$lapName}<end> added.";

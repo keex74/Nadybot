@@ -737,7 +737,6 @@ class SkillsController extends ModuleInstance {
 			return;
 		}
 
-		/** @var ItemSearchResult[] $data */
 		$blob = "<header2>Weapons matching {$search}<end>\n";
 		foreach ($data as $item) {
 			$useQL = $ql ?? $item->ql;
@@ -778,7 +777,11 @@ class SkillsController extends ModuleInstance {
 		return round(1_200 + ($attackTime - 6) * 600, 2);
 	}
 
-	/** @return float[] */
+	/**
+	 * @return list<float>
+	 *
+	 * @psalm-return list{float,float}
+	 */
 	public function capFullAuto(float $attackTime, float $rechargeTime, int $fullAutoRecharge): array {
 		$weaponCap = floor(10 + $attackTime);
 		$skillCap = ((40 * $rechargeTime) + ($fullAutoRecharge / 100) - 11) * 25;
@@ -786,7 +789,11 @@ class SkillsController extends ModuleInstance {
 		return [$weaponCap, $skillCap];
 	}
 
-	/** @return int[] */
+	/**
+	 * @return list<int>
+	 *
+	 * @psalm-return list{int,int}
+	 */
 	public function capBurst(float $attackTime, float $rechargeTime, int $burstRecharge): array {
 		$hard_cap = (int)round($attackTime + 8, 0);
 		$skill_cap = (int)floor((($rechargeTime * 20) + ($burstRecharge / 100) - 8) * 25);
@@ -794,7 +801,11 @@ class SkillsController extends ModuleInstance {
 		return [$hard_cap, $skill_cap];
 	}
 
-	/** @return float[] */
+	/**
+	 * @return list<float>
+	 *
+	 * @psalm-return list{float,float}
+	 */
 	public function capFlingShot(float $attackTime): array {
 		$weaponCap = 5 + $attackTime;
 		$skillCap = (($attackTime * 16) - $weaponCap) * 100;
@@ -802,7 +813,11 @@ class SkillsController extends ModuleInstance {
 		return [$weaponCap, $skillCap];
 	}
 
-	/** @return float[] */
+	/**
+	 * @return list<float>
+	 *
+	 * @psalm-return list{float,float}
+	 */
 	public function capFastAttack(float $attackTime): array {
 		$weaponCap = (int)floor(5 + $attackTime);
 		$skillCap = (($attackTime * 16) - $weaponCap) * 100;
@@ -810,7 +825,11 @@ class SkillsController extends ModuleInstance {
 		return [$weaponCap, $skillCap];
 	}
 
-	/** @return int[] */
+	/**
+	 * @return list<int>
+	 *
+	 * @psalm-return list{int,int}
+	 */
 	public function capAimedShot(float $attackTime, float $rechargeTime): array {
 		$hardCap = (int)floor($attackTime + 10);
 		$skillCap = (int)ceil((4_000 * $rechargeTime - 1_100) / 3);
@@ -833,7 +852,7 @@ class SkillsController extends ModuleInstance {
 	}
 
 	/**
-	 * @param int|int[] $aoid
+	 * @param null|int|list<int> $aoid
 	 *
 	 * @return Collection<int,WeaponAttribute>
 	 */

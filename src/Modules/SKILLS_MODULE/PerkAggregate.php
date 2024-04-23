@@ -4,13 +4,13 @@ namespace Nadybot\Modules\SKILLS_MODULE;
 
 class PerkAggregate {
 	/**
-	 * @param string            $name        Name of the perk
-	 * @param string[]          $professions
-	 * @param ?string           $description An optional description of the perk
-	 * @param string            $expansion   The expansion needed for this perk
-	 * @param array<int,int>    $buffs
-	 * @param array<int,int>    $resistances
-	 * @param PerkLevelAction[] $actions
+	 * @param string                $name        Name of the perk
+	 * @param list<string>          $professions
+	 * @param ?string               $description An optional description of the perk
+	 * @param string                $expansion   The expansion needed for this perk
+	 * @param array<int,int>        $buffs
+	 * @param array<int,int>        $resistances
+	 * @param list<PerkLevelAction> $actions
 	 */
 	public function __construct(
 		public string $name,

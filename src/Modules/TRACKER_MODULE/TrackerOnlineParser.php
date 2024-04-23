@@ -37,7 +37,7 @@ class TrackerOnlineParser {
 	}
 
 	/**
-	 * @return TrackerOnlineOption[]
+	 * @return list<TrackerOnlineOption>
 	 *
 	 * @throws TrackerOnlineParserException
 	 */
@@ -62,6 +62,8 @@ class TrackerOnlineParser {
 			);
 		}
 		$layers = $expr->findAll('option');
+
+		/** @var list<TrackerOnlineOption> */
 		$result = [];
 		foreach ($layers as $layer) {
 			$result []= $this->parseOption($layer);

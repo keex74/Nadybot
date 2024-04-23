@@ -66,7 +66,7 @@ class SystemdController extends ModuleInstance {
 	 *
 	 * @link https://github.com/systemd/systemd/blob/master/src/libsystemd/sd-daemon/sd-daemon.c
 	 *
-	 * @param int[] $fds
+	 * @param list<int> $fds
 	 */
 	public function notifyWithFDs(int $pid, bool $unsetEnvironment, string $state, array $fds): int {
 		[$fd, $result] = $this->sdPidNotifyWithFDs($pid, $state, $fds);
@@ -82,7 +82,7 @@ class SystemdController extends ModuleInstance {
 	}
 
 	/**
-	 * @param int[] $fds
+	 * @param list<int> $fds
 	 *
 	 * @return array<null|bool|int|Socket>
 	 *

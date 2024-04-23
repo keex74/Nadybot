@@ -5,9 +5,9 @@ namespace Nadybot\Modules\RELAY_MODULE\RelayProtocol\Nadybot;
 use Nadybot\Core\Routing\Source;
 
 class OnlineBlock {
-	/** @var Source[] */
+	/** @var list<Source> */
 	public array $path = [];
 
-	/** @var RelayCharacter[] */
+	/** @var list<RelayCharacter> */
 	public array $users = [];
 }

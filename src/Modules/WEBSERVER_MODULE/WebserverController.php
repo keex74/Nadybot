@@ -89,7 +89,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 	#[NCA\Setting\Rank]
 	public string $webserverMinAL = 'mod';
 
-	/** @var array<string,array<string,callable[]>> */
+	/** @var array<string,array<string,list<callable>>> */
 	protected array $routes = [
 		'get' => [],
 		'post' => [],
@@ -443,11 +443,9 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 	}
 
 	/**
-	 * @return array<array<Closure|string[]>>
+	 * @return list<list<Closure|list<string>>>
 	 *
-	 * @phpstan-return array<array{Closure,string[]}>
-	 *
-	 * @psalm-return array<array{Closure,string[]}>
+	 * @psalm-return list<list{Closure,list<string>}>
 	 */
 	public function getHandlersForRequest(Request $request): array {
 		$result = [];
@@ -456,7 +454,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 			if (count($parts = Safe::pregMatch("|{$mask}|", $path))) {
 				array_shift($parts);
 				foreach ($handlers as $handler) {
-					$result []= [Closure::fromCallable($handler), $parts];
+					$result []= [Closure::fromCallable($handler), array_values($parts)];
 				}
 			}
 		}

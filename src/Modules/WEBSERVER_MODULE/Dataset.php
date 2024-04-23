@@ -7,10 +7,10 @@ use Exception;
 use Nadybot\Modules\WEBSERVER_MODULE\Interfaces\{GaugeProvider, ValueProvider};
 
 class Dataset {
-	/** @var string[] */
+	/** @var list<string> */
 	private array $tags = [];
 
-	/** @var ValueProvider[] */
+	/** @var list<ValueProvider> */
 	private array $providers = [];
 
 	public function __construct(
@@ -31,7 +31,7 @@ class Dataset {
 		$this->providers []= $provider;
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function getValues(): array {
 		if (empty($this->providers)) {
 			return [];

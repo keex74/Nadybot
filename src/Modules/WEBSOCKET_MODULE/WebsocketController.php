@@ -57,7 +57,7 @@ class WebsocketController extends ModuleInstance implements WebsocketClientHandl
 	#[NCA\Inject]
 	private WebserverController $webserverController;
 
-	/** @var array<int,string[]> */
+	/** @var array<int,list<string>> */
 	private array $subscriptions = [];
 
 	private readonly WebsocketGateway $gateway;

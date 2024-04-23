@@ -320,7 +320,7 @@ class WorldBossController extends ModuleInstance {
 	)]
 	public string $isVulnerableText = '{c-mob-name} is no longer immortal.';
 
-	/** @var WorldBossTimer[] */
+	/** @var list<WorldBossTimer> */
 	public array $timers = [];
 
 	#[NCA\Logger]
@@ -407,8 +407,7 @@ class WorldBossController extends ModuleInstance {
 		$timers = $this->getWorldBossTimers();
 		$blocks = [];
 		foreach ($timers as $timer) {
-			// [$timer] = $this->addNextDates([clone $timer]);
-			$blocks[] = "<header2>{$timer->mob_name}<end>".
+			$blocks []= "<header2>{$timer->mob_name}<end>".
 				(
 					isset($timer->timer)
 					? "\n<tab>Spawn timer: <highlight>". Util::unixtimeToReadable($timer->timer) . '<end>'
@@ -491,11 +490,9 @@ class WorldBossController extends ModuleInstance {
 	}
 
 	public function getWorldBossTimer(string $mobName): ?WorldBossTimer {
-		/** @var WorldBossTimer[] */
 		$timers = $this->db->table(WorldBossTimer::getTable())
 			->where('mob_name', $mobName)
-			->asObj(WorldBossTimer::class)
-			->toArray();
+			->asObjArr(WorldBossTimer::class);
 		if (!count($timers)) {
 			return null;
 		}
@@ -960,11 +957,11 @@ class WorldBossController extends ModuleInstance {
 	}
 
 	/**
-	 * @param WorldBossTimer[] $timers
+	 * @param iterable<WorldBossTimer> $timers
 	 *
-	 * @return WorldBossTimer[]
+	 * @return list<WorldBossTimer>
 	 */
-	protected function addNextDates(array $timers): array {
+	protected function addNextDates(iterable $timers): array {
 		$showSpawn = $this->worldbossShowSpawn;
 		$newTimers = [];
 		foreach ($timers as $timer) {
@@ -996,16 +993,14 @@ class WorldBossController extends ModuleInstance {
 		return $newTimers;
 	}
 
-	/** @return WorldBossTimer[] */
+	/** @return list<WorldBossTimer> */
 	protected function getWorldBossTimers(): array {
 		return $this->timers;
 	}
 
 	protected function reloadWorldBossTimers(): void {
-		/** @var WorldBossTimer[] */
 		$timers = $this->db->table(WorldBossTimer::getTable())
-			->asObj(WorldBossTimer::class)
-			->toArray();
+			->asObjArr(WorldBossTimer::class);
 		$this->timers = $this->addNextDates($timers);
 	}
 
@@ -1255,7 +1250,7 @@ class WorldBossController extends ModuleInstance {
 			return 0;
 		}
 
-		/** @var ApiSpawnData[] */
+		/** @var list<ApiSpawnData> */
 		$timers = [];
 		try {
 			$data = json_decode($body, true);

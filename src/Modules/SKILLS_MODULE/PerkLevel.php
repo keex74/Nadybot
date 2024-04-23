@@ -7,15 +7,15 @@ use Nadybot\Core\{Attributes\DB, DBTable};
 #[DB\Table(name: 'perk_level', shared: DB\Shared::Yes)]
 class PerkLevel extends DBTable {
 	/**
-	 * @param int                   $perk_id          The internal ID of the perk line
-	 * @param int                   $perk_level       Which level of $perk_id does this represent?
-	 * @param int                   $required_level   Required character level to perk this perk level
-	 * @param ?int                  $aoid             The internal ID of the perk level in AO
-	 * @param string[]              $professions
-	 * @param array<int,int>        $buffs
-	 * @param ExtPerkLevelBuff[]    $perk_buffs
-	 * @param array<int,int>        $resistances
-	 * @param PerkLevelResistance[] $perk_resistances
+	 * @param int                       $perk_id          The internal ID of the perk line
+	 * @param int                       $perk_level       Which level of $perk_id does this represent?
+	 * @param int                       $required_level   Required character level to perk this perk level
+	 * @param ?int                      $aoid             The internal ID of the perk level in AO
+	 * @param list<string>              $professions
+	 * @param array<int,int>            $buffs
+	 * @param list<ExtPerkLevelBuff>    $perk_buffs
+	 * @param array<int,int>            $resistances
+	 * @param list<PerkLevelResistance> $perk_resistances
 	 */
 	public function __construct(
 		public int $perk_id,

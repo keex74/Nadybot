@@ -12,6 +12,9 @@ class RelayConfig extends DBTable {
 	 * @param ?int         $id     The unique ID of this relay config
 	 * @param RelayLayer[] $layers The individual layers that make up this relay
 	 * @param RelayEvent[] $events A list of events this relay allows in- and/or outbound
+	 *
+	 * @psalm-param list<RelayLayer> $layers
+	 * @psalm-param list<RelayEvent> $events
 	 */
 	public function __construct(
 		public string $name,

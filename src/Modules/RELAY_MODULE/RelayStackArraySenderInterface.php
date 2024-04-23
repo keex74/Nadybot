@@ -6,9 +6,9 @@ interface RelayStackArraySenderInterface extends RelayStackMemberInterface {
 	/**
 	 * Send one or more packets to the transport
 	 *
-	 * @param string[] $data
+	 * @param list<string> $data
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function send(array $data): array;
 }

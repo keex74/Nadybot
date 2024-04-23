@@ -205,11 +205,11 @@ class BuffPerksController extends ModuleInstance {
 	/**
 	 * Filter a perk list $perks to only show breed-specific perks for $breed
 	 *
-	 * @param Perk[] $perks
+	 * @param iterable<Perk> $perks
 	 *
-	 * @return Perk[]
+	 * @return list<Perk>
 	 */
-	protected function filterBreedPerks(array $perks, string $breed): array {
+	protected function filterBreedPerks(iterable $perks, string $breed): array {
 		$result = [];
 		foreach ($perks as $perk) {
 			if (
@@ -228,11 +228,11 @@ class BuffPerksController extends ModuleInstance {
 	 *
 	 * @param Perk[] $perks
 	 *
-	 * @return Perk[]
+	 * @return list<Perk>
 	 */
 	protected function filterPerkBuff(array $perks, Skill $skill): array {
 		// Filter out all perks that don't buff anything in $skill
-		/** @var Perk[] */
+		/** @var list<Perk> */
 		$result = array_values(array_filter(
 			$perks,
 			static function (Perk $perk) use ($skill): bool {
@@ -318,7 +318,6 @@ class BuffPerksController extends ModuleInstance {
 			$perks = $this->filterBreedPerks($perks, $breed);
 		}
 
-		/** @var PerkAggregate[] */
 		$perks = array_map($this->aggregatePerk(...), $perks);
 		if (empty($perks)) {
 			$msg = "Could not find any perks for level {$level} {$profession->value}.";
@@ -326,7 +325,7 @@ class BuffPerksController extends ModuleInstance {
 			return;
 		}
 
-		/** @var array<string,PerkAggregate[]> */
+		/** @var array<string,list<PerkAggregate>> */
 		$perkGroups = [
 			'Profession Perks' => [],
 			'Group Perks' => [],
@@ -427,7 +426,7 @@ class BuffPerksController extends ModuleInstance {
 	 * Expand a skill name into a list of skills,
 	 * supporting aliases like AC, Reflect, etc.
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function expandSkill(string $skill): array {
 		if ($skill === 'Add. Dmg.') {

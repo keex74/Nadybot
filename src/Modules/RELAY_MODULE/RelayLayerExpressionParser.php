@@ -39,7 +39,7 @@ class RelayLayerExpressionParser {
 	}
 
 	/**
-	 * @return RelayLayer[]
+	 * @return list<RelayLayer>
 	 *
 	 * @throws LayerParserException
 	 */

@@ -10,9 +10,9 @@ use Throwable;
 
 class ApiHandler {
 	/**
-	 * @param string[]                            $allowedMethods
+	 * @param list<string>                        $allowedMethods
 	 * @param ?Closure(Request,mixed...):Response $handler
-	 * @param mixed[]                             $args
+	 * @param list<mixed>                         $args
 	 */
 	public function __construct(
 		public ?string $accessLevelFrom,

@@ -64,15 +64,15 @@ class Relay implements MessageReceiver {
 	private RelayPacketsStats $outboundPackets;
 
 	/**
-	 * @param RelayLayerInterface[] $stack
-	 * @param RelayEvent[]          $events Events that this relay sends and/or receives
+	 * @param list<RelayLayerInterface> $stack
+	 * @param iterable<RelayEvent>      $events Events that this relay sends and/or receives
 	 */
 	public function __construct(
 		public string $name,
 		private TransportInterface $transport,
 		private RelayProtocolInterface $relayProtocol,
 		private array $stack=[],
-		array $events=[],
+		iterable $events=[],
 		public MessageQueue $msgQueue=new MessageQueue(),
 	) {
 		foreach ($events as $event) {
@@ -222,7 +222,7 @@ class Relay implements MessageReceiver {
 			}
 		}
 
-		/** @var RelayStackArraySenderInterface[] */
+		/** @var list<RelayStackArraySenderInterface> */
 		$layers = [
 			$this->relayProtocol,
 			...array_reverse($this->stack),
@@ -270,7 +270,7 @@ class Relay implements MessageReceiver {
 			$this->messageHub->registerMessageReceiver($this);
 		}
 
-		/** @var RelayStackArraySenderInterface[] */
+		/** @var list<RelayStackArraySenderInterface> */
 		$elements = [$this->transport, ...$this->stack, $this->relayProtocol];
 		$element = $elements[$index] ?? null;
 		if (!isset($element)) {
@@ -342,23 +342,26 @@ class Relay implements MessageReceiver {
 		$this->prependMainHop($event);
 		$data = $this->relayProtocol->send($event);
 		for ($i = count($this->stack); $i--;) {
+			/** @psalm-suppress InvalidArrayOffset */
 			$data = $this->stack[$i]->send($data);
 		}
 		$this->outboundPackets->inc(count($data));
 		return empty($this->transport->send($data));
 	}
 
-	/** @param string[] $data */
+	/** @param list<string> $data */
 	public function receiveFromMember(RelayStackMemberInterface $member, array $data): void {
 		$i = count($this->stack);
 		if ($member !== $this->relayProtocol) {
 			for ($i = count($this->stack); $i--;) {
+				/** @psalm-suppress InvalidArrayOffset */
 				if ($this->stack[$i] === $member) {
 					break;
 				}
 			}
 		}
 		for ($j = $i; $j--;) {
+			/** @psalm-suppress InvalidArrayOffset */
 			$data = $this->stack[$j]->send($data);
 		}
 		$this->outboundPackets->inc(count($data));
@@ -381,8 +384,8 @@ class Relay implements MessageReceiver {
 		return $allow->outgoing;
 	}
 
-	/** @param RelayEvent[] $events */
-	public function setEvents(array $events): void {
+	/** @param iterable<RelayEvent> $events */
+	public function setEvents(iterable $events): void {
 		$this->events = [];
 		foreach ($events as $event) {
 			$this->events[$event->event] = $event;

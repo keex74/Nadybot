@@ -4,6 +4,7 @@ namespace Nadybot\Modules\TRICKLE_MODULE;
 
 use function Safe\preg_split;
 
+use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -161,8 +162,8 @@ class TrickleController extends ModuleInstance {
 		return $msg;
 	}
 
-	/** @return Trickle[] */
-	public function getTrickleResults(AbilityConfig $abilities): array {
+	/** @return Collection<int,Trickle> */
+	public function getTrickleResults(AbilityConfig $abilities): Collection {
 		return $this->db->table(Trickle::getTable())
 			->orderBy('id')
 			->select('*')
@@ -175,11 +176,11 @@ class TrickleController extends ModuleInstance {
 					+ $row->amountSta * $abilities->sta
 					+ $row->amountStr * $abilities->str;
 				return $row->amount > 0;
-			})->toArray();
+			});
 	}
 
-	/** @param Trickle[] $results */
-	public function formatOutput(array $results): string {
+	/** @param iterable<Trickle> $results */
+	public function formatOutput(iterable $results): string {
 		$msg = '';
 		$groupName = '';
 		foreach ($results as $result) {

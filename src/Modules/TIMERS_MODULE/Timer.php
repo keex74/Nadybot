@@ -20,6 +20,8 @@ class Timer extends DBTable {
 	 * @param ?int    $id       ID of the timer
 	 * @param Alert[] $alerts   A list of alerts, each calling $callback
 	 * @param int     $settime  Timestamp when this timer was set
+	 *
+	 * @psalm-param list<Alert> $alerts
 	 */
 	public function __construct(
 		public string $name,
@@ -36,13 +38,13 @@ class Timer extends DBTable {
 		$this->settime = $settime ?? time();
 	}
 
-	/** @return Alert[] */
+	/** @return list<Alert> */
 	public static function decodeAlerts(?string $alerts): array {
 		if (!isset($alerts)) {
 			return [];
 		}
 		$alertsData = json_decode($alerts);
-		return array_map(
+		return array_values(array_map(
 			static function (\stdClass $alertData): Alert {
 				$alert = new Alert(
 					message: $alertData->message,
@@ -54,6 +56,6 @@ class Timer extends DBTable {
 				return $alert;
 			},
 			$alertsData
-		);
+		));
 	}
 }

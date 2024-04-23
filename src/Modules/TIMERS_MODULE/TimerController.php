@@ -433,14 +433,14 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 	/**
 	 * Generate alerts out of an alert specification
 	 *
-	 * @param string   $sender     Name of the player
-	 * @param string   $name       Name of the alert
-	 * @param int      $endTime    When to trigger the timer
-	 * @param string[] $alertTimes A list og alert times (human readable)
+	 * @param string           $sender     Name of the player
+	 * @param string           $name       Name of the alert
+	 * @param int              $endTime    When to trigger the timer
+	 * @param iterable<string> $alertTimes A list of alert times (human readable)
 	 *
-	 * @return Alert[]
+	 * @return list<Alert>
 	 */
-	public function generateAlerts(string $sender, string $name, int $endTime, array $alertTimes): array {
+	public function generateAlerts(string $sender, string $name, int $endTime, iterable $alertTimes): array {
 		$alerts = [];
 
 		foreach ($alertTimes as $alertTime) {
@@ -473,7 +473,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 	 * @param string       $name    Name of the timer
 	 * @param int          $runTime When to trigger
 	 * @param string       $channel Where to show (comma-separated)
-	 * @param Alert[]|null $alerts  List of alert when to display things
+	 * @param ?list<Alert> $alerts  List of alerts when to display things
 	 *
 	 * @return string Message to display
 	 *
@@ -508,13 +508,14 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		return "Timer <highlight>{$name}<end> has been set for <highlight>{$timerset}<end>.";
 	}
 
-	/** @param Alert[] $alerts */
+	/** @param list<Alert> $alerts */
 	public function add(string $name, string $owner, ?string $mode, array $alerts, string $callback, ?string $data=null, ?string $origin=null, ?int $id=null): int {
 		usort($alerts, static function (Alert $a, Alert $b) {
 			return $a->time <=> $b->time;
 		});
 
-		$lastAlert = collect($alerts)->last();
+		/** @var ?Alert */
+		$lastAlert = last($alerts);
 		$timer = new Timer(
 			id: $id,
 			name: $name,
@@ -570,7 +571,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		return null;
 	}
 
-	/** @return Timer[] */
+	/** @return array<string,Timer> */
 	public function getAllTimers(): array {
 		return $this->timers;
 	}

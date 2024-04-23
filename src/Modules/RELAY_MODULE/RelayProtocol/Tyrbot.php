@@ -144,11 +144,7 @@ class Tyrbot implements RelayProtocolInterface {
 		return (static::$supportedFeatures & $feature) === $feature;
 	}
 
-	/**
-	 * @return string[]
-	 *
-	 * @psalm-return list<string>
-	 */
+	/** @return list<string> */
 	protected function encodeUserStateChange(RoutableEvent $r, Online $event): array {
 		if (!$this->syncOnline || !isset($event->char)) {
 			return [];
@@ -189,11 +185,7 @@ class Tyrbot implements RelayProtocolInterface {
 		return $source;
 	}
 
-	/**
-	 * @return string[]
-	 *
-	 * @psalm-return list<string>
-	 */
+	/** @return list<string> */
 	protected function encodeMessage(RoutableEvent $event): array {
 		$this->logger->debug('Encoding message into Tyrbot format on relay {relay}', [
 			'relay' => $this->relay->getName(),

@@ -39,6 +39,8 @@ class MigrateToRoutes implements SchemaMigration {
 		} else {
 			$defaultChannel = (int)$defaultChannel->value;
 		}
+
+		/** @var list<string> */
 		$defaultMode = [];
 		if ($defaultChannel & 1) {
 			$this->addRoute($db, Source::PRIV . '(' . $db->getMyname() . ')');
@@ -71,7 +73,7 @@ class MigrateToRoutes implements SchemaMigration {
 			->first();
 	}
 
-	/** @param string[] $defaultMode */
+	/** @param list<string> $defaultMode */
 	private function rewriteTimerMode(DB $db, string $table, array $defaultMode, ?string $discord=null): void {
 		sort($defaultMode);
 		$db->table($table)
@@ -105,7 +107,7 @@ class MigrateToRoutes implements SchemaMigration {
 			});
 	}
 
-	/** @param string[] $defaultMode */
+	/** @param list<string> $defaultMode */
 	private function migrateChannelToRoute(DiscordChannel $channel, DB $db, string $table, array $defaultMode): void {
 		$this->rewriteTimerMode($db, $table, $defaultMode, Source::DISCORD_PRIV . "({$channel->name})");
 		if (!in_array('discord', $defaultMode)) {

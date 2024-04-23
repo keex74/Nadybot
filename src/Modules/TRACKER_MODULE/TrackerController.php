@@ -862,7 +862,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			}
 			return true;
 		}
-		$blob = $this->renderOnlineList($data->toArray(), isset($filters['edit']));
+		$blob = $this->renderOnlineList($data->toList(), isset($filters['edit']));
 		$footNotes = [];
 		if (!isset($filters['all'])) {
 			$allLink = Text::makeChatcmd(
@@ -893,7 +893,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	/**
 	 * Get the blob with details about the tracked players currently online
 	 *
-	 * @param OnlineTrackedUser[] $players
+	 * @param list<OnlineTrackedUser> $players
 	 *
 	 * @return string The blob
 	 */
@@ -986,23 +986,19 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	/**
 	 * Return the content of the online list for one player group
 	 *
-	 * @param OnlineTrackedUser[] $players The list of players in that group
+	 * @param iterable<int,OnlineTrackedUser> $players The list of players in that group
 	 *
 	 * @return string The blob for this group
 	 */
-	public function renderPlayerGroup(array $players, int $groupBy, bool $edit): string {
-		usort($players, static function (OnlineTrackedUser $p1, OnlineTrackedUser $p2): int {
-			return strnatcmp($p1->name, $p2->name);
+	public function renderPlayerGroup(iterable $players, int $groupBy, bool $edit): string {
+		$players = collect($players)->sort(
+			static function (OnlineTrackedUser $p1, OnlineTrackedUser $p2): int {
+				return strnatcmp($p1->name, $p2->name);
+			}
+		)->map(function (OnlineTrackedUser $player) use ($groupBy, $edit): string {
+			return $this->renderPlayerLine($player, $groupBy, $edit);
 		});
-		return '<tab>' . implode(
-			"\n<tab>",
-			array_map(
-				function (OnlineTrackedUser $player) use ($groupBy, $edit) {
-					return $this->renderPlayerLine($player, $groupBy, $edit);
-				},
-				$players
-			)
-		);
+		return '<tab>' . $players->join("\n<tab>");
 	}
 
 	/**
@@ -1345,7 +1341,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 
 	/**
 	 * @param Collection<int,OnlineTrackedUser> $data
-	 * @param array<string,string[]>            $filters
+	 * @param array<string,list<string>>        $filters
 	 *
 	 * @return Collection<int,OnlineTrackedUser>
 	 */

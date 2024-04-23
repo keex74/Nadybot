@@ -106,7 +106,7 @@ class GcrProtocol implements RelayProtocolInterface {
 		return [];
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function renderMessage(RoutableEvent $event): array {
 		$path = $event->getPath();
 		$hops = [];
@@ -129,7 +129,7 @@ class GcrProtocol implements RelayProtocolInterface {
 		];
 	}
 
-	/** @return string[] */
+	/** @return list<string> */
 	public function renderUserState(RoutableEvent $event): array {
 		$character = $event->getData()->char ?? null;
 		if (!isset($character) || !Util::isValidSender($character->name??-1)) {

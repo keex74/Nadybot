@@ -16,7 +16,7 @@ interface RelayProtocolInterface extends RelayStackMemberInterface {
 	 *
 	 * @param RoutableEvent $event The event to render
 	 *
-	 * @return string[] An array of rendered protocol strings
+	 * @return list<string> An array of rendered protocol strings
 	 */
 	public function send(RoutableEvent $event): array;
 

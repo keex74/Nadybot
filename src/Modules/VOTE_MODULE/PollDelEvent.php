@@ -5,7 +5,7 @@ namespace Nadybot\Modules\VOTE_MODULE;
 class PollDelEvent extends PollEvent {
 	public const EVENT_MASK = 'poll(del)';
 
-	/** @param Vote[] $votes */
+	/** @param list<Vote> $votes */
 	public function __construct(
 		Poll $poll,
 		array $votes,

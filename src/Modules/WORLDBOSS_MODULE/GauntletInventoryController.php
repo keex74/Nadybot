@@ -40,9 +40,9 @@ class GauntletInventoryController extends ModuleInstance {
 	/**
 	 * (ref , image, need) 17 items without basic armor
 	 *
-	 * @var int[][]
+	 * @var list<list<int>>
 	 *
-	 * @psalm-var list<array{0: int, 1: int, 2: int}>
+	 * @psalm-var list<list{int,int,int}>
 	 */
 	private array $gaulisttab = [
 		[292_507, 292_793, 3], [292_509, 292_775, 1], [292_508, 292_776, 1], [292_510, 292_774, 1],
@@ -52,7 +52,7 @@ class GauntletInventoryController extends ModuleInstance {
 		[292_517, 292_762, 3],
 	];
 
-	/** @return int[] */
+	/** @return list<int> */
 	public function getData(string $name): array {
 		$data = $this->preferences->get($name, 'gauntlet');
 		if (isset($data)) {
@@ -61,7 +61,7 @@ class GauntletInventoryController extends ModuleInstance {
 		return array_fill(0, 17, 0);
 	}
 
-	/** @param int[] $inv */
+	/** @param list<int> $inv */
 	public function saveData(string $sender, array $inv): void {
 		$this->preferences->save($sender, 'gauntlet', json_encode($inv));
 	}

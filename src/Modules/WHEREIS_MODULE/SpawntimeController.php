@@ -119,12 +119,14 @@ class SpawntimeController extends ModuleInstance {
 
 		/** @var string */
 		$line = str_replace('>0', '>', $line);
+
+		/** @var list<string> */
 		$flags = [];
 		if ($row->can_skip_spawn) {
-			$flags[] = 'can skip spawn';
+			$flags []= 'can skip spawn';
 		}
 		if (isset($row->placeholder) && strlen($row->placeholder)) {
-			$flags[] = 'placeholder: ' . $row->placeholder;
+			$flags []= 'placeholder: ' . $row->placeholder;
 		}
 		if (count($flags)) {
 			$line .= ' (<highlight>' . implode(', ', $flags) . '<end>)';

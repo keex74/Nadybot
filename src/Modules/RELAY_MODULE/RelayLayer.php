@@ -12,6 +12,8 @@ class RelayLayer extends DBTable {
 	 * @param ?int                 $id        The id of the relay layer. Lower id means higher priority
 	 * @param ?int                 $relay_id  The id of the relay where this layer belongs to
 	 * @param RelayLayerArgument[] $arguments
+	 *
+	 * @psalm-param list<RelayLayerArgument> $arguments
 	 */
 	public function __construct(
 		public string $layer,
@@ -28,7 +30,7 @@ class RelayLayer extends DBTable {
 	public function toString(?string $linkType=null, array $secrets=[]): string {
 		$arguments = array_map(
 			static function (RelayLayerArgument $argument) use ($secrets): string {
-				return $argument->toString(in_array($argument->name, $secrets));
+				return $argument->toString(in_array($argument->name, $secrets, true));
 			},
 			$this->arguments
 		);

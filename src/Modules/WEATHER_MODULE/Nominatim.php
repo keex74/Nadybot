@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\WEATHER_MODULE;
 
+use EventSauce\ObjectHydrator\PropertyCasters\CastListToType;
 use Nadybot\Core\StringableTrait;
 
 class Nominatim {
@@ -11,12 +12,14 @@ class Nominatim {
 	 * @param string[]            $boundingbox
 	 * @param array<string,mixed> $namedetails
 	 * @param array<string,mixed> $extratags
+	 *
+	 * @psalm-param list<string>  $boundingbox
 	 */
 	public function __construct(
 		public string $lat,
 		public string $lon,
 		public string $display_name,
-		public array $boundingbox,
+		#[CastListToType('string')] public array $boundingbox,
 		public int $place_id,
 		public string $licence,
 		public string $osm_type,

@@ -8,7 +8,7 @@ use Stringable;
 class WhompahPath implements Stringable {
 	use StringableTrait;
 
-	/** @param int[] $connections */
+	/** @param list<int> $connections */
 	public function __construct(
 		public WhompahCity $current,
 		public array $connections=[],

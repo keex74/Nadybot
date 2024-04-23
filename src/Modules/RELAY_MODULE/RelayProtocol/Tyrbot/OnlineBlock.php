@@ -3,7 +3,7 @@
 namespace Nadybot\Modules\RELAY_MODULE\RelayProtocol\Tyrbot;
 
 class OnlineBlock {
-	/** @param User[] $users */
+	/** @param list<User> $users */
 	public function __construct(
 		public Source $source,
 		public array $users,

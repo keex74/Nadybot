@@ -64,9 +64,9 @@ class WebChatConverter extends ModuleInstance {
 	}
 
 	/**
-	 * @param string[] $msgs
+	 * @param list<string> $msgs
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function convertMessages(array $msgs): array {
 		return array_map(
@@ -80,9 +80,9 @@ class WebChatConverter extends ModuleInstance {
 	/**
 	 * Try to reverse the splitting of a large message into multiple ones
 	 *
-	 * @param AOMsg[] $msgs
+	 * @param list<AOMsg> $msgs
 	 *
-	 * @return AOMsg[]
+	 * @return list<AOMsg>
 	 */
 	public function tryToUnbreakPopups(array $msgs): array {
 		if (count($matches = Safe::pregMatch("/<popup ref=\"(ao-\d)\">(.+?)<\/popup> \(Page <strong>1 \/ (\d+)<\/strong>\)/", $msgs[0]->message)) < 4) {
@@ -153,7 +153,7 @@ class WebChatConverter extends ModuleInstance {
 			'<br>' => '<br />',
 		];
 
-		/** @var string[] */
+		/** @var list<string> */
 		$stack = [];
 		$message = Safe::pregReplace("/<\/font>/", '<end>', $message);
 		$message = preg_replace_callback(

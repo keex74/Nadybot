@@ -476,7 +476,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 	/**
 	 * Get a list of array for which to show the gauntlet buff(s)
 	 *
-	 * @return Faction[]
+	 * @return list<Faction>
 	 */
 	private function getSidesToShowBuff(?string $side=null): array {
 		$defaultSide = $this->gaubuffDefaultSide;
@@ -494,7 +494,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 			return;
 		}
 
-		/** @var ApiGauntletBuff[] */
+		/** @var list<ApiGauntletBuff> */
 		$buffs = [];
 		$mapper = new ObjectMapperUsingReflection();
 		try {

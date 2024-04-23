@@ -8,8 +8,8 @@ class CommandReplyEvent extends Event {
 	public const EVENT_MASK = 'cmdreply';
 
 	/**
-	 * @param string   $uuid For which WebsocketConnection is this destined
-	 * @param string[] $msgs An array with reply messages
+	 * @param string       $uuid For which WebsocketConnection is this destined
+	 * @param list<string> $msgs An array with reply messages
 	 */
 	public function __construct(
 		public string $uuid,

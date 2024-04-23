@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\VOTE_MODULE;
 
-use function Safe\{json_decode, json_encode, preg_split};
+use function Safe\{json_decode, json_encode};
 use Nadybot\Core\Events\TimerEvent;
 use Nadybot\Core\{
 	AccessManager,
@@ -16,6 +16,7 @@ use Nadybot\Core\{
 	ParamClass\PRemove,
 	Routing\RoutableMessage,
 	Routing\Source,
+	Safe,
 	Text,
 	Types\MessageEmitter,
 	Util,
@@ -138,7 +139,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 					poll: $ePoll,
 					votes: $this->db->table(Vote::getTable())
 						->where('poll_id', $poll->id)
-						->asObj(Vote::class)->toArray(),
+						->asObjArr(Vote::class),
 				);
 				$this->eventManager->fireEvent($event);
 				unset($this->polls[$id]);
@@ -190,10 +191,9 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	#[NCA\HandlesCommand('poll')]
 	#[NCA\Help\Group('voting')]
 	public function pollCommand(CmdContext $context): void {
-		/** @var Poll[] */
 		$topics = $this->db->table(Poll::getTable())
 			->orderBy('started')
-			->asObj(Poll::class)->toArray();
+			->asObjArr(Poll::class);
 		$running = '';
 		$over = '';
 		$blob = '';
@@ -425,7 +425,7 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		PDuration $duration,
 		string $definition
 	): void {
-		$answers = preg_split("/\s*\Q" . self::DELIMITER . "\E\s*/", $definition);
+		$answers = Safe::pregSplit("/\s*\Q" . self::DELIMITER . "\E\s*/", $definition);
 		$question = array_shift($answers);
 		$duration = $duration->toSecs();
 
@@ -466,11 +466,9 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 	}
 
 	public function getPollBlob(Poll $topic, ?string $sender=null): string {
-		/** @var Vote[] */
 		$votes = $this->db->table(Vote::getTable())
 			->where('poll_id', $topic->id)
-			->asObj(Vote::class)
-			->toArray();
+			->asObjArr(Vote::class);
 
 		$results = [];
 		foreach ($topic->answers as $answer) {
@@ -547,10 +545,9 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		)
 	]
 	public function pollsNewsTile(string $sender): ?string {
-		/** @var Poll[] */
 		$topics = $this->db->table(Poll::getTable())
 			->orderBy('started')
-			->asObj(Poll::class)->toArray();
+			->asObjArr(Poll::class);
 		if (count($topics) === 0) {
 			return null;
 		}

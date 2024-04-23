@@ -455,7 +455,7 @@ class RelayController extends ModuleInstance {
 	}
 
 	public function deleteRelay(RelayConfig $relay): bool {
-		/** @var int[] List of modifier-ids for the route */
+		/** @var list<int> List of modifier-ids for the route */
 		$layers = array_column($relay->layers, 'id');
 		$transactionActive = false;
 		try {
@@ -849,7 +849,7 @@ class RelayController extends ModuleInstance {
 			->asObj(RelayLayer::class)
 			->each(static function (RelayLayer $layer) use ($arguments): void {
 				assert(isset($layer->id));
-				$layer->arguments = $arguments->get($layer->id, new Collection())->toArray();
+				$layer->arguments = $arguments->get($layer->id, new Collection())->toList();
 			})
 			->groupBy('relay_id');
 		$events = $this->db->table(RelayEvent::getTable())
@@ -861,9 +861,8 @@ class RelayController extends ModuleInstance {
 			->asObj(RelayConfig::class)
 			->each(static function (RelayConfig $relay) use ($layers, $events): void {
 				assert(isset($relay->id));
-				$relay->layers = $layers->get($relay->id, new Collection())->toArray();
-				$relay->events = $events->get($relay->id, new Collection())
-					->toArray();
+				$relay->layers = $layers->get($relay->id, new Collection())->toList();
+				$relay->events = $events->get($relay->id, new Collection())->toList();
 			})
 			->toList();
 
@@ -1367,22 +1366,19 @@ class RelayController extends ModuleInstance {
 	/** Add layers and args to a relay from the DB */
 	protected function completeRelay(RelayConfig $relay): void {
 		$relay->layers = $this->db->table(RelayLayer::getTable())
-		->where('relay_id', $relay->id)
-		->orderBy('id')
-		->asObj(RelayLayer::class)
-		->toArray();
+			->where('relay_id', $relay->id)
+			->orderBy('id')
+			->asObjArr(RelayLayer::class);
 		foreach ($relay->layers as $layer) {
 			$layer->arguments = $this->db->table(RelayLayerArgument::getTable())
-			->where('layer_id', $layer->id)
-			->orderBy('id')
-			->asObj(RelayLayerArgument::class)
-			->toArray();
+				->where('layer_id', $layer->id)
+				->orderBy('id')
+				->asObjArr(RelayLayerArgument::class);
 		}
 		$relay->events = $this->db->table(RelayEvent::getTable())
 			->where('relay_id', $relay->id)
 			->orderBy('id')
-			->asObj(RelayEvent::class)
-			->toArray();
+			->asObjArr(RelayEvent::class);
 	}
 
 	protected function createRelayFromDB(RelayConfig $conf): Relay {
@@ -1400,6 +1396,7 @@ class RelayController extends ModuleInstance {
 			$conf->layers = array_reverse($conf->layers);
 		}
 
+		/** @var list<RelayLayerInterface> $stack */
 		$stack = [];
 		$transport = array_shift($conf->layers);
 		$spec = $this->transports[strtolower($transport->layer)] ?? null;
@@ -1426,11 +1423,14 @@ class RelayController extends ModuleInstance {
 					'known layer for relaying. Perhaps the order was wrong?'
 				);
 			}
-			$stack []= $this->getRelayLayer(
+			$rLayer = $this->getRelayLayer(
 				$layerName,
 				$conf->layers[$i]->getKVArguments(),
 				$spec
 			);
+			if ($rLayer instanceof RelayLayerInterface) {
+				$stack []= $rLayer;
+			}
 		}
 
 		$proto = array_pop($conf->layers);
@@ -1449,7 +1449,6 @@ class RelayController extends ModuleInstance {
 			$spec
 		);
 
-		/** @var RelayLayerInterface[] $stack */
 		return new Relay(
 			name: $conf->name,
 			transport: $transportLayer,
@@ -1462,6 +1461,9 @@ class RelayController extends ModuleInstance {
 	/** Return the textualrepresentation with status for a single relay */
 	private function renderRelay(RelayConfig $relay): string {
 		$blob = "<header2>{$relay->name}<end>\n";
+		if (count($relay->layers) === 0) {
+			return $blob . '<tab>- empty -';
+		}
 		if (isset($this->transports[$relay->layers[0]->layer])) {
 			$secrets = $this->transports[$relay->layers[0]->layer]->getSecrets();
 			$blob .= '<tab>Transport: <highlight>' . $relay->layers[0]->toString('transport', $secrets) . "<end>\n";

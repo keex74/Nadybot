@@ -106,13 +106,12 @@ class WhompahController extends ModuleInstance {
 			return;
 		}
 
-		/** @var WhompahCity[] */
 		$cities = $this->db->table(WhompahCityRel::getTable(), 'w1')
 			->join(WhompahCity::getTable(as: 'w2'), 'w1.city2_id', 'w2.id')
 			->where('w1.city1_id', $city->id)
 			->orderBy('w2.city_name')
 			->select('w2.*')
-			->asObj(WhompahCity::class)->toArray();
+			->asObjArr(WhompahCity::class);
 
 		$msg = "From <highlight>{$city->city_name}<end> ({$city->short_name}) you can get to\n- " .
 			implode("\n- ", $this->getColoredNamelist($cities, true));
@@ -121,7 +120,7 @@ class WhompahController extends ModuleInstance {
 	}
 
 	/**
-	 * @param WhompahPath[]          $queue
+	 * @param list<WhompahPath>      $queue
 	 * @param array<int,WhompahPath> $whompahs
 	 *
 	 * @return ?WhompahPath
@@ -175,16 +174,16 @@ class WhompahController extends ModuleInstance {
 		$this->db->table(WhompahCityRel::getTable())->orderBy('city1_id')
 			->asObj(WhompahCityRel::class)
 			->each(static function (WhompahCityRel $city) use ($network) {
-				$network[$city->city1_id]->connections[] = $city->city2_id;
+				$network[$city->city1_id]->connections []= $city->city2_id;
 			});
 
 		return $network;
 	}
 
 	/**
-	 * @param WhompahCity[] $cities
+	 * @param list<WhompahCity> $cities
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	protected function getColoredNamelist(array $cities, bool $addShort=false): array {
 		return array_map(static function (WhompahCity $city) use ($addShort): string {
