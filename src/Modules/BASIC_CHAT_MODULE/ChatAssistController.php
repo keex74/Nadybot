@@ -185,7 +185,7 @@ class ChatAssistController extends ModuleInstance {
 	/** Show the current caller(s) and assist macro */
 	#[NCA\HandlesCommand('assist')]
 	public function assistCommand(CmdContext $context): void {
-		if (empty($this->callers)) {
+		if (!count($this->callers)) {
 			$msg = 'No callers have been set yet.';
 			$context->reply($msg);
 			return;
@@ -472,7 +472,7 @@ class ChatAssistController extends ModuleInstance {
 			$context->reply('You must be Raid Leader to use this command.');
 			return;
 		}
-		if (empty($this->lastCallers)) {
+		if (!count($this->lastCallers)) {
 			$context->reply('No last caller configuration found.');
 			return;
 		}
@@ -501,7 +501,7 @@ class ChatAssistController extends ModuleInstance {
 			$context->reply('You must be Raid Leader to use this command.');
 			return;
 		}
-		if (empty($this->lastCallers)) {
+		if (!count($this->lastCallers)) {
 			$context->reply('No last caller configuration found.');
 			return;
 		}
@@ -566,12 +566,12 @@ class ChatAssistController extends ModuleInstance {
 				$potentialCallers []= $raider->player;
 			}
 		}
-		if (empty($potentialCallers)) {
+		if (!count($potentialCallers)) {
 			$context->reply('There is no one in the raid right now.');
 			return;
 		}
 		$potentialCallers = $this->removeNeverCallers(...$potentialCallers);
-		if (empty($potentialCallers)) {
+		if (!count($potentialCallers)) {
 			$context->reply('There are no potential callers in the raid.');
 			return;
 		}

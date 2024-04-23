@@ -363,7 +363,7 @@ class DB {
 
 	/** Change the SQL to work in a variety of MySQL/SQLite versions */
 	public function applySQLCompatFixes(string $sql): string {
-		if (!empty($this->sqlReplacements)) {
+		if (count($this->sqlReplacements) > 0) {
 			$search = array_keys($this->sqlReplacements);
 			$replace = array_values($this->sqlReplacements);
 			$sql = str_ireplace($search, $replace, $sql);
@@ -755,7 +755,7 @@ class DB {
 		if (!$this->fs->exists($file)) {
 			throw new Exception("The CSV-file {$file} was not found.");
 		}
-		$version = $this->fs->getModificationTime($file) ?: 0;
+		$version = $this->fs->getModificationTime($file);
 		$handle = $this->fs->openFile($file, 'r');
 		foreach (splitLines($handle) as $line) {
 			if (substr($line, 0, 1) !== '#') {
@@ -910,7 +910,7 @@ class DB {
 		$migrations = new Collection();
 		$ref = new ReflectionClass($instance);
 		$attrs = $ref->getAttributes(NCA\HasMigrations::class);
-		if (empty($attrs)) {
+		if (!count($attrs)) {
 			return $migrations;
 		}
 

@@ -987,7 +987,7 @@ class AttacksController extends ModuleInstance {
 		?bool $groupTowerAttacks,
 		DBTowerAttack ...$attacks
 	): array {
-		if (empty($attacks)) {
+		if (!count($attacks)) {
 			return ['No tower attacks found.'];
 		}
 		$groupTowerAttacks ??= $this->groupTowerAttacks;
@@ -1081,7 +1081,7 @@ class AttacksController extends ModuleInstance {
 		string $title,
 		DBOutcome ...$outcomes
 	): array {
-		if (empty($outcomes)) {
+		if (!count($outcomes)) {
 			return ['No tower victories found.'];
 		}
 		$blocks = [];

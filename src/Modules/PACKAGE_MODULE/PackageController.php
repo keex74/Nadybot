@@ -183,9 +183,8 @@ class PackageController extends ModuleInstance {
 			}
 			$blob .= "\n";
 			if (isset($installedVersion)) {
-				$blob .= '<tab>Installed: <highlight>'.
-					($installedVersion ?: 'unknown version').
-					'<end> ['.
+				$blob .= "<tab>Installed: <highlight>{$installedVersion}<end>".
+					' ['.
 					Text::makeChatcmd(
 						'uninstall',
 						"/tell <myname> package uninstall {$package->name}"

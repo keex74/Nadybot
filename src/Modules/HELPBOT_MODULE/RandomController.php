@@ -257,7 +257,7 @@ class RandomController extends ModuleInstance {
 	 */
 	public function roll(string $sender, array $options, int $amount=1): array {
 		$revOptions = array_flip($options);
-		if (empty($revOptions)) {
+		if (!count($revOptions)) {
 			throw new InvalidArgumentException('$options to roll() must not be empty');
 		}
 		mt_srand();

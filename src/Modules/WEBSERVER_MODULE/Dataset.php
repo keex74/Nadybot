@@ -33,7 +33,7 @@ class Dataset {
 
 	/** @return list<string> */
 	public function getValues(): array {
-		if (empty($this->providers)) {
+		if (!count($this->providers)) {
 			return [];
 		}
 		$type = ($this->providers[0] instanceof GaugeProvider) ? 'gauge' : 'counter';

@@ -146,7 +146,7 @@ class DevController extends ModuleInstance {
 			try {
 				$reflectedMethod = new ReflectionMethod($instance, $method);
 				$commands = $reflectedMethod->getAttributes(NCA\HandlesCommand::class);
-				if (empty($commands)) {
+				if (!count($commands)) {
 					continue;
 				}
 

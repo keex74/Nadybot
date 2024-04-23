@@ -480,7 +480,7 @@ class MessageHubController extends ModuleInstance {
 	#[NCA\HandlesCommand('route')]
 	public function routeList(CmdContext $context, #[NCA\Str('list')] string $action): void {
 		$routes = $this->messageHub->getRoutes();
-		if (empty($routes)) {
+		if (!count($routes)) {
 			$context->reply('There are no routes defined.');
 			return;
 		}
@@ -508,7 +508,7 @@ class MessageHubController extends ModuleInstance {
 	#[NCA\HandlesCommand('route')]
 	public function routeTree(CmdContext $context, #[NCA\Str('tree')] ?string $tree, #[NCA\Str('all')] ?string $all): void {
 		$routes = $this->messageHub->getRoutes();
-		if (empty($routes)) {
+		if (!count($routes)) {
 			$context->reply('There are no routes defined.');
 			return;
 		}

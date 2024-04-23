@@ -383,7 +383,7 @@ class Util {
 		}
 		$reflection = new ReflectionClass($class);
 		$attrs = $reflection->getAttributes($attrName);
-		if (empty($attrs)) {
+		if (!count($attrs)) {
 			return null;
 		}
 
@@ -411,7 +411,7 @@ class Util {
 			$params []= new FunctionParameter(
 				name: $paramObj->name,
 				description: $paramObj->description??null,
-				required: $paramObj->required ?: false,
+				required: $paramObj->required,
 				type: $paramType,
 			);
 			$i++;

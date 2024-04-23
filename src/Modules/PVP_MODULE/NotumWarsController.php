@@ -379,7 +379,7 @@ class NotumWarsController extends ModuleInstance {
 	#[NCA\Event('timer(1h)', 'Announce unplanted sites via pvp(unplanted-sites)')]
 	public function announceUnplantedSites(): void {
 		$unplantedSites = $this->getUnplantedSites();
-		if (empty($unplantedSites)) {
+		if (!count($unplantedSites)) {
 			return;
 		}
 		$announcementPre = 'There is ';
@@ -923,7 +923,7 @@ class NotumWarsController extends ModuleInstance {
 		#[NCA\StrChoice('unplanted', 'free')] string $action,
 	): void {
 		$unplantedSites = $this->getUnplantedSites();
-		if (empty($unplantedSites)) {
+		if (!count($unplantedSites)) {
 			$context->reply('No unplanted sites.');
 			return;
 		}

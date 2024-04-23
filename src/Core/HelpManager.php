@@ -114,7 +114,7 @@ class HelpManager {
 			}
 		}
 
-		return empty($output) ? null : $output;
+		return ($output === '') ? null : $output;
 	}
 
 	public function update(string $helpTopic, string $admin): void {

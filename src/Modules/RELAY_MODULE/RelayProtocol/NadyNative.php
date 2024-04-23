@@ -109,7 +109,7 @@ class NadyNative implements RelayProtocolInterface {
 			'relay' => $this->relay->getName(),
 			'message' => $message,
 		]);
-		if (empty($message->packages)) {
+		if (!count($message->packages)) {
 			return null;
 		}
 		$serialized = array_shift($message->packages);

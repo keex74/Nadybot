@@ -83,7 +83,7 @@ class LegacyLogger {
 			$dynamicHandlers = new SplObjectStorage();
 			static::$dynamicHandlers = $dynamicHandlers;
 		}
-		if (!empty(static::$config) && !$noCache) {
+		if (count(static::$config) > 0 && !$noCache) {
 			return static::$config;
 		}
 		$configFile = BotRunner::$arguments['log-config'] ?? './conf/logging.json';

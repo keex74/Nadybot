@@ -98,7 +98,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 
 	#[NCA\SettingChangeHandler('nadyui_channel')]
 	public function changeNadyUiChannel(string $setting, string $old, string $new): void {
-		if (empty($new) || $new === 'off') {
+		if ($new === '' || $new === 'off') {
 			return;
 		}
 		async($this->updateWebUI(...))->catch(Nadybot::asyncErrorHandler(...));
@@ -218,7 +218,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 		}
 		$schema = 'http'; /* $this->settingManager->getBool('webserver_tls') ? "https" : "http"; */
 		$port = $this->settingManager->getInt('webserver_port');
-		if (empty($this->config->general->superAdmins)) {
+		if (!count($this->config->general->superAdmins)) {
 			return;
 		}
 		$superUser = $this->config->general->superAdmins[0];

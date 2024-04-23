@@ -340,7 +340,7 @@ class DiscordAPIClient extends ModuleInstance {
 
 	private function processQueue(): void {
 		$this->logger->info('Processing discord-queue');
-		if (empty($this->outQueue)) {
+		if (!count($this->outQueue)) {
 			$this->logger->info('Channel queue empty, stopping processing');
 			$this->queueProcessing = false;
 			return;
@@ -376,7 +376,7 @@ class DiscordAPIClient extends ModuleInstance {
 	}
 
 	private function processWebhookQueue(): void {
-		if (empty($this->webhookQueue)) {
+		if (!count($this->webhookQueue)) {
 			$this->webhookQueueProcessing = false;
 			return;
 		}

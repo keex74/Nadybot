@@ -98,7 +98,7 @@ class ImplantController extends ModuleInstance {
 	 * @return int The lowest QL that gives that bonus
 	 */
 	public function findBestQLForBonus(int $bonus, array $itemSpecs): int {
-		if (empty($itemSpecs)) {
+		if (!count($itemSpecs)) {
 			throw new InvalidArgumentException('$itemSpecs to findBestQLForBonus() must not be empty');
 		}
 		for ($searchedQL = min(array_keys($itemSpecs)); $searchedQL <= max(array_keys($itemSpecs)); $searchedQL++) {

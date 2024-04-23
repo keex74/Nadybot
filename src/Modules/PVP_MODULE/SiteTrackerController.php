@@ -240,7 +240,7 @@ class SiteTrackerController extends ModuleInstance {
 		#[NCA\Str('track', 'tracker')] string $action,
 		#[NCA\Str('list')] ?string $subAction,
 	): void {
-		if (empty($this->trackers)) {
+		if (!count($this->trackers)) {
 			$context->reply('No registered trackers.');
 			return;
 		}
@@ -397,7 +397,7 @@ class SiteTrackerController extends ModuleInstance {
 	private function parseExpression(string $expression): TrackerEntry {
 		$parser = new TrackerArgumentParser();
 		$config = $parser->parse($expression);
-		if (empty($config->events)) {
+		if (!count($config->events)) {
 			$config->events = ['*'];
 		}
 		foreach ($config->events as $eventPattern) {

@@ -87,7 +87,7 @@ class RaidBlockController extends ModuleInstance {
 			foreach ($blocks as $from => $block) {
 				if ($block->expiration !== null && $block->expiration <= time()) {
 					unset($this->blocks[$player][$from]);
-					if (empty($this->blocks[$player])) {
+					if (!count($this->blocks[$player])) {
 						unset($this->blocks[$player]);
 					}
 				}

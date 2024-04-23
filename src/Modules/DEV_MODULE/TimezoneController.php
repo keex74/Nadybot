@@ -54,8 +54,8 @@ class TimezoneController extends ModuleInstance {
 		$area = $area();
 
 		$timezoneAreas = $this->getTimezoneAreas();
-		$code = $timezoneAreas[$area];
-		if (empty($code)) {
+		$code = $timezoneAreas[$area] ?? null;
+		if (!isset($code) || $code === 0) {
 			$msg = "<highlight>{$area}<end> is not a valid area.";
 			$context->reply($msg);
 			return;

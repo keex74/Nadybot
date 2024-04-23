@@ -137,7 +137,7 @@ class NanoController extends ModuleInstance {
 			/** @var Nano $row */
 			$defColor = $this->settingManager->getString('default_window_color');
 			if ($currentNanoline !== $row->strain || $currentSubstrain !== $row->sub_strain) {
-				if (!empty($row->strain)) {
+				if (strlen($row->strain) > 0) {
 					$nanolineLink = Text::makeChatcmd('see all nanos', "/tell <myname> nanolines {$row->strain}");
 					$blob .= "\n<pagebreak><header2>{$row->school} {$defColor}&gt;<end> {$row->strain}";
 					if ($row->sub_strain) {
@@ -523,7 +523,7 @@ class NanoController extends ModuleInstance {
 			/** @var Nano $row */
 			$nanoLink = $this->makeNanoLink($row);
 			if ($compact) {
-				if (!empty($row->strain)) {
+				if (strlen($row->strain) > 0) {
 					$blob .= "\n<pagebreak><tab><highlight>{$row->school} <end>&gt;<highlight> {$row->strain}<end>";
 					if ($row->sub_strain) {
 						$blob .= " &gt; <highlight>{$row->sub_strain}<end>";
@@ -537,7 +537,7 @@ class NanoController extends ModuleInstance {
 					? ' [' . Text::makeChatcmd('GMI', "/tell <myname> gmi {$row->crystal_id}") . ']'
 					: '';
 				$crystalLink = $row->getCrystalLink() ?? 'Crystal';
-				if (!empty($row->strain)) {
+				if (strlen($row->strain) > 0) {
 					$nanolineLink = Text::makeChatcmd('see all nanos', "/tell <myname> nanolines {$row->strain}");
 					$blob .= "\n<pagebreak><header2>{$row->school} {$defColor}&gt;<end> {$row->strain}";
 					if ($row->sub_strain) {

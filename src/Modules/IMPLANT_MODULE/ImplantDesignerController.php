@@ -97,14 +97,14 @@ class ImplantDesignerController extends ModuleInstance {
 			if (property_exists($slotObj, 'symb') && $slotObj->symb !== null) {
 				continue;
 			}
-			$ql = empty($slotObj->ql) ? 300 : (int)$slotObj->ql;
+			$ql = !count($slotObj->ql) ? 300 : (int)$slotObj->ql;
 			$addImp = false;
 			$refined = '';
 			if ($ql > 200) {
 				$refined = 'Refined ';
 			}
 			foreach (['shiny', 'bright', 'faded'] as $grade) {
-				if (empty($slotObj->{$grade})) {
+				if (!count($slotObj->{$grade})) {
 					continue;
 				}
 				$name = $lookup[$slotObj->{$grade}];
@@ -136,7 +136,7 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 		}
 		$blob = $this->renderShoppingList($list);
-		if (empty($blob)) {
+		if ($blob === '') {
 			$context->reply('Nothing to buy.');
 			return;
 		}
@@ -208,7 +208,7 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 			$blob .= "\n\n";
 		} else {
-			$ql = empty($design->{$slot}->ql) ? 300 : (int)$design->{$slot}->ql;
+			$ql = !count($design->{$slot}->ql) ? 300 : (int)$design->{$slot}->ql;
 			$blob .= "<header2>QL<end> {$ql}";
 			$implant = $this->getImplantInfo($ql, $design->{$slot}->shiny, $design->{$slot}->bright, $design->{$slot}->faded);
 			if ($implant !== null) {
@@ -380,13 +380,13 @@ class ImplantDesignerController extends ModuleInstance {
 
 		$design = $this->getDesign($context->char->name, '@');
 		$slotObj = $design->{$slot->designSlotName()};
-		if (empty($slotObj)) {
+		if (!count($slotObj)) {
 			$msg = 'You must have at least one cluster filled to require an ability.';
-		} elseif (!empty($slotObj->symb)) {
+		} elseif (count($slotObj->symb) > 0) {
 			$msg = 'You cannot require an ability for a symbiant.';
-		} elseif (empty($slotObj->shiny) && empty($slotObj->bright) && empty($slotObj->faded)) {
+		} elseif (!count($slotObj->shiny) && !count($slotObj->bright) && !count($slotObj->faded)) {
 			$msg = 'You must have at least one cluster filled to require an ability.';
-		} elseif (!empty($slotObj->shiny) && !empty($slotObj->bright) && !empty($slotObj->faded)) {
+		} elseif (count($slotObj->shiny) > 0 && count($slotObj->bright) > 0 && count($slotObj->faded) > 0) {
 			$msg = 'You must have at least one empty cluster to require an ability.';
 		} else {
 			$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
@@ -423,13 +423,13 @@ class ImplantDesignerController extends ModuleInstance {
 
 		$design = $this->getDesign($context->char->name, '@');
 		$slotObj = $design->{$slot->designSlotName()};
-		if (empty($slotObj)) {
+		if (!count($slotObj)) {
 			$msg = 'You must have at least one cluster filled to require an ability.';
-		} elseif (!empty($slotObj->symb)) {
+		} elseif (count($slotObj->symb) > 0) {
 			$msg = 'You cannot require an ability for a symbiant.';
-		} elseif (empty($slotObj->shiny) && empty($slotObj->bright) && empty($slotObj->faded)) {
+		} elseif (!count($slotObj->shiny) && !count($slotObj->bright) && !count($slotObj->faded)) {
 			$msg = 'You must have at least one cluster filled to require an ability.';
-		} elseif (!empty($slotObj->shiny) && !empty($slotObj->bright) && !empty($slotObj->faded)) {
+		} elseif (count($slotObj->shiny) > 0 && count($slotObj->bright) > 0 && count($slotObj->faded) > 0) {
 			$msg = 'You must have at least one empty cluster to require an ability.';
 		} else {
 			$blob  = '[' . Text::makeChatcmd('See Build', '/tell <myname> implantdesigner');
@@ -458,13 +458,13 @@ class ImplantDesignerController extends ModuleInstance {
 				->orderBy('c2.LongName')
 				->orderBy('c3.LongName');
 
-			if (!empty($slotObj->shiny)) {
+			if (count($slotObj->shiny) > 0) {
 				$query->where('c1.LongName', $slotObj->shiny);
 			}
-			if (!empty($slotObj->bright)) {
+			if (count($slotObj->bright) > 0) {
 				$query->where('c2.LongName', $slotObj->bright);
 			}
-			if (!empty($slotObj->faded)) {
+			if (count($slotObj->faded) > 0) {
 				$query->where('c3.LongName', $slotObj->faded);
 			}
 
@@ -472,20 +472,28 @@ class ImplantDesignerController extends ModuleInstance {
 			$primary = null;
 			foreach ($data as $row) {
 				$results = [];
-				if (empty($slotObj->shiny)) {
+				if (!count($slotObj->shiny)) {
 					$results []= ['shiny', $row->ShinyEffect];
 				}
-				if (empty($slotObj->bright)) {
+				if (!count($slotObj->bright)) {
 					$results []= ['bright', $row->BrightEffect];
 				}
-				if (empty($slotObj->faded)) {
+				if (!count($slotObj->faded)) {
 					$results []= ['faded', $row->FadedEffect];
 				}
 
-				/** @var list<string> */
-				$results = array_map(static function ($item) use ($slot): string {
-					return empty($item[1]) ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot->designSlotName()} {$item[0]} {$item[1]}");
-				}, $results);
+				/** @var list<string> $results */
+				$results = array_map(
+					/**
+					 * @param list<string> $item
+					 *
+					 * @psalm-param list{string,string} $item
+					 */
+					static function (array $item) use ($slot): string {
+						return ($item[1] === '') ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot->designSlotName()} {$item[0]} {$item[1]}");
+					},
+					$results
+				);
 				if ($results[0] !== $primary) {
 					$blob .= "\n" . $results[0] . "\n";
 					$primary = $results[0];
@@ -524,11 +532,11 @@ class ImplantDesignerController extends ModuleInstance {
 			$slotObj = $design->{$slot};
 
 			// skip empty slots
-			if (empty($slotObj)) {
+			if (!count($slotObj)) {
 				continue;
 			}
 
-			if (!empty($slotObj->symb)) {
+			if (count($slotObj->symb) > 0) {
 				$symb = $slotObj->symb;
 
 				// add reqs
@@ -550,7 +558,7 @@ class ImplantDesignerController extends ModuleInstance {
 				}
 			} else {
 				$ql = 300;
-				if (!empty($slotObj->ql)) {
+				if (count($slotObj->ql) > 0) {
 					$ql = (int)$slotObj->ql;
 				}
 
@@ -571,7 +579,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 				// add mods
 				foreach ($this->grades as $grade) {
-					if (!empty($slotObj->{$grade})) {
+					if (count($slotObj->{$grade}) > 0) {
 						$effectTypeIdName = ucfirst(strtolower($grade)) . 'EffectTypeID';
 						$effectId = $implant->{$effectTypeIdName};
 						$mods[$slotObj->{$grade}] += $this->getClusterModAmount($ql, $grade, $effectId);
@@ -703,7 +711,7 @@ class ImplantDesignerController extends ModuleInstance {
 	private function renderShoppingList(ShoppingList $list): string {
 		/** @var list<string> */
 		$parts = [];
-		if (!empty($list->implants)) {
+		if (count($list->implants) > 0) {
 			$part = '<header2>Empty Implants<end>';
 			sort($list->implants);
 			foreach ($list->implants as $implant) {
@@ -711,7 +719,7 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 			$parts []= $part;
 		}
-		if (!empty($list->shinyClusters)) {
+		if (count($list->shinyClusters) > 0) {
 			$part = '<header2>Shiny Clusters<end>';
 			sort($list->shinyClusters);
 			foreach ($list->shinyClusters as $cluster) {
@@ -719,7 +727,7 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 			$parts []= $part;
 		}
-		if (!empty($list->brightClusters)) {
+		if (count($list->brightClusters) > 0) {
 			$part = '<header2>Bright Clusters<end>';
 			sort($list->brightClusters);
 			foreach ($list->brightClusters as $cluster) {
@@ -727,7 +735,7 @@ class ImplantDesignerController extends ModuleInstance {
 			}
 			$parts []= $part;
 		}
-		if (!empty($list->fadedClusters)) {
+		if (count($list->fadedClusters) > 0) {
 			$part = '<header2>Faded Clusters<end>';
 			sort($list->fadedClusters);
 			foreach ($list->fadedClusters as $cluster) {
@@ -750,7 +758,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 		foreach ($this->slots as $slot) {
 			$blob .= Text::makeChatcmd($slot, "/tell <myname> implantdesigner {$slot}");
-			if (!empty($design->{$slot})) {
+			if (count($design->{$slot}) > 0) {
 				$blob .= $this->getImplantSummary($design->{$slot});
 			} else {
 				$blob .= "\n";
@@ -766,7 +774,7 @@ class ImplantDesignerController extends ModuleInstance {
 			$msg = ' ' . $slotObj->symb->name . "\n";
 			return $msg;
 		}
-		$ql = empty($slotObj->ql) ? 300 : (int)$slotObj->ql;
+		$ql = !count($slotObj->ql) ? 300 : (int)$slotObj->ql;
 		$implant = $this->getImplantInfo($ql, $slotObj->shiny, $slotObj->bright, $slotObj->faded);
 		$msg = ' QL' . $ql;
 		if ($implant !== null) {
@@ -775,7 +783,7 @@ class ImplantDesignerController extends ModuleInstance {
 		$msg .= "\n";
 
 		foreach ($this->grades as $grade) {
-			if (empty($slotObj->{$grade})) {
+			if (!count($slotObj->{$grade})) {
 				$msg .= "<tab><highlight>-Empty-<end>\n";
 			} else {
 				$effectTypeIdName = ucfirst(strtolower($grade)) . 'EffectTypeID';
@@ -825,7 +833,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 	private function showClusterChoices(object $design, string $slot, string $grade): string {
 		$msg = '';
-		if (!empty($design->{$slot}->{$grade})) {
+		if (count($design->{$slot}->{$grade}) > 0) {
 			$msg .= " - {$design->{$slot}->{$grade}}";
 		}
 		$msg .= "\n";

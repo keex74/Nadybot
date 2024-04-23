@@ -196,7 +196,7 @@ class LogsController extends ModuleInstance {
 				$contents .= $line;
 			}
 
-			if (empty($contents)) {
+			if ($contents === '') {
 				$msg = 'File is empty or nothing matched your search criteria.';
 			} else {
 				if (isset($search)) {
@@ -222,7 +222,7 @@ class LogsController extends ModuleInstance {
 				}
 			}
 		}
-		if (empty($names)) {
+		if (!count($names)) {
 			$context->reply('No loggers configured.');
 			return;
 		}
@@ -253,7 +253,7 @@ class LogsController extends ModuleInstance {
 				$names[$logger->getName()] = $changes;
 			}
 		}
-		if (empty($names)) {
+		if (!count($names)) {
 			$context->reply('No loggers needed changing.');
 			return;
 		}
@@ -294,7 +294,7 @@ class LogsController extends ModuleInstance {
 				$names[$logger->getName()] = $changes;
 			}
 		}
-		if (empty($names)) {
+		if (!count($names)) {
 			$context->reply("No loggers matching <highlight>'{$mask}'<end> that need changing.");
 			return;
 		}

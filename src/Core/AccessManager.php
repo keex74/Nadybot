@@ -201,7 +201,7 @@ class AccessManager {
 	public function getSingleAccessLevel(string $sender): string {
 		if (in_array($sender, $this->config->general->superAdmins, true)) {
 			return 'superadmin';
-		} elseif (empty($this->config->general->superAdmins) && $sender === '<no superadmin set>') {
+		} elseif (!count($this->config->general->superAdmins) && $sender === '<no superadmin set>') {
 			return 'superadmin';
 		}
 
@@ -213,7 +213,7 @@ class AccessManager {
 				$ranks[$rank] = self::$ACCESS_LEVELS[$rank] ?? self::$ACCESS_LEVELS['all'];
 			}
 		}
-		if (empty($ranks)) {
+		if (!count($ranks)) {
 			return 'all';
 		}
 		asort($ranks);

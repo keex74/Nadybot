@@ -645,7 +645,7 @@ class AuctionController extends ModuleInstance {
 			'When 2 people are bidding the same amount for an item, the first person '.
 			"placing the bid will get the item.\n".
 			'Slowly increasing your bid might cost you points!';
-		if (!empty($this->bidPresets)) {
+		if (count($this->bidPresets) > 0) {
 			$info .= "\n\nBid points: ";
 			$links = array_map(
 				static function (string $amount): string {

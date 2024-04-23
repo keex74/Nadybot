@@ -31,15 +31,13 @@ class TemplateSettingHandler extends SettingHandler {
 			$examples = $attr->exampleValues;
 		}
 
-		if (strlen($this->row->options??'')) {
-			$options = explode(';', $this->row->options??'');
+		if (!strlen($this->row->options??'')) {
+			return null;
 		}
+		$options = explode(';', $this->row->options??'');
 		if (strlen($this->row->intoptions??'')) {
 			$intoptions = explode(';', $this->row->intoptions??'');
-			$options_map = array_combine($intoptions, $options??[]);
-		}
-		if (empty($options)) {
-			return null;
+			$options_map = array_combine($intoptions, $options);
 		}
 		$msg = "<header2>Predefined Values<end>\n";
 		if (isset($options_map)) {

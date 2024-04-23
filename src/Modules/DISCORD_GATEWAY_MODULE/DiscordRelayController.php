@@ -30,7 +30,7 @@ class DiscordRelayController extends ModuleInstance {
 	 */
 	public function getChannelOptionList(): array {
 		$guilds = $this->discordGatewayController->getGuilds();
-		if (empty($guilds)) {
+		if (!count($guilds)) {
 			return [];
 		}
 

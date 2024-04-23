@@ -182,7 +182,7 @@ class SymbiantController extends ModuleInstance {
 			$blob .= "\n<pagebreak><header2>" . $typeMap[$slot];
 			$aoids = [];
 			foreach ($configs as $unit => $config) {
-				if (empty($config->{$slot})) {
+				if (!count($config->{$slot})) {
 					continue;
 				}
 				$aoids []= $config->{$slot}[0]->ID;
@@ -192,7 +192,7 @@ class SymbiantController extends ModuleInstance {
 				'/tell <myname> symbcompare ' . implode(' ', $aoids)
 			) . "]<end>\n";
 			foreach ($configs as $unit => $config) {
-				if (empty($config->{$slot})) {
+				if (!count($config->{$slot})) {
 					continue;
 				}
 
@@ -231,7 +231,7 @@ class SymbiantController extends ModuleInstance {
 			/** @var Collection<string,Collection<int,Symbiant>> */
 			$byUnit = $slotSymbs->groupBy('Unit');
 			foreach ($byUnit as $unitName => $unitSymbs) {
-				if (empty($unitName)) {
+				if ($unitName === '') {
 					$lines = array_merge(
 						$lines,
 						$unitSymbs->map(static function (Symbiant $symb): string {

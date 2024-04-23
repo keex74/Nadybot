@@ -147,7 +147,7 @@ class ChatTopicController extends ModuleInstance {
 		$this->settingManager->save('topic_setby', $name);
 		$this->settingManager->save('topic', $msg);
 
-		if (empty($msg)) {
+		if ($msg === '') {
 			$this->chatRallyController->clear();
 		}
 	}

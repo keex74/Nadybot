@@ -521,7 +521,7 @@ class BanController extends ModuleInstance {
 		if ($this->isBanned($charId)) {
 			return true;
 		}
-		if (empty($this->orgbanlist)) {
+		if (!count($this->orgbanlist)) {
 			return false;
 		}
 		$name = $this->chatBot->getName($charId, true);

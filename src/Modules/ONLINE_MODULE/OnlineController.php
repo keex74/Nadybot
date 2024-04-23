@@ -870,7 +870,7 @@ class OnlineController extends ModuleInstance {
 			$allianceMsg = (array)$this->text->makeBlob("Players Online in alliance ({$allianceTotalMain})", $blob2);
 			$msg = array_merge($msg, $allianceMsg);
 		}
-		if (empty($msg)) {
+		if (!count($msg)) {
 			$msg = (array)'Players Online (0)';
 		}
 		return $msg;
@@ -947,7 +947,7 @@ class OnlineController extends ModuleInstance {
 	}
 
 	public function getAfkInfo(string $afk, string $fancyColon): string {
-		if (empty($afk)) {
+		if ($afk === '') {
 			return '';
 		}
 		$props = explode('|', $afk, 2);

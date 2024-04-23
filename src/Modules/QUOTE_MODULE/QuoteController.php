@@ -236,7 +236,7 @@ class QuoteController extends ModuleInstance {
 		$msg .= 'Date: <highlight>' . Util::date($row->dt) . "<end>\n";
 		$msg .= "Quote: <highlight>{$quoteMsg}<end>\n";
 		$msg .= 'Action:';
-		if (!empty($this->config->general->orgName)) {
+		if ($this->config->general->orgName !== '') {
 			$msg .= ' ['.
 				Text::makeChatcmd('To orgchat', "/tell <myname> quote org {$row->id}").
 			']';

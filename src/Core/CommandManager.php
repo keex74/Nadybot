@@ -167,7 +167,7 @@ class CommandManager implements MessageEmitter {
 		$module = strtoupper($module);
 		$accessLevel = $this->accessManager->getAccessLevel($accessLevelStr);
 
-		if (empty($filename)) {
+		if ($filename === '') {
 			$this->logger->error('Error registering {module}:command({command}). Handler is blank.', [
 				'module' => $module,
 				'command' => $command,
@@ -517,7 +517,7 @@ class CommandManager implements MessageEmitter {
 			return false;
 		}
 		$handlesAttrs = $reflectedMethod->getAttributes(NCA\HandlesCommand::class, ReflectionAttribute::IS_INSTANCEOF);
-		if (empty($handlesAttrs)) {
+		if (!count($handlesAttrs)) {
 			return false;
 		}
 		foreach ($handlesAttrs as $handlesAttr) {
@@ -613,7 +613,7 @@ class CommandManager implements MessageEmitter {
 
 		// If there are no handlers we have access to and the character doesn't
 		// even have access to the main-command: error
-		if (empty($commandHandler->files) && !$this->checkAccessLevel($context, $cmd, $commandHandler)) {
+		if (!count($commandHandler->files) && !$this->checkAccessLevel($context, $cmd, $commandHandler)) {
 			$event = new ForbiddenCmdEvent(
 				channel: $context->permissionSet,
 				cmd: $cmd,
@@ -865,7 +865,8 @@ class CommandManager implements MessageEmitter {
 				$refs []= [$class, (int)$line];
 			}
 			assert(count($refs) === 2);
-			return strcmp($refs[0][0], $refs[1][0]) ?: $refs[0][1] <=> $refs[1][1];
+			$firstCmp = strcmp($refs[0][0], $refs[1][0]);
+			return ($firstCmp !== 0) ? $firstCmp : $refs[0][1] <=> $refs[1][1];
 		});
 	}
 
@@ -1000,7 +1001,7 @@ class CommandManager implements MessageEmitter {
 				}
 			}
 		}
-		if (empty($parts)) {
+		if (!count($parts)) {
 			return "No help for {$cmd}.";
 		}
 		$blob = implode("\n\n", $parts);
@@ -1119,7 +1120,7 @@ class CommandManager implements MessageEmitter {
 		$niceName = "&lt;{$niceName}&gt;";
 		if ($type->isBuiltin()) {
 			$attrs = $param->getAttributes(ParamAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
-			if (!empty($attrs)) {
+			if (count($attrs) > 0) {
 				return implode(
 					'|',
 					array_map(static function (ReflectionAttribute $attr) use ($param): string {
@@ -1595,8 +1596,10 @@ class CommandManager implements MessageEmitter {
 		$sList = $list->sort(static function (array $refMethods1, array $refMethods2): int {
 			$n1 = $refMethods1[0]->getDeclaringClass()->getShortName();
 			$n2 = $refMethods2[0]->getDeclaringClass()->getShortName();
-			return strcmp($n1, $n2)
-				?: $refMethods1[0]->getStartLine() <=> $refMethods2[0]->getStartLine();
+			$firstCmp = strcmp($n1, $n2);
+			return ($firstCmp !== 0)
+				? $firstCmp
+				: $refMethods1[0]->getStartLine() <=> $refMethods2[0]->getStartLine();
 		});
 
 		/**
@@ -1605,11 +1608,11 @@ class CommandManager implements MessageEmitter {
 		 * @var Collection<string,list<ReflectionMethod>> $grouped
 		 */
 		$grouped = $sList->groupBy(static function (array $refMethods): string {
-			if (empty($refMethods)) {
+			if (!count($refMethods)) {
 				return '';
 			}
 			$attrs = $refMethods[0]->getAttributes(NCA\HandlesCommand::class);
-			if (empty($attrs)) {
+			if (!count($attrs)) {
 				return '';
 			}
 
@@ -1634,7 +1637,7 @@ class CommandManager implements MessageEmitter {
 		if ($type->isBuiltin()) {
 			$mask = null;
 			$attrs = $param->getAttributes(ParamAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
-			if (!empty($attrs)) {
+			if (count($attrs) > 0) {
 				$mask = implode(
 					'|',
 					array_map(static function (ReflectionAttribute $attr): string {

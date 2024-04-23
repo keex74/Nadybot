@@ -13,7 +13,7 @@ class CmdStats extends Dataset {
 				return time() - $stats[0] <= 600;
 			})
 		);
-		if (empty($cmdStats)) {
+		if (!count($cmdStats)) {
 			return [];
 		}
 		usort($cmdStats, static function (array $stats1, array $stats2): int {

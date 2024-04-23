@@ -161,14 +161,14 @@ class PermissionSetController extends ModuleInstance {
 
 	protected function renderPermissionSet(ExtCmdPermissionSet $set): string {
 		$channelNames = '&lt;none&gt;';
-		if (!empty($set->mappings)) {
+		if (count($set->mappings) > 0) {
 			$channelNames = collect($set->mappings)->pluck('source')
 				->join('<end>, <highlight>', '<end> and <highlight>');
 		}
 		$block = "<header2>{$set->name}<end>\n".
 			"<tab>Letter: <highlight>{$set->letter}<end>\n".
 			"<tab>Channels: <highlight>{$channelNames}<end>";
-		if (empty($set->mappings)) {
+		if (!count($set->mappings)) {
 			$block .= "\n<tab>Actions: [".
 				Text::makeChatcmd('delete', "/tell <myname> permset rem {$set->name}").
 				']';

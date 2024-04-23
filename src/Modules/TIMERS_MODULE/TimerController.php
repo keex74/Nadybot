@@ -177,7 +177,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 						'exception' => $e,
 					]);
 				}
-				if (empty($timer->alerts)) {
+				if (!count($timer->alerts)) {
 					$event = new TimerEndEvent(timer: $timer);
 					$this->eventManager->fireEvent($event);
 				}

@@ -155,7 +155,7 @@ class GcrProtocol implements RelayProtocolInterface {
 	}
 
 	public function receive(RelayMessage $message): ?RoutableEvent {
-		if (empty($message->packages)) {
+		if (!count($message->packages)) {
 			return null;
 		}
 		$data = array_shift($message->packages);
@@ -316,7 +316,7 @@ class GcrProtocol implements RelayProtocolInterface {
 		foreach ($onlineOrg as $char) {
 			$chunks []= "{$char->name},pg";
 		}
-		if (empty($chunks)) {
+		if (!count($chunks)) {
 			return null;
 		}
 		return $this->prefix.$this->command . 'c online ' . implode(';', $chunks);

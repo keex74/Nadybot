@@ -44,15 +44,13 @@ abstract class SettingHandler {
 
 	/** Get all options for this setting or null if no options are available */
 	public function getOptions(): ?string {
-		if (strlen($this->row->options??'')) {
-			$options = explode(';', $this->row->options??'');
+		if (!strlen($this->row->options??'')) {
+			return null;
 		}
+		$options = explode(';', $this->row->options??'');
 		if (strlen($this->row->intoptions??'')) {
 			$intoptions = explode(';', $this->row->intoptions??'');
-			$options_map = array_combine($intoptions, $options??[]);
-		}
-		if (empty($options)) {
-			return null;
+			$options_map = array_combine($intoptions, $options);
 		}
 		$msg = "<header2>Predefined Options<end>\n";
 		if (isset($options_map)) {

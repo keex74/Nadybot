@@ -248,7 +248,7 @@ class FindOrgController extends ModuleInstance {
 
 	/** @return Collection<int,Organization> */
 	public function getOrgsByName(string ...$names): Collection {
-		if (empty($names)) {
+		if (!count($names)) {
 			return new Collection();
 		}
 		return $this->db->table(Organization::getTable())
@@ -258,7 +258,7 @@ class FindOrgController extends ModuleInstance {
 
 	/** @return Collection<int,Organization> */
 	public function getOrgsById(int ...$ids): Collection {
-		if (empty($ids)) {
+		if (!count($ids)) {
 			return new Collection();
 		}
 		return $this->db->table(Organization::getTable())

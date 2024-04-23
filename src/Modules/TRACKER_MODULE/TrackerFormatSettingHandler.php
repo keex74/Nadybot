@@ -46,12 +46,10 @@ class TrackerFormatSettingHandler extends SettingHandler {
 
 	/** Get all options for this setting or null if no options are available */
 	public function getOptions(): ?string {
-		if (strlen($this->row->options??'')) {
-			$options = explode(';', $this->row->options??'');
-		}
-		if (empty($options)) {
+		if (!strlen($this->row->options??'')) {
 			return null;
 		}
+		$options = explode(';', $this->row->options??'');
 		$msg = "<header2>Predefined Options<end>\n";
 
 		$player = $this->getDummyPlayer();

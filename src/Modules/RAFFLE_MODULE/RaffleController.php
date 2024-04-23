@@ -850,7 +850,7 @@ class RaffleController extends ModuleInstance {
 				return $b->points <=> $a->points;
 			}
 		);
-		$numWinners = min($slot->amount ?: count($result), count($result));
+		$numWinners = min(($slot->amount > 0) ? $slot->amount : count($result), count($result));
 		for ($i = 0; $i < $numWinners; $i++) {
 			$result[$i]->won = true;
 		}

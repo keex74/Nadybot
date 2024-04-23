@@ -384,7 +384,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 			}
 		);
 
-		if (empty($leaders) && empty($admins) && empty($adminLines)) {
+		if (!count($leaders) && !count($admins) && !count($adminLines)) {
 			$context->reply('<myname> has no raid leaders or raid admins.');
 			return;
 		}

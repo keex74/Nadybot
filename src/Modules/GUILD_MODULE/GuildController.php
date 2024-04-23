@@ -779,7 +779,7 @@ class GuildController extends ModuleInstance {
 		description: 'Verifies that org name is correct'
 	)]
 	public function verifyOrgNameEvent(ConnectEvent $eventObj): void {
-		if (empty($this->config->general->orgName)) {
+		if ($this->config->general->orgName === '') {
 			return;
 		}
 		if (isset($this->config->orgId)) {

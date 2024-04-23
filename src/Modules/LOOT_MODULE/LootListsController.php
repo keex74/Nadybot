@@ -573,7 +573,7 @@ class LootListsController extends ModuleInstance {
 		} catch (Exception $e) {
 			return null;
 		}
-		if (empty($blob)) {
+		if ($blob === '') {
 			return null;
 		}
 		$blob .= "\n\nPande Loot By Marinerecon (RK2)";
@@ -808,7 +808,7 @@ class LootListsController extends ModuleInstance {
 			if ($row->multiloot > 1) {
 				$blob .= ' x' . $row->multiloot;
 			}
-			if (!empty($row->comment)) {
+			if (strlen($row->comment) > 0) {
 				$blob .= " ({$row->comment})";
 			}
 			if ($showLootPics) {

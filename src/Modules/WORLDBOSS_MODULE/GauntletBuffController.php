@@ -308,7 +308,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 					'in <highlight>'.Util::unixtimeToReadable($gaubuff).'<end>.';
 			}
 		}
-		if (empty($msgs)) {
+		if (!count($msgs)) {
 			if (count($sides) === 1) {
 				$context->reply('No ' . $sides[0]->inColor($sides[0]->value . ' Gauntlet buff') . ' available.');
 			} else {
@@ -411,7 +411,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 					'in <highlight>'.Util::unixtimeToReadable($gaubuff)."<end>.\n";
 			}
 		}
-		if (empty($msgs)) {
+		if (!count($msgs)) {
 			return null;
 		}
 		return implode('', $msgs);
@@ -467,7 +467,7 @@ class GauntletBuffController extends ModuleInstance implements MessageEmitter {
 					Util::unixtimeToReadable($timer->endtime - time()).
 					'<end>.';
 		}
-		if (empty($msgs)) {
+		if (!count($msgs)) {
 			return;
 		}
 		$this->chatBot->sendMassTell(implode("\n", $msgs), $sender);

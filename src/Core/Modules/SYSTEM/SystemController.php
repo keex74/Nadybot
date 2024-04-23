@@ -418,7 +418,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 
 		$blob = "<header2>Basic Info<end>\n";
 		$blob .= "<tab>Name: <highlight>{$info->basic->bot_name}<end>\n";
-		if (empty($info->basic->superadmins)) {
+		if (!count($info->basic->superadmins)) {
 			$blob .= "<tab>SuperAdmin: - <highlight>none<end> -\n";
 		} else {
 			$blob .= '<tab>SuperAdmin: <highlight>'.
@@ -469,7 +469,10 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 
 		$blob .= "<header2>Public Channels<end>\n";
 		usort($info->channels, static function (ChannelInfo $c1, ChannelInfo $c2): int {
-			return ($c1->class <=> $c2->class) ?: $c1->id <=> $c2->id;
+			if ($c1->class === $c2->class) {
+				return $c1->id <=> $c2->id;
+			}
+			return $c1->class <=> $c2->class;
 		});
 		foreach ($info->channels as $channel) {
 			$blob .= "<tab><highlight>{$channel->name}<end> ({$channel->class}:{$channel->id})\n";

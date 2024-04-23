@@ -320,7 +320,7 @@ class Relay implements MessageReceiver {
 				return;
 			}
 		}
-		if (empty($data->packages)) {
+		if (!count($data->packages)) {
 			return;
 		}
 		$event = $this->relayProtocol->receive($data);
@@ -346,7 +346,7 @@ class Relay implements MessageReceiver {
 			$data = $this->stack[$i]->send($data);
 		}
 		$this->outboundPackets->inc(count($data));
-		return empty($this->transport->send($data));
+		return !count($this->transport->send($data));
 	}
 
 	/** @param list<string> $data */
@@ -403,14 +403,14 @@ class Relay implements MessageReceiver {
 	 */
 	protected function prependMainHop(RoutableEvent $event): void {
 		$isOrgBot = strlen($this->config->general->orgName) > 0;
-		if (!empty($event->path) && $event->path[0]->type !== Source::ORG && $isOrgBot) {
+		if (count($event->path) > 0 && $event->path[0]->type !== Source::ORG && $isOrgBot) {
 			$abbr = $this->settingManager->getString('relay_guild_abbreviation');
 			$event->prependPath(new Source(
 				Source::ORG,
 				$this->config->general->orgName,
 				($abbr === 'none') ? null : $abbr
 			));
-		} elseif (!empty($event->path) && $event->path[0]->type !== Source::PRIV && !$isOrgBot) {
+		} elseif (count($event->path) > 0 && $event->path[0]->type !== Source::PRIV && !$isOrgBot) {
 			$event->prependPath(new Source(
 				Source::PRIV,
 				$this->config->main->character

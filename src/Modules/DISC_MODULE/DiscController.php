@@ -77,7 +77,7 @@ class DiscController extends ModuleInstance {
 		// If only a name was given, lookup the disc's ID
 		$discs = $this->getDiscsByName($search);
 		// Not found? Cannot be made into a nano anymore or simply mistyped
-		if (empty($discs)) {
+		if (!count($discs)) {
 			$msg = "Either <highlight>{$search}<end> was mistyped or it cannot be turned into a nano anymore.";
 			$context->reply($msg);
 			return;

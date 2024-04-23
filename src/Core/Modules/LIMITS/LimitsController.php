@@ -344,7 +344,7 @@ class LimitsController extends ModuleInstance {
 					return $ts >= $now - $timeWindow;
 				}
 			));
-			if (empty($bucket)) {
+			if (!count($bucket)) {
 				unset($this->limitBucket[$user]);
 			}
 		}

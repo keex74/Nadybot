@@ -63,7 +63,7 @@ class JWT {
 	public static function decode(string $jwt, string $key, array $allowed_algs=[]): stdClass {
 		$timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
 
-		if (empty($key)) {
+		if ($key === '') {
 			throw new InvalidArgumentException('Key may not be empty');
 		}
 		$tks = explode('.', $jwt);
@@ -76,10 +76,10 @@ class JWT {
 		if (null === ($sig = static::urlsafeB64Decode($cryptob64))) {
 			throw new UnexpectedValueException('Invalid signature encoding');
 		}
-		if (empty($header->alg)) {
+		if (!isset($header->alg)) {
 			throw new UnexpectedValueException('Empty algorithm');
 		}
-		if (empty(static::$supported_algs[$header->alg])) {
+		if (!isset(static::$supported_algs[$header->alg])) {
 			throw new UnexpectedValueException('Algorithm not supported');
 		}
 		if (count($allowed_algs) && !in_array($header->alg, $allowed_algs)) {
@@ -188,7 +188,7 @@ class JWT {
 	 * @throws DomainException Invalid Algorithm, bad key, or OpenSSL failure
 	 */
 	private static function verify(string $msg, string $signature, string $key, string $alg): bool {
-		if (empty(static::$supported_algs[$alg])) {
+		if (!isset(static::$supported_algs[$alg])) {
 			throw new DomainException('Algorithm not supported');
 		}
 

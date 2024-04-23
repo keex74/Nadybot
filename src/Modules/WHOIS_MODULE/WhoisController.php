@@ -94,7 +94,7 @@ class WhoisController extends ModuleInstance {
 		description: 'Save cache of names and charIds to database'
 	)]
 	public function saveCharIds(Event $eventObj): void {
-		if (empty($this->nameHistoryCache) || $this->db->inTransaction()) {
+		if (!count($this->nameHistoryCache) || $this->db->inTransaction()) {
 			return;
 		}
 		$this->db->awaitBeginTransaction();

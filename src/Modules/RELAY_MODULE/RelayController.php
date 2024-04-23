@@ -525,7 +525,7 @@ class RelayController extends ModuleInstance {
 			foreach ($relay->layers as $layer) {
 				$msg .= ' ' . $layer->toString();
 			}
-			if (!empty($relay->events)) {
+			if (count($relay->events) > 0) {
 				$events = [];
 				foreach ($relay->events as $event) {
 					$events []= $event->toString();
@@ -600,7 +600,7 @@ class RelayController extends ModuleInstance {
 		#[NCA\Str('list')] ?string $action
 	): void {
 		$relays = $this->getRelays();
-		if (empty($relays)) {
+		if (!count($relays)) {
 			$context->reply('There are no relays defined.');
 			return;
 		}
@@ -971,7 +971,7 @@ class RelayController extends ModuleInstance {
 			}
 			$paramPos++;
 		}
-		if (!empty($params)) {
+		if (count($params) > 0) {
 			throw new Exception(
 				'Unknown parameter' . (count($params) > 1 ? 's' : '').
 				' <highlight>'.

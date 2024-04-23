@@ -89,7 +89,7 @@ class SQLController extends ModuleInstance {
 				}
 				$blob .= "\n";
 			}
-			if (empty($data)) {
+			if (!count($data)) {
 				$msg = "Results ({$count})";
 			} else {
 				$msg = $this->text->makeBlob("Results ({$count})", $blob);

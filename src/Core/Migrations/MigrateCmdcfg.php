@@ -48,7 +48,7 @@ class MigrateCmdcfg implements SchemaMigration {
 				'description' => (string)$entry->description,
 				'verify' => (int)$entry->verify,
 				'dependson' => (string)$entry->dependson,
-				'help' => empty($entry->help) ? null : (string)$entry->help,
+				'help' => !count($entry->help) ? null : (string)$entry->help,
 			]);
 			$cmds[(string)$entry->cmd] = true;
 		}

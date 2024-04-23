@@ -29,7 +29,7 @@ class LandController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('lc')] string $action,
 	): void {
-		if (empty($this->nwCtrl->state)) {
+		if (!count($this->nwCtrl->state)) {
 			$context->reply('The Tower-API is still initializing.');
 			return;
 		}
@@ -56,7 +56,7 @@ class LandController extends ModuleInstance {
 		#[NCA\Str('lc')] string $action,
 		PPlayfield $pf
 	): void {
-		if (empty($this->nwCtrl->state)) {
+		if (!count($this->nwCtrl->state)) {
 			$context->reply('The Tower-API is still initializing.');
 			return;
 		}
@@ -94,7 +94,7 @@ class LandController extends ModuleInstance {
 		#[NCA\Str('lc')] string $action,
 		PTowerSite $site,
 	): void {
-		if (empty($this->nwCtrl->state)) {
+		if (!count($this->nwCtrl->state)) {
 			$context->reply('The Tower-API is still initializing.');
 			return;
 		}

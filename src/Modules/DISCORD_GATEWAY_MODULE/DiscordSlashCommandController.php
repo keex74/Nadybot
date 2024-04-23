@@ -500,7 +500,7 @@ class DiscordSlashCommandController extends ModuleInstance {
 				$types []= $type;
 			}
 		}
-		if (empty($types)) {
+		if (!count($types)) {
 			return null;
 		}
 		if (count($types) === 1 && $types[0] === 0) {

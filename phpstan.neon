@@ -27,7 +27,7 @@ parameters:
     booleansInConditions: false
     uselessCast: false
     requireParentConstructorCall: false
-    disallowedConstructs: false
+    disallowedConstructs: true
     overwriteVariablesWithLoop: true
     closureUsesThis: false
     matchingInheritedMethodNames: false

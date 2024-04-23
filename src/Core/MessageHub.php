@@ -240,7 +240,7 @@ class MessageHub {
 			}
 			$paramPos++;
 		}
-		if (!empty($params)) {
+		if (count($params) > 0) {
 			throw new Exception(
 				'Unknown parameter' . (count($params) > 1 ? 's' : '').
 				' <highlight>'.
@@ -371,7 +371,7 @@ class MessageHub {
 				continue;
 			}
 			foreach ($dest as $destName => $routes) {
-				if (empty($routes)) {
+				if (!count($routes)) {
 					continue;
 				}
 				$receiver = $this->getReceiver($destName);
@@ -399,7 +399,7 @@ class MessageHub {
 	public function handle(RoutableEvent $event): int {
 		$this->logger->info('Received event to route');
 		$path = $event->getPath();
-		if (empty($path)) {
+		if (!count($path)) {
 			$this->logger->info('Discarding event without path');
 			return static::EVENT_NOT_ROUTED;
 		}
@@ -534,7 +534,7 @@ class MessageHub {
 				$charLink = "<a href=user://{$char->name}>{$routedName}</a>: ";
 			}
 		}
-		if (!empty($hops)) {
+		if (count($hops) > 0) {
 			$hopText = implode(' ', $hops) . ' ';
 		}
 		return $hopText.$charLink;
@@ -766,7 +766,7 @@ class MessageHub {
 
 		/** @var ?Source */
 		$hop = $path[count($path)-1] ?? null;
-		if (empty($event->char) || $event->char->id === $this->chatBot->char?->id) {
+		if (!isset($event->char) || $event->char->id === $this->chatBot->char?->id) {
 			if (!isset($hop) || $hop->type !== Source::SYSTEM) {
 				$sysColor = $this->settingManager->getString('default_routed_sys_color')??'';
 				return $sysColor;

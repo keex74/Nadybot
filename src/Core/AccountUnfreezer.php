@@ -121,7 +121,7 @@ class AccountUnfreezer {
 				return strtolower($creds->login) === strtolower($this->account->username);
 			}
 		);
-		if (empty($accountCreds)) {
+		if (!count($accountCreds)) {
 			throw new Exception('Cannot find frozen account credentials, please unfreeze manually.');
 		}
 		$frozenAccount = array_shift($accountCreds);

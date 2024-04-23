@@ -154,7 +154,7 @@ class WhompahController extends ModuleInstance {
 		$q2 = $this->db->table(WhompahCity::getTable())->whereIlike('city_name', "%{$search}%")
 			->orWhereIlike('short_name', "%{$search}%");
 		return $q1->asObj(WhompahCity::class)->first()
-			?: $q2->asObj(WhompahCity::class)->first();
+			?? $q2->asObj(WhompahCity::class)->first();
 	}
 
 	/** @return array<int,WhompahPath> */

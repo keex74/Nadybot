@@ -81,7 +81,7 @@ class DiscordSlashCommandReply implements CommandReply {
 		if (!is_array($msg)) {
 			$msg = [$msg];
 		}
-		if (empty($msg)) {
+		if (!count($msg)) {
 			return;
 		}
 

@@ -225,7 +225,7 @@ class StartpageController extends ModuleInstance {
 
 	public function showStartpage(string $sender, CommandReply $sendto, bool $showEmpty=false): void {
 		$tiles = $this->getActiveLayout();
-		if (empty($tiles)) {
+		if (!count($tiles)) {
 			if ($showEmpty) {
 				$sendto->reply('Your startpage is currently <highlight>empty<end>.');
 			}
@@ -237,7 +237,7 @@ class StartpageController extends ModuleInstance {
 		}
 		$callResults = await($calls);
 		$dataParts = array_filter(array_values($callResults));
-		if (empty($dataParts)) {
+		if (!count($dataParts)) {
 			if ($showEmpty) {
 				$sendto->reply('Your startpage is currently <highlight>empty<end>.');
 			}
@@ -286,7 +286,7 @@ class StartpageController extends ModuleInstance {
 			}
 			$blobLines []= $line;
 		}
-		if (empty($blobLines)) {
+		if (!count($blobLines)) {
 			$context->reply("You already assigned positions to all tiles.\n");
 			return;
 		}
@@ -446,7 +446,7 @@ class StartpageController extends ModuleInstance {
 	 */
 	protected function parseRefMethod(object $instance, ReflectionMethod $method): void {
 		$newsTileAttrs = $method->getAttributes(NCA\NewsTile::class);
-		if (empty($newsTileAttrs)) {
+		if (!count($newsTileAttrs)) {
 			return;
 		}
 		$className = $instance::class;
@@ -498,7 +498,7 @@ class StartpageController extends ModuleInstance {
 
 	protected function showStartpageLayout(CmdContext $context, bool $changed): void {
 		$tiles = $this->getActiveLayout();
-		if (empty($tiles)) {
+		if (!count($tiles)) {
 			$context->reply('The current startpage is empty. Use <highlight><symbol>startpage pick 0<end> to get started.');
 			return;
 		}

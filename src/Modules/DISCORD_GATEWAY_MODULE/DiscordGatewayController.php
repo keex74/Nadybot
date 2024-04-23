@@ -356,7 +356,7 @@ class DiscordGatewayController extends ModuleInstance {
 
 	public function connect(): void {
 		$botToken = $this->discordController->discordBotToken;
-		if (empty($botToken) || $botToken === 'off') {
+		if ($botToken === '' || $botToken === 'off') {
 			return;
 		}
 		async($this->connectToGateway(...))->catch(Nadybot::asyncErrorHandler(...));
@@ -570,7 +570,7 @@ class DiscordGatewayController extends ModuleInstance {
 			}
 			$text .= $this->embedToAOML($embed);
 		}
-		if (empty($text)) {
+		if ($text === '') {
 			return;
 		}
 
@@ -615,7 +615,7 @@ class DiscordGatewayController extends ModuleInstance {
 				"<end>\n".
 				DiscordRelayController::formatMessage($field->value) . "\n\n";
 		}
-		if (!empty($embed->footer) && !empty($embed->footer->text)) {
+		if (isset($embed->footer) && strlen($embed->footer->text) > 0) {
 			$blob .= '<i>'.
 				DiscordRelayController::formatMessage($embed->footer->text).
 				'</i>';
@@ -1106,7 +1106,7 @@ class DiscordGatewayController extends ModuleInstance {
 		#[NCA\Str('connect')] string $action,
 	): void {
 		$botToken = $this->discordController->discordBotToken;
-		if (empty($botToken) || $botToken === 'off') {
+		if ($botToken === '' || $botToken === 'off') {
 			$context->reply('You need to configure a Discord token in order to connect.');
 			return;
 		}
@@ -1359,7 +1359,7 @@ class DiscordGatewayController extends ModuleInstance {
 			$context->reply('The bot is currently not connected to Discord.');
 			return;
 		}
-		if (empty($this->guilds)) {
+		if (!count($this->guilds)) {
 			$context->reply('This bot is not a member of a Discord server.');
 			return;
 		}
@@ -1367,7 +1367,7 @@ class DiscordGatewayController extends ModuleInstance {
 			$this->guilds,
 			static fn (Guild $guild): bool => in_array('COMMUNITY', $guild->features)
 		);
-		if (empty($guilds)) {
+		if (!count($guilds)) {
 			$context->reply('This bot is not a member of a Discord server with community features.');
 			return;
 		}
@@ -2304,7 +2304,7 @@ class DiscordGatewayController extends ModuleInstance {
 				$blobs []= $blob;
 				continue;
 			}
-			if (empty($guildInvites)) {
+			if (!count($guildInvites)) {
 				$blob .= "\n<tab>&lt;none&gt;";
 				$blobs []= $blob;
 				continue;

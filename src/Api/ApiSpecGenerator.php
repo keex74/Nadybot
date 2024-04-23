@@ -54,7 +54,7 @@ class ApiSpecGenerator {
 		foreach ($classes as $className) {
 			$reflection = new ReflectionClass($className);
 			$instanceAttrs = $reflection->getAttributes(NCA\Instance::class);
-			if (empty($instanceAttrs)) {
+			if (!count($instanceAttrs)) {
 				continue;
 			}
 
@@ -74,7 +74,7 @@ class ApiSpecGenerator {
 			$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 			foreach ($methods as $method) {
 				$apiAttrs = $method->getAttributes(NCA\Api::class);
-				if (empty($apiAttrs)) {
+				if (!count($apiAttrs)) {
 					continue;
 				}
 
@@ -269,7 +269,7 @@ class ApiSpecGenerator {
 							$this->addSchema($result['components']['schemas'], class_basename($doc->requestBody->class));
 						}
 					}
-					if (!empty($doc->tags)) {
+					if (count($doc->tags) > 0) {
 						$newResult[$path][$method]['tags'] = $doc->tags;
 					}
 					foreach ($doc->responses as $code => $response) {
@@ -368,7 +368,7 @@ class ApiSpecGenerator {
 		);
 
 		$apiResultAttrs = $method->getAttributes(NCA\ApiResult::class);
-		if (empty($apiResultAttrs)) {
+		if (!count($apiResultAttrs)) {
 			throw new Exception('Method ' . $method->getDeclaringClass()->getName() . '::' . $method->getName() . '() has no #[ApiResult] defined');
 		}
 		if (($fileName = $method->getFileName()) === false) {

@@ -157,7 +157,7 @@ class BotConfig {
 					unset($settings[$old]);
 				}
 			}
-			if (empty($result[$module])) {
+			if (!count($result[$module])) {
 				unset($result[$module]);
 			}
 		}

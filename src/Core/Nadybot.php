@@ -878,7 +878,9 @@ class Nadybot {
 			if ($this->config->general->autoOrgName) {
 				$lastOrgName = $this->settingManager->getString('last_org_name') ?? self::UNKNOWN_ORG;
 				if ($lastOrgName === self::UNKNOWN_ORG) {
-					$lastOrgName = $this->config->general->orgName ?: self::UNKNOWN_ORG;
+					if ($this->config->general->orgName !== '') {
+						$lastOrgName = $this->config->general->orgName;
+					}
 				}
 				if ($groupName === self::UNKNOWN_ORG) {
 					$this->config->general->orgName = $lastOrgName;
@@ -1601,7 +1603,7 @@ class Nadybot {
 	public function callSetupMethod(string $class, object $obj): void {
 		$reflection = new ReflectionClass($obj);
 		foreach ($reflection->getMethods() as $method) {
-			if (empty($method->getAttributes(NCA\Setup::class))) {
+			if (!count($method->getAttributes(NCA\Setup::class))) {
 				continue;
 			}
 			$result = $method->invoke($obj);
@@ -1779,7 +1781,7 @@ class Nadybot {
 		$reflection = new ReflectionClass($obj);
 		foreach ($reflection->getProperties() as $property) {
 			$attrs = $property->getAttributes(NCA\DefineSetting::class, ReflectionAttribute::IS_INSTANCEOF);
-			if (empty($attrs)) {
+			if (!count($attrs)) {
 				continue;
 			}
 

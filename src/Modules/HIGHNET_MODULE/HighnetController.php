@@ -900,7 +900,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 
 	private function getSourceHop(RoutableEvent $event): ?string {
 		$senderHops = $event->getPath();
-		if (empty($senderHops)) {
+		if (!count($senderHops)) {
 			return null;
 		}
 		$sourceHop = $senderHops[0]->type . '(' . $senderHops[0]->name . ')';

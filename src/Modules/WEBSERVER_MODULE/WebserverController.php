@@ -390,7 +390,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 			$reflection = new ReflectionClass($instance);
 			foreach ($reflection->getMethods() as $method) {
 				$attrs = $method->getAttributes(NCA\HttpVerb::class, ReflectionAttribute::IS_INSTANCEOF);
-				if (empty($attrs)) {
+				if (!count($attrs)) {
 					continue;
 				}
 				foreach ($attrs as $attribute) {
@@ -416,9 +416,15 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 		uksort(
 			$this->routes[$method],
 			static function (string $a, string $b): int {
-				return (substr_count($b, '/') <=> substr_count($a, '/'))
-					?: substr_count(basename($a), '+?)') <=> substr_count(basename($b), '+?)')
-					?: strlen($b) <=> strlen($a);
+				$numSlashes = substr_count($b, '/') <=> substr_count($a, '/');
+				if ($numSlashes !== 0) {
+					return $numSlashes;
+				}
+				$numMatchers = substr_count(basename($a), '+?)') <=> substr_count(basename($b), '+?)');
+				if ($numMatchers !== 0) {
+					return $numMatchers;
+				}
+				return strlen($b) <=> strlen($a);
 			}
 		);
 	}

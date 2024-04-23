@@ -52,8 +52,8 @@ class ChatGroupingController extends ModuleInstance {
 	public function groupShowCommand(
 		CmdContext $context,
 	): void {
-		if (empty($this->grouped)) {
-			if (empty($this->joined)) {
+		if (!count($this->grouped)) {
+			if (!count($this->joined)) {
 				$context->reply('No current groups, no players joined.');
 				return;
 			}
@@ -81,7 +81,7 @@ class ChatGroupingController extends ModuleInstance {
 		#[NCA\Str('divide')] string $action,
 		int $numGroups,
 	): void {
-		if (empty($this->joined)) {
+		if (!count($this->joined)) {
 			$context->reply('No one has joined yet.');
 			return;
 		}

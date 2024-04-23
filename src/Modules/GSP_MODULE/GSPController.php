@@ -236,7 +236,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 		} catch (\Throwable $e) {
 			return 'GSP seems to have problems with their service. Please try again later.';
 		}
-		if (empty($show->history)) {
+		if (!count($show->history)) {
 			return 'GSP is currently not playing any music.';
 		}
 		$song = array_shift($show->history);
@@ -308,7 +308,7 @@ class GSPController extends ModuleInstance implements MessageEmitter {
 			return 'GSP seems to have problems with their service. Please try again later.';
 		}
 		$blob = "<header2>GSP<end>\n<tab>";
-		if (empty($show->history)) {
+		if (!count($show->history)) {
 			return $blob . 'GSP is currently not playing any music.';
 		}
 		$song = array_shift($show->history);

@@ -853,7 +853,10 @@ class WhatBuffsController extends ModuleInstance {
 		}
 		return $newData->sort(
 			static function (PerkBuffSearchResult $p1, PerkBuffSearchResult $p2): int {
-				return ($p2->amount <=> $p1->amount) ?: strcmp($p1->name??'', $p2->name??'');
+				if ($p2->amount === $p1->amount) {
+					return strcmp($p1->name??'', $p2->name??'');
+				}
+				return $p2->amount <=> $p1->amount;
 			}
 		);
 	}

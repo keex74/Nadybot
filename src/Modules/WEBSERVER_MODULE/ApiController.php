@@ -247,7 +247,7 @@ class ApiController extends ModuleInstance {
 			$reflection = new ReflectionClass($instance);
 			foreach ($reflection->getMethods() as $method) {
 				$apiAttrs = $method->getAttributes(NCA\Api::class);
-				if (empty($apiAttrs)) {
+				if (!count($apiAttrs)) {
 					continue;
 				}
 				$routes = [];
@@ -269,7 +269,7 @@ class ApiController extends ModuleInstance {
 					$accessLevel = $alObj->value;
 				}
 				$verbAttrs = $method->getAttributes(NCA\VERB::class, ReflectionAttribute::IS_INSTANCEOF);
-				if (empty($verbAttrs)) {
+				if (!count($verbAttrs)) {
 					continue;
 				}
 				$methods = [];
@@ -311,9 +311,15 @@ class ApiController extends ModuleInstance {
 			uksort(
 				$this->routes,
 				static function (string $a, string $b): int {
-					return (substr_count($b, '/') <=> substr_count($a, '/'))
-						?: substr_count(basename($a), '+?)') <=> substr_count(basename($b), '+?)')
-						?: strlen($b) <=> strlen($a);
+					$numSlashes = substr_count($b, '/') <=> substr_count($a, '/');
+					if ($numSlashes !== 0) {
+						return $numSlashes;
+					}
+					$numCounts = substr_count(basename($a), '+?)') <=> substr_count(basename($b), '+?)');
+					if ($numCounts !== 0) {
+						return $numCounts;
+					}
+					return strlen($b) <=> strlen($a);
 				}
 			);
 		}
@@ -517,7 +523,7 @@ class ApiController extends ModuleInstance {
 			return true;
 		}
 		$rqBodyAttrs = $apiHandler->reflectionMethod->getAttributes(NCA\RequestBody::class);
-		if (empty($rqBodyAttrs)) {
+		if (!count($rqBodyAttrs)) {
 			return true;
 		}
 

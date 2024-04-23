@@ -42,7 +42,7 @@ class MobFeedHandler extends ModuleInstance implements EventFeedHandler {
 
 	/** @param array<string,mixed> $data */
 	public function handleEventFeedMessage(string $room, array $data): void {
-		if (empty($this->mobCtrl->mobs)) {
+		if (!count($this->mobCtrl->mobs)) {
 			return;
 		}
 

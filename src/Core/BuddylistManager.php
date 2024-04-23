@@ -273,13 +273,13 @@ class BuddylistManager {
 				'uid' => $userId,
 				'worker' => $worker,
 			]);
-			if (!empty($this->inRebalance)) {
+			if (count($this->inRebalance) > 0) {
 				$uid = array_rand($this->inRebalance);
 				$this->pendingRebalance[$uid] = $this->buddyList[$uid]->worker;
 				unset($this->inRebalance[$uid]);
 				$this->logger->info('Rebalancing {uid}', ['uid' => $uid]);
 				$this->chatBot->aoClient->buddyRemove($uid);
-			} elseif (empty($this->pendingRebalance)) {
+			} elseif (!count($this->pendingRebalance)) {
 				$this->logger->notice('Rebalancing buddylist done.');
 				if (isset($this->rebalancingCallback)) {
 					$this->rebalancingCallback->reply('Rebalancing buddylist done.');
@@ -310,7 +310,7 @@ class BuddylistManager {
 		$worker = array_rand($this->pendingRebalance[$uid]);
 		unset($this->pendingRebalance[$uid][$worker]);
 		unset($this->buddyList[$uid]->worker[$worker]);
-		if (!empty($this->pendingRebalance[$uid])) {
+		if (count($this->pendingRebalance[$uid]) > 0) {
 			return;
 		}
 		$this->logger->info('Re-adding {uid} to buddylist for rebalance', [
@@ -325,13 +325,13 @@ class BuddylistManager {
 				$this->inRebalance[$uid] = true;
 			}
 		}
-		if (empty($this->inRebalance)) {
+		if (!count($this->inRebalance)) {
 			return;
 		}
 		$this->rebalancingCallback = $callback;
 		$parallel = (int)floor($this->chatBot->getBuddyListSize() / 100);
 		for ($i = 0; $i < $parallel; $i++) {
-			if (empty($this->inRebalance)) {
+			if (!count($this->inRebalance)) {
 				return;
 			}
 			$uid = array_rand($this->inRebalance);

@@ -160,14 +160,14 @@ class RecipeController extends ModuleInstance {
 
 	/** @return list<string> */
 	public function createRecipeBlob(Recipe $row): array {
-		$recipe_name = $row->name;
-		$author = empty($row->author) ? 'Unknown' : $row->author;
+		$recipeName = $row->name;
+		$author = ($row->author === '') ? 'Unknown' : $row->author;
 
 		$recipeText = "Recipe Id: <highlight>{$row->id}<end>\n";
 		$recipeText .= "Author: <highlight>{$author}<end>\n\n";
 		$recipeText .= $this->formatRecipeText($row->recipe);
 
-		return (array)$this->text->makeBlob("Recipe for {$recipe_name}", $recipeText);
+		return (array)$this->text->makeBlob("Recipe for {$recipeName}", $recipeText);
 	}
 
 	private function parseTextFile(int $id, string $fileName): Recipe {

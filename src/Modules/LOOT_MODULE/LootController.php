@@ -148,7 +148,7 @@ class LootController extends ModuleInstance {
 		description: 'Periodically announce running loot rolls'
 	)]
 	public function announceLootList(): void {
-		if (empty($this->loot)) {
+		if (!count($this->loot)) {
 			return;
 		}
 		$lootList = ((array)$this->getCurrentLootList())[0];
@@ -404,7 +404,7 @@ class LootController extends ModuleInstance {
 			$item = $this->loot[$key];
 			$item->multiloot += $loot->multiloot;
 		} else {
-			if (!empty($this->loot)) {
+			if (count($this->loot) > 0) {
 				$key = count($this->loot) + 1;
 			} else {
 				$key = 1;
@@ -543,7 +543,7 @@ class LootController extends ModuleInstance {
 			$item->multiloot += $multiloot;
 		} else {
 			// get a slot for the item
-			if (!empty($this->loot)) {
+			if (count($this->loot) > 0) {
 				$key = count($this->loot) + 1;
 			} else {
 				$key = 1;
@@ -608,7 +608,7 @@ class LootController extends ModuleInstance {
 		}
 
 		// Check if a residual list exits
-		if (empty($this->residual)) {
+		if (!count($this->residual)) {
 			$msg = 'There are no remaining items to re-add.';
 			$context->reply($msg);
 			return;
@@ -643,7 +643,7 @@ class LootController extends ModuleInstance {
 		}
 
 		// Check if a residual list exits
-		if (empty($this->residual)) {
+		if (!count($this->residual)) {
 			$msg = 'There are no remaining items to mark ffa.';
 			$context->reply($msg);
 			return;
@@ -703,7 +703,7 @@ class LootController extends ModuleInstance {
 		}
 
 		// Check if a loot list exits
-		if (empty($this->loot)) {
+		if (!count($this->loot)) {
 			$msg = 'There is nothing to roll atm.';
 			$context->reply($msg);
 			return;
@@ -783,14 +783,14 @@ class LootController extends ModuleInstance {
 		$this->roll++;
 
 		// Show winner list
-		if (!empty($this->residual)) {
+		if (count($this->residual) > 0) {
 			$list .= "\n\n".
 				Text::makeChatcmd('Reroll remaining items', '/tell <myname> reroll').
 				'<tab>'.
 				Text::makeChatcmd('Announce remaining items FFA', '/tell <myname> ffa');
 		}
 		$msg = $this->text->makeBlob('Winner List', $list);
-		if (!empty($this->residual)) {
+		if (count($this->residual) > 0) {
 			$msg = $this->text->blobWrap(
 				'',
 				$msg,
@@ -886,7 +886,7 @@ class LootController extends ModuleInstance {
 	 * @return string|list<string>
 	 */
 	public function getCurrentLootList(): string|array {
-		if (empty($this->loot)) {
+		if (!count($this->loot)) {
 			$msg = 'No loot list exists yet.';
 			return $msg;
 		}
@@ -967,7 +967,7 @@ class LootController extends ModuleInstance {
 				multiloot: $row->multiloot,
 				name: $row->name,
 				added_by: $addedBy,
-				display: empty($row->comment)
+				display: ($row->comment === '')
 					? $item
 					: $item . " ({$row->comment})",
 			);

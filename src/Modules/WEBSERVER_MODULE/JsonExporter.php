@@ -21,7 +21,7 @@ class JsonExporter {
 			return (string)$data->getTimestamp();
 		}
 		if (is_array($data)) {
-			if (empty($data)) {
+			if (!count($data)) {
 				return '[]';
 			}
 			if (array_keys($data) === range(0, count($data) - 1)) {

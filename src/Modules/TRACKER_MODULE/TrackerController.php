@@ -878,7 +878,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			);
 			$footNotes []= "<i>Use {$editLink} to see more options.</i>";
 		}
-		if (!empty($footNotes)) {
+		if (count($footNotes) > 0) {
 			$blob .= "\n\n" . implode("\n", $footNotes);
 		}
 		if ($hasFilters) {
@@ -1069,10 +1069,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	public function trackHideCommand(CmdContext $context, string $name, int $uid): void {
 		$updated = $this->db->table(TrackedUser::getTable())
 			->where('uid', $uid)
-			->update(['hidden' => true])
-			?: $this->db->table(TrackingOrgMember::getTable())
+			->update(['hidden' => true]);
+		if ($updated === 0) {
+			$updated = $this->db->table(TrackingOrgMember::getTable())
 			->where('uid', $uid)
 			->update(['hidden' => true]);
+		}
 		if ($updated === 0) {
 			$msg = "<highlight>{$name}<end> is not tracked.";
 			$context->reply($msg);
@@ -1112,11 +1114,12 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 	public function trackUnhideCommand(CmdContext $context, string $name, int $uid): void {
 		$updated = $this->db->table(TrackedUser::getTable())
 			->where('uid', $uid)
-			->update(['hidden' => false])
-			?:
-			$this->db->table(TrackingOrgMember::getTable())
+			->update(['hidden' => false]);
+		if ($updated === 0) {
+			$updated = $this->db->table(TrackingOrgMember::getTable())
 				->where('uid', $uid)
 				->update(['hidden' => false]);
+		}
 		if ($updated === 0) {
 			$msg = "<highlight>{$name}<end> is not tracked.";
 			$context->reply($msg);

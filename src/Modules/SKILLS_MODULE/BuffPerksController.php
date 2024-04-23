@@ -96,7 +96,7 @@ class BuffPerksController extends ModuleInstance {
 	#[NCA\HandlesCommand('perks')]
 	public function buffPerksNoArgsCommand(CmdContext $context): void {
 		$whois = $this->playerManager->byName($context->char->name);
-		if (empty($whois) || !isset($whois->profession) || !isset($whois->level)) {
+		if (!isset($whois) || !isset($whois->profession) || !isset($whois->level)) {
 			$msg = 'Could not retrieve whois info for you.';
 			$context->reply($msg);
 			return;
@@ -319,7 +319,7 @@ class BuffPerksController extends ModuleInstance {
 		}
 
 		$perks = array_map($this->aggregatePerk(...), $perks);
-		if (empty($perks)) {
+		if (!count($perks)) {
 			$msg = "Could not find any perks for level {$level} {$profession->value}.";
 			$sendto->reply($msg);
 			return;
@@ -590,7 +590,7 @@ class BuffPerksController extends ModuleInstance {
 			$this->db->table(PerkLevelProf::getTable())->chunkInsert($profInserts);
 			$this->db->table(PerkLevelResistance::getTable())->chunkInsert($resInserts);
 			$this->db->table(PerkLevelBuff::getTable())->chunkInsert($buffInserts);
-			$newVersion = max($mtime ?: time(), $dbVersion);
+			$newVersion = max($mtime, $dbVersion);
 			$this->settingManager->save('perks_db_version', (string)$newVersion);
 		} catch (Throwable $e) {
 			$this->db->rollback();
@@ -616,12 +616,14 @@ class BuffPerksController extends ModuleInstance {
 
 		$fileHandle = $this->fs->openFile($path, 'r');
 		$reader = splitLines($fileHandle);
+
+		/** @var array<string,Perk> */
 		$perks = [];
 		$skillCache = [];
 		foreach ($reader as $line) {
 			$line = trim($line);
 
-			if (empty($line)) {
+			if ($line === '') {
 				continue;
 			}
 
@@ -638,7 +640,7 @@ class BuffPerksController extends ModuleInstance {
 				$profs = 'Adv, Agent, Crat, Doc, Enf, Engi, Fix, Keep, MA, MP, NT, Shade, Sol, Tra';
 			}
 			$perk = $perks[$name]??null;
-			if (empty($perk)) {
+			if (!isset($perk)) {
 				$perk = new Perk(
 					name: $name,
 					description: isset($description) ? implode("\n", explode('\\n', $description)) : null,

@@ -74,7 +74,7 @@ class GrcV1Protocol implements RelayProtocolInterface {
 	}
 
 	public function receive(RelayMessage $message): ?RoutableEvent {
-		if (empty($message->packages)) {
+		if (!count($message->packages)) {
 			return null;
 		}
 		$data = array_shift($message->packages);

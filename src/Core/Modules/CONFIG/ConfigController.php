@@ -373,7 +373,7 @@ class ConfigController extends ModuleInstance {
 			$commands = $commands->filter(static function (CmdCfg $cfg) use ($permissionSet): bool {
 				$cfg->permissions = collect($cfg->permissions)
 					->where('permission_set', $permissionSet)->toArray();
-				return !(empty($cfg->permissions));
+				return !(!count($cfg->permissions));
 			});
 		}
 
