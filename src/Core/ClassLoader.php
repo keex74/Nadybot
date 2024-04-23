@@ -153,7 +153,7 @@ class ClassLoader {
 			Registry::setInstance($name, $obj);
 		}
 
-		if (count($newInstances) == 0) {
+		if (count($newInstances) === 0) {
 			$this->logger->error('Could not load module {module}: {error}', [
 				'module' => $moduleName,
 				'error' => 'No classes found with #[Instance] attribute',

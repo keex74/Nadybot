@@ -58,7 +58,7 @@ class Text {
 		// $content = $this->formatMessage($content);
 
 		// if the content is blank, add a space so the blob will at least appear
-		if ($content == '') {
+		if ($content === '') {
 			$content = ' ';
 		}
 
@@ -131,13 +131,13 @@ class Text {
 		$lines = explode($symbol, $input);
 		foreach ($lines as $line) {
 			// retain new lines and spaces in output
-			if ($symbol == "\n" || $symbol == ' ') {
+			if ($symbol === "\n" || $symbol === ' ') {
 				$line .= $symbol;
 			}
 
 			$lineLength = strlen($line);
 			if ($lineLength > $maxLength) {
-				if ($pageSize != 0) {
+				if ($pageSize !== 0) {
 					$result []= $currentPage;
 					$currentPage = '';
 					$pageSize = 0;
@@ -328,7 +328,7 @@ class Text {
 			$prefixedNumber = substr(strrev(chunk_split(strrev($prefixedNumber), 3, ',')), 1);
 		}
 		if (is_string($colortag)) {
-			if ($number == 0) {
+			if ($number === 0) {
 				$prefixedNumber = Safe::pregReplace('/(0)$/', "<{$colortag}>$1<end>", $prefixedNumber);
 			} else {
 				$prefixedNumber = Safe::pregReplace('/([1-9][\d,]*)$/', "<{$colortag}>$1<end>", $prefixedNumber);

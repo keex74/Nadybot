@@ -23,7 +23,7 @@ parameters:
     contextKeyOriginalPattern: '#\A[A-Za-z0-9-_]+\z#'
   strictRules:
     allRules: false
-    disallowedLooseComparison: false
+    disallowedLooseComparison: true
     booleansInConditions: false
     uselessCast: false
     requireParentConstructorCall: false

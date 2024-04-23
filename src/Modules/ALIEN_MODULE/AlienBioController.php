@@ -376,12 +376,12 @@ class AlienBioController extends ModuleInstance {
 		$max_psyco          = (int)floor($maxQL * 6);
 		$requiredEEandCL    = (int)floor($ql    * 4.5);
 		$name = 'UNKNOWN';
-		if (strtolower($type) == 'mutated') {
+		if (strtolower($type) === 'mutated') {
 			$name = "Mutated Kyr'Ozch Bio-Material";
 			$reqiredChem = (int)floor($ql * 7);
 			$chemMsg = '7 * QL';
 			$extraInfo = '';
-		} elseif (strtolower($type) == 'pristine') {
+		} elseif (strtolower($type) === 'pristine') {
 			$name = "Pristine Kyr'Ozch Bio-Material";
 			$reqiredChem = (int)floor($ql * 4.5);
 			$chemMsg = '4.5 * QL';

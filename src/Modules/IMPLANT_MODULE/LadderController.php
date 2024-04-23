@@ -70,7 +70,7 @@ class LadderController extends ModuleInstance {
 		}
 
 		$value = $startingValue;
-		$prefix = $type == 'treatment' ? 'skill' : 'ability';
+		$prefix = $type === 'treatment' ? 'skill' : 'ability';
 
 		$blob = "Starting {$type}: {$value}\n\n-------------------\n\n";
 

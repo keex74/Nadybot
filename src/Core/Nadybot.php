@@ -592,7 +592,7 @@ class Nadybot {
 	 * @param int                     $priority     The priority of the message or medium if unset
 	 */
 	public function sendGuild(string|iterable $message, bool $disableRelay=false, ?int $priority=null, bool $addDefaultColor=true): void {
-		if (!isset($this->orgGroup) || $this->settingManager->get('guild_channel_status') != 1) {
+		if (!isset($this->orgGroup) || !$this->settingManager->getBool('guild_channel_status')) {
 			return;
 		}
 
@@ -1240,7 +1240,7 @@ class Nadybot {
 		$this->logger->info('Handling {package}', ['package' => $package->package]);
 		$this->logChat($channel, $sender, $package->package->message);
 
-		if ($sender == $this->config->main->character) {
+		if ($sender === $this->config->main->character) {
 			return;
 		}
 		if ($this->isDefaultPrivateChannel($channel)) {
@@ -1330,7 +1330,7 @@ class Nadybot {
 		}
 
 		// don't log tower messages with rest of chat messages
-		if ($channel != 'All Towers' && $channel != 'Tower Battle Outcome' && (!$isOrgMessage || $this->settingManager->getBool('guild_channel_status'))) {
+		if ($channel->name !== 'All Towers' && $channel->name !== 'Tower Battle Outcome' && (!$isOrgMessage || $this->settingManager->getBool('guild_channel_status'))) {
 			$this->logChat($channel->name, $sender ?? 'System', $package->package->message);
 		} else {
 			$this->logger->info('[{channel}]: {message}', [
@@ -1344,7 +1344,7 @@ class Nadybot {
 			return;
 		}
 
-		if ($channel->name == 'All Towers' || $channel->name == 'Tower Battle Outcome') {
+		if ($channel->name === 'All Towers' || $channel->name === 'Tower Battle Outcome') {
 			$eventObj = new TowersChannelMsgEvent(
 				sender: $sender,
 				channel: $channel->name,
@@ -1353,7 +1353,7 @@ class Nadybot {
 			);
 
 			$this->eventManager->fireEvent($eventObj);
-		} elseif ($channel->name == 'Org Msg') {
+		} elseif ($channel->name === 'Org Msg') {
 			$eventObj = new OrgMsgChannelMsgEvent(
 				sender: $sender,
 				channel: $channel->name,
@@ -1557,7 +1557,7 @@ class Nadybot {
 		}
 
 		foreach ($subcommands as $subcommand => $definition) {
-			if (count($definition->handlers) == 0) {
+			if (count($definition->handlers) === 0) {
 				$this->logger->error("No handlers defined for subcommand '{subcommand}' in module '{module}'.", [
 					'subcommand' => $subcommand,
 					'module' => $moduleName,

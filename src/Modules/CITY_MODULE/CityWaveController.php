@@ -135,7 +135,7 @@ class CityWaveController extends ModuleInstance implements MessageEmitter {
 		$wave = $this->getWave();
 		if ($wave === null) {
 			$msg = 'There is no raid in progress at this time.';
-		} elseif ($wave == 9) {
+		} elseif ($wave === 9) {
 			$msg = 'Waiting for General.';
 		} else {
 			$msg = "Waiting for wave {$wave}.";

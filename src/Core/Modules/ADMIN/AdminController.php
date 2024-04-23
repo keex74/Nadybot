@@ -271,7 +271,7 @@ class AdminController extends ModuleInstance {
 
 	public function checkAltsInheritAdmin(string $who): bool {
 		$ai = $this->altsController->getAltInfo($who);
-		return $ai->main == $who;
+		return $ai->main === $who;
 	}
 
 	public function checkAccessLevel(string $actor, string $actee): bool {
@@ -339,7 +339,7 @@ class AdminController extends ModuleInstance {
 	private function getAltAdminInfo(string $who, bool $showOfflineAlts): string {
 		$blob = '';
 		$altInfo = $this->altsController->getAltInfo($who);
-		if ($altInfo->main == $who) {
+		if ($altInfo->main === $who) {
 			foreach ($altInfo->getAllValidatedAlts() as $alt) {
 				if ($showOfflineAlts || $this->buddylistManager->isOnline($alt)) {
 					$blob .= "<tab><tab>{$alt}" . $this->getOnlineStatus($alt) . "\n";

@@ -238,7 +238,7 @@ class EventsController extends ModuleInstance {
 			$altInfo = $this->altsController->getAltInfo($name);
 			$alt = '';
 			if (count($altInfo->getAllValidatedAlts()) > 0) {
-				if ($altInfo->main == $name) {
+				if ($altInfo->main === $name) {
 					$alt = ' <highlight>::<end> [' . Text::makeChatcmd('alts', "/tell <myname> alts {$name}") . ']';
 				} else {
 					$alt = ' <highlight>::<end> ' . Text::makeChatcmd("Alts of {$altInfo->main}", "/tell <myname> alts {$name}");

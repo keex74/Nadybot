@@ -78,7 +78,7 @@ class PlayfieldController extends ModuleInstance {
 			}
 
 			$msg = $this->text->makeBlob("Playfields ({$count})", $blob);
-		} elseif ($count == 1) {
+		} elseif ($count === 1) {
 			$row = $data[0];
 			$msg = "[<highlight>{$row->id}<end>] {$row->long_name}";
 		} else {

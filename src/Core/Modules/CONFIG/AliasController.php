@@ -123,11 +123,11 @@ class AliasController extends ModuleInstance {
 			$this->commandAlias->add($aliasObj);
 			$this->commandAlias->activate($cmd, $alias);
 			$msg = "Alias <highlight>{$alias}<end> for command <highlight>{$cmd}<end> added successfully.";
-		} elseif ($row->status == 0 || ($row->status == 1 && $row->cmd == $cmd)) {
+		} elseif ($row->status === 0 || ($row->status === 1 && $row->cmd === $cmd)) {
 			$this->commandAlias->update($aliasObj);
 			$this->commandAlias->activate($cmd, $alias);
 			$msg = "Alias <highlight>{$alias}<end> for command <highlight>{$cmd}<end> added successfully.";
-		} elseif ($row->status == 1 && $row->cmd != $cmd) {
+		} elseif ($row->status === 1 && $row->cmd !== $cmd) {
 			$msg = "Cannot add alias <highlight>{$alias}<end> since an alias with that name already exists.";
 		} else {
 			$msg = "Cannot add alias <highlight>{$alias}<end>.";

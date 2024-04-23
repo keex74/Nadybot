@@ -236,7 +236,7 @@ class GuildController extends ModuleInstance {
 	/** Set your new logoff message. 'clear' to remove it */
 	#[NCA\HandlesCommand('logoff')]
 	public function logoffMessageSetCommand(CmdContext $context, string $logoffMessage): void {
-		if ($logoffMessage == 'clear') {
+		if ($logoffMessage === 'clear') {
 			$this->preferences->save($context->char->name, 'logoff_msg', '');
 			$msg = 'Your logoff message has been cleared.';
 		} elseif (strlen($logoffMessage) <= $this->maxLogoffMsgSize) {
@@ -447,7 +447,7 @@ class GuildController extends ModuleInstance {
 
 		if ($mode === null) {
 			$msg = "<highlight>{$name}<end> is not on the guild roster.";
-		} elseif ($mode == 'del') {
+		} elseif ($mode === 'del') {
 			$msg = "<highlight>{$name}<end> has already been removed from the Notify list.";
 		} else {
 			$this->db->table(OrgMember::getTable())
@@ -1027,7 +1027,7 @@ class GuildController extends ModuleInstance {
 					$this->chatBot->guildmembers[$member->name] = $member->guild_rank_id ?? 0;
 
 					// if member was added to notify list manually, switch mode to org and let guild roster update from now on
-					if ($dbEntries[$member->name]['mode'] == 'add') {
+					if ($dbEntries[$member->name]['mode'] === 'add') {
 						$this->db->table(OrgMember::getTable())
 							->where('name', $member->name)
 							->update(['mode' => 'org']);

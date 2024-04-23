@@ -717,7 +717,7 @@ class LootController extends ModuleInstance {
 		foreach ($this->loot as $key => $item) {
 			$list .= "Item: <header2>{$item->name}<end>\n";
 			$numUsers = count($item->users);
-			if ($numUsers == 1) {
+			if ($numUsers === 1) {
 				$list .= 'Winner: ';
 			} else {
 				$list .= 'Winners: ';
@@ -824,7 +824,7 @@ class LootController extends ModuleInstance {
 		// Remove the player from other slots if set
 		$found = false;
 		foreach ($this->loot as $key => $item) {
-			if ($this->loot[$key]->users[$context->char->name] == true) {
+			if ($this->loot[$key]->users[$context->char->name] === true) {
 				unset($this->loot[$key]->users[$context->char->name]);
 				$found = true;
 			}
@@ -858,7 +858,7 @@ class LootController extends ModuleInstance {
 			return;
 		}
 		foreach ($this->loot as $key => $item) {
-			if ($this->loot[$key]->users[$context->char->name] == true) {
+			if ($this->loot[$key]->users[$context->char->name] === true) {
 				unset($this->loot[$key]->users[$context->char->name]);
 			}
 		}

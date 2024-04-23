@@ -173,7 +173,7 @@ class CommandAlias {
 		$row = $this->get($alias);
 
 		// if alias doesn't exist or is disabled
-		if ($row === null || $row->status != 1) {
+		if ($row === null || $row->status !== 1) {
 			return null;
 		}
 		[$cmd] = explode(' ', $row->cmd, 2);

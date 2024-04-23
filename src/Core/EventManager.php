@@ -164,7 +164,7 @@ class EventManager {
 			return;
 		}
 
-		if ($type == 'setup') {
+		if ($type === 'setup') {
 			$this->callEventHandler(new SetupEvent(), $filename, []);
 		} elseif ($type === 'connect' && $this->areConnectEventsFired) {
 			$this->callEventHandler(new ConnectEvent(), $filename, []);
@@ -207,7 +207,7 @@ class EventManager {
 		$type = strtolower($type);
 		$logObj = new AnonObj(class: 'Event', properties: ['type' => $type, 'handler' => $callback]);
 
-		if ($type == 'setup') {
+		if ($type === 'setup') {
 			return;
 		}
 		if ($this->isValidEventType($type)) {
@@ -232,7 +232,7 @@ class EventManager {
 		$type = strtolower($type);
 		$logObj = new AnonObj(class: 'Event', properties: ['type' => $type, 'handler' => $callback]);
 
-		if ($type == 'setup') {
+		if ($type === 'setup') {
 			return;
 		}
 		if ($this->isValidEventType($type)) {

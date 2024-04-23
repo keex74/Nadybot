@@ -49,7 +49,7 @@ class Util {
 	 * Converts 3688 to "1hr, 1min, 18secs"
 	 */
 	public static function unixtimeToReadable(int $time, bool $showSeconds=true): string {
-		if ($time == 0) {
+		if ($time === 0) {
 			return '0 secs';
 		}
 
@@ -64,14 +64,14 @@ class Util {
 		$timeshift = '';
 		foreach ($units as $unit => $seconds) {
 			if ($time > 0) {
-				$length = floor($time / $seconds);
+				$length = (int)floor($time / $seconds);
 			} else {
-				$length = ceil($time / $seconds);
+				$length = (int)ceil($time / $seconds);
 			}
-			if ($unit != 'sec' || $showSeconds || $timeshift == '') {
+			if ($unit !== 'sec' || $showSeconds || $timeshift === '') {
 				if ($length > 1) {
 					$timeshift .= $length . ' ' . $unit . 's ';
-				} elseif ($length == 1) {
+				} elseif ($length === 1) {
 					$timeshift .= $length . ' ' . $unit . ' ';
 				}
 			}
@@ -275,7 +275,7 @@ class Util {
 	 * @return int The interpolated bonus/requirement at QL $ql
 	 */
 	public static function interpolate(int $minQL, int $maxQL, int $minVal, int $maxVal, int $ql): int {
-		if ($minQL == $maxQL) {
+		if ($minQL === $maxQL) {
 			return $maxVal;
 		}
 		$result = ($maxVal - $minVal) / ($maxQL - $minQL) * ($ql - $minQL) + $minVal;

@@ -273,7 +273,7 @@ class BankController extends ModuleInstance {
 			if ($location !== 'Bank' && $location !== 'Inventory') {
 				continue;
 			}
-			if ($container == '') {
+			if ($container === '') {
 				$container = $location;
 			}
 

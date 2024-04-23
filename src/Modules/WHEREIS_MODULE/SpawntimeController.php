@@ -141,7 +141,7 @@ class SpawntimeController extends ModuleInstance {
 		} elseif ($row->coordinates->count() === 1) {
 			/** @var Whereis */
 			$coords = $row->coordinates->firstOrFail();
-			if ($coords->playfield !== Playfield::Unknown && $coords->xcoord != 0 && $coords->ycoord != 0) {
+			if ($coords->playfield !== Playfield::Unknown && $coords->xcoord !== 0 && $coords->ycoord !== 0) {
 				$line .= ' ['. $coords->toWaypoint() . ']';
 			}
 		}

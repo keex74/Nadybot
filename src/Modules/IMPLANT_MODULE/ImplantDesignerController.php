@@ -486,7 +486,7 @@ class ImplantDesignerController extends ModuleInstance {
 				$results = array_map(static function ($item) use ($slot): string {
 					return empty($item[1]) ? '-Empty-' : Text::makeChatcmd($item[1], "/tell <myname> implantdesigner {$slot->designSlotName()} {$item[0]} {$item[1]}");
 				}, $results);
-				if ($results[0] != $primary) {
+				if ($results[0] !== $primary) {
 					$blob .= "\n" . $results[0] . "\n";
 					$primary = $results[0];
 				}
@@ -805,9 +805,9 @@ class ImplantDesignerController extends ModuleInstance {
 		}
 
 		$modAmount = Util::interpolate($minQl, $maxQl, $minVal, $maxVal, $ql);
-		if ($grade == 'bright') {
+		if ($grade === 'bright') {
 			$modAmount = round($modAmount * 0.6, 0);
-		} elseif ($grade == 'faded') {
+		} elseif ($grade === 'faded') {
 			$modAmount = round($modAmount * 0.4, 0);
 		}
 

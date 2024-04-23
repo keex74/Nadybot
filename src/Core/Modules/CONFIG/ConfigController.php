@@ -709,7 +709,7 @@ class ConfigController extends ModuleInstance {
 				$statusLink = Text::makeChatcmd('enable', '/tell <myname> config event '.$row->type.' '.$row->file.' enable all');
 			}
 
-			if ($row->status == 1) {
+			if ($row->status === 1) {
 				$status = '<on>Enabled<end>';
 			} else {
 				$status = '<off>Disabled<end>';
@@ -908,7 +908,7 @@ class ConfigController extends ModuleInstance {
 		$result = [];
 		$showRaidAL = $this->showRaidAL();
 		foreach ($this->accessManager->getAccessLevels() as $accessLevel => $level) {
-			if ($accessLevel == 'none') {
+			if ($accessLevel === 'none') {
 				continue;
 			}
 			$enabled = true;
@@ -1026,7 +1026,7 @@ class ConfigController extends ModuleInstance {
 				continue;
 			}
 			$subcmdList .= "<pagebreak><header2>{$command->cmd}<end> ({$permSet})\n";
-			if ($command->description != '') {
+			if ($command->description !== '') {
 				$subcmdList .= "<tab>Description: <highlight>{$command->description}<end>\n";
 			}
 
@@ -1045,7 +1045,7 @@ class ConfigController extends ModuleInstance {
 
 			$subcmdList .= '<tab>Set access level: ';
 			foreach ($this->accessManager->getAccessLevels() as $accessLevel => $level) {
-				if ($accessLevel == 'none') {
+				if ($accessLevel === 'none') {
 					continue;
 				}
 				if (substr($accessLevel, 0, 5) === 'raid_' && !$showRaidAL) {

@@ -298,11 +298,11 @@ class ImplantController extends ModuleInstance {
 	}
 
 	public function getClusterMinQl(int $ql, string $grade): int {
-		if ($grade == 'shiny') {
+		if ($grade === 'shiny') {
 			return (int)floor($ql * 0.86);
-		} elseif ($grade == 'bright') {
+		} elseif ($grade === 'bright') {
 			return (int)floor($ql * 0.84);
-		} elseif ($grade == 'faded') {
+		} elseif ($grade === 'faded') {
 			return (int)floor($ql * 0.82);
 		}
 		throw new Exception("Invalid grade: '{$grade}'.  Must be one of: 'shiny', 'bright', 'faded'");

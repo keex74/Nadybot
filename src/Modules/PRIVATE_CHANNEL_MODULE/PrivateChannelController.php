@@ -552,7 +552,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 			$context->reply($msg);
 			return;
 		}
-		if ($this->config->main->character == $name) {
+		if ($this->config->main->character === $name) {
 			$msg = 'You cannot invite the bot to its own private channel.';
 			$context->reply($msg);
 			return;

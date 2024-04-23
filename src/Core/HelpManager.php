@@ -52,7 +52,7 @@ class HelpManager {
 
 		// Check if the file exists
 		$actual_filename = $this->util->verifyFilename($module . '/' . $filename);
-		if ($actual_filename == '') {
+		if ($actual_filename === '') {
 			$this->logger->error('Error registering {help_file}: {error}', [
 				'help_file' => $logObj,
 				'error' => "The file doesn't exist",
@@ -128,7 +128,7 @@ class HelpManager {
 
 	public function checkForHelpFile(string $module, string $file): string {
 		$actualFilename = $this->util->verifyFilename($module . \DIRECTORY_SEPARATOR . $file);
-		if ($actualFilename == '') {
+		if ($actualFilename === '') {
 			$this->logger->warning('Error in registering the help file {module}/{file}: {error}', [
 				'error' => "The file doesn't exist",
 				'module' => $module,

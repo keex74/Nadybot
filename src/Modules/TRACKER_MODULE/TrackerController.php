@@ -498,7 +498,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 
 			if (isset($lastState) && $lastState->event === 'logon') {
 				$status = '<on>logon<end>';
-			} elseif (isset($lastState) && $lastState->event == 'logoff') {
+			} elseif (isset($lastState) && $lastState->event === 'logoff') {
 				$status = '<off>logoff<end>';
 			} else {
 				$status = '<grey>None<end>';
@@ -1198,9 +1198,9 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			$blob .= "<tab><highlight>{$char}<end> has never logged on.";
 		}
 		foreach ($events as $event) {
-			if ($event->event == 'logon') {
+			if ($event->event === 'logon') {
 				$status = '<on>logon<end>';
-			} elseif ($event->event == 'logoff') {
+			} elseif ($event->event === 'logoff') {
 				$status = '<off>logoff<end>';
 			} else {
 				$status = '<grey>unknown<end>';

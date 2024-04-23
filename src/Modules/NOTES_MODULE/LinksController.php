@@ -96,7 +96,7 @@ class LinksController extends ModuleInstance {
 			->first();
 		if ($obj === null) {
 			$msg = "Link with ID <highlight>{$id}<end> could not be found.";
-		} elseif ($obj->name == $context->char->name
+		} elseif ($obj->name === $context->char->name
 			|| $this->accessManager->compareCharacterAccessLevels($context->char->name, $obj->name) > 0) {
 			$this->db->table(Link::getTable())->delete($id);
 			$msg = "Link with ID <highlight>{$id}<end> deleted successfully.";

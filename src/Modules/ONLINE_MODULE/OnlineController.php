@@ -658,9 +658,9 @@ class OnlineController extends ModuleInstance {
 			->update(['afk' => '']);
 		$msg = "<highlight>{$sender}<end> is back after {$timeString}.";
 
-		if ('priv' == $type) {
+		if ('priv' === $type) {
 			$this->chatBot->sendPrivate($msg);
-		} elseif ('guild' == $type) {
+		} elseif ('guild' === $type) {
 			$this->chatBot->sendGuild($msg);
 		}
 	}
@@ -686,15 +686,15 @@ class OnlineController extends ModuleInstance {
 		}
 
 		if ($msg !== null) {
-			if ('priv' == $type) {
+			if ('priv' === $type) {
 				$this->chatBot->sendPrivate($msg);
-			} elseif ('guild' == $type) {
+			} elseif ('guild' === $type) {
 				$this->chatBot->sendGuild($msg);
 			}
 
 			// if 'afk' was used as a command, throw StopExecutionException to prevent
 			// normal command handling from occurring
-			if ($message[0] == $symbol) {
+			if ($message[0] === $symbol) {
 				throw new StopExecutionException();
 			}
 		}

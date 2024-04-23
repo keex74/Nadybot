@@ -176,13 +176,13 @@ class LoggerWrapper implements LoggerInterface {
 		}
 
 		$this->chatLogger ??= $this->logger->withName('CHAT');
-		if ($channel == 'Buddy') {
+		if ($channel === 'Buddy') {
 			$this->chatLogger->notice('[{channel}] {sender} {message}', [
 				'channel' => $channel,
 				'sender' => $sender,
 				'message' => $message,
 			]);
-		} elseif ($sender == '-1' || $sender == '4294967295') {
+		} elseif ($sender === '-1' || $sender === '4294967295' || $sender === -1 || $sender === 4_294_967_295) {
 			$this->chatLogger->notice('[{channel}] {message}', [
 				'channel' => $channel,
 				'message' => $message,

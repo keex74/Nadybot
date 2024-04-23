@@ -76,7 +76,7 @@ class PlayerHistoryController extends ModuleInstance {
 				$faction = $entry->faction->inColor() . '  ';
 			}
 
-			if (!isset($entry->guild_name) || $entry->guild_name == '') {
+			if (!isset($entry->guild_name) || $entry->guild_name === '') {
 				$guild = 'Not in a guild';
 			} else {
 				$guild = $entry->guild_name;
