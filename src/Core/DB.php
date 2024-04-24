@@ -729,7 +729,7 @@ class DB {
 				if ($this->inTransaction()) {
 					$this->rollback();
 				}
-				exit(1);
+				throw $e;
 			}
 		}
 		$end = microtime(true);
