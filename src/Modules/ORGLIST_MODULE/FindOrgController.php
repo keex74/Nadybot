@@ -191,16 +191,11 @@ class FindOrgController extends ModuleInstance {
 				'governing_form' => Government::from($match[7])->name,
 			];
 		}
-		while ($this->db->inTransaction()) {
-			delay(0.1);
-		}
+		$this->db->awaitBeginTransaction();
 		try {
 			$this->db->awaitBeginTransaction();
 			$this->db->table(Organization::getTable())
-				->where('index', $letter)
-				->delete();
-			$this->db->table(Organization::getTable())
-				->chunkInsert($inserts);
+				->chunkUpsert($inserts, ['id']);
 			$this->db->commit();
 		} catch (Exception $e) {
 			$this->logger->error('Error downloading orgs: {error}', [

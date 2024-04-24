@@ -168,6 +168,29 @@ class QueryBuilder extends Builder {
 		return $result;
 	}
 
+	/**
+	 * Upsert more than 1 entry into the database
+	 *
+	 * Depending on the DB system, there is a limit of maximum
+	 * rows or placeholders that we can insert.
+	 *
+	 * @param array<string,mixed>|array<array<string,mixed>> $values
+	 * @param string|list<string>                            $uniqueBy
+	 * @param ?list<string>                                  $update
+	 */
+	public function chunkUpsert(array $values, array|string $uniqueBy, ?array $update=null): int {
+		if (!isset($values[0])) {
+			return $this->upsert($values, $uniqueBy, $update);
+		}
+		$chunkSize = (int)floor($this->nadyDB->maxPlaceholders / count($values[0]));
+		$result = 0;
+		while (count($values)) {
+			$chunk = array_splice($values, 0, $chunkSize);
+			$result += $this->upsert($chunk, $uniqueBy, $update);
+		}
+		return $result;
+	}
+
 	/** @phpstan-param ReflectionClass<object> $refClass */
 	protected function guessVarTypeFromReflection(ReflectionClass $refClass, string $colName): ?string {
 		$refProp = $refClass->getProperty($colName);
