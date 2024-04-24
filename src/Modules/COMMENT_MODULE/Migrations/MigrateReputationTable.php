@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\COMMENT_MODULE\Migrations;
 
+use Illuminate\Support\Collection;
 use Nadybot\Core\{
 	Attributes as NCA,
 	DB,
@@ -20,6 +21,8 @@ class MigrateReputationTable implements SchemaMigration {
 		if (!$db->schema()->hasTable('reputation')) {
 			return;
 		}
+
+		/** @var Collection<int,object{"id":int,"name":string,"reputation":string,"comment":string,"by":string,"dt":int}> */
 		$oldData = $db->table('reputation')->get();
 		if ($oldData->count() === 0) {
 			$logger->info('Reputation table empty, no need to convert anything');
@@ -35,10 +38,10 @@ class MigrateReputationTable implements SchemaMigration {
 				$db->table(Comment::getTable())
 					->insert([
 						'category' => $cat->name,
-						'character' => (string)$row->name,
+						'character' => $row->name,
 						'comment' => "{$row->reputation} {$row->comment}",
-						'created_at' => (int)$row->dt,
-						'created_by' => (string)$row->by,
+						'created_at' => $row->dt,
+						'created_by' => $row->by,
 					]);
 			}
 		} catch (Throwable $e) {

@@ -18,7 +18,7 @@ class MigrateCmdcfg implements SchemaMigration {
 			['name' => 'guild', 'letter' => 'G'],
 		]);
 
-		/** @var list<object{"module":string,"cmdevent":string,"type":string,"file":string,"cmd":string,"admin":string,"description":string,"verify":int,"status":int,"dependson":string,"help":string}> */
+		/** @var list<object{"module":?string,"cmdevent":?string,"type":?string,"file":?string,"cmd":?string,"admin":?string,"description":?string,"verify":?int,"status":?int,"dependson":?string,"help":?string}> */
 		$entries = $db->table($table)->get();
 		$db->table($table)->truncate();
 
@@ -37,9 +37,9 @@ class MigrateCmdcfg implements SchemaMigration {
 				'permission_set' => $entry->type,
 				'cmd' => $entry->cmd,
 				'enabled' => (bool)$entry->status,
-				'access_level' => $entry->admin,
+				'access_level' => $entry->admin ?? 'all',
 			]);
-			if (isset($cmds[(string)$entry->cmd])) { // @phpstan-ignore-line
+			if (isset($cmds[(string)$entry->cmd])) {
 				continue;
 			}
 			$db->table(CmdCfg::getTable())->insert([
@@ -50,9 +50,9 @@ class MigrateCmdcfg implements SchemaMigration {
 				'description' => $entry->description,
 				'verify' => $entry->verify,
 				'dependson' => $entry->dependson,
-				'help' => !strlen($entry->help) ? null : $entry->help,
+				'help' => !strlen($entry->help??'') ? null : $entry->help,
 			]);
-			$cmds[(string)$entry->cmd] = true; // @phpstan-ignore-line
+			$cmds[(string)$entry->cmd] = true;
 		}
 	}
 }
