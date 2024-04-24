@@ -89,4 +89,9 @@
         "zlib",
         "Stubs"
     ],
+    "phpstan.configFileWatcher": true,
+    "phpstan.enabled": true,
+    "phpstan.fileWatcher": true,
+    "phpstan.initialAnalysis": true,
+    "phpstan.memoryLimit": "-1",
 }

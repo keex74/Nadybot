@@ -31,9 +31,9 @@ parameters:
     overwriteVariablesWithLoop: true
     closureUsesThis: true
     matchingInheritedMethodNames: true
-    numericOperandsInArithmeticOperators: false
+    numericOperandsInArithmeticOperators: true
     strictCalls: true
-    switchConditionsMatchingType: false
+    switchConditionsMatchingType: true
     noVariableVariables: false
     strictArrayFilter: true
 includes:
