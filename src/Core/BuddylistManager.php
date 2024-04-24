@@ -290,14 +290,21 @@ class BuddylistManager {
 		$sender = $this->chatBot->getName($userId);
 
 		// store buddy info
-		$this->buddyList[$userId] ??= new BuddylistEntry(
-			uid: $userId,
-			name: (string)$sender,
-			online: $status,
-			known: true,
-		);
-		$this->buddyList[$userId]->worker[$worker] = true;
-		$this->logger->info('{buddy} entry added', ['buddy' => $this->buddyList[$userId]]);
+		$entry = $this->buddyList[$userId] ?? null;
+		if (isset($entry)) {
+			$entry->worker[$worker] = true;
+			$entry->known = true;
+			$entry->online = $status;
+		} else {
+			$entry = $this->buddyList[$userId] ??= new BuddylistEntry(
+				uid: $userId,
+				name: (string)$sender,
+				online: $status,
+				known: true,
+				worker: [$worker => true],
+			);
+		}
+		$this->logger->info('{buddy} entry added', ['buddy' => $entry]);
 	}
 
 	/** Forcefully delete cached information in the friendlist */
