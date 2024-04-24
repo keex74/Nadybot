@@ -1551,7 +1551,7 @@ class Nadybot {
 			$this->commandManager->register(
 				$moduleName,
 				implode(',', $definition->handlers),
-				$command,
+				(string)$command,
 				$definition->accessLevel,
 				$definition->description,
 				$definition->defaultStatus,
@@ -1734,7 +1734,7 @@ class Nadybot {
 	 *
 	 * @return array<array<string,CmdDef>>
 	 *
-	 * @phpstan-return array{array<string,CmdDef>,array<string,CmdDef>}
+	 * @phpstan-return array{array<array-key,CmdDef>,array<array-key,CmdDef>}
 	 */
 	private function parseInstanceCommands(string $moduleName, ModuleInstanceInterface $obj): array {
 		/**
