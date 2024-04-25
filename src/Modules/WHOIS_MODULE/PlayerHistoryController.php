@@ -61,7 +61,7 @@ class PlayerHistoryController extends ModuleInstance {
 		foreach ($history->data as $entry) {
 			$date = $entry->last_changed->format('Y-m-d');
 
-			if ($entry->deleted === '1') {
+			if ($entry->deleted) {
 				$blob .= "{$date} <highlight>|<end>   <red>DELETED<end>\n";
 				continue;
 			}

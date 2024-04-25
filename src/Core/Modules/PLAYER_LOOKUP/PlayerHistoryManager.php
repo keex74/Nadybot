@@ -2,10 +2,12 @@
 
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
+use function Amp\async;
 use function Safe\{json_decode};
 use Amp\File\{FileCache};
 use Amp\Http\Client\{HttpClientBuilder, Request};
 use Amp\Sync\LocalKeyedMutex;
+use Amp\TimeoutCancellation;
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
@@ -14,6 +16,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 };
 use Safe\Exceptions\JsonException;
+use Throwable;
 
 #[NCA\Instance]
 class PlayerHistoryManager extends ModuleInstance {
@@ -36,7 +39,10 @@ class PlayerHistoryManager extends ModuleInstance {
 
 	public function lookup(string $name, int $dimension): ?PlayerHistory {
 		$name = ucfirst(strtolower($name));
-		$url = "https://pork.jkbff.com/pork/history.php?server={$dimension}&name={$name}";
+		$urls = [
+			"https://history.aobots.org/?server={$dimension}&name={$name}",
+			$mainUrl = "https://pork.jkbff.com/pork/history.php?server={$dimension}&name={$name}",
+		];
 		$cacheKey = "{$name}.{$dimension}.history";
 		$cache = new FileCache(
 			$this->getCacheDir(),
@@ -48,12 +54,29 @@ class PlayerHistoryManager extends ModuleInstance {
 		}
 		$client = $this->builder->build();
 
-		$response = $client->request(new Request($url));
-		if ($response->getStatus() !== 200) {
-			return null;
+		$triesLeft = 5;
+		$response = null;
+		$url = $urls[0];
+		do {
+			$body = null;
+			if (count($urls) > 0) {
+				$url = array_shift($urls);
+			}
+			$triesLeft--;
+			try {
+				$response = $client->request(new Request($url), new TimeoutCancellation(10));
+				if ($response->getStatus() !== 200) {
+					continue;
+				}
+				$body = $response->getBody()->buffer();
+			} catch (Throwable) {
+				continue;
+			}
+		} while (!isset($body) && $triesLeft > 0);
+		if ($url !== $mainUrl && $dimension > 3) {
+			async($client->request(...), new Request($mainUrl))->ignore();
 		}
-		$body = $response->getBody()->buffer();
-		if ($body === '' || $body === '[]') {
+		if (!isset($body) || $body === '' || $body === '[]') {
 			return null;
 		}
 		$cache->set($cacheKey, $body, 12 * 3_600);
