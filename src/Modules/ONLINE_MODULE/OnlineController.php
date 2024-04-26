@@ -467,9 +467,6 @@ class OnlineController extends ModuleInstance {
 			return;
 		}
 		$player = $this->addPlayerToOnlineList($sender, $this->config->general->orgName, 'guild');
-		if ($player === null) {
-			return;
-		}
 		$event = new OnlineEvent(
 			channel: 'org',
 			player: $player,
@@ -575,7 +572,7 @@ class OnlineController extends ModuleInstance {
 		}
 
 		$this->db->table(Online::getTable())
-			->where(function (QueryBuilder $query) use ($time) {
+			->where(function (QueryBuilder $query) use ($time): void {
 				$query->where('dt', '<', $time)
 					->where('added_by', $this->db->getBotname());
 			})->orWhere('dt', '<', $time - $this->onlineExpire)
@@ -700,7 +697,7 @@ class OnlineController extends ModuleInstance {
 		}
 	}
 
-	public function addPlayerToOnlineList(string $sender, string $channel, string $channelType): ?OnlinePlayer {
+	public function addPlayerToOnlineList(string $sender, string $channel, string $channelType): OnlinePlayer {
 		$exists = $this->buildOnlineQuery($sender, $channelType)->exists();
 		if (!$exists) {
 			$this->db->insert(new Online(

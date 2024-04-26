@@ -254,7 +254,7 @@ class BankController extends ModuleInstance {
 			return $this->fs->read($location);
 		} catch (FilesystemException $e) {
 			$msg = "Could not open file '{$location}': " . $e->getMessage();
-			throw new UserException($msg);
+			throw new UserException($msg, 0, $e);
 		}
 	}
 

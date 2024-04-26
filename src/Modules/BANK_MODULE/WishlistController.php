@@ -652,6 +652,8 @@ class WishlistController extends ModuleInstance {
 		$fulfilments = $this->db->table(WishFulfilment::getTable())
 			->where('wish_id', $entry->id)
 			->asObj(WishFulfilment::class);
+
+		/** @var int */
 		$numFulfilled = $fulfilments->sum(static fn (WishFulfilment $f): int => $f->amount);
 		if ($numFulfilled >= $entry->amount) {
 			$context->reply('This wish has already been fulfilled.');
@@ -781,7 +783,7 @@ class WishlistController extends ModuleInstance {
 				->delete();
 		} catch (Throwable $e) {
 			$this->db->rollback();
-			throw new UserException('An unknown error occurred when cleaning up your wishlist.');
+			throw new UserException('An unknown error occurred when cleaning up your wishlist.', 0, $e);
 		}
 		$this->db->commit();
 		$newFrom = $this->getActiveFroms();

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateOrgNotesTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = OrgNote::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('uuid', 36)->unique()->index();
 			$table->string('added_by', 12);

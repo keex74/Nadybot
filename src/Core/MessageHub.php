@@ -259,7 +259,7 @@ class MessageHub {
 			Registry::injectDependencies($obj);
 			return $obj;
 		} catch (Throwable $e) {
-			throw new Exception("There was an error setting up the {$name} modifier: " . $e->getMessage());
+			throw new Exception("There was an error setting up the {$name} modifier: " . $e->getMessage(), 0, $e);
 		}
 	}
 

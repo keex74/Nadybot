@@ -24,7 +24,7 @@ class PDirection extends Base {
 		return in_array($this->value, ['<->', '&lt;-&gt;'], true);
 	}
 
-	public static function getExample(): ?string {
+	public static function getExample(): string {
 		return '-&gt;|&lt;-&gt;';
 	}
 }

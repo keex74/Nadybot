@@ -152,7 +152,7 @@ class WhatBuffsController extends ModuleInstance {
 			$query
 				->join('item_buffs', 'item_buffs.item_id', '=', 'buffs.id')
 				->join('skills', 'item_buffs.attribute_id', '=', 'skills.id')
-				->where(static function (QueryBuilder $query) {
+				->where(static function (QueryBuilder $query): void {
 					$query->whereIn('skills.name', ['SkillLockModifier', '% Add. Nano Cost'])
 						->orWhere('item_buffs.amount', '>', 0);
 				})
@@ -183,6 +183,7 @@ class WhatBuffsController extends ModuleInstance {
 						}
 					}
 					foreach ($skills as $skillId => $true) {
+						// @phpstan-ignore-next-line
 						$result->put($skillId, $result->get($skillId, 0)+1);
 					}
 					return $result;
@@ -325,7 +326,7 @@ class WhatBuffsController extends ModuleInstance {
 			->join('item_buffs', 'item_buffs.item_id', '=', 'aodb.highid')
 			->join('skills', 'skills.id', '=', 'item_buffs.attribute_id')
 			->where('skills.id', '=', $skillId)
-			->where(static function (QueryBuilder $query) {
+			->where(static function (QueryBuilder $query): void {
 				$query->whereIn('skills.name', ['SkillLockModifier', '% Add. Nano Cost'])
 					->orWhere('item_buffs.amount', '>', 0);
 			})
@@ -336,7 +337,7 @@ class WhatBuffsController extends ModuleInstance {
 			->join('item_buffs', 'item_buffs.item_id', '=', 'buffs.id')
 			->join('skills', 'skills.id', '=', 'item_buffs.attribute_id')
 			->where('skills.id', '=', $skillId)
-			->where(static function (QueryBuilder $query) {
+			->where(static function (QueryBuilder $query): void {
 				$query->whereIn('skills.name', ['SkillLockModifier', '% Add. Nano Cost'])
 					->orWhere('item_buffs.amount', '>', 0);
 			})
@@ -400,7 +401,7 @@ class WhatBuffsController extends ModuleInstance {
 				->join(Skill::getTable() . ' AS s', 's.id', 'ib.attribute_id')
 				->leftJoin(AODBEntry::getTable() . ' AS a', 'a.lowid', 'b.use_id')
 				->where('s.id', $skill->id)
-				->where(static function (QueryBuilder $query) {
+				->where(static function (QueryBuilder $query): void {
 					$query->whereIn('s.name', ['SkillLockModifier', '% Add. Nano Cost'])
 						->orWhere('ib.amount', '>', 0);
 				})->whereNotIn('b.name', [
@@ -456,12 +457,12 @@ class WhatBuffsController extends ModuleInstance {
 				->join('item_types AS i', 'i.item_id', 'a.highid')
 				->join(ItemBuff::getTable(as: 'b'), 'b.item_id', 'a.highid')
 				->leftJoin(ItemBuff::getTable(as: 'b2'), 'b2.item_id', 'a.lowid')
-				->join(Skill::getTable() . ' AS s', static function (JoinClause $join) {
+				->join(Skill::getTable() . ' AS s', static function (JoinClause $join): void {
 					$join->on('b.attribute_id', 's.id')
 						->on('b2.attribute_id', 's.id');
 				})->where('i.item_type', $category)
 				->where('s.id', $skill->id)
-				->where(static function (QueryBuilder $query) {
+				->where(static function (QueryBuilder $query): void {
 					$query->whereIn('s.name', ['SkillLockModifier', '% Add. Nano Cost'])
 						->orWhere('b.amount', '>', 0);
 				})->groupBy([

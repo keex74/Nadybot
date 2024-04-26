@@ -63,11 +63,13 @@ class Safe {
 	 * If subject is an array, then the search and
 	 * replace is performed on every entry of subject,
 	 * and the return value is an array as well.
-	 * @param int $limit The maximum possible replacements for each pattern in each
-	 *                   subject string. Defaults to
-	 *                   -1 (no limit).
-	 * @param int $count If specified, this variable will be filled with the number of
-	 *                   replacements done.
+	 * @param int  $limit The maximum possible replacements for each pattern in each
+	 *                    subject string. Defaults to
+	 *                    -1 (no limit).
+	 * @param ?int $count If specified, this variable will be filled with the number of
+	 *                    replacements done.
+	 *
+	 * @param-out int $count
 	 *
 	 * @return string pregReplace returns a string
 	 *

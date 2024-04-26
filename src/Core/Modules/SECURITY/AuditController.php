@@ -243,6 +243,8 @@ class AuditController extends ModuleInstance {
 	 * @return list<string>
 	 *
 	 * @psalm-return array{0: ?string, 1: ?string}
+	 *
+	 * @psalm-param array{"offset":int,"limit":int} $params
 	 */
 	protected function getPrevNextLinks(Collection $data, array $params): array {
 		$prevLink = $nextLink = null;
@@ -250,7 +252,7 @@ class AuditController extends ModuleInstance {
 			$prevParams = $params;
 			$prevParams['offset'] = max(0, $prevParams['offset'] - $prevParams['limit']);
 			$cmdArgs = implode(' ', array_map(
-				static fn ($k, $v) => "{$k}={$v}",
+				static fn (string $k, int|string $v): string => "{$k}={$v}",
 				array_keys($prevParams),
 				array_values($prevParams)
 			));
@@ -260,7 +262,7 @@ class AuditController extends ModuleInstance {
 			$nextParams = $params;
 			$nextParams['offset'] += $nextParams['limit'];
 			$cmdArgs = implode(' ', array_map(
-				static fn ($k, $v) => "{$k}={$v}",
+				static fn (string $k, int|string $v): string => "{$k}={$v}",
 				array_keys($nextParams),
 				array_values($nextParams)
 			));

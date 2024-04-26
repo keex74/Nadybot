@@ -811,7 +811,7 @@ class DiscordGatewayController extends ModuleInstance {
 			$channels = array_values(
 				array_filter(
 					$channels,
-					static function (DiscordChannel $c) use ($channel) {
+					static function (DiscordChannel $c) use ($channel): bool {
 						return $c->id !== $channel->id;
 					}
 				)
@@ -2131,7 +2131,7 @@ class DiscordGatewayController extends ModuleInstance {
 						$this->lastSequenceNumber = null;
 						$this->sessionId = null;
 					}
-					unset($this->client);
+					$this->client = null;
 					$this->logger->notice('Reconnecting to Discord gateway in {delay}s.', [
 						'delay' => $this->reconnectDelay,
 						'exception' => $e,
@@ -2161,7 +2161,7 @@ class DiscordGatewayController extends ModuleInstance {
 				if (isset($handleId)) {
 					EventLoop::cancel($handleId);
 				}
-				unset($this->client);
+				$this->client = null;
 			}
 			$this->logger->notice('Connection to Discord gracefully closed');
 			if (!$this->mustReconnect) {

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class AddRaidLogTickerPaused implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = RaidLog::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->boolean('ticker_paused')->default(false);
 		});
 	}

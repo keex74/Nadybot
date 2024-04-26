@@ -104,6 +104,7 @@ class LadderController extends ModuleInstance {
 			$added = false;
 
 			// add shiny
+			// @phpstan-ignore-next-line
 			$tempValue = $shiny === null ? $value : $value - $shiny->{$prefix . 'Shiny'};
 
 			/** @var LadderRequirements */
@@ -121,6 +122,7 @@ class LadderController extends ModuleInstance {
 			}
 
 			// add bright
+			// @phpstan-ignore-next-line
 			$tempValue = $bright === null ? $value : $value - $bright->{$prefix . 'Bright'};
 			$newBright = $getMax($tempValue);
 			if ($bright === null || $newBright->{$prefix . 'Bright'} > $bright->{$prefix . 'Bright'}) {
@@ -138,6 +140,7 @@ class LadderController extends ModuleInstance {
 			}
 
 			// add faded
+			// @phpstan-ignore-next-line
 			$tempValue = $faded === null ? $value : $value - $faded->{$prefix . 'Faded'};
 			$newFaded = $getMax($tempValue);
 			if ($faded === null || $newFaded->{$prefix . 'Faded'} > $faded->{$prefix . 'Faded'}) {

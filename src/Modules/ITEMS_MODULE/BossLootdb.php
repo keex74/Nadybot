@@ -9,7 +9,7 @@ class BossLootdb extends DBTable {
 	/**
 	 * @param int    $bossid   The internal ID of the boss for this loot
 	 * @param string $itemname Full name of this item
-	 * @param int    $aoid     The internal ID of this item
+	 * @param ?int   $aoid     The internal ID of this item
 	 */
 	public function __construct(
 		public int $bossid,

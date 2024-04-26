@@ -2,7 +2,6 @@
 
 namespace Nadybot\Core\Modules\CONFIG;
 
-use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\CmdCfg;
 use Nadybot\Core\{
@@ -73,7 +72,6 @@ class CommandSearchController extends ModuleInstance {
 	 * @return Collection<int,CommandSearchResult>
 	 *
 	 * @throws SQLException
-	 * @throws Exception
 	 */
 	public function filterResultsByAccessLevel(string $sender, Collection $data): Collection {
 		$charAccessLevel = $this->accessManager->getSingleAccessLevel($sender);

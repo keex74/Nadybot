@@ -9,7 +9,7 @@ final class DiscordBody implements HttpContent {
 	public function __construct(private string $json) {
 	}
 
-	public function getContentType(): ?string {
+	public function getContentType(): string {
 		return 'application/json; charset=utf-8';
 	}
 

@@ -391,7 +391,7 @@ class ImplantController extends ModuleInstance {
 	protected function getBreakpoints(string $type, int $position): array {
 		/** @phpstan-var non-empty-array<int,int> */
 		$breakPoints = array_map(
-			static function (array $item) use ($position) {
+			static function (array $item) use ($position): int {
 				return $item[$position];
 			},
 			$this->implantBreakpoints[$type]

@@ -129,216 +129,12 @@ class DB {
 		$this->type = $config->type;
 		$this->capsule = new Capsule();
 
-		if ($this->type === DB\Type::MySQL) {
-			do {
-				$this->sql = null;
-				try {
-					$this->capsule->addConnection([
-						'driver' => 'mysql',
-						'host' => $config->host,
-						'database' => $config->name,
-						'username' => $config->username,
-						'password' => $config->password,
-						'charset' => 'utf8',
-						'collation' => 'utf8_unicode_ci',
-						'prefix' => '',
-					]);
-					$this->sql = $this->capsule->getConnection()->getPdo();
-				} catch (PDOException $e) {
-					if (!$errorShown) {
-						$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
-						$this->logger->error('Cannot connect to the MySQL db at {db_host}: {error}', [
-							'db_host' => $config->host,
-							'error' => $e->errorInfo[2],
-							'exception' => $e,
-						]);
-						// @phpstan-ignore-next-line
-						$this->logger->notice('Will keep retrying until the db is back up again');
-						$errorShown = true;
-					}
-					sleep(1);
-				}
-			} while (!isset($this->sql));
-			if ($errorShown) {
-				$this->logger->notice('Database connection re-established');
-			}
-			$this->sql->exec("SET sql_mode = 'TRADITIONAL,NO_BACKSLASH_ESCAPES'");
-			$this->sql->exec("SET time_zone = '+00:00'");
-			$this->sqlCreateReplacements[' AUTOINCREMENT'] = ' AUTO_INCREMENT';
-		} elseif ($this->type === DB\Type::SQLite) {
-			if ($config->host === '' || $config->host === 'localhost') {
-				$dbName = "./data/{$config->name}";
-			} else {
-				$dbName = "{$config->host}/{$config->name}";
-			}
-			if (!$this->fs->exists($dbName)) {
-				try {
-					$this->fs->touch($dbName);
-				} catch (FilesystemException $e) {
-					$this->logger->alert(
-						"Unable to create the dababase '{database}': {error}. Check that the directory ".
-						'exists and is writable by the current user.',
-						[
-							'database' => $dbName,
-							'error' => $e->getMessage(),
-							'exception' => $e,
-						]
-					);
-					exit(10);
-				}
-			}
-			$this->capsule->addConnection([
-				'driver' => 'sqlite',
-				'database' => $dbName,
-				'prefix' => '',
-			]);
-			$this->sql = $this->capsule->getConnection()->getPdo();
-			$this->maxPlaceholders = 999;
-
-			/** @var ?string */
-			$sqliteVersion = $this->sql->getAttribute(PDO::ATTR_SERVER_VERSION);
-			if (!isset($sqliteVersion) || version_compare($sqliteVersion, static::SQLITE_MIN_VERSION, '<')) {
-				$this->logger->critical(
-					'You need at least SQLite {minVersion} for Nadybot. '.
-					'Your system is using {version}.',
-					[
-						'minVersion' => static::SQLITE_MIN_VERSION,
-						'version' => $sqliteVersion,
-					]
-				);
-				exit(1);
-			}
-			$this->sqlCreateReplacements[' AUTO_INCREMENT'] = ' AUTOINCREMENT';
-			$this->sqlCreateReplacements[' INT '] = ' INTEGER ';
-			$this->sqlCreateReplacements[' INT,'] = ' INTEGER,';
-			// SQLite 3.37.0 adds strict tables. These do actual type checking
-			$strictGrammar = new class () extends \Illuminate\Database\Schema\Grammars\SQLiteGrammar {
-				// @phpstan-ignore-next-line
-				public function compileCreate(\Illuminate\Database\Schema\Blueprint $blueprint, \Illuminate\Support\Fluent $command) {
-					return parent::compileCreate($blueprint, $command) . ' strict';
-				}
-
-				// @phpstan-ignore-next-line
-				protected function typeChar(\Illuminate\Support\Fluent $column) {
-					return 'text';
-				}
-
-				// @phpstan-ignore-next-line
-				protected function typeString(\Illuminate\Support\Fluent $column) {
-					return 'text';
-				}
-
-				// @phpstan-ignore-next-line
-				protected function typeFloat(\Illuminate\Support\Fluent $column) {
-					return 'real';
-				}
-
-				// @phpstan-ignore-next-line
-				protected function typeDouble(\Illuminate\Support\Fluent $column) {
-					return 'real';
-				}
-
-				// @phpstan-ignore-next-line
-				protected function typeBoolean(\Illuminate\Support\Fluent $column) {
-					return 'integer';
-				}
-
-				// @phpstan-ignore-next-line
-				protected function typeDecimal(\Illuminate\Support\Fluent $column) {
-					return 'text';
-				}
-			};
-			// Querying non-existing columns throws no error when escaped with ",
-			// so we switch to ` instead, which brings back errors
-			$strictQuery = new class () extends \Illuminate\Database\Query\Grammars\SQLiteGrammar {
-				protected function wrapValue($value) {
-					return $value === '*' ? $value : '`' . str_replace('`', '``', $value) . '`';
-				}
-			};
-			if (isset(BotRunner::$arguments['strict'])) {
-				if (version_compare($sqliteVersion, '3.37.0', '>=')) {
-					$this->capsule->getConnection()->setSchemaGrammar($strictGrammar);
-				}
-				$this->capsule->getConnection()->setQueryGrammar($strictQuery);
-			}
-		} elseif ($this->type === DB\Type::PostgreSQL) {
-			do {
-				$this->sql = null;
-				try {
-					$this->capsule->addConnection([
-						'driver' => 'pgsql',
-						'host' => $config->host,
-						'database' => $config->name,
-						'username' => $config->username,
-						'password' => $config->password,
-						'charset' => 'utf8',
-						'collation' => 'utf8_unicode_ci',
-						'prefix' => '',
-					]);
-					$this->sql = $this->capsule->getConnection()->getPdo();
-				} catch (PDOException $e) {
-					if (!$errorShown) {
-						$this->logger->error(
-							'Cannot connect to the PostgreSQL DB at {db_host}: {error}',
-							[
-								'db_host' => $config->host,
-								'error' => trim($e->errorInfo[2] ?? $e->getMessage()),
-								'exception' => $e,
-							]
-						);
-						// @phpstan-ignore-next-line
-						$this->logger->notice('Will keep retrying until the db is back up again');
-						$errorShown = true;
-					}
-					sleep(1);
-				}
-			} while (!isset($this->sql));
-			if ($errorShown) {
-				$this->logger->notice('Database connection re-established');
-			}
-		} elseif ($this->type === DB\Type::MSSQL) {
-			do {
-				$this->sql = null;
-				try {
-					$this->capsule->addConnection([
-						'driver' => 'sqlsrv',
-						'host' => $config->host,
-						'database' => $config->name,
-						'username' => $config->username,
-						'password' => $config->password,
-						'charset' => 'utf8',
-						'collation' => 'utf8_unicode_ci',
-						'prefix' => '',
-					]);
-					$this->sql = $this->capsule->getConnection()->getPdo();
-				} catch (PDOException $e) {
-					if (!$errorShown) {
-						$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
-						$this->logger->error(
-							'Cannot connect to the MSSQL DB at {db_host}: {error}',
-							[
-								'db_host' => $config->host,
-								'error' => trim($e->errorInfo[2]),
-								'exception' => $e,
-							]
-						);
-						// @phpstan-ignore-next-line
-						$this->logger->notice('Will keep retrying until the db is back up again');
-						$errorShown = true;
-					}
-					sleep(1);
-				}
-			} while (!isset($this->sql));
-			if ($errorShown) {
-				$this->logger->notice('Database connection re-established');
-			}
-		} else {
-			throw new Exception(
-				"Invalid database type: '{$config->type->value}'.  Expecting '".
-				DB\Type::MySQL->value . "', '". DB\Type::PostgreSQL->value.
-				"' or '" . DB\Type::SQLite->value . "'."
-			);
-		}
+		$errorShown = match ($this->type) {
+			DB\Type::MySQL => $this->initMySQL($errorShown),
+			DB\Type::SQLite => $this->initSQLite($errorShown),
+			DB\Type::PostgreSQL => $this->initPostgreSQL($errorShown),
+			DB\Type::MSSQL => $this->initMSSQL($errorShown),
+		};
 		$this->capsule->setAsGlobal();
 		$this->capsule->setFetchMode(PDO::FETCH_CLASS);
 		$this->capsule->getConnection()->beforeExecuting(
@@ -887,6 +683,225 @@ class DB {
 				->where('module', $module);
 		return $ownQuery->union($sharedQuery)
 			->orderBy('migration')->asObj(Migration::class);
+	}
+
+	private function initMySQL(bool $errorShown): bool {
+		$config = $this->config->database;
+		do {
+			$this->sql = null;
+			try {
+				$this->capsule->addConnection([
+					'driver' => 'mysql',
+					'host' => $config->host,
+					'database' => $config->name,
+					'username' => $config->username,
+					'password' => $config->password,
+					'charset' => 'utf8',
+					'collation' => 'utf8_unicode_ci',
+					'prefix' => '',
+				]);
+				$this->sql = $this->capsule->getConnection()->getPdo();
+			} catch (PDOException $e) {
+				if (!$errorShown) {
+					$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
+					$this->logger->error('Cannot connect to the MySQL db at {db_host}: {error}', [
+						'db_host' => $config->host,
+						'error' => $e->errorInfo[2],
+						'exception' => $e,
+					]);
+					// @phpstan-ignore-next-line
+					$this->logger->notice('Will keep retrying until the db is back up again');
+					$errorShown = true;
+				}
+				sleep(1);
+			}
+		} while (!isset($this->sql));
+		if ($errorShown) {
+			$this->logger->notice('Database connection re-established');
+		}
+		$this->sql->exec("SET sql_mode = 'TRADITIONAL,NO_BACKSLASH_ESCAPES'");
+		$this->sql->exec("SET time_zone = '+00:00'");
+		$this->sqlCreateReplacements[' AUTOINCREMENT'] = ' AUTO_INCREMENT';
+		return $errorShown;
+	}
+
+	private function initSQLite(bool $errorShown): bool {
+		$config = $this->config->database;
+		if ($config->host === '' || $config->host === 'localhost') {
+			$dbName = "./data/{$config->name}";
+		} else {
+			$dbName = "{$config->host}/{$config->name}";
+		}
+		if (!$this->fs->exists($dbName)) {
+			try {
+				$this->fs->touch($dbName);
+			} catch (FilesystemException $e) {
+				$this->logger->alert(
+					"Unable to create the dababase '{database}': {error}. Check that the directory ".
+					'exists and is writable by the current user.',
+					[
+						'database' => $dbName,
+						'error' => $e->getMessage(),
+						'exception' => $e,
+					]
+				);
+				exit(10);
+			}
+		}
+		$this->capsule->addConnection([
+			'driver' => 'sqlite',
+			'database' => $dbName,
+			'prefix' => '',
+		]);
+		$this->sql = $this->capsule->getConnection()->getPdo();
+		$this->maxPlaceholders = 999;
+
+		/** @var ?string */
+		$sqliteVersion = $this->sql->getAttribute(PDO::ATTR_SERVER_VERSION);
+		if (!isset($sqliteVersion) || version_compare($sqliteVersion, static::SQLITE_MIN_VERSION, '<')) {
+			$this->logger->critical(
+				'You need at least SQLite {minVersion} for Nadybot. '.
+				'Your system is using {version}.',
+				[
+					'minVersion' => static::SQLITE_MIN_VERSION,
+					'version' => $sqliteVersion,
+				]
+			);
+			exit(1);
+		}
+		$this->sqlCreateReplacements[' AUTO_INCREMENT'] = ' AUTOINCREMENT';
+		$this->sqlCreateReplacements[' INT '] = ' INTEGER ';
+		$this->sqlCreateReplacements[' INT,'] = ' INTEGER,';
+		// SQLite 3.37.0 adds strict tables. These do actual type checking
+		$strictGrammar = new class () extends \Illuminate\Database\Schema\Grammars\SQLiteGrammar {
+			// @phpstan-ignore-next-line
+			public function compileCreate(\Illuminate\Database\Schema\Blueprint $blueprint, \Illuminate\Support\Fluent $command) {
+				return parent::compileCreate($blueprint, $command) . ' strict';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeChar(\Illuminate\Support\Fluent $column) {
+				return 'text';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeString(\Illuminate\Support\Fluent $column) {
+				return 'text';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeFloat(\Illuminate\Support\Fluent $column) {
+				return 'real';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeDouble(\Illuminate\Support\Fluent $column) {
+				return 'real';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeBoolean(\Illuminate\Support\Fluent $column) {
+				return 'integer';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeDecimal(\Illuminate\Support\Fluent $column) {
+				return 'text';
+			}
+		};
+		// Querying non-existing columns throws no error when escaped with ",
+		// so we switch to ` instead, which brings back errors
+		$strictQuery = new class () extends \Illuminate\Database\Query\Grammars\SQLiteGrammar {
+			protected function wrapValue($value): string {
+				return $value === '*' ? $value : '`' . str_replace('`', '``', $value) . '`';
+			}
+		};
+		if (isset(BotRunner::$arguments['strict'])) {
+			if (version_compare($sqliteVersion, '3.37.0', '>=')) {
+				$this->capsule->getConnection()->setSchemaGrammar($strictGrammar);
+			}
+			$this->capsule->getConnection()->setQueryGrammar($strictQuery);
+		}
+		return $errorShown;
+	}
+
+	private function initPostgreSQL(bool $errorShown): bool {
+		$config = $this->config->database;
+		do {
+			$this->sql = null;
+			try {
+				$this->capsule->addConnection([
+					'driver' => 'pgsql',
+					'host' => $config->host,
+					'database' => $config->name,
+					'username' => $config->username,
+					'password' => $config->password,
+					'charset' => 'utf8',
+					'collation' => 'utf8_unicode_ci',
+					'prefix' => '',
+				]);
+				$this->sql = $this->capsule->getConnection()->getPdo();
+			} catch (PDOException $e) {
+				if (!$errorShown) {
+					$this->logger->error(
+						'Cannot connect to the PostgreSQL DB at {db_host}: {error}',
+						[
+							'db_host' => $config->host,
+							'error' => trim($e->errorInfo[2] ?? $e->getMessage()),
+							'exception' => $e,
+						]
+					);
+					// @phpstan-ignore-next-line
+					$this->logger->notice('Will keep retrying until the db is back up again');
+					$errorShown = true;
+				}
+				sleep(1);
+			}
+		} while (!isset($this->sql));
+		if ($errorShown) {
+			$this->logger->notice('Database connection re-established');
+		}
+		return $errorShown;
+	}
+
+	private function initMSSQL(bool $errorShown): bool {
+		$config = $this->config->database;
+		do {
+			$this->sql = null;
+			try {
+				$this->capsule->addConnection([
+					'driver' => 'sqlsrv',
+					'host' => $config->host,
+					'database' => $config->name,
+					'username' => $config->username,
+					'password' => $config->password,
+					'charset' => 'utf8',
+					'collation' => 'utf8_unicode_ci',
+					'prefix' => '',
+				]);
+				$this->sql = $this->capsule->getConnection()->getPdo();
+			} catch (PDOException $e) {
+				if (!$errorShown) {
+					$e->errorInfo ??= [$e->getCode(), $e->getCode(), $e->getMessage()];
+					$this->logger->error(
+						'Cannot connect to the MSSQL DB at {db_host}: {error}',
+						[
+							'db_host' => $config->host,
+							'error' => trim($e->errorInfo[2]),
+							'exception' => $e,
+						]
+					);
+					// @phpstan-ignore-next-line
+					$this->logger->notice('Will keep retrying until the db is back up again');
+					$errorShown = true;
+				}
+				sleep(1);
+			}
+		} while (!isset($this->sql));
+		if ($errorShown) {
+			$this->logger->notice('Database connection re-established');
+		}
+		return $errorShown;
 	}
 
 	private function logCaller(string $logLine): void {

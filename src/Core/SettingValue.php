@@ -34,7 +34,7 @@ class SettingValue {
 			}
 			$type = substr($this->type, 0, -2);
 			return array_map(
-				fn ($value) => $this->typeValue($type, $value),
+				fn (string $value): null|bool|int|string => $this->typeValue($type, $value),
 				explode('|', $this->value)
 			);
 		}

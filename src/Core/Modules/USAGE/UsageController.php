@@ -281,7 +281,7 @@ class UsageController extends ModuleInstance {
 			->select('command');
 		$query->selectRaw($query->rawFunc('COUNT', '*', 'count'));
 		$commands = $query->asObj(CommandUsageStats::class)
-			->reduce(static function (stdClass $carry, CommandUsageStats $entry) {
+			->reduce(static function (stdClass $carry, CommandUsageStats $entry): stdClass {
 				$carry->{$entry->command} = $entry->count;
 				return $carry;
 			}, new stdClass());

@@ -109,7 +109,8 @@
 		"psalm/phar": "^5.22.2",
 		"thecodingmachine/phpstan-safe-rule": "^1.2",
 		"struggle-for-php/sfp-phpstan-psr-log": "^0.20.0",
-		"phpstan/phpstan-strict-rules": "^1.5"
+		"phpstan/phpstan-strict-rules": "^1.5",
+		"shipmonk/phpstan-rules": "^2.12"
 	},
 	"scripts": {
 		"post-package-install": [

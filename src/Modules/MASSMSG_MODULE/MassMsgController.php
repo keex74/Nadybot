@@ -295,7 +295,7 @@ class MassMsgController extends ModuleInstance {
 				'<tab>[<u>On</u>] [<off>Off<end>] Receive Mass invites'
 		)
 	]
-	public function massMsgNewsTile(string $sender): ?string {
+	public function massMsgNewsTile(string $sender): string {
 		$msgs = $this->preferences->get($sender, static::PREF_MSGS);
 		$invs = $this->preferences->get($sender, static::PREF_INVITES);
 		$msgOnLink      = Text::makeChatcmd('On', '/tell <myname> massmsgs on');

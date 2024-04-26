@@ -16,7 +16,7 @@ use stdClass;
 class AddUuidColumn implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = 'news';
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->string('uuid', 36)->nullable(true);
 		});
 		$db->table($table)->get()->each(static function (stdClass $data) use ($db, $table): void {
@@ -24,7 +24,7 @@ class AddUuidColumn implements SchemaMigration {
 				'uuid' => Util::createUUID(),
 			]);
 		});
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->string('uuid', 36)->nullable(false)->unique()->index()->change();
 		});
 	}

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateOutcomesTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBOutcome::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->unsignedSmallInteger('playfield_id');
 			$table->unsignedSmallInteger('site_id');
 			$table->unsignedInteger('timestamp');

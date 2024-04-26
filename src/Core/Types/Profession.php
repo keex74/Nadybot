@@ -33,6 +33,7 @@ enum Profession: string {
 	public function short(): string {
 		return match ($this) {
 			self::Adventurer => 'Adv',
+			self::Agent => 'Agent',
 			self::Bureaucrat => 'Crat',
 			self::Doctor => 'Doc',
 			self::Enforcer => 'Enf',
@@ -41,7 +42,11 @@ enum Profession: string {
 			self::MetaPhysicist => 'MP',
 			self::NanoTechnician => 'NT',
 			self::Soldier => 'Sol',
-			default => $this->name,
+			self::Fixer => 'Fixer',
+			self::Trader => 'Trader',
+			self::Keeper => 'Keeper',
+			self::Shade => 'Shade',
+			self::Unknown => 'Unknown',
 		};
 	}
 

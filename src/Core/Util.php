@@ -95,11 +95,13 @@ class Util {
 
 		$matches = [];
 		$pattern = '/([0-9]+)([a-z]+)/';
+
+		/** @var list<list{string,numeric-string,string}> */
 		$matches = Safe::pregMatchOrderedAll($pattern, $budatime);
 
 		try {
 			foreach ($matches as $match) {
-				$unixtime += (int)$match[1] * match ($match[2]) {
+				$quantifier = match ($match[2]) {
 					'y','yr','year','years' => 31_536_000,
 					'mo','month','months' => 2_592_000,
 					'weeks','week','w' => 604_800,
@@ -108,6 +110,7 @@ class Util {
 					'mins','min','m' => 60,
 					'secs','sec','s' => 1,
 				};
+				$unixtime += (int)$match[1] * $quantifier;
 			}
 		} catch (UnhandledMatchError) {
 			return 0;

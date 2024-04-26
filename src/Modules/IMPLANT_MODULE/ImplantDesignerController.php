@@ -263,10 +263,10 @@ class ImplantDesignerController extends ModuleInstance {
 				$msg = "Could not find symbiant <highlight>{$cluster}<end>.";
 			} else {
 				// convert slot to symb
-				unset($slotObj->shiny);
-				unset($slotObj->bright);
-				unset($slotObj->faded);
-				unset($slotObj->ql);
+				unset($slotObj->shiny); // @phpstan-ignore-line
+				unset($slotObj->bright); // @phpstan-ignore-line
+				unset($slotObj->faded); // @phpstan-ignore-line
+				unset($slotObj->ql); // @phpstan-ignore-line
 
 				$symb = new stdClass();
 				$symb->name = $symbRow->Name;
@@ -295,11 +295,11 @@ class ImplantDesignerController extends ModuleInstance {
 				if ($slotObj->{$grade} === null) {
 					$msg = "There is no cluster in <highlight>{$slot->longName()}({$grade})<end>.";
 				} else {
-					unset($slotObj->{$grade});
+					unset($slotObj->{$grade}); // @phpstan-ignore-line
 					$msg = "<highlight>{$slot->longName()}({$grade})<end> has been cleared.";
 				}
 			} else {
-				unset($slotObj->{$grade});
+				unset($slotObj->{$grade}); // @phpstan-ignore-line
 				$slotObj->{$grade} = $cluster;
 				$msg = "<highlight>{$slot->longName()}({$grade})<end> has been set to <highlight>{$cluster}<end>.";
 			}
@@ -330,7 +330,7 @@ class ImplantDesignerController extends ModuleInstance {
 			$design->{$slot->designSlotName()} = new stdClass();
 		}
 		$slotObj = $design->{$slot->designSlotName()};
-		unset($slotObj->symb);
+		unset($slotObj->symb); // @phpstan-ignore-line
 		$slotObj->ql = $ql;
 		$this->saveDesign($context->char->name, '@', $design);
 
@@ -355,7 +355,7 @@ class ImplantDesignerController extends ModuleInstance {
 		$slot = $slot();
 
 		$design = $this->getDesign($context->char->name, '@');
-		unset($design->{$slot});
+		unset($design->{$slot}); // @phpstan-ignore-line
 		$this->saveDesign($context->char->name, '@', $design);
 
 		$msg = "<highlight>{$slot->longName()}<end> has been cleared.";

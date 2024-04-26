@@ -10,9 +10,9 @@ class RequestGuildMembers implements Stringable {
 	use ReducedStringableTrait;
 
 	/**
-	 * @param string[] $user_ids
+	 * @param ?string[] $user_ids
 	 *
-	 * @psalm-param list<string> $user_ids
+	 * @psalm-param ?list<string> $user_ids
 	 */
 	public function __construct(
 		public string $guild_id,

@@ -38,6 +38,7 @@ use Safe\{DateTimeImmutable};
  */
 #[NCA\Instance]
 class PlayerManager extends ModuleInstance {
+	/** @var int */
 	public const CACHE_GRACE_TIME = 87_000;
 	public const PORK_URL = 'http://people.anarchy-online.com';
 	public const BORK_URL = 'https://bork.aobots.org';

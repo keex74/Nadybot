@@ -755,9 +755,7 @@ class LootController extends ModuleInstance {
 					$list .= implode(
 						', ',
 						array_map(
-							static function ($name) {
-								return "<green>{$name}<end>";
-							},
+							static fn (string $name): string => "<green>{$name}<end>",
 							$winners
 						)
 					);

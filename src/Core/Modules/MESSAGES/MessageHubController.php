@@ -250,7 +250,7 @@ class MessageHubController extends ModuleInstance {
 		}
 
 		$senders = collect($this->messageHub->getEmitters());
-		$hasSender = $senders->first(static function (MessageEmitter $e) use ($from) {
+		$hasSender = $senders->first(static function (MessageEmitter $e) use ($from): bool {
 			return fnmatch($e->getChannelName(), $from, \FNM_CASEFOLD)
 				|| fnmatch($from, $e->getChannelName(), \FNM_CASEFOLD);
 		});

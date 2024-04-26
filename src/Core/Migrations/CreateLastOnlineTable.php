@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 class CreateLastOnlineTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = 'last_online';
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('uid')->unique();
 			$table->string('name', 12)->index();
 			$table->unsignedInteger('dt');

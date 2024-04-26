@@ -165,7 +165,7 @@ class CommentController extends ModuleInstance {
 					->where('comment', $comment->comment)
 					->exists();
 				if (!$exists) {
-					unset($comment->id);
+					$comment->id = null;
 					$this->db->insert($comment);
 				}
 			}
@@ -177,7 +177,7 @@ class CommentController extends ModuleInstance {
 			$this->db->rollback();
 			$this->db->registerTableName('comments', $oldCommentTable);
 			$this->db->registerTableName('comment_categories', $oldCategoryTable);
-			throw new Exception('There was an error copying the comments in the database');
+			throw new Exception('There was an error copying the comments in the database', 0, $e);
 		}
 		$this->db->commit();
 		$this->settingManager->save('table_name_comments', $newCommentTable);

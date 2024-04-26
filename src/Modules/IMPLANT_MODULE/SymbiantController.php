@@ -104,6 +104,7 @@ class SymbiantController extends ModuleInstance {
 		// Count which skill is buffed by how many
 		$buffCounter = $symbs->reduce(static function (array $carry, ItemWithBuffs $item): array {
 			foreach ($item->buffs as $buff) {
+				/** @var array<string,int> $carry */
 				$carry[$buff->skill->name] ??= 0;
 				$carry[$buff->skill->name]++;
 			}

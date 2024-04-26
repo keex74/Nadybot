@@ -12,13 +12,13 @@ use Psr\Log\LoggerInterface;
 class CreatePermissionSet implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = CmdPermissionSet::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->string('name', 50)->unique();
 			$table->string('letter', 1)->unique();
 		});
 
 		$table = CmdPermission::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('permission_set', 50)->index();
 			$table->string('cmd', 50)->index();

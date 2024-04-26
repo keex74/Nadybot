@@ -16,7 +16,7 @@ class Guild implements Stringable {
 	 * @param ?string            $splash                        splash hash
 	 * @param ?string            $discovery_splash              discovery splash hash; only present for guilds with the "DISCOVERABLE" feature
 	 * @param ?string            $owner_id                      id of owner
-	 * @param string             $permissions_new               total permissions for the user in the guild (excludes overrides)
+	 * @param ?string            $permissions_new               total permissions for the user in the guild (excludes overrides)
 	 * @param ?string            $region                        voice region id for the guild
 	 * @param ?string            $afk_channel_id                id of afk channel
 	 * @param ?int               $afk_timeout                   afk timeout in seconds
@@ -25,7 +25,7 @@ class Guild implements Stringable {
 	 * @param ?int               $explicit_content_filter       explicit content filter level
 	 * @param ?int               $mfa_level                     required MFA level for the guild
 	 * @param ?string            $application_id                application id of the guild creator if it is bot-created
-	 * @param bool               $widget_enabled                true if the server widget is enabled
+	 * @param ?bool              $widget_enabled                true if the server widget is enabled
 	 * @param ?string            $widget_channel_id             the channel id that the widget will generate an invite to, or null if set to no invite
 	 * @param ?string            $system_channel_id             the id of the channel where guild notices such as welcome messages and boost events are posted
 	 * @param ?int               $system_channel_flags          system channel flags
@@ -44,8 +44,8 @@ class Guild implements Stringable {
 	 * @param ?string            $preferred_locale              the preferred locale of a guild with the "PUBLIC" feature; used in server discovery and notices from Discord; defaults to "en-US"
 	 * @param ?string            $public_updates_channel_id     the id of the channel where admins and moderators of guilds with the "PUBLIC" feature receive notices from Discord
 	 * @param ?int               $max_video_channel_users       the maximum amount of users in a video channel
-	 * @param int                $approximate_member_count      approximate number of members in this guild, returned from the GET /guild/<id> endpoint when with_counts is true
-	 * @param int                $approximate_presence_count    approximate number of non-offline members in this guild, returned from the GET /guild/<id> endpoint when with_counts is true
+	 * @param ?int               $approximate_member_count      approximate number of members in this guild, returned from the GET /guild/<id> endpoint when with_counts is true
+	 * @param ?int               $approximate_presence_count    approximate number of non-offline members in this guild, returned from the GET /guild/<id> endpoint when with_counts is true
 	 * @param bool               $owner                         true if the user is the owner of the guild
 	 * @param int                $permissions                   legacy total permissions for the user in the guild (excludes overrides)
 	 * @param Role[]             $roles                         roles in the guild

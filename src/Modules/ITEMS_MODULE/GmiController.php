@@ -74,11 +74,11 @@ class GmiController extends ModuleInstance {
 		} catch (UserException $e) {
 			throw $e;
 		} catch (JsonException $e) {
-			throw new UserException('The GMI API returned invalid data.');
+			throw new UserException('The GMI API returned invalid data.', 0, $e);
 		} catch (UnableToHydrateObject $e) {
-			throw new UserException('The GMI API returned invalid data.');
-		} catch (Throwable) {
-			throw new UserException('Unknown error occurred contacting the GMI API.');
+			throw new UserException('The GMI API returned invalid data.', 0, $e);
+		} catch (Throwable $e) {
+			throw new UserException('Unknown error occurred contacting the GMI API.', 0, $e);
 		}
 		return $gmiResult;
 	}

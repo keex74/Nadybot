@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class AddWishExpiration implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Wish::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('expires_on')->nullable(true);
 		});
 	}

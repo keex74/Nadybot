@@ -101,8 +101,8 @@ class ChatAssistController extends ModuleInstance {
 		foreach ($profs as $prof) {
 			try {
 				Profession::byName($prof);
-			} catch (Throwable) {
-				throw new Exception("<highlight>{$prof}<end> is not a recognized profession");
+			} catch (Throwable $e) {
+				throw new Exception("<highlight>{$prof}<end> is not a recognized profession", 0, $e);
 			}
 		}
 	}

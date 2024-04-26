@@ -20,32 +20,32 @@ class ApplicationCommand implements Stringable {
 	public const TYPE_MESSAGE = 3;
 
 	/**
-	 * @param ?string                    $id                         Unique ID of command
-	 * @param ?string                    $application_id             ID of the parent application
-	 * @param ?string                    $guild_id                   guild id of the command, if not global
-	 * @param string                     $name                       Name of command, 1-32 characters
-	 * @param ?string                    $version                    Autoincrementing version identifier updated
-	 *                                                               during substantial record changes
-	 * @param string                     $description                Description for CHAT_INPUT commands,
-	 *                                                               1-100 characters.
-	 *                                                               Empty string for USER and MESSAGE commands
-	 * @param int                        $type                       Type of command, defaults to 1
-	 * @param array<string,string>       $name_localizations         Localization dictionary for name field.
-	 *                                                               Values follow the same restrictions as name
-	 * @param array<string,string>       $description_localizations  Localization dictionary for description field.
-	 *                                                               Values follow the same restrictions as description
-	 * @param ApplicationCommandOption[] $options                    Parameters for the command, max of 25
-	 * @param ?string                    $default_member_permissions Set of permissions represented as a bit set
-	 * @param ?bool                      $dm_permission              Indicates whether the command is available in
-	 *                                                               DMs with the app, only for globally-scoped
-	 *                                                               commands. By default, commands are visible.
-	 * @param ?bool                      $default_permission         Not recommended for use as field will soon
-	 *                                                               be deprecated.
-	 *                                                               Indicates whether the command is enabled by
-	 *                                                               default when the app is added to a guild,
-	 *                                                               defaults to true
+	 * @param ?string                     $id                         Unique ID of command
+	 * @param ?string                     $application_id             ID of the parent application
+	 * @param ?string                     $guild_id                   guild id of the command, if not global
+	 * @param string                      $name                       Name of command, 1-32 characters
+	 * @param ?string                     $version                    Autoincrementing version identifier updated
+	 *                                                                during substantial record changes
+	 * @param string                      $description                Description for CHAT_INPUT commands,
+	 *                                                                1-100 characters.
+	 *                                                                Empty string for USER and MESSAGE commands
+	 * @param int                         $type                       Type of command, defaults to 1
+	 * @param ?array<string,string>       $name_localizations         Localization dictionary for name field.
+	 *                                                                Values follow the same restrictions as name
+	 * @param ?array<string,string>       $description_localizations  Localization dictionary for description field.
+	 *                                                                Values follow the same restrictions as description
+	 * @param ?ApplicationCommandOption[] $options                    Parameters for the command, max of 25
+	 * @param ?string                     $default_member_permissions Set of permissions represented as a bit set
+	 * @param ?bool                       $dm_permission              Indicates whether the command is available in
+	 *                                                                DMs with the app, only for globally-scoped
+	 *                                                                commands. By default, commands are visible.
+	 * @param ?bool                       $default_permission         Not recommended for use as field will soon
+	 *                                                                be deprecated.
+	 *                                                                Indicates whether the command is enabled by
+	 *                                                                default when the app is added to a guild,
+	 *                                                                defaults to true
 	 *
-	 * @psalm-param list<ApplicationCommandOption> $options
+	 * @psalm-param ?list<ApplicationCommandOption> $options
 	 */
 	public function __construct(
 		public ?string $id,
