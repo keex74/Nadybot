@@ -4,6 +4,7 @@ namespace Nadybot\Core\CSV;
 
 use function Amp\ByteStream\splitLines;
 
+use Generator;
 use IteratorIterator;
 use Nadybot\Core\{Filesystem, Safe};
 
@@ -17,9 +18,9 @@ class Reader {
 	/**
 	 * Get a line from the CSV as hash
 	 *
-	 * @return array<mixed>|\Generator<array<string,mixed>>
+	 * @return Generator<array<string,mixed>>
 	 */
-	public function items(): iterable {
+	public function items(): Generator {
 		$file = $this->filesystem->openFile($this->file, 'r');
 		if ($file->eof()) {
 			$file->close();

@@ -165,9 +165,9 @@ class Text {
 	/**
 	 * Creates a chatcmd link
 	 *
-	 * @param string $name    The name the link will show
-	 * @param string $content The chatcmd to execute
-	 * @param string $style   (optional) any styling you want applied to the link, e.g. color="..."
+	 * @param string  $name    The name the link will show
+	 * @param string  $content The chatcmd to execute
+	 * @param ?string $style   (optional) any styling you want applied to the link, e.g. color="..."
 	 *
 	 * @return string The link
 	 */
@@ -309,10 +309,10 @@ class Text {
 	/**
 	 * Align a number to $digits number of digits by prefixing it with black zeroes
 	 *
-	 * @param int    $number   The number to align
-	 * @param int    $digits   To how many digits to align
-	 * @param string $colortag (optional) The color/tag to assign, e.g. "highlight"
-	 * @param bool   $grouping (optional) Set to group in chunks of thousands/millions, etc.
+	 * @param ?int    $number   The number to align
+	 * @param int     $digits   To how many digits to align
+	 * @param ?string $colortag (optional) The color/tag to assign, e.g. "highlight"
+	 * @param bool    $grouping (optional) Set to group in chunks of thousands/millions, etc.
 	 *
 	 * @return string The zero-prefixed $number
 	 */

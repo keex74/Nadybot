@@ -117,7 +117,7 @@ class AccountUnfreezer {
 		$creds = [$this->config->main, ...$this->config->worker];
 		$accountCreds = array_filter(
 			$creds,
-			function (Credentials $creds) {
+			function (Credentials $creds): bool {
 				return strtolower($creds->login) === strtolower($this->account->username);
 			}
 		);

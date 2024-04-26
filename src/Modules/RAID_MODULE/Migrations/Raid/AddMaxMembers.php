@@ -12,12 +12,12 @@ use Psr\Log\LoggerInterface;
 class AddMaxMembers implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Raid::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('max_members')->nullable(true);
 		});
 
 		$table = RaidLog::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('max_members')->nullable(true);
 		});
 	}

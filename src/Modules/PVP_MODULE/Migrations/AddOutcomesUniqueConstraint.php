@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class AddOutcomesUniqueConstraint implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBOutcome::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unique(['playfield_id', 'site_id', 'timestamp']);
 		});
 	}

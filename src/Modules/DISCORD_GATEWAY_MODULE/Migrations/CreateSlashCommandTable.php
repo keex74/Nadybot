@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateSlashCommandTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DiscordSlashCommand::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('cmd', 50)->unique();
 		});

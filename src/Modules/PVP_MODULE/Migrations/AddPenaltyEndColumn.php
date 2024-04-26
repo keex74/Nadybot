@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class AddPenaltyEndColumn implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBTowerAttack::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->integer('penalizing_ended')->nullable(true)->index();
 		});
 		$query = $db->table($table);

@@ -541,8 +541,6 @@ class ItemsController extends ModuleInstance {
 	 *
 	 * @param T $ql
 	 *
-	 * @return null|AODBEntry|AODBItem
-	 *
 	 * @psalm-return (T is null ? null|AODBEntry : null|AODBItem)
 	 */
 	public function findByName(string $name, ?int $ql=null): ?AODBEntry {

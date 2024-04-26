@@ -13,10 +13,10 @@ class AddMemberDetails implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Member::getTable();
 		$db->table($table)->whereNull('autoinv')->update(['autoinv' => 0]);
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->integer('autoinv')->nullable(false)->change();
 		});
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('joined')->nullable(true);
 			$table->string('added_by', 12)->nullable(true);
 		});
@@ -44,7 +44,7 @@ class AddMemberDetails implements SchemaMigration {
 				]);
 			}
 		}
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('joined')->nullable(false)->change();
 		});
 	}

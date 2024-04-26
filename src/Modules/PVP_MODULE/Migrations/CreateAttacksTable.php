@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateAttacksTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBTowerAttack::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('playfield_id');
 			$table->unsignedTinyInteger('site_id');
 			$table->unsignedInteger('location_x');

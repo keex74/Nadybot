@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateFilterTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = FilterEntry::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('creator', 12)->nullable(false);
 			$table->string('sender_name', 12)->nullable(true);

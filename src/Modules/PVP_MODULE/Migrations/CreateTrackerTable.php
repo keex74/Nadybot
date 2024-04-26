@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateTrackerTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = TrackerEntry::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('created_by', 12);
 			$table->unsignedInteger('created_on');

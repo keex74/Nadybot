@@ -69,7 +69,7 @@ class DiscordChannelSettingHandler extends SettingHandler {
 		try {
 			$reply = json_decode($body);
 		} catch (JsonException $e) {
-			throw new Exception("Cannot use <highlight>{$newValue}<end> as value.");
+			throw new Exception("Cannot use <highlight>{$newValue}<end> as value.", 0, $e);
 		}
 		if (isset($reply->message)) {
 			throw new Exception("<highlight>{$newValue}<end>: {$reply->message}.");

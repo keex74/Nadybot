@@ -108,7 +108,7 @@ class LeakyBucket {
 		}
 
 		$item = array_shift($this->queue);
-		$this->bucketFill--;
+		$this->bucketFill -= 1;
 		if (count($this->queue) === 0) {
 			$this->emptySince = microtime(true);
 		}

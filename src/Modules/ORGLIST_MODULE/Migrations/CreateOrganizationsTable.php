@@ -13,7 +13,7 @@ class CreateOrganizationsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Organization::getTable();
 		$db->schema()->dropIfExists($table);
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('id')->primary();
 			$table->string('name', 40)->index();
 			$table->string('faction', 10);

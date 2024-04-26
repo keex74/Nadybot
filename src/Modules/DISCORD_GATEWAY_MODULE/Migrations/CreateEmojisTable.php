@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateEmojisTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBEmoji::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('name', 20)->index();
 			$table->unsignedInteger('registered');

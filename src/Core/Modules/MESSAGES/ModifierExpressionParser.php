@@ -6,7 +6,7 @@ use function Safe\json_decode;
 use Nadybot\Core\DBSchema\{RouteModifier, RouteModifierArgument};
 use ParserGenerator\Parser;
 
-use ParserGenerator\SyntaxTreeNode\Branch;
+use ParserGenerator\SyntaxTreeNode\{Branch, Root};
 
 class ModifierExpressionParser {
 	private ?Parser $parser=null;
@@ -46,9 +46,13 @@ class ModifierExpressionParser {
 	 */
 	public function parse(string $input): array {
 		$parser = $this->getParser();
+
+		/** @var Root|false */
 		$expr = $parser->parse($input);
 		if ($expr === false) {
 			$error = $parser->getError();
+
+			/** @var array{"line":int,"char":int} */
 			$posData = $parser::getLineAndCharacterFromOffset($input, $error['index']);
 
 			$expected = implode('<end> or <highlight>', $parser->generalizeErrors($error['expected']));
@@ -90,6 +94,7 @@ class ModifierExpressionParser {
 
 	protected function parseArgument(Branch $argument): RouteModifierArgument {
 		$name = $argument->findFirst('key')->toString();
+
 		$value = $argument->findFirst('value');
 		if ($value->getDetailType() === 'string') {
 			$value = json_decode($value->toString());

@@ -12,7 +12,7 @@ class CreateSpawntimeTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = 'spawntime';
 		$db->schema()->dropIfExists($table);
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->string('mob', 50)->primary();
 			$table->string('alias', 50)->nullable(true)->index();
 			$table->string('placeholder', 50)->nullable(true)->index();

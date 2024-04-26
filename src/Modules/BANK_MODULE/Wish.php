@@ -29,8 +29,9 @@ class Wish extends DBTable {
 
 	/** Get how many items are still needed */
 	public function getRemaining(): int {
-		$numFulfilled = $this->fulfilments->sum(static fn (WishFulfilment $f) => $f->amount);
-		return (int)max(0, $this->amount - $numFulfilled);
+		/** @var int */
+		$numFulfilled = $this->fulfilments->sum(static fn (WishFulfilment $f): int => $f->amount);
+		return max(0, $this->amount - $numFulfilled);
 	}
 
 	public function isExpired(): bool {

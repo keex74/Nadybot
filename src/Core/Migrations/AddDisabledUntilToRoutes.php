@@ -15,7 +15,7 @@ class AddDisabledUntilToRoutes implements SchemaMigration {
 		if ($db->schema()->hasColumn($table, 'disabled_until')) {
 			return;
 		}
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedInteger('disabled_until')->nullable(true);
 		});
 	}

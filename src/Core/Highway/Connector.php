@@ -16,7 +16,7 @@ class Connector {
 	public function connect(
 		WebsocketHandshake $handshake,
 		?Cancellation $cancellation=null
-	): ?Connection {
+	): Connection {
 		$wsConnection = $this->wsConnector->connect($handshake, $cancellation);
 		$connection = new Connection($wsConnection);
 		Registry::injectDependencies($connection);

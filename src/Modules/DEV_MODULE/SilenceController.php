@@ -59,7 +59,7 @@ class SilenceController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		$blob = $data->reduce(static function (string $blob, SilenceCmd $row) {
+		$blob = $data->reduce(static function (string $blob, SilenceCmd $row): string {
 			$unsilenceLink = Text::makeChatcmd('Unsilence', "/tell <myname> unsilence {$row->cmd} {$row->channel}");
 			return "{$blob}<highlight>{$row->cmd}<end> ({$row->channel}) - {$unsilenceLink}\n";
 		}, '');

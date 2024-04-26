@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class AddCtQlToAttacks implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBTowerAttack::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->unsignedSmallInteger('ql')->nullable(true);
 		});
 	}

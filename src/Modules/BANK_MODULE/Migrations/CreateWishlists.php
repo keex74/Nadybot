@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateWishlists implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Wish::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->unsignedInteger('created_on');
 			$table->string('created_by', 12)->index();
@@ -23,7 +23,7 @@ class CreateWishlists implements SchemaMigration {
 		});
 
 		$table = WishFulfilment::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->unsignedInteger('wish_id')->index();
 			$table->unsignedInteger('amount')->default(1);

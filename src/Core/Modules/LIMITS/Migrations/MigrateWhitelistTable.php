@@ -18,7 +18,7 @@ class MigrateWhitelistTable implements SchemaMigration {
 			->select('name', 'added_by', 'added_dt')
 			->orderBy('added_dt')
 			->get()
-			->each(static function (stdClass $data) use ($db) {
+			->each(static function (stdClass $data) use ($db): void {
 				$db->table(RateIgnoreList::getTable())
 					->insert([
 						'name' => (string)$data->name,

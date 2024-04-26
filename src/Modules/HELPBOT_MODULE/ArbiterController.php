@@ -39,6 +39,8 @@ class ArbiterController extends ModuleInstance {
 	public const DIO = 'dio';
 	public const AI = 'ai';
 	public const BS = 'bs';
+
+	/** @var int */
 	public const CYCLE_LENGTH = 3_628_800;
 
 	#[NCA\Inject]
@@ -298,7 +300,7 @@ class ArbiterController extends ModuleInstance {
 				'<tab>DIO week starts in <highlight>3 days 17 hrs 4 mins<end>.'
 		)
 	]
-	public function arbiterNewsForceTile(string $sender): ?string {
+	public function arbiterNewsForceTile(string $sender): string {
 		/** @var list<ArbiterEvent> */
 		$upcomingEvents = [
 			$this->getNextBS(),

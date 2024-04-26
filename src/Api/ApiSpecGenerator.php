@@ -94,7 +94,7 @@ class ApiSpecGenerator {
 						$apiAttr->path
 					);
 				} catch (\Throwable $e) {
-					throw new \Exception('Error when trying to get params for ' . $apiAttr->path . ': ' . $e->getMessage());
+					throw new \Exception('Error when trying to get params for ' . $apiAttr->path . ': ' . $e->getMessage(), 0, $e);
 				}
 				$paths[$path] ??= [];
 				$paths[$path] []= $method;

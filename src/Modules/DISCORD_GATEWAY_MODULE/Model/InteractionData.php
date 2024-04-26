@@ -53,7 +53,7 @@ class InteractionData implements Stringable {
 	) {
 	}
 
-	public function getOptionString(): ?string {
+	public function getOptionString(): string {
 		$parts = [$this->name];
 		if (isset($this->options)) {
 			foreach ($this->options as $option) {

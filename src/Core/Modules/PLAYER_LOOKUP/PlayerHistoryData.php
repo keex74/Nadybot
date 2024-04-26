@@ -17,7 +17,7 @@ class PlayerHistoryData {
 		public ?string $guild_name,
 		#[CastToType('int')] #[CastToDateTimeImmutable] public DateTimeImmutable $last_changed,
 		public Faction $faction,
-		public string $deleted='0',
+		#[CastToType('bool')] public bool $deleted=false,
 	) {
 	}
 }

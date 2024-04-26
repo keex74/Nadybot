@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class IncreaseIntOptionsSize implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = Setting::getTable();
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->text('intoptions')->nullable(true)->change();
 		});
 	}

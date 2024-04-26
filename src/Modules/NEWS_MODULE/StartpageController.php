@@ -151,7 +151,7 @@ class StartpageController extends ModuleInstance {
 				'<tab>Current time: <highlight>Mon, 18-Oct-2021 14:15:16<end> (RK year 29495)'
 		)
 	]
-	public function timeTile(string $sender): ?string {
+	public function timeTile(string $sender): string {
 		$seeMoreLink = Text::makeChatcmd('see more', '/tell <myname> time');
 		$time = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 		$aoTime = $time->add(new DateInterval('P27474Y'));

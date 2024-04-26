@@ -307,13 +307,13 @@ class CommandManager implements MessageEmitter {
 	/**
 	 * update the active/inactive status of a command
 	 *
-	 * @param string      $permissionSet The name of the permission set for which this
-	 *                                   command's status should be changed:
-	 *                                   "msg", "priv", "guild" or any other custom one
-	 * @param string      $cmd           The name of the command
-	 * @param string      $module        The name of the module of the command
-	 * @param int         $status        The new status: 0=off 1=on
-	 * @param string|null $admin         The access level for which to update the status
+	 * @param ?string $permissionSet The name of the permission set for which this
+	 *                               command's status should be changed:
+	 *                               "msg", "priv", "guild" or any other custom one
+	 * @param ?string $cmd           The name of the command
+	 * @param ?string $module        The name of the module of the command
+	 * @param int     $status        The new status: 0=off 1=on
+	 * @param ?string $admin         The access level for which to update the status
 	 */
 	public function updateStatus(?string $permissionSet, ?string $cmd, ?string $module, int $status, ?string $admin): int {
 		$query = $this->db->table(CmdCfg::getTable())
@@ -805,8 +805,8 @@ class CommandManager implements MessageEmitter {
 			// methods will return false to indicate a syntax error, so when a false is returned,
 			// we set $syntaxError = true, otherwise we set it to false
 			try {
-				$methodResult = $instance->{$method}($context, ...$args);
-			} catch (UserException $e) {
+				$methodResult = $refMethod->invoke($instance, $context, ...$args);
+			} catch (UserException $e) { // @phpstan-ignore-line
 				$context->reply($e->getMessage());
 				$successfulHandler = $handler;
 				break;
@@ -1278,7 +1278,6 @@ class CommandManager implements MessageEmitter {
 	 * Create a new set of permissions based on the default permissions of the bot
 	 *
 	 * @throws InvalidArgumentException when one of the parameters is invalid
-	 * @throws Exception                on unknown errors, like SQL
 	 */
 	public function createPermissionSet(string $name, string $letter): void {
 		$allCmds = $this->getAll(true);
@@ -1300,7 +1299,6 @@ class CommandManager implements MessageEmitter {
 	 * Change a permission set
 	 *
 	 * @throws InvalidArgumentException when one of the parameters is invalid
-	 * @throws Exception                on unknown errors, like SQL
 	 */
 	public function changePermissionSet(string $name, CmdPermissionSet $data): void {
 		$old = $this->getPermissionSet($name);
@@ -1355,7 +1353,6 @@ class CommandManager implements MessageEmitter {
 	 * Create a new set of permissions based another set
 	 *
 	 * @throws InvalidArgumentException when one of the parameters is invalid
-	 * @throws Exception                on unknown errors, like SQL
 	 */
 	public function clonePermissionSet(string $oldName, string $name, string $letter): void {
 		$perms = $this->db->table(CmdPermission::getTable())
@@ -1368,7 +1365,6 @@ class CommandManager implements MessageEmitter {
 	 * Delete a permission set
 	 *
 	 * @throws InvalidArgumentException when one of the parameters is invalid
-	 * @throws Exception                on unknown errors, like SQL
 	 */
 	public function deletePermissionSet(string $name): void {
 		$name = strtolower($name);
@@ -1404,7 +1400,6 @@ class CommandManager implements MessageEmitter {
 	 * Delete a permission set mapping
 	 *
 	 * @throws InvalidArgumentException when one of the parameters is invalid
-	 * @throws Exception                when trying to delete the last permission set mapping
 	 */
 	public function deletePermissionSetMapping(string $source): bool {
 		$numMappings = $this->getPermSetMappings()->count();
@@ -1605,6 +1600,8 @@ class CommandManager implements MessageEmitter {
 		 * @param list<ReflectionMethod> $refMethods
 		 *
 		 * @var Collection<string,list<ReflectionMethod>> $grouped
+		 *
+		 * @phpstan-ignore-next-line
 		 */
 		$grouped = $sList->groupBy(static function (array $refMethods): string {
 			if (!count($refMethods)) {
@@ -1708,7 +1705,7 @@ class CommandManager implements MessageEmitter {
 		}
 		$inserts = [];
 		foreach ($perms as $perm) {
-			unset($perm->id);
+			$perm->id = null;
 			$perm->permission_set = $name;
 			$inserts []= (array)$perm;
 		}

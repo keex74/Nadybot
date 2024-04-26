@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 class AddTimeIndex implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = 'name_history';
-		$db->schema()->table($table, static function (Blueprint $table) {
+		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->index('dt');
 		});
 	}

@@ -18,7 +18,7 @@ class PPlayfield extends Base {
 		return $this->value;
 	}
 
-	public static function getExample(): ?string {
+	public static function getExample(): string {
 		return '&lt;playfield&gt;';
 	}
 }

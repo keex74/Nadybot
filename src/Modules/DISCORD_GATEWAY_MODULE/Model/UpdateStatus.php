@@ -17,11 +17,11 @@ class UpdateStatus implements Stringable {
 	public const STATUS_OFFLINE = 'offline';
 
 	/**
-	 * @param ?int       $since      unix time (in milliseconds) of when the client went idle,
-	 *                               or null if the client is not idle
-	 * @param Activity[] $activities list of activities the client is playing
+	 * @param ?int        $since      unix time (in milliseconds) of when the client went idle,
+	 *                                or null if the client is not idle
+	 * @param ?Activity[] $activities list of activities the client is playing
 	 *
-	 * @psalm-param list<Activity> $activities
+	 * @psalm-param ?list<Activity> $activities
 	 */
 	public function __construct(
 		public ?int $since=null,

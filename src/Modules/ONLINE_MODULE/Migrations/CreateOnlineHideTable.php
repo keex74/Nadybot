@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateOnlineHideTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = OnlineHide::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('mask', 20)->unique();
 			$table->string('created_by', 12);

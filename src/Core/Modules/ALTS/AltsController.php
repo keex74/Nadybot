@@ -142,13 +142,13 @@ class AltsController extends ModuleInstance {
 	public function addNonValidatedAsBuddies(ConnectEvent $event): void {
 		$myName = $this->config->main->character;
 		$this->db->table(Alt::getTable())->where('validated_by_alt', false)->where('added_via', $myName)
-			->asObj(Alt::class)->each(function (Alt $alt) {
+			->asObj(Alt::class)->each(function (Alt $alt): void {
 				$this->buddylistManager->addName($alt->alt, static::ALT_VALIDATE);
 			});
 		$this->db->table(Alt::getTable())->where('validated_by_main', false)->where('added_via', $myName)
 			->select('main')->distinct()
 			->pluckStrings('main')
-			->each(function (string $main) {
+			->each(function (string $main): void {
 				$this->buddylistManager->addName($main, static::MAIN_VALIDATE);
 			});
 	}
@@ -508,9 +508,9 @@ class AltsController extends ModuleInstance {
 		$ai = new AltInfo(main: $player);
 		Registry::injectDependencies($ai);
 		$query = $this->db->table(Alt::getTable())
-			->where(static function (QueryBuilder $query) use ($includePending, $player) {
+			->where(static function (QueryBuilder $query) use ($includePending, $player): void {
 				$query->where('main', $player)
-					->orWhere('main', static function (QueryBuilder $subQuery) use ($player, $includePending) {
+					->orWhere('main', static function (QueryBuilder $subQuery) use ($player, $includePending): void {
 						$subQuery->from('alts')->where('alt', $player)->select('main');
 						if (!$includePending) {
 							$subQuery->where('validated_by_main', true)
@@ -523,7 +523,7 @@ class AltsController extends ModuleInstance {
 		}
 		$query->asObj(Alt::class)
 			->filter(static fn (Alt $alt): bool => $alt->alt !== $alt->main)
-			->each(function (Alt $row) use ($ai) {
+			->each(function (Alt $row) use ($ai): void {
 				$ai->main = $row->main;
 				$ai->alts[$row->alt] = new AltValidationStatus(
 					validated_by_alt: $row->validated_by_alt??false,
@@ -609,7 +609,7 @@ class AltsController extends ModuleInstance {
 				'<tab>You have <u>15 alts</u>.'
 		)
 	]
-	public function altsTile(string $sender): ?string {
+	public function altsTile(string $sender): string {
 		$altInfo = $this->getAltInfo($sender, true);
 		$altsCmdText = 'no alts';
 		if (count($altInfo->getAllAlts()) === 2) {

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateDiscordInviteTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = DBDiscordInvite::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('token', 10)->unique();
 			$table->string('character', 12);

@@ -21,6 +21,8 @@ use Nadybot\Core\{
 	Modules\MESSAGES\MessageHubController,
 };
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use Revolt\EventLoop;
 
@@ -243,7 +245,7 @@ class EventManager {
 			$this->dynamicEvents[$type] = array_values(
 				array_filter(
 					$this->dynamicEvents[$type],
-					static function ($c) use ($callback): bool {
+					static function (callable $c) use ($callback): bool {
 						return $c !== $callback;
 					}
 				)
@@ -281,7 +283,7 @@ class EventManager {
 			$delay,
 			static function () use ($entry): void {
 				EventLoop::enable($entry->handle);
-				unset($entry->moveHandle);
+				$entry->moveHandle = null;
 			}
 		);
 		return true;
@@ -569,14 +571,18 @@ class EventManager {
 					'event' => $logObj,
 					'class' => $name,
 				]);
-			} elseif (!method_exists($instance, $method)) {
-				$this->logger->error('Could not find method {method} in class {class} for {event}', [
-					'method' => $method,
-					'event' => $logObj,
-					'class' => $name,
-				]);
 			} else {
-				$instance->{$method}($eventObj, ...$args);
+				$refClass = new ReflectionClass($instance);
+				try {
+					$refMethod = $refClass->getMethod($method);
+					$refMethod->invoke($instance, $eventObj, ...$args);
+				} catch (ReflectionException) {
+					$this->logger->error('Could not find method {method} in class {class} for {event}', [
+						'method' => $method,
+						'event' => $logObj,
+						'class' => $name,
+					]);
+				}
 			}
 		} catch (StopExecutionException $e) {
 			throw $e;

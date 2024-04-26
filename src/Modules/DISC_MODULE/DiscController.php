@@ -143,9 +143,7 @@ class DiscController extends ModuleInstance {
 		);
 		if (is_array($msg)) {
 			return array_map(
-				static function ($blob) {
-					return "Found {$blob}.";
-				},
+				static fn (string $blob): string => "Found {$blob}.",
 				$msg
 			);
 		}

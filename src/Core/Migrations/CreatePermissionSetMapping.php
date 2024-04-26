@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreatePermissionSetMapping implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = CmdPermSetMapping::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->string('permission_set', 50);
 			$table->string('source', 100)->unique();

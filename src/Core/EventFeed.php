@@ -203,9 +203,6 @@ class EventFeed {
 			]);
 			try {
 				$connection = $client->connect($handshake);
-				if (!isset($connection)) {
-					return null;
-				}
 				$this->logger->info('[{uri}] Connected to websocket', [
 					'uri' => self::URI,
 				]);

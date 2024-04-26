@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class CreateLootHistoryTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$table = LootHistory::getTable();
-		$db->schema()->create($table, static function (Blueprint $table) {
+		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();
 			$table->unsignedInteger('dt')->index();
 			$table->unsignedInteger('roll')->index();

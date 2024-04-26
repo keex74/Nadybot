@@ -510,7 +510,11 @@ class Nadybot {
 		return $this->shuttingDown;
 	}
 
-	/** @return never */
+	/**
+	 * @return never
+	 *
+	 * @phpstan-ignore-next-line
+	 */
 	public function restart(): void {
 		$this->aoClient->disconnect();
 		$this->logger->notice('The Bot is restarting.');
@@ -518,7 +522,11 @@ class Nadybot {
 		exit(-1);
 	}
 
-	/** @return never */
+	/**
+	 * @return never
+	 *
+	 * @phpstan-ignore-next-line
+	 */
 	public function shutdown(): void {
 		$this->aoClient->disconnect();
 		$this->logger->notice('The Bot is shutting down.');
@@ -531,7 +539,7 @@ class Nadybot {
 	 *
 	 * @param string|iterable<string> $message      One or more messages to send
 	 * @param bool                    $disableRelay Set to true to disable relaying the message into the org/guild channel
-	 * @param string                  $group        Name of the private group to send message into or null for the bot's own
+	 * @param ?string                 $group        Name of the private group to send message into or null for the bot's own
 	 */
 	public function sendPrivate(string|iterable $message, bool $disableRelay=false, ?string $group=null, bool $addDefaultColor=true): void {
 		// for when $text->makeBlob generates several pages
@@ -589,7 +597,7 @@ class Nadybot {
 	 *
 	 * @param string|iterable<string> $message      One or more messages to send
 	 * @param bool                    $disableRelay Set to true to disable relaying the message into the bot's private channel
-	 * @param int                     $priority     The priority of the message or medium if unset
+	 * @param ?int                    $priority     The priority of the message or medium if unset
 	 */
 	public function sendGuild(string|iterable $message, bool $disableRelay=false, ?int $priority=null, bool $addDefaultColor=true): void {
 		if (!isset($this->orgGroup) || !$this->settingManager->getBool('guild_channel_status')) {
@@ -665,7 +673,7 @@ class Nadybot {
 	 *
 	 * @param string|iterable<string> $message       One or more messages to send
 	 * @param string                  $character     Name of the person to send the tell to
-	 * @param int                     $priority      The priority of the message or medium if unset
+	 * @param ?int                    $priority      The priority of the message or medium if unset
 	 * @param bool                    $formatMessage If set, replace tags with their corresponding colors
 	 */
 	public function sendTell(string|iterable $message, string $character, ?int $priority=null, bool $formatMessage=true): void {
@@ -765,7 +773,7 @@ class Nadybot {
 	 *
 	 * @param string|iterable<string> $message  One or more messages to send
 	 * @param string                  $channel  Name of the channel to send the message to
-	 * @param int                     $priority The priority of the message or medium if unset
+	 * @param ?int                    $priority The priority of the message or medium if unset
 	 */
 	public function sendPublic(string|iterable $message, string $channel, ?int $priority=null): void {
 		$group = $this->getGroupByName($channel);
