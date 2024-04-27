@@ -86,16 +86,22 @@ class ModifierExpressionParser {
 		foreach ($modifier->findAll('argument') as $argument) {
 			$modifierArguments []= $this->parseArgument($argument);
 		}
+		$modifierName = $modifier->findFirst('modifierName')?->toString();
+		if (!isset($modifierName)) {
+			throw new \Exception('Invalid expression structure');
+		}
 		return new RouteModifier(
-			modifier: $modifier->findFirst('modifierName')->toString(),
+			modifier: $modifierName,
 			arguments: $modifierArguments,
 		);
 	}
 
 	protected function parseArgument(Branch $argument): RouteModifierArgument {
-		$name = $argument->findFirst('key')->toString();
-
+		$name = $argument->findFirst('key')?->toString();
 		$value = $argument->findFirst('value');
+		if (!isset($name) || !isset($value)) {
+			throw new \Exception('Invalid modifier expression');
+		}
 		if ($value->getDetailType() === 'string') {
 			$value = json_decode($value->toString());
 		} else {

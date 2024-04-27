@@ -1089,7 +1089,7 @@ class RelayController extends ModuleInstance {
 		}
 
 		try {
-			/** @psalm-suppress InternalMethod,PossiblyInvalidArgument */
+			/** @psalm-suppress PossiblyInvalidArgument */
 			$events = $this->mapper->hydrateObjects(RelayEvent::class, $body)->toArray();
 		} catch (Throwable $e) {
 			return new Response(status: HttpStatus::UNPROCESSABLE_ENTITY);

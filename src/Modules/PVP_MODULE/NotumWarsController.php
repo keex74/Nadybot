@@ -424,7 +424,6 @@ class NotumWarsController extends ModuleInstance {
 			$json = json_decode($body, true);
 			$mapper = new ObjectMapperUsingReflection();
 
-			/** @psalm-suppress InternalMethod */
 			$sites = $mapper->hydrateObjects(FeedMessage\SiteUpdate::class, $json)->getIterator();
 			foreach ($sites as $site) {
 				$this->updateSiteInfo($site);
@@ -488,7 +487,6 @@ class NotumWarsController extends ModuleInstance {
 
 			$attacks = $mapper->hydrateObjects(FeedMessage\TowerAttack::class, $json);
 
-			/** @psalm-suppress InternalMethod */
 			foreach ($attacks as $attack) {
 				$breedRequired = !isset($attack->attacker->breed)
 					&& $this->towerAttackExtraInfo;
@@ -551,7 +549,6 @@ class NotumWarsController extends ModuleInstance {
 
 			$outcomes = $mapper->hydrateObjects(FeedMessage\TowerOutcome::class, $json);
 
-			/** @psalm-suppress InternalMethod */
 			foreach ($outcomes as $outcome) {
 				$this->db->insert(DBOutcome::fromTowerOutcome($outcome));
 				$this->outcomes []= $outcome;

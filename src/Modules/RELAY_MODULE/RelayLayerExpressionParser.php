@@ -3,6 +3,8 @@
 namespace Nadybot\Modules\RELAY_MODULE;
 
 use function Safe\json_decode;
+
+use Exception;
 use ParserGenerator\Parser;
 
 use ParserGenerator\SyntaxTreeNode\Branch;
@@ -81,16 +83,23 @@ class RelayLayerExpressionParser {
 		foreach ($layer->findAll('argument') as $argument) {
 			$arguments []= $this->parseArgument($argument);
 		}
+		$layerName = $layer->findFirst('layerName')?->toString();
+		if (!isset($layerName)) {
+			throw new Exception('Invalid Relay Layer structure');
+		}
 		$result = new RelayLayer(
-			layer: $layer->findFirst('layerName')->toString(),
+			layer: $layerName,
 			arguments: $arguments,
 		);
 		return $result;
 	}
 
 	protected function parseArgument(Branch $argument): RelayLayerArgument {
-		$name = $argument->findFirst('key')->toString();
+		$name = $argument->findFirst('key')?->toString();
 		$value = $argument->findFirst('value');
+		if (!isset($name) || !isset($value)) {
+			throw new Exception('Invalid Relay Layer structure');
+		}
 		if ($value->getDetailType() === 'string') {
 			$value = json_decode($value->toString());
 		} else {

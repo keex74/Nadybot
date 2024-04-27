@@ -95,7 +95,6 @@ class MobController extends ModuleInstance {
 			foreach ($json as $type => $entries) {
 				$this->mobs[$type] = [];
 
-				/** @psalm-suppress InternalMethod */
 				$mobs = $mapper->hydrateObjects(Mob::class, $entries)->getIterator();
 				foreach ($mobs as $mob) {
 					$this->mobs[$type][$mob->key] = $mob;
@@ -134,7 +133,6 @@ class MobController extends ModuleInstance {
 			$mapper = new ObjectMapperUsingReflection();
 
 			foreach ($json as $entry) {
-				/** @psalm-suppress InternalMethod */
 				$mob = $mapper->hydrateObjects(Mob::class, $entry)->getIterator();
 
 				/** @var Mob $mob */

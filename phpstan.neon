@@ -10,6 +10,7 @@ parameters:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
     - '#Static property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
   stubFiles:
+    - Stubs/EventSauce.ObjectHydrator.IterableList.php
     - Stubs/Illuminate.Contracts.Support.Arrayable.stub
     - Stubs/Illuminate.Contracts.Support.Jsonable.stub
     - Stubs/Illuminate.Contracts.Support.CanBeEscapedWhenCastToString.stub

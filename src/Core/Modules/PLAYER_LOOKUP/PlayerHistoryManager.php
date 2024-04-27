@@ -96,7 +96,6 @@ class PlayerHistoryManager extends ModuleInstance {
 			return null;
 		}
 
-		/** @psalm-suppress InternalMethod */
 		$entries = $mapper->hydrateObjects(PlayerHistoryData::class, $history)->toArray();
 		return new PlayerHistory(name: $name, data: $entries);
 	}

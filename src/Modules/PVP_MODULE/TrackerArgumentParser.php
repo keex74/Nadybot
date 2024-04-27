@@ -3,6 +3,8 @@
 namespace Nadybot\Modules\PVP_MODULE;
 
 use function Safe\json_decode;
+
+use Exception;
 use ParserGenerator\Parser;
 
 use ParserGenerator\SyntaxTreeNode\{Branch, Root};
@@ -83,13 +85,20 @@ class TrackerArgumentParser {
 
 	protected function parseArgument(Branch $argument): TrackerArgument {
 		$value = $argument->findFirst('value');
+		if (!isset($value)) {
+			throw new Exception('Invalid tracker argument structure');
+		}
 		if ($value->getDetailType() === 'string') {
 			$rValue = json_decode($value->toString());
 		} else {
 			$rValue = $value->toString();
 		}
+		$argumentName = $argument->findFirst('key')?->toString();
+		if (!isset($argumentName)) {
+			throw new Exception('Invalid tracker argument structure');
+		}
 		return new TrackerArgument(
-			name: $argument->findFirst('key')->toString(),
+			name: $argumentName,
 			value: $rValue,
 		);
 	}

@@ -20,8 +20,19 @@
         </ignoreFiles>
     </projectFiles>
     <stubs>
-      <file name="Stubs/Collection.php" />
-      <file name="Stubs/IterableList.php" />
+      <file name="Stubs/Illuminate.Contracts.Support.Arrayable.stub" preloadClasses="true" />
+      <file name="Stubs/Illuminate.Contracts.Support.CanBeEscapedWhenCastToString.stub" preloadClasses="true" />
+      <file name="Stubs/Illuminate.Contracts.Support.Jsonable.stub" preloadClasses="true" />
+      <file name="Stubs/Illuminate.Support.Arrayable.stub" preloadClasses="true" />
+      <file name="Stubs/Illuminate.Support.Collection.php" />
+      <file name="Stubs/Illuminate.Support.Enumerable.stub" preloadClasses="true" />
+      <file name="Stubs/Illuminate.Support.ItemNotFoundException.stub" preloadClasses="true" />
+      <file name="Stubs/EventSauce.ObjectHydrator.IterableList.php" preloadClasses="true" />
+      <file name="Stubs/ParserGenerator.Parser.php" />
+      <file name="Stubs/ParserGenerator.SyntaxTreeNode.Base.php" />
+      <file name="Stubs/ParserGenerator.SyntaxTreeNode.Branch.php" />
+      <file name="Stubs/ParserGenerator.SyntaxTreeNode.Leaf.php" />
+      <file name="Stubs/ParserGenerator.SyntaxTreeNode.Root.php" />
     </stubs>
     <issueHandlers>
         <InvalidClassConstantType errorLevel="suppress" />

@@ -83,6 +83,10 @@ class Branch extends \ParserGenerator\SyntaxTreeNode\Base {
 	public function getSubnode($index) {
 	}
 
+	/** @return string */
+	public function getDetailType() {
+	}
+
 	/**
 	 * @param string $type
 	 *

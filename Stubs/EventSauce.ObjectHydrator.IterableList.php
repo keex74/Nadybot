@@ -3,13 +3,19 @@
 namespace EventSauce\ObjectHydrator;
 
 use IteratorAggregate;
+use Traversable;
 
 /**
  * @template T
+ *
+ * @implements IteratorAggregate<T>
  */
 class IterableList implements IteratorAggregate {
 	/** @return list<T> */
 	public function toArray(): array {
-		return [];
+	}
+
+	/** @return Traversable<T> */
+	public function getIterator(): Traversable {
 	}
 }
