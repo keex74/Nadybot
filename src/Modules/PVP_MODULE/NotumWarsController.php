@@ -1234,7 +1234,7 @@ class NotumWarsController extends ModuleInstance {
 			$context->reply($msg);
 			return;
 		}
-		if ($player->level < 15) {
+		if (!isset($player->level) || $player->level < 15) {
 			$msg = 'Your level is too low to have any towers.';
 		} elseif ($player->level < 75) {
 			$msg = "Your level ({$player->level}) allows you to have <highlight>1<end> tower.";
@@ -1812,7 +1812,7 @@ class NotumWarsController extends ModuleInstance {
 		/** @var ?FeedMessage\TowerAttack */
 		$lastAttack = null;
 		foreach ($this->attacks as $attack) {
-			if ($attack->timestamp < $site->plant_time?->getTimestamp()) {
+			if ($attack->timestamp < (int)$site->plant_time?->getTimestamp()) {
 				continue;
 			}
 			if (!isset($attack->attacker->org)) {

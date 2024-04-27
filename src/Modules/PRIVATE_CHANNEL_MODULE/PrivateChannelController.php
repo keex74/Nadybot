@@ -444,7 +444,7 @@ class PrivateChannelController extends ModuleInstance implements AccessLevelProv
 				last_online: $lastOnline->get($main, null),
 			);
 		})->filter(static function (InactiveMember $member) use ($time): bool {
-			return $member->last_online?->dt < $time;
+			return (int)$member->last_online?->dt < $time;
 		})->sortKeys()
 		->values();
 

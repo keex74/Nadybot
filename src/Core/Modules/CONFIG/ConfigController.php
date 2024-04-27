@@ -26,6 +26,7 @@ use Nadybot\Core\{
 	Nadybot,
 	ParamClass\PWord,
 	Registry,
+	Safe,
 	SettingHandlers\SettingHandler,
 	SettingManager,
 	SubcommandManager,
@@ -615,7 +616,7 @@ class ConfigController extends ModuleInstance {
 		$description = $this->getModuleDescription($module);
 		if (isset($description)) {
 			$description = implode('<br><tab>', explode("\n", $description));
-			$description = preg_replace_callback(
+			$description = Safe::pregReplaceCallback(
 				"/(https?:\/\/[^\s\n<]+)/s",
 				static function (array $matches): string {
 					return Text::makeChatcmd($matches[1], "/start {$matches[1]}");

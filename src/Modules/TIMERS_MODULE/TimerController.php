@@ -407,7 +407,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		$blob = '';
 		// Sort timers by time until going off
 		usort($timers, static function (Timer $a, Timer $b): int {
-			return $a->endtime <=> $b->endtime;
+			return $a->endtime <=> $b->endtime; // @phpstan-ignore-line
 		});
 		foreach ($timers as $timer) {
 			$timeLeft = '&lt;unknown&gt;';

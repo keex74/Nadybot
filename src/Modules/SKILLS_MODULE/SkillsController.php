@@ -705,7 +705,7 @@ class SkillsController extends ModuleInstance {
 			array_filter(
 				$data,
 				function (ItemSearchResult $item) use ($ql, &$kept): bool {
-					if (isset($ql) && $ql < $item->lowql || $ql > $item->highql) {
+					if (isset($ql) && ($ql < $item->lowql || $ql > $item->highql)) {
 						return false;
 					}
 					if (isset($kept[$item->lowid])) {

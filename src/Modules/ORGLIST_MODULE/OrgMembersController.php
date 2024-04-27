@@ -63,7 +63,7 @@ class OrgMembersController extends ModuleInstance {
 			}
 
 			$blob .= "<tab><highlight>{$player->name}<end> ({$player->level}";
-			if ($player->ai_level > 0) {
+			if ((int)$player->ai_level > 0) {
 				$blob .= "/<green>{$player->ai_level}<end>";
 			}
 			$blob .= ", {$player->gender} {$player->breed} {$player->profession?->inColor()}, {$player->guild_rank})\n";

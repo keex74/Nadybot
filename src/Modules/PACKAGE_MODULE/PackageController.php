@@ -278,8 +278,9 @@ class PackageController extends ModuleInstance {
 
 	/** Try to render the API's HTML into AOML */
 	public function renderHTML(string $html): string {
-		$html = preg_replace_callback(
+		$html = Safe::pregReplaceCallback(
 			"/<code.*?>(.+?)<\/code>/is",
+			/** @param list{string,string} $matches */
 			static function (array $matches): string {
 				return '<highlight>' . str_replace("\n", '<br />', $matches[1]) . '<end>';
 			},
@@ -304,11 +305,12 @@ class PackageController extends ModuleInstance {
 		$html = Safe::pregReplace('/<(code|strong)>/', '<highlight>', $html);
 		$html = Safe::pregReplace("/<\/(code|strong)>/", '<end>', $html);
 		$html = str_replace('&nbsp;', ' ', $html);
-		$html = preg_replace_callback(
+		$html = Safe::pregReplaceCallback(
 			"/<ol.*?>(.*?)<\/ol>/is",
 			static function (array $matches): string {
 				$num = 0;
-				return preg_replace_callback(
+				assert(is_string($matches[1]));
+				return Safe::pregReplaceCallback(
 					"/<li>(.*?)<\/li>/is",
 					static function (array $matches) use (&$num): string {
 						$num++;
@@ -319,7 +321,7 @@ class PackageController extends ModuleInstance {
 			},
 			$html
 		);
-		$html = preg_replace_callback(
+		$html = Safe::pregReplaceCallback(
 			"/<ul.*?>(.*?)<\/ul>/is",
 			static function (array $matches): string {
 				return Safe::pregReplace(

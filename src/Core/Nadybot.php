@@ -677,9 +677,9 @@ class Nadybot {
 	 * @param bool                    $formatMessage If set, replace tags with their corresponding colors
 	 */
 	public function sendTell(string|iterable $message, string $character, ?int $priority=null, bool $formatMessage=true): void {
-		if ($this->config->proxy?->enabled
-			&& $this->settingManager->getBool('force_mass_tells')
-			&& $this->settingManager->getBool('allow_mass_tells')
+		if ($this->config->proxy?->enabled === true
+			&& $this->settingManager->getBool('force_mass_tells') === true
+			&& $this->settingManager->getBool('allow_mass_tells') === true
 		) {
 			if (is_iterable($message)) {
 				/** @var Collection<int,string> */
@@ -742,8 +742,8 @@ class Nadybot {
 			$message = (array)$message;
 		}
 		$sendToWorker = isset($worker)
-			&& $this->settingManager->getBool('reply_on_same_worker');
-		$sendByMsg = $this->settingManager->getBool('paging_on_same_worker')
+			&& $this->settingManager->getBool('reply_on_same_worker') === true;
+		$sendByMsg = $this->settingManager->getBool('paging_on_same_worker') === true
 			&& count($message) > 1;
 		if ($sendToWorker) {
 			if (is_int($worker)) {
@@ -1317,7 +1317,7 @@ class Nadybot {
 
 		// Route public messages not from the bot itself
 		if ($sender !== $this->config->main->character) {
-			if (!$isOrgMessage || $this->settingManager->getBool('guild_channel_status')) {
+			if (!$isOrgMessage || $this->settingManager->getBool('guild_channel_status') === true) {
 				$rMessage = new RoutableMessage($package->package->message);
 				if (isset($sender)) {
 					$rMessage->setCharacter(new Character($sender, $senderId));
@@ -1340,7 +1340,7 @@ class Nadybot {
 		}
 
 		// don't log tower messages with rest of chat messages
-		if ($channel->name !== 'All Towers' && $channel->name !== 'Tower Battle Outcome' && (!$isOrgMessage || $this->settingManager->getBool('guild_channel_status'))) {
+		if ($channel->name !== 'All Towers' && $channel->name !== 'Tower Battle Outcome' && (!$isOrgMessage || $this->settingManager->getBool('guild_channel_status') === true)) {
 			$this->logChat($channel->name, $sender ?? 'System', $package->package->message);
 		} else {
 			$this->logger->info('[{channel}]: {message}', [
@@ -1372,7 +1372,7 @@ class Nadybot {
 			);
 
 			$this->eventManager->fireEvent($eventObj);
-		} elseif ($isOrgMessage && $this->settingManager->getBool('guild_channel_status')) {
+		} elseif ($isOrgMessage && $this->settingManager->getBool('guild_channel_status') === true) {
 			$eventObj = new GuildChannelMsgEvent(
 				sender: $sender,
 				channel: $channel->name,

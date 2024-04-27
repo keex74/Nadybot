@@ -15,6 +15,7 @@ use Nadybot\Core\{
 	Modules\CONFIG\ConfigController,
 	Modules\PREFERENCES\Preferences,
 	Nadybot,
+	Safe,
 	Text,
 };
 
@@ -158,7 +159,7 @@ class HelpController extends ModuleInstance {
 		$data = [];
 		foreach ($modules as $module => $path) {
 			$data[$module] = $this->configController->getModuleDescription($module) ?? '&lt;no description&gt;';
-			$data[$module] = preg_replace_callback(
+			$data[$module] = Safe::pregReplaceCallback(
 				"/(https?:\/\/[^\s\n<]+)/s",
 				static function (array $matches): string {
 					return Text::makeChatcmd($matches[1], "/start {$matches[1]}");

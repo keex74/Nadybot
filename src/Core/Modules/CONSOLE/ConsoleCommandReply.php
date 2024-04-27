@@ -212,7 +212,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 			'yellow' => '#ffff00',
 			'yellowgreen' => '#9acd32',
 		];
-		return preg_replace_callback(
+		return Safe::pregReplaceCallback(
 			"/(<font\s+color\s*=\s*)(['\"]?)(.+?)\\2>/s",
 			static function (array $matches) use ($namesToHex): string {
 				if (isset($namesToHex[$matches[3]])) {
@@ -245,7 +245,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 			'<br />' => "\n",
 		];
 
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			'/<black>(.*?)<end>/',
 			static function (array $matches): string {
 				if (function_exists('mb_strlen')) {
@@ -256,7 +256,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 			$message
 		);
 		$message = str_ireplace(array_keys($array), array_values($array), $message);
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			'/<green>(l*)<end><red>│<end><green>(l*)<end>/s',
 			static function (array $matches): string {
 				return '<green>' . str_repeat('|', strlen($matches[1])) . '<end>'.
@@ -280,7 +280,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 		$message = str_replace("\n", "\n ", $this->handleColors($message, true));
 		$parts = [];
 		$message = html_entity_decode(
-			preg_replace_callback(
+			Safe::pregReplaceCallback(
 				"/<a\s+href\s*=\s*([\"'])text:\/\/(.+?)\\1\s*>(.*?)<\/a>/s",
 				function (array $matches) use (&$parts): string {
 					$parts []= html_entity_decode($this->handleColors($matches[2], true), \ENT_QUOTES);
@@ -303,7 +303,7 @@ class ConsoleCommandReply implements CommandReply, MessageEmitter {
 		}
 		$text = $this->parseAnsiColors($text);
 		$stack = [];
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			"/<(\/?font.*?)>/",
 			function (array $matches) use (&$stack): string {
 				$matches[1] = strtolower($matches[1]);

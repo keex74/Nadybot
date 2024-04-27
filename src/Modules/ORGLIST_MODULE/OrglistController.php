@@ -280,7 +280,7 @@ class OrglistController extends ModuleInstance {
 		if (isset($member->level)) {
 			$line .= " (Level <highlight>{$member->level}<end>";
 		}
-		if ($member->ai_level > 0) {
+		if ((int)$member->ai_level > 0) {
 			$line .= "<green>/{$member->ai_level}<end>";
 		}
 		$line .= ', '.$member->gender;

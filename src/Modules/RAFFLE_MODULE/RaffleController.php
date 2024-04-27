@@ -598,7 +598,7 @@ class RaffleController extends ModuleInstance {
 			$this->endRaffle();
 			return;
 		}
-		if (!isset($this->raffle->lastAnnounce) || time() - $this->raffle->lastAnnounce >= $this->raffle->announceInterval) {
+		if (!isset($this->raffle->lastAnnounce) || time() - $this->raffle->lastAnnounce >= (int)$this->raffle->announceInterval) {
 			$this->announceRaffle();
 		}
 	}

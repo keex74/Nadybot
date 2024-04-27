@@ -305,7 +305,7 @@ class AuctionController extends ModuleInstance {
 				0
 			);
 		}
-		if ($minPenalty > 0 && $lastAuction->cost <= $minPenalty) {
+		if ($minPenalty > 0 && isset($lastAuction->cost) && $lastAuction->cost <= $minPenalty) {
 			$context->reply(
 				"The minimum penalty for a refund is {$minPenalty} points. ".
 				"So if the cost of {$lastAuction->item} is {$lastAuction->cost} points, ".
@@ -508,7 +508,7 @@ class AuctionController extends ModuleInstance {
 		return sprintf(
 			'%s     %s     %s',
 			DateTimeImmutable::createFromFormat('U', (string)$item->end)->format('Y-m-d H:i:s'),
-			($item->cost > 0) ? Text::alignNumber($item->cost, 5, null, true) : '      -',
+			(isset($item->cost) && $item->cost > 0) ? Text::alignNumber($item->cost, 5, null, true) : '      -',
 			'<highlight>' . ($item->winner ?? 'nobody') . '<end> won '.
 			Safe::pregReplace('|"(itemref://\d+/\d+/\d+)"|', '$1', $item->item)
 		);

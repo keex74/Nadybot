@@ -923,7 +923,7 @@ class WorldBossController extends ModuleInstance {
 		}
 		$ourTimer = $this->getWorldBossTimer($mobName);
 		$apiTimer = $this->apiTimerToWorldbossTimer($timer, $mobName);
-		if (isset($ourTimer) && $apiTimer->next_spawn <= $ourTimer->next_spawn) {
+		if (isset($ourTimer) && (int)$apiTimer->next_spawn <= (int)$ourTimer->next_spawn) {
 			if (in_array($ourTimer->submitter_name, ['Timer-API', 'Nadybot', '_Nadybot'], true)) {
 				$this->lastSpawnPrecise[$mobName] = true;
 			}
@@ -989,7 +989,7 @@ class WorldBossController extends ModuleInstance {
 			$newTimers []= $timer;
 		}
 		usort($newTimers, static function (WorldBossTimer $a, WorldBossTimer $b): int {
-			return $a->next_spawn <=> $b->next_spawn;
+			return $a->next_spawn <=> $b->next_spawn; // @phpstan-ignore-line
 		});
 		return $newTimers;
 	}
@@ -1102,15 +1102,15 @@ class WorldBossController extends ModuleInstance {
 
 	/** Does the mob spawn in exactly 15 minutes from now? */
 	private function isPrespawn(WorldBossTimer $timer, int $lastCheck, bool $manual): bool {
-		return $timer->next_spawn > $lastCheck+15*60
-			&& $timer->next_spawn <= time()+15*60;
+		return (int)$timer->next_spawn > $lastCheck+15*60
+			&& (int)$timer->next_spawn <= time()+15*60;
 	}
 
 	/** Did the mob spawn just now? */
 	private function isSpawn(WorldBossTimer $timer, int $lastCheck, bool $manual): bool {
 		return (
-			$timer->next_spawn > $lastCheck
-			&& $timer->next_spawn <= time()
+			(int)$timer->next_spawn > $lastCheck
+			&& (int)$timer->next_spawn <= time()
 		) || (
 			$manual
 			&& isset($timer->next_spawn)
@@ -1127,8 +1127,8 @@ class WorldBossController extends ModuleInstance {
 			$nextKillTime = $timer->next_spawn + $timer->timer + $invulnerableTime;
 		}
 		return (
-			$timer->next_killable > $lastCheck
-			&& $timer->next_killable <= time()
+			(int)$timer->next_killable > $lastCheck
+			&& (int)$timer->next_killable <= time()
 		) || (
 			$timer->next_killable === $nextKillTime
 		);

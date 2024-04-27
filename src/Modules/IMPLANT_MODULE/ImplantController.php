@@ -331,7 +331,7 @@ class ImplantController extends ModuleInstance {
 		$foundMaxQL = 300;
 		for ($ql = $minQL; $ql <= $maxQL; $ql++) {
 			$statBonus = $this->calcStatFromQL($breakpoints, $ql);
-			if ($statBonus > $bonus) {
+			if (($statBonus??0) > $bonus) {
 				return [$foundMinQL, $foundMaxQL];
 			} elseif ($statBonus === $bonus) {
 				$foundMaxQL = $ql;

@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Safe\{preg_match_all, preg_split};
+use function Safe\{preg_split};
 use Exception;
 use Generator;
 use Illuminate\Support\Collection;
@@ -1109,7 +1109,7 @@ class CommandManager implements MessageEmitter {
 		if (!$type->isBuiltin() && !is_subclass_of($type->getName(), Base::class)) {
 			return null;
 		}
-		$niceName = preg_replace_callback(
+		$niceName = Safe::pregReplaceCallback(
 			'/([A-Z]+)/',
 			static function (array $matches): string {
 				return ' ' . strtolower($matches[1]);
@@ -1169,8 +1169,7 @@ class CommandManager implements MessageEmitter {
 		foreach ($regexes as $regex) {
 			if (count($arr = Safe::pregMatch($regex->match, $message))) {
 				if (isset($regex->variadicMatch) && strlen($regex->variadicMatch)) {
-					/** @psalm-suppress RiskyTruthyFalsyComparison */
-					if (preg_match_all($regex->variadicMatch, $message, $arr2) && is_array($arr2)) {
+					if (count($arr2 = Safe::pregMatchAll($regex->variadicMatch, $message)) > 0) {
 						$arr = $arr2;
 					}
 				}

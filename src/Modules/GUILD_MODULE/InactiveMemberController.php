@@ -76,7 +76,7 @@ class InactiveMemberController extends ModuleInstance {
 		foreach ($members as $mainName => $altsLink) {
 			$alt = $altsLink->firstOrFail();
 
-			if ($alt->logged_off >= $time) {
+			if (($alt->logged_off??0) >= $time) {
 				continue;
 			}
 			$alt->logged_off ??= 0;

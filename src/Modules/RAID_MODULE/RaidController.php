@@ -223,7 +223,7 @@ class RaidController extends ModuleInstance {
 		$numRaiders = $this->raid->numActiveRaiders();
 		if ($this->raid->locked) {
 			$status = '<off>locked<end>';
-		} elseif ($this->raid->max_members > 0 && $this->raid->max_members <= $numRaiders) {
+		} elseif (isset($this->raid->max_members) && $this->raid->max_members > 0 && $this->raid->max_members <= $numRaiders) {
 			$status = '<off>full<end>';
 		} else {
 			$status = '<on>open<end>';
@@ -233,7 +233,7 @@ class RaidController extends ModuleInstance {
 			'<tab>Duration: running for <highlight>'.
 			Util::unixtimeToReadable(time() - $this->raid->started) . "<end>.\n".
 			"<tab>Raiders: <highlight>{$numRaiders}<end>".
-			(($this->raid->max_members > 0) ? "/<highlight>{$this->raid->max_members}<end>" : '').
+			((isset($this->raid->max_members) && $this->raid->max_members > 0) ? "/<highlight>{$this->raid->max_members}<end>" : '').
 			"\n".
 			"<tab>Status: {$status}\n";
 		if ($this->raid->seconds_per_point > 0) {
@@ -294,7 +294,7 @@ class RaidController extends ModuleInstance {
 		}
 		$numRaiders = $this->raid->numActiveRaiders();
 		$blob .=  "<tab>Raiders: <highlight>{$numRaiders}<end>";
-		if ($this->raid->max_members > 0) {
+		if (isset($this->raid->max_members) && $this->raid->max_members > 0) {
 			$blob .= "/<highlight>{$this->raid->max_members}<end>";
 			$blob .= ' [' . Text::makeChatcmd(
 				'remove limit',
@@ -314,7 +314,7 @@ class RaidController extends ModuleInstance {
 			$blob .= 'locked<end> ['.
 				Text::makeChatcmd('Unlock', '/tell <myname> raid unlock').
 				"]\n";
-		} elseif ($this->raid->max_members > 0 && $numRaiders >= $this->raid->max_members) {
+		} elseif (isset($this->raid->max_members) && $this->raid->max_members > 0 && $numRaiders >= $this->raid->max_members) {
 			$blob .= 'full<end> ['.
 				Text::makeChatcmd('remove limit', '/tell <myname> raid limit off').
 				"]\n";
@@ -372,7 +372,7 @@ class RaidController extends ModuleInstance {
 			->limit(1)
 			->asObj(Raid::class)
 			->first();
-		if ($lastRaid === null || $lastRaid->stopped > 0) {
+		if ($lastRaid === null || (int)$lastRaid->stopped > 0) {
 			return;
 		}
 
@@ -1280,7 +1280,7 @@ class RaidController extends ModuleInstance {
 				"by <highlight>{$raid->stopped_by}<end>\n";
 		}
 		$blob .= "<tab>Description: <highlight>{$raid->description}<end>\n";
-		if ($raid->max_members > 0) {
+		if (isset($raid->max_members) && $raid->max_members > 0) {
 			$blob .= "<tab>Max members: <highlight>{$raid->max_members}<end>\n";
 		}
 		$blob .= '<tab>Raid points: ';

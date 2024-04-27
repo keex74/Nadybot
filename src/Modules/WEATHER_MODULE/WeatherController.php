@@ -228,7 +228,7 @@ class WeatherController extends ModuleInstance {
 		$tempDegree = $this->nameToDegree($units->air_temperature);
 		$windDirection = $this->degreeToDirection($currentWeather->wind_from_direction);
 		$windStrength = $this->getWindStrength($currentWeather->wind_speed);
-		$osmLicence = preg_replace_callback(
+		$osmLicence = Safe::pregReplaceCallback(
 			'/(http[^ ]+)/',
 			static function (array $matched): string {
 				return Text::makeChatcmd($matched[1], '/start '.$matched[1]);

@@ -196,7 +196,7 @@ class LimitsController extends ModuleInstance {
 		description: 'Enforce rate limits'
 	)]
 	public function accountCommandExecution(CmdEvent $event): void {
-		if ($event->cmdHandler && !$this->commandHandlerCounts($event->cmdHandler)) {
+		if (isset($event->cmdHandler) && !$this->commandHandlerCounts($event->cmdHandler)) {
 			return;
 		}
 		$toCount = $this->limitsCmdType;
@@ -376,7 +376,7 @@ class LimitsController extends ModuleInstance {
 		$tellReqLevel = $this->tellReqLvl;
 
 		// check minlvl
-		if ($tellReqLevel > 0 && $tellReqLevel > $whois->level) {
+		if ($tellReqLevel > 0 && $tellReqLevel > ($whois->level??0)) {
 			throw new UserException(
 				"Error! You must be at least level <highlight>{$tellReqLevel}<end>."
 			);

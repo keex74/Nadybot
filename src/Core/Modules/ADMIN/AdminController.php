@@ -311,7 +311,7 @@ class AdminController extends ModuleInstance {
 	 * @return string " (<on>online<end>)" and so on
 	 */
 	private function getOnlineStatus(string $who, bool $showLastSeen=false): string {
-		if ($this->buddylistManager->isOnline($who) && isset($this->chatBot->chatlist[$who])) {
+		if ($this->buddylistManager->isOnline($who) === true && isset($this->chatBot->chatlist[$who])) {
 			return ' (<on>Online and in chat<end>)';
 		} elseif ($this->buddylistManager->isOnline($who)) {
 			return ' (<on>Online<end>)';
@@ -341,7 +341,7 @@ class AdminController extends ModuleInstance {
 		$altInfo = $this->altsController->getAltInfo($who);
 		if ($altInfo->main === $who) {
 			foreach ($altInfo->getAllValidatedAlts() as $alt) {
-				if ($showOfflineAlts || $this->buddylistManager->isOnline($alt)) {
+				if ($showOfflineAlts || $this->buddylistManager->isOnline($alt) === true) {
 					$blob .= "<tab><tab>{$alt}" . $this->getOnlineStatus($alt) . "\n";
 				}
 			}

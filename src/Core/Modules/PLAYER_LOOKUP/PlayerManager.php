@@ -131,7 +131,7 @@ class PlayerManager extends ModuleInstance {
 				$this->update($player);
 			}
 			return $player;
-		} elseif ($player->last_update < (time() - static::CACHE_GRACE_TIME)) {
+		} elseif (($player->last_update??0) < (time() - static::CACHE_GRACE_TIME)) {
 			// We cache for 24h plus 10 minutes grace for Funcom
 			$player2 = $this->lookup($name, $dimension);
 			if ($player2 !== null) {

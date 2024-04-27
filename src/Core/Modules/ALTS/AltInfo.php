@@ -237,7 +237,7 @@ class AltInfo {
 		if ($profDisplay & 4 && $player->profession !== null) {
 			$extraInfo []= $player->profession->value;
 		}
-		if ($this->settingManager->getBool('alts_show_org') && !$firstPageOnly) {
+		if ($this->settingManager->getBool('alts_show_org') === true && !$firstPageOnly) {
 			$extraInfo []= $player->faction->inColor($player->guild);
 		}
 		if (count($extraInfo)) {
@@ -285,7 +285,7 @@ class AltInfo {
 			if ($profDisplay & 4 && isset($row->player) && $row->player->profession !== null) {
 				$extraInfo []= $row->player->profession->value;
 			}
-			if (isset($row->player) && $this->settingManager->getBool('alts_show_org') && !$firstPageOnly) {
+			if (isset($row->player) && $this->settingManager->getBool('alts_show_org') === true && !$firstPageOnly) {
 				$extraInfo []= $row->player->faction->inColor($row->player->guild);
 			}
 			if (count($extraInfo)) {

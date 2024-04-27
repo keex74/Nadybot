@@ -425,7 +425,7 @@ class GcrProtocol implements RelayProtocolInterface {
 			'logon_ailevel'  => 'lightgreen',
 			'logon_organization' => 'highlight',
 		];
-		$colorizedText = preg_replace_callback(
+		$colorizedText = Safe::pregReplaceCallback(
 			'/##([a-zA-Z_]+)##/',
 			static function (array $matches) use ($colorAliases, $colors): string {
 				$color = strtolower($matches[1]);

@@ -46,7 +46,7 @@ class SocketCommandReply implements CommandReply {
 			'<br />' => "\n",
 		];
 
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			'/<black>(.*?)<end>/',
 			static function (array $matches): string {
 				if (function_exists('mb_strlen')) {
@@ -72,7 +72,7 @@ class SocketCommandReply implements CommandReply {
 		$message = str_replace("\n", "\n ", $this->handleColors($message, true));
 		$parts = [];
 		$message = html_entity_decode(
-			preg_replace_callback(
+			Safe::pregReplaceCallback(
 				"/<a\s+href\s*=\s*([\"'])text:\/\/(.+?)\\1\s*>(.*?)<\/a>/s",
 				function (array $matches) use (&$parts): string {
 					$parts []= html_entity_decode($this->handleColors($matches[2], true), \ENT_QUOTES);

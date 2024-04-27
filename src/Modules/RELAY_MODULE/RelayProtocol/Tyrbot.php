@@ -12,6 +12,7 @@ use Nadybot\Core\{
 	Routing\Events\Online,
 	Routing\RoutableEvent,
 	Routing\Source,
+	Safe,
 	SettingManager,
 };
 use Nadybot\Modules\ONLINE_MODULE\OnlineController;
@@ -426,7 +427,7 @@ class Tyrbot implements RelayProtocolInterface {
 	}
 
 	protected function convertFromTyrColors(string $text): string {
-		return preg_replace_callback(
+		return Safe::pregReplaceCallback(
 			"/<\/(.*?)>/s",
 			static function (array $matches): string {
 				$keep = ['font', 'a', 'img', 'u', 'i'];

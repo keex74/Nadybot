@@ -14,6 +14,7 @@ use Illuminate\Contracts\Support\CanBeEscapedWhenCastToString;
  * @implements \Illuminate\Support\Enumerable<TKey, TValue>
  *
  * @method list<TValue> toList()
+ * @method TValue       lastOrFail()
  *
  * @phpstan-ignore-next-line
  */
@@ -24,6 +25,16 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
 	 * @return array<TKey, TValue>
 	 */
 	public function toArray(): array {
+	}
+
+	/**
+	 * Get the last item of a collection
+	 *
+	 * @return TValue
+	 *
+	 * @throws ItemNotFoundException if the item does not exist
+	 */
+	public function lastOrFail(): mixed {
 	}
 
 	/**

@@ -118,7 +118,7 @@ class Safe {
 	/**
 	 * @return array<string|int,list<array{0:string,1:int}>>
 	 *
-	 * @phpstan-return array<array-key,list<array{0:string,1:int}>>
+	 * @phpstan-return array<array-key,non-empty-list<list{string,int}>>
 	 */
 	public static function pregMatchOffsetAll(string $pattern, string $subject, int $flags=0, int $offset=0): array {
 		$matches = [];
@@ -182,6 +182,41 @@ class Safe {
 	 */
 	public static function removeNull(array $values): array {
 		$result = array_filter($values, static fn (mixed $value): bool => !is_null($value));
+		return $result;
+	}
+
+	/**
+	 * Perform a regular expression search and replace using a callback
+	 *
+	 * @param string|list<string> $pattern
+	 * @param string|list<string> $subject
+	 * @param int                 $limit   The maximum possible replacements for each pattern in each subject string. Defaults to -1 (no limit).
+	 * @param int                 $count   If specified, this variable will be filled with the number of replacements done.
+	 *
+	 * @param-out int $count   If specified, this variable will be filled with the number of replacements done.
+	 *
+	 * @psalm-param int-mask<\PREG_OFFSET_CAPTURE,\PREG_UNMATCHED_AS_NULL> $flags
+	 *
+	 * @return ($subject is array ? list<string> : string) preg_replace_callback returns an array if the subject parameter is an array, or a string otherwise.
+	 *
+	 * @throws PcreException on invalid regexp
+	 *
+	 * @psalm-suppress ReferenceConstraintViolation
+	 * @psalm-suppress ArgumentTypeCoercion
+	 */
+	public static function pregReplaceCallback(
+		array|string $pattern,
+		callable $callback,
+		array|string $subject,
+		int $limit=-1,
+		&$count=null,
+		int $flags=0
+	): array|string {
+		error_clear_last();
+		$result = preg_replace_callback($pattern, $callback, $subject, $limit, $count, $flags);
+		if (!isset($result)) {
+			throw PcreException::createFromPhpError();
+		}
 		return $result;
 	}
 }

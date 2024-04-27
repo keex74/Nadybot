@@ -140,10 +140,10 @@ class AOUController extends ModuleInstance {
 
 		$blob = Text::makeChatcmd('Guide on AO-Universe', "/start https://www.ao-universe.com/main.php?site=knowledge&id={$guideId}") . "\n\n";
 
-		$blob .= 'Updated: <highlight>' . $content->getElementsByTagName('update')->item(0)->nodeValue . "<end>\n";
-		$blob .= 'Profession: <highlight>' . $content->getElementsByTagName('class')->item(0)->nodeValue . "<end>\n";
-		$blob .= 'Faction: <highlight>' . $content->getElementsByTagName('faction')->item(0)->nodeValue . "<end>\n";
-		$blob .= 'Level: <highlight>' . $content->getElementsByTagName('level')->item(0)->nodeValue . "<end>\n";
+		$blob .= 'Updated: <highlight>' . ($content->getElementsByTagName('update')->item(0)?->nodeValue ?? '-') . "<end>\n";
+		$blob .= 'Profession: <highlight>' . ($content->getElementsByTagName('class')->item(0)?->nodeValue ?? '-') . "<end>\n";
+		$blob .= 'Faction: <highlight>' . ($content->getElementsByTagName('faction')->item(0)?->nodeValue ?? '-') . "<end>\n";
+		$blob .= 'Level: <highlight>' . ($content->getElementsByTagName('level')->item(0)?->nodeValue ?? '-') . "<end>\n";
 		$blob .= 'Author: <highlight>' . $this->processInput($content->getElementsByTagName('author')->item(0)->nodeValue) . "<end>\n\n";
 
 		$blob .= $this->processInput($content->getElementsByTagName('text')->item(0)->nodeValue);
@@ -334,9 +334,9 @@ class AOUController extends ModuleInstance {
 	private function processInput(string $input): string {
 		$input = Safe::pregReplace("/(\[size.+?\])\[b\]/i", '[b]$1', $input);
 		$input = Safe::pregReplace("/(\[color.+?\])\[b\]/i", '[b]$1', $input);
-		$input = preg_replace_callback("/\[(item|itemname|itemicon)( nolink)?\](\d+)\[\/(item|itemname|itemicon)\]/i", $this->replaceItem(...), $input);
-		$input = preg_replace_callback("/\[waypoint ([^\]]+)\]([^\]]*)\[\/waypoint\]/", $this->replaceWaypoint(...), $input);
-		$input = preg_replace_callback("/\[(localurl|url)=([^ \]]+)\]([^\[]+)\[\/(localurl|url)\]/", $this->replaceGuideLinks(...), $input);
+		$input = Safe::pregReplaceCallback("/\[(item|itemname|itemicon)( nolink)?\](\d+)\[\/(item|itemname|itemicon)\]/i", $this->replaceItem(...), $input);
+		$input = Safe::pregReplaceCallback("/\[waypoint ([^\]]+)\]([^\]]*)\[\/waypoint\]/", $this->replaceWaypoint(...), $input);
+		$input = Safe::pregReplaceCallback("/\[(localurl|url)=([^ \]]+)\]([^\[]+)\[\/(localurl|url)\]/", $this->replaceGuideLinks(...), $input);
 		$input = Safe::pregReplace("/\[img\](.*?)\[\/img\]/", '-image-', $input);
 		$input = Safe::pregReplace("/\[color=#([0-9A-F]+)\]/", '<font color=#$1>', $input);
 		$input = Safe::pregReplace("/\[color=(.+?)\]/", '<$1>', $input);

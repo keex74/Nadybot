@@ -45,7 +45,7 @@ class Raffle {
 	public function fromString(string $text): void {
 		$text = Safe::pregReplace("/>\s*</", '>,<', $text);
 		// Items with "," in their name get this escaped
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			"/(['\"]?itemref:\/\/\d+\/\d+\/\d+['\"]?>)(.+?)(<\/a>)/",
 			static function (array $matches): string {
 				return $matches[1] .  str_replace(',', '&#44;', $matches[2]) . $matches[3];

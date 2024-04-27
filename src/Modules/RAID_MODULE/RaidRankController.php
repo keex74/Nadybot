@@ -533,7 +533,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 	 * @return string " (<on>online<end>)" and so on
 	 */
 	private function getOnlineStatus(string $who): string {
-		if ($this->buddylistManager->isOnline($who) && isset($this->chatBot->chatlist[$who])) {
+		if ($this->buddylistManager->isOnline($who) === true && isset($this->chatBot->chatlist[$who])) {
 			return ' (<on>Online and in chat<end>)';
 		} elseif ($this->buddylistManager->isOnline($who)) {
 			return ' (<on>Online<end>)';
@@ -548,7 +548,7 @@ class RaidRankController extends ModuleInstance implements AccessLevelProvider {
 			$alts = $altInfo->getAllValidatedAlts();
 			sort($alts);
 			foreach ($alts as $alt) {
-				if ($showOfflineAlts || $this->buddylistManager->isOnline($alt)) {
+				if ($showOfflineAlts || $this->buddylistManager->isOnline($alt) === true) {
 					$blob .= "<tab><tab>{$alt}" . $this->getOnlineStatus($alt) . "\n";
 				}
 			}

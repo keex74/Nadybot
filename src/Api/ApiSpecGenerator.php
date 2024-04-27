@@ -2,7 +2,7 @@
 
 namespace Nadybot\Api;
 
-use function Safe\{glob, preg_match, preg_match_all};
+use function Safe\{glob, preg_match};
 
 use DateTimeInterface;
 use Exception;
@@ -82,7 +82,7 @@ class ApiSpecGenerator {
 
 				$params = array_slice($method->getParameters(), 1);
 				try {
-					$path = preg_replace_callback(
+					$path = Safe::pregReplaceCallback(
 						'/%[ds]/',
 						static function (array $matches) use (&$params): string {
 							if (!count($params)) {
@@ -304,7 +304,7 @@ class ApiSpecGenerator {
 	 */
 	public function getParamDocs(string $path, ReflectionMethod $method): array {
 		$result = [];
-		if (preg_match_all('/\{(.+?)\}/', $path, $matches) > 0 && isset($matches) && count($matches)) {
+		if (count($matches = Safe::pregMatchAll('/\{(.+?)\}/', $path)) > 0) {
 			foreach ($matches[1] as $param) {
 				foreach ($method->getParameters() as $refParam) {
 					if ($refParam->getName() !== $param) {

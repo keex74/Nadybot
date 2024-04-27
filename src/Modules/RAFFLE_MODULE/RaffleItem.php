@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\RAFFLE_MODULE;
 
-use function Safe\preg_match_all;
 use Nadybot\Core\{Registry, Safe};
 use Nadybot\Modules\ITEMS_MODULE\ItemsController;
 
@@ -29,7 +28,7 @@ class RaffleItem {
 
 	public function toString(): string {
 		$item = $this->item;
-		if (preg_match_all("/itemref:\/\/(\d+)\/(\d+)\/(\d+)/", $item, $matches) > 0 && is_array($matches)) {
+		if (count($matches = Safe::pregMatchAll("/itemref:\/\/(\d+)\/(\d+)\/(\d+)/", $item)) > 0) {
 			for ($i = 0; $i < count($matches[0]); $i++) {
 				$ql = null;
 				if ($matches[1][$i] !== $matches[2][$i]) {

@@ -573,7 +573,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 	public function onConnectEvent(ConnectEvent $eventObj): void {
 		// send Admin(s) a tell that the bot is online
 		foreach ($this->adminManager->admins as $name => $info) {
-			if ($info['level'] === 4 && $this->buddylistManager->isOnline($name)) {
+			if ($info['level'] === 4 && $this->buddylistManager->isOnline($name) === true) {
 				$this->chatBot->sendTell('<myname> is now <on>online<end>.', $name);
 			}
 		}

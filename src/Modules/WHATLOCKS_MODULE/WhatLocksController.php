@@ -181,7 +181,7 @@ class WhatLocksController extends ModuleInstance {
 			->format('j\\d, H\\h i\\m s\\s');
 		// Decrease days by 1, because the first day of the year is 1, but for
 		// duration reasons, it must be 0
-		$short = preg_replace_callback(
+		$short = Safe::pregReplaceCallback(
 			"/^(\d+)/",
 			static function (array $match): string {
 				return (string)((int)$match[1] - 1);

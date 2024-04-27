@@ -30,7 +30,7 @@ class GasInfo {
 
 	public function gasAt(int $time): ?Gas {
 		$ownHotEnd = $this->getPenaltyEnd();
-		if ($ownHotEnd > $time) {
+		if (isset($ownHotEnd) && $ownHotEnd > $time) {
 			return $this->currentGas();
 		}
 		return $this->regularGas($time);

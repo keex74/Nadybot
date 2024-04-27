@@ -420,7 +420,7 @@ class WhatBuffsController extends ModuleInstance {
 			}
 
 			$data = $query->asObj(NanoBuffSearchResult::class);
-			if ($data->isNotEmpty() && $data->last()?->amount < 0) {
+			if ($data->isNotEmpty() && $data->lastOrFail()->amount < 0) {
 				$data = $data->reverse();
 			}
 			$result = $this->formatBuffs($data, $skill);
@@ -493,7 +493,7 @@ class WhatBuffsController extends ModuleInstance {
 				$item->multi_m = $specials->multi_m;
 				$item->multi_r = $specials->multi_r;
 			});
-			if ($data->isNotEmpty() && $data->last()?->amount < 0) {
+			if ($data->isNotEmpty() && $data->lastOrFail()->amount < 0) {
 				$data = $data->reverse();
 			}
 			$result = $this->formatItems($data, $skill, $category);
@@ -643,7 +643,7 @@ class WhatBuffsController extends ModuleInstance {
 			if (!$item->in_game) {
 				$blob .= ' <red>(!)<end>';
 			}
-			if ($item->amount > $item->low_amount) {
+			if ($item->amount > ($item->low_amount??0)) {
 				$blob .= " ({$item->low_amount} - {$item->amount})";
 				if ($this->commandManager->cmdEnabled('bestql')) {
 					$link = $item->getLink(ql: 0);
@@ -770,7 +770,7 @@ class WhatBuffsController extends ModuleInstance {
 			} else {
 				$blob .= "({$item->ncu} NCU)";
 			}
-			if ($item->lowid > 0 && isset($item->lowql)) {
+			if (isset($item->lowid) && $item->lowid > 0 && isset($item->lowql)) {
 				$blob .= ' (from ' . Text::makeItem($item->lowid, $item->highid??$item->lowid, $item->lowql, $item->use_name??'') . ')';
 			}
 			$blob .= "\n";

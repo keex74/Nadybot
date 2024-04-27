@@ -235,7 +235,7 @@ class DB {
 
 	/** Format SQL code by replacing placeholders like <myname> */
 	public function formatSql(string $sql): string {
-		$sql = preg_replace_callback(
+		$sql = Safe::pregReplaceCallback(
 			'/<table:(.+?)>/',
 			function (array $matches): string {
 				return $this->tableNames[$matches[1]] ?? $matches[0];

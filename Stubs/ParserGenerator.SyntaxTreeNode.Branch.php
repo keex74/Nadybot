@@ -26,7 +26,7 @@ class Branch extends \ParserGenerator\SyntaxTreeNode\Base {
 	 *
 	 * @return string
 	 */
-	public function toString($mode=\ParserGenerator\SyntaxTreeNode\Base::TO_STRING_NO_WHITESPACES) {
+	public function toString($mode=Base::TO_STRING_NO_WHITESPACES) {
 	}
 
 	/** @return list<Leaf> */
@@ -40,7 +40,7 @@ class Branch extends \ParserGenerator\SyntaxTreeNode\Base {
 	 *
 	 * @return list<Branch>
 	 */
-	public function findAll($type, $nest = false, $childrenFirst = false) {
+	public function findAll($type, $nest=false, $childrenFirst=false) {
 	}
 
 	/**
@@ -49,11 +49,18 @@ class Branch extends \ParserGenerator\SyntaxTreeNode\Base {
 	 *
 	 * @return ?Branch
 	 */
-	public function findFirst($type, $startingOnly = false) {
+	public function findFirst($type, $startingOnly=false) {
 	}
 
-	/** @return bool */
-	public function compare($anotherNode, $compareOptions = \ParserGenerator\SyntaxTreeNode\Base::COMPARE_DEFAULT) {
+	/**
+	 * @param Branch $anotherNode
+	 * @param int    $compareOptions
+	 *
+	 * @psalm-param int-mask-of<Base::COMPARE_*>
+	 *
+	 * @return bool
+	 */
+	public function compare($anotherNode, $compareOptions=Base::COMPARE_DEFAULT) {
 	}
 
 	/** @return Leaf */

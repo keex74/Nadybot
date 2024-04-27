@@ -121,7 +121,7 @@ class CommandAlias {
 		}
 
 		// replace parameter placeholders with their values or the default
-		$cmd = preg_replace_callback(
+		$cmd = Safe::pregReplaceCallback(
 			"/\{(\d+)(:.*?)?\}/",
 			static function (array $matches) use ($aliasParams): string {
 				if (isset($aliasParams[(int)$matches[1]])) {

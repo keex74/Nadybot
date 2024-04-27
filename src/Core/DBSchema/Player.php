@@ -8,6 +8,7 @@ use Nadybot\Core\{
 	Attributes\JSON,
 	DBTable,
 	Registry,
+	Safe,
 	Types\Faction,
 	Types\Profession,
 };
@@ -129,7 +130,7 @@ class Player extends DBTable {
 			],
 		];
 		$gender = strtolower($this->gender);
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			'/%([a-z:_A-Z]+)%/',
 			function (array $matches) use ($pronouns, $gender): string {
 				$pronoun = $matches[1];

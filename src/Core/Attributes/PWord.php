@@ -3,7 +3,7 @@
 namespace Nadybot\Core\Attributes;
 
 use Attribute;
-use Nadybot\Core\ParamAttribute;
+use Nadybot\Core\{ParamAttribute, Safe};
 use ReflectionParameter;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
@@ -17,7 +17,7 @@ class PWord implements ParamAttribute {
 		if (isset($this->example)) {
 			return $this->example;
 		}
-		return '&lt;' . preg_replace_callback(
+		return '&lt;' . Safe::pregReplaceCallback(
 			'/([A-Z]+)/',
 			static function (array $matches): string {
 				return ' ' . strtolower($matches[1]);

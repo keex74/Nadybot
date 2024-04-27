@@ -25,7 +25,7 @@ foreach ($spec['paths'] as $path => &$data) {
 }
 
 echo(
-	preg_replace_callback(
+	Safe::pregReplaceCallback(
 		'/^((?:    )+)/m',
 		static function (array $matches): string {
 			return str_repeat("\t", (int)floor(strlen($matches[1]) / 4));

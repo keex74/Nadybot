@@ -12,7 +12,12 @@ class Parser {
 	public static function getLineAndCharacterFromOffset($str, $offset) {
 	}
 
-	/** @return \ParserGenerator\SyntaxTreeNode\Root|false */
+	/**
+	 * @param string $string
+	 * @param string $nodeToParseName
+	 *
+	 * @return \ParserGenerator\SyntaxTreeNode\Root|false
+	 */
 	public function parse($string, $nodeToParseName='start') {
 	}
 

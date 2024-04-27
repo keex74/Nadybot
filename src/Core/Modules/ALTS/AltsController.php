@@ -583,11 +583,11 @@ class AltsController extends ModuleInstance {
 			$event = new AltDelEvent(
 				main: $main,
 				alt: $alt,
-				validated: isset($old) ? ($old->validated_by_alt && $old->validated_by_main) : false,
+				validated: isset($old) ? ($old->validated_by_alt === true && $old->validated_by_main === true) : false,
 			);
 			$this->eventManager->fireEvent($event);
 
-			if (isset($old) && $old->validated_by_alt && $old->validated_by_main) {
+			if (isset($old) && $old->validated_by_alt === true && $old->validated_by_main === true) {
 				unset($this->alts[$alt]);
 				$audit = new Audit(
 					actor: $main,

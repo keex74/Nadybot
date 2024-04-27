@@ -34,6 +34,16 @@ $toList = function (): array {
 };
 Collection::macro('toList', $toList);
 
+/** @return TValue */
+$lastOrFail = function (): mixed {
+	$result = $this->last();
+	if (!isset($result)) {
+		throw new \Illuminate\Support\ItemNotFoundException();
+	}
+	return $result;
+};
+Collection::macro('lastOrFail', $lastOrFail);
+
 $runner = new Nadybot\Core\BotRunner($argv);
 $runner->run();
 /*

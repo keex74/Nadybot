@@ -17,6 +17,7 @@ use Nadybot\Core\{
 	Exceptions\UserException,
 	Filesystem,
 	ModuleInstance,
+	Safe,
 	Text,
 };
 
@@ -118,7 +119,7 @@ class CustomCmdController extends ModuleInstance {
 		}
 		$lines = explode("\n", $content);
 		$headerHadTags = false;
-		$firstLine = preg_replace_callback(
+		$firstLine = Safe::pregReplaceCallback(
 			'/(<.*?>)/',
 			static function (array $match) use (&$headerHadTags): string {
 				if ($match[1] === '<myname>') {

@@ -156,7 +156,7 @@ class WebChatConverter extends ModuleInstance {
 		/** @var list<string> */
 		$stack = [];
 		$message = Safe::pregReplace("/<\/font>/", '<end>', $message);
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			'/<(end|' . implode('|', array_keys($colors)) . "|font\s+color\s*=\s*[\"']?(#.{6})[\"']?)>/i",
 			static function (array $matches) use (&$stack, $colors): string {
 				if ($matches[1] === 'end') {
@@ -187,7 +187,7 @@ class WebChatConverter extends ModuleInstance {
 		while (count($stack)) {
 			$message .= '</' . array_pop($stack) . '>';
 		}
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			"/(\r?\n[-*][^\r\n]+){2,}/s",
 			static function (array $matches): string {
 				$text = Safe::pregReplace("/(\r?\n)[-*]\s+([^\r\n]+)/s", '<li>$2</li>', $matches[0]);
@@ -195,7 +195,7 @@ class WebChatConverter extends ModuleInstance {
 			},
 			$message
 		);
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			'/^((?:    )+)/m',
 			static function (array $matches): string {
 				return str_repeat('<indent />', (int)(strlen($matches[1])/4));
@@ -207,7 +207,7 @@ class WebChatConverter extends ModuleInstance {
 		$message = Safe::pregReplace("/<a\s+href\s*=\s*['\"]?itemid:\/\/53019\/(\d+)['\"]?>(.*?)<\/a>/s", '<ao:nano id="$1">$2</ao:nano>', $message);
 		$message = Safe::pregReplace("/<a\s+href\s*=\s*['\"]?skillid:\/\/(\d+)['\"]?>(.*?)<\/a>/s", '<ao:skill id="$1">$2</ao:skill>', $message);
 		$message = Safe::pregReplace("/<a\s+href\s*=\s*['\"]?user:\/\/(.+?)['\"]?>(.*?)<\/a>/s", '<ao:user name="$1">$2</ao:user>', $message);
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			"/<a\s+href\s*=\s*(['\"])chatcmd:\/\/\/tell\s+<myname>\s+(.*?)\\1>(.*?)<\/a>/s",
 			static function (array $matches): string {
 				return '<ao:command cmd="' . htmlentities($matches[2]) . "\">{$matches[3]}</ao:command>";
@@ -217,7 +217,7 @@ class WebChatConverter extends ModuleInstance {
 		$message = Safe::pregReplace("/<a\s+href=(['\"])chatcmd:\/\/\/start\s+(.*?)\\1>(.*?)<\/a>/s", '<a href="$2">$3</a>', $message);
 		$message = Safe::pregReplace("/<a\s+href=(['\"])chatcmd:\/\/\/(.*?)\\1>(.*?)<\/a>/s", '<ao:command cmd="$2">$3</ao:command>', $message);
 		$message = str_ireplace(array_keys($symbols), array_values($symbols), $message);
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			"/<img src=['\"]?tdb:\/\/id:GFX_GUI_ICON_PROFESSION_(\d+)['\"]?>/s",
 			function (array $matches): string {
 				return '<ao:img prof="' . $this->professionIdToName((int)$matches[1]) . '" />';
@@ -248,9 +248,10 @@ class WebChatConverter extends ModuleInstance {
 	public function parseAOFormat(string $message): AOMsg {
 		$parts = [];
 		$id = 0;
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			"/<a\s+href\s*=\s*([\"'])text:\/\/(.+?)\\1>(.*?)<\/a>/s",
 			function (array $matches) use (&$parts, &$id): string {
+				assert(is_string($matches[2]));
 				$parts['ao-' . ++$id] = $this->formatMsg(
 					Safe::pregReplace(
 						"/^<font.*?>(<\/font>|<end>)?/",

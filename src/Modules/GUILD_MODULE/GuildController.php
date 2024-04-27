@@ -588,7 +588,7 @@ class GuildController extends ModuleInstance {
 			$name = ucfirst(strtolower($arr[2]));
 
 			if (
-				$this->buddylistManager->isOnline($name)
+				$this->buddylistManager->isOnline($name) === true
 				&& $this->db->table(DBOnline::getTable())
 					->where('name', $name)
 					->where('channel_type', 'guild')

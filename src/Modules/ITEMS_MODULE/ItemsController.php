@@ -505,7 +505,7 @@ class ItemsController extends ModuleInstance {
 			}
 			unset($nameMatches);
 		}
-		$list = preg_replace_callback(
+		$list = Safe::pregReplaceCallback(
 			"/^([^<]+?)<red>\[<end>(.+)<red>\]<end>$/m",
 			static function (array $matches): string {
 				if (str_contains($matches[2], '<red>')) {

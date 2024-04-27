@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Safe\{preg_match, preg_match_all};
+use function Safe\{preg_match};
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\Config\BotConfig;
 use Psr\Log\LoggerInterface;
@@ -77,14 +77,12 @@ class Text {
 		foreach ($pages as $key => $page) {
 			$headerInfo = '';
 			if ($addHeaderRanges
-				&& preg_match_all(
+				&& count($headers = Safe::pregMatchOffsetAll(
 					'/<header2>([^<]+)<end>/',
 					$page,
-					$headers,
-					\PREG_OFFSET_CAPTURE
-				) > 0
+				)) > 0
 			) {
-				if (isset($headers) && $headers[1][0][1] === 9) {
+				if ($headers[1][0][1] === 9) {
 					$from = $headers[1][0][0];
 					$to = $headers[1][count($headers[1])-1][0];
 					$headerInfo = " - {$from}";
@@ -388,7 +386,7 @@ class Text {
 	}
 
 	public static function removePopups(string $message, bool $removeLinks=false): string {
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			"/<a\s+href\s*=\s*([\"'])text:\/\/(.+?)\\1\s*>(.*?)<\/a>/is",
 			static function (array $matches) use ($removeLinks): string {
 				if ($removeLinks) {
@@ -409,7 +407,7 @@ class Text {
 	/** @return list<string> */
 	public static function getPopups(string $message): array {
 		$popups = [];
-		$message = preg_replace_callback(
+		$message = Safe::pregReplaceCallback(
 			"/<a\s+href\s*=\s*([\"'])text:\/\/(.+?)\\1\s*>(.*?)<\/a>/is",
 			static function (array $matches) use (&$popups): string {
 				$popups []= $matches[2];
@@ -527,7 +525,7 @@ class Text {
 		// If the token isn't found, don't touch the text
 		do {
 			$lastText = $text;
-			$text = preg_replace_callback(
+			$text = Safe::pregReplaceCallback(
 				'/\{(?<tag>[a-zA-Z-]+|[!?][a-zA-Z-]+:((?:[^{}]|(?R)))+)\}/',
 				static function (array $matches) use ($tokens): string {
 					$action = substr($matches['tag'], 0, 1);

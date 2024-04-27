@@ -81,8 +81,9 @@ class DiscordController extends ModuleInstance {
 		$text = str_replace('<tab>', '_ _  ', $text);
 		$text = Safe::pregReplace('/^    /m', '_ _  ', $text);
 		$text = Safe::pregReplace("/\n<img src=['\"]?rdb:\/\/[^>]+?['\"]?>\n/s", "\n", $text);
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			"/(?:<font[^>]*#000000[^>]*>|<black>)(.+?)(?:<end>|<\/font>)/s",
+			/** @param list{string,string} $matches */
 			static function (array $matches): string {
 				if (preg_match('/^0+$/', $matches[1])) {
 					return '_ _' . str_repeat(' ', strlen($matches[1]));
@@ -94,7 +95,7 @@ class DiscordController extends ModuleInstance {
 		);
 		$text = Safe::pregReplace('/(<end>|<\/font>)<(white|yellow|blue|green|red|orange|grey|cyan|violet|neutral|omni|clan|unknown|font [^>]+)>/s', '', $text);
 		$text = Safe::pregReplace('/<(white|yellow|blue|green|red|orange|grey|cyan|violet|neutral|omni|clan|unknown)>(.*?)<end>/s', '*$2*', $text);
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			'/\*?(-{5,}+)\*?/s',
 			static function (array $match): string {
 				return str_repeat(' ', strlen($match[1]));
@@ -105,7 +106,7 @@ class DiscordController extends ModuleInstance {
 		$text = Safe::pregReplace("|<a [^>]*?href='chatcmd:///start (.+?)'>(.+?)</a>|s", '[$2]($1)', $text);
 		$text = Safe::pregReplace("|<a [^>]*?href='chatcmd://(.+?)'>(.+?)</a>|s", '$2', $text);
 		$linksReplaced = 0;
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			"|<a [^>]*?href=['\"]?itemref://(\d+)/(\d+)/(\d+)['\"]?>(.+?)</a>|s",
 			function (array $match): string {
 				$tokens = [
@@ -122,7 +123,7 @@ class DiscordController extends ModuleInstance {
 
 		/** @var int $linksReplaced */
 		$linksReplaced2 = 0;
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			"|<a [^>]*?href=['\"]itemid://53019/(\d+)['\"]>(.+?)</a>|s",
 			function (array $match): string {
 				$tokens = [
@@ -140,7 +141,7 @@ class DiscordController extends ModuleInstance {
 		$linksReplaced = $linksReplaced + $linksReplaced2;
 
 		$embeds = [];
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			'|<a href="text://(.+?)">(.+?)</a>|s',
 			function (array $matches) use (&$embeds, $text): string {
 				$embeds []= $this->parsePopupToEmbed($matches);
@@ -222,7 +223,7 @@ class DiscordController extends ModuleInstance {
 			'GFX_GUI_ICON_PROFESSION_15' => $this->getEmoji($guild, 'shade') ?? '🗡️',
 			'GFX_GUI_WINDOW_QUESTIONMARK' => '❓',
 		];
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			"/<img src=['\"]?tdb:\/\/id:([A-Z0-9_]+)['\"]?>/",
 			static function (array $matches) use ($mapping): string {
 				return ($mapping[$matches[1]] ?? $matches[1]) . ' ';
@@ -240,7 +241,7 @@ class DiscordController extends ModuleInstance {
 			'on' => $this->getEmoji($guild, 'on') ?? '🟢 ',
 			'off' => $this->getEmoji($guild, 'off') ?? '🔴 ',
 		];
-		$text = preg_replace_callback(
+		$text = Safe::pregReplaceCallback(
 			'/<(neutral|clan|omni|on|off)>(.+?)<end>/s',
 			static function (array $matches) use ($mapping): string {
 				return $mapping[$matches[1]] . $matches[2];

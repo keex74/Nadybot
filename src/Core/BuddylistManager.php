@@ -120,7 +120,7 @@ class BuddylistManager {
 			return true;
 		}
 		$buddy = $this->buddyList[$uid] ?? null;
-		return ($buddy && $buddy->known) ? $buddy->online : null;
+		return (isset($buddy) && $buddy->known) ? $buddy->online : null;
 	}
 
 	/**

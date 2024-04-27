@@ -18,6 +18,8 @@ parameters:
     - Stubs/CanBeEscapedWhenCastToString.stub
     - Stubs/ParserGenerator.SyntaxTreeNode.Branch.php
     - Stubs/ParserGenerator.SyntaxTreeNode.Base.php
+    - Stubs/ParserGenerator.SyntaxTreeNode.Root.php
+    - Stubs/ParserGenerator.SyntaxTreeNode.Leaf.php
     - Stubs/ParserGenerator.Parser.php
   sfpPsrLog:
     enableMessageStaticStringRule: true
@@ -104,10 +106,10 @@ parameters:
           enabled: true
           checkDisjunctiveNormalForm: true
       forbidNullInAssignOperations:
-          enabled: false
+          enabled: true
           blacklist: ['??=']
       forbidNullInBinaryOperations:
-          enabled: false
+          enabled: true
           blacklist: ['===', '!==', '??']
       forbidNullInInterpolatedString:
           enabled: false

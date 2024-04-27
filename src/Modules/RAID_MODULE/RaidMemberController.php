@@ -148,9 +148,9 @@ class RaidMemberController extends ModuleInstance {
 			}
 		}
 		$numRaiders = $raid->numActiveRaiders();
-		$raidIsFull = $raid->max_members > 0 && $numRaiders >= $raid->max_members;
+		$raidIsFull = isset($raid->max_members) && $raid->max_members > 0 && $numRaiders >= $raid->max_members;
 		$countMsg = '';
-		if ($raid->max_members > 0) {
+		if (isset($raid->max_members) && $raid->max_members > 0) {
 			$countMsg = ' (' . ($numRaiders + 1) . "/{$raid->max_members} slots)";
 		}
 		if (($raid->locked || $raidIsFull) && $sender === $player && !$force) {
@@ -235,7 +235,7 @@ class RaidMemberController extends ModuleInstance {
 		}
 		$numRaiders = $raid->numActiveRaiders();
 		$countMsg = '';
-		if ($raid->max_members > 0) {
+		if (isset($raid->max_members) && $raid->max_members > 0) {
 			$countMsg = ' (' . ($numRaiders - 1) . "/{$raid->max_members} slots)";
 		}
 		$raid->raiders[$player]->left = time();

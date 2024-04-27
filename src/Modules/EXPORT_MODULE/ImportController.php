@@ -648,7 +648,7 @@ class ImportController extends ModuleInstance {
 				usort(
 					$history,
 					static function (Schema\RaidState $o1, Schema\RaidState $o2): int {
-						return $o1->time <=> $o2->time;
+						return $o1->time <=> $o2->time; // @phpstan-ignore-line
 					}
 				);
 				$lastEntry = null;

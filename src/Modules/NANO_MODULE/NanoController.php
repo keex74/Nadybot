@@ -444,22 +444,22 @@ class NanoController extends ModuleInstance {
 	private function getNanoSkillsNeeded(Collection $nanos): NanoSkillsNeeded {
 		return $nanos->reduce(
 			static function (NanoSkillsNeeded $max, Nano $nano): NanoSkillsNeeded {
-				if ($nano->mc > $max->mc) {
+				if ((int)$nano->mc > (int)$max->mc) {
 					$max->mc = $nano->mc;
 				}
-				if ($nano->ts > $max->ts) {
+				if ((int)$nano->ts > (int)$max->ts) {
 					$max->ts = $nano->ts;
 				}
-				if ($nano->mm > $max->mm) {
+				if ((int)$nano->mm > (int)$max->mm) {
 					$max->mm = $nano->mm;
 				}
-				if ($nano->bm > $max->bm) {
+				if ((int)$nano->bm > (int)$max->bm) {
 					$max->bm = $nano->bm;
 				}
-				if ($nano->pm > $max->pm) {
+				if ((int)$nano->pm > (int)$max->pm) {
 					$max->pm = $nano->pm;
 				}
-				if ($nano->si > $max->si) {
+				if ((int)$nano->si > (int)$max->si) {
 					$max->si = $nano->si;
 				}
 				return $max;

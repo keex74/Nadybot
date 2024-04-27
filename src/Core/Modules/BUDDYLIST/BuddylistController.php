@@ -200,7 +200,7 @@ class BuddylistController extends ModuleInstance {
 		} else {
 			$blob .= ' [-]';
 		}
-		if ($this->config->proxy?->enabled && count($entry->worker) > 1) {
+		if ($this->config->proxy?->enabled === true && count($entry->worker) > 1) {
 			$blob .= ' Worker ' . implode('+', array_keys($entry->worker));
 		}
 		if ($entry->known && $entry->online) {
