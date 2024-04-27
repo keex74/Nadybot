@@ -10,17 +10,18 @@ parameters:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
     - '#Static property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
   stubFiles:
-    - Stubs/Collection.php
-    - Stubs/Enumerable.stub
-    - Stubs/Arrayable.stub
-    - Stubs/ContrArrayable.stub
-    - Stubs/Jsonable.stub
-    - Stubs/CanBeEscapedWhenCastToString.stub
-    - Stubs/ParserGenerator.SyntaxTreeNode.Branch.php
-    - Stubs/ParserGenerator.SyntaxTreeNode.Base.php
-    - Stubs/ParserGenerator.SyntaxTreeNode.Root.php
-    - Stubs/ParserGenerator.SyntaxTreeNode.Leaf.php
+    - Stubs/Illuminate.Contracts.Support.Arrayable.stub
+    - Stubs/Illuminate.Contracts.Support.Jsonable.stub
+    - Stubs/Illuminate.Contracts.Support.CanBeEscapedWhenCastToString.stub
+    - Stubs/Illuminate.Support.Arrayable.stub
+    - Stubs/Illuminate.Support.Collection.php
+    - Stubs/Illuminate.Support.Enumerable.stub
+    - Stubs/Illuminate.Support.ItemNotFoundException.stub
     - Stubs/ParserGenerator.Parser.php
+    - Stubs/ParserGenerator.SyntaxTreeNode.Base.php
+    - Stubs/ParserGenerator.SyntaxTreeNode.Branch.php
+    - Stubs/ParserGenerator.SyntaxTreeNode.Leaf.php
+    - Stubs/ParserGenerator.SyntaxTreeNode.Root.php
   sfpPsrLog:
     enableMessageStaticStringRule: true
     enableContextRequireExceptionKeyRule: true

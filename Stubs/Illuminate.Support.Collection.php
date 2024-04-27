@@ -32,7 +32,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
 	 *
 	 * @return TValue
 	 *
-	 * @throws ItemNotFoundException if the item does not exist
+	 * @throws \Illuminate\Support\ItemNotFoundException if the item does not exist
 	 */
 	public function lastOrFail(): mixed {
 	}
