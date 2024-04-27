@@ -75,7 +75,7 @@ class Fernet implements RelayLayerInterface {
 		return array_map([$this->fernet, 'encode'], $data);
 	}
 
-	public function receive(RelayMessage $msg): ?RelayMessage {
+	public function receive(RelayMessage $msg): RelayMessage {
 		foreach ($msg->packages as &$text) {
 			$text = $this->fernet->decode($text);
 		}

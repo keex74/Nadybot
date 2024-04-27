@@ -468,7 +468,10 @@ class PackageController extends ModuleInstance {
 			'module_path' => $modulePath,
 			'path' => $path,
 		]);
+
 		$dirIterator = new RecursiveDirectoryIterator($path);
+
+		/** @var iterable<SplFileInfo> */
 		$iterator = new RecursiveIteratorIterator(
 			$dirIterator,
 			RecursiveIteratorIterator::SELF_FIRST
@@ -743,7 +746,7 @@ class PackageController extends ModuleInstance {
 		try {
 			$data = json_decode($body, true);
 		} catch (JsonException $e) {
-			throw new UserException('Package data contained invalid JSON');
+			throw new UserException('Package data contained invalid JSON', 0, $e);
 		}
 		if (!is_array($data) || !array_is_list($data)) {
 			throw new UserException('Package data was not in the expected format');
@@ -928,7 +931,9 @@ class PackageController extends ModuleInstance {
 			$this->fs->write($temp, $data);
 		} catch (FilesystemException $e) {
 			throw new UserException(
-				'Error writing to temporary file: ' . $e->getMessage()
+				'Error writing to temporary file: ' . $e->getMessage(),
+				0,
+				$e
 			);
 		}
 		$zip = new ZipArchive();
@@ -981,7 +986,9 @@ class PackageController extends ModuleInstance {
 				]);
 				throw new UserException(
 					'There was an error creating '.
-					"<highlight>{$targetDir}/{$cmd->package}<end>."
+					"<highlight>{$targetDir}/{$cmd->package}<end>.",
+					0,
+					$e
 				);
 			}
 		}
@@ -1027,7 +1034,9 @@ class PackageController extends ModuleInstance {
 						'exception' => $e,
 					]);
 					throw new UserException(
-						"There was an error creating <highlight>{$targetFile}<end>."
+						"There was an error creating <highlight>{$targetFile}<end>.",
+						0,
+						$e
 					);
 				}
 			} else {
@@ -1044,7 +1053,9 @@ class PackageController extends ModuleInstance {
 						'exception' => $e,
 					]);
 					throw new UserException(
-						"There was an error extracting <highlight>{$targetFile}<end>."
+						"There was an error extracting <highlight>{$targetFile}<end>.",
+						0,
+						$e
 					);
 				}
 			}

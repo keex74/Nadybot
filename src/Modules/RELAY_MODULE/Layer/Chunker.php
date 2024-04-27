@@ -86,7 +86,7 @@ class Chunker implements RelayLayerInterface {
 		return $encoded;
 	}
 
-	public function receive(RelayMessage $msg): ?RelayMessage {
+	public function receive(RelayMessage $msg): RelayMessage {
 		foreach ($msg->packages as &$data) {
 			try {
 				$json = json_decode($data, true);

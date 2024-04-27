@@ -230,7 +230,7 @@ class WeatherController extends ModuleInstance {
 		$windStrength = $this->getWindStrength($currentWeather->wind_speed);
 		$osmLicence = preg_replace_callback(
 			'/(http[^ ]+)/',
-			static function (array $matched) {
+			static function (array $matched): string {
 				return Text::makeChatcmd($matched[1], '/start '.$matched[1]);
 			},
 			lcfirst($nominatim->licence)
@@ -314,7 +314,9 @@ class WeatherController extends ModuleInstance {
 		} catch (JsonException $e) {
 			throw new UserException(
 				'Invalid JSON received from Location provider: '.
-				"<highlight>{$body}<end>."
+				"<highlight>{$body}<end>.",
+				0,
+				$e
 			);
 		}
 		if (!is_array($data)) {
@@ -337,7 +339,9 @@ class WeatherController extends ModuleInstance {
 		} catch (JsonException $e) {
 			throw new UserException(
 				'Invalid JSON received from Weather provider: '.
-				"<highlight>{$body}<end>."
+				"<highlight>{$body}<end>.",
+				0,
+				$e
 			);
 		}
 		if (!is_array($data)) {

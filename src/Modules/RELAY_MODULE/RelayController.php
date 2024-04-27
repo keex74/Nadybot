@@ -139,7 +139,7 @@ class RelayController extends ModuleInstance {
 			try {
 				$relay = $this->createRelayFromDB($relayConf);
 				$this->addRelay($relay);
-				$relay->init(function () use ($relay) {
+				$relay->init(function () use ($relay): void {
 					$this->logger->notice('Relay {relay_name} initialized', [
 						'relay_name' => $relay->getName(),
 					]);
@@ -427,7 +427,7 @@ class RelayController extends ModuleInstance {
 				throw $e;
 			}
 			$this->db->rollback();
-			throw new Exception('Error saving the relay: ' . $e->getMessage());
+			throw new Exception('Error saving the relay: ' . $e->getMessage(), 0, $e);
 		}
 		try {
 			$relay = $this->createRelayFromDB($relayConf);
@@ -446,7 +446,7 @@ class RelayController extends ModuleInstance {
 		if (!$transactionActive) {
 			$this->db->commit();
 		}
-		$relay->init(function () use ($relay) {
+		$relay->init(function () use ($relay): void {
 			$this->logger->notice('Relay {relay_name} initialized', [
 				'relay_name' => $relay->getName(),
 			]);
@@ -491,7 +491,7 @@ class RelayController extends ModuleInstance {
 		if (!isset($liveRelay)) {
 			return false;
 		}
-		$liveRelay->deinit(function (Relay $relay) {
+		$liveRelay->deinit(function (Relay $relay): void {
 			$this->logger->notice('Relay {relay_name} destroyed', [
 				'relay_name' => $relay->getName(),
 			]);
@@ -985,7 +985,7 @@ class RelayController extends ModuleInstance {
 			Registry::injectDependencies($result);
 			return $result;
 		} catch (Throwable $e) {
-			throw new Exception("There was an error setting up the {$name} layer: " . $e->getMessage());
+			throw new Exception("There was an error setting up the {$name} layer: " . $e->getMessage(), 0, $e);
 		}
 	}
 

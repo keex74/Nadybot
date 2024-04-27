@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\TRACKER_MODULE;
 
+use Exception;
 use Nadybot\Core\ParamClass\PProfession;
 use ParserGenerator\Parser;
 use ParserGenerator\SyntaxTreeNode\Branch;
@@ -72,8 +73,12 @@ class TrackerOnlineParser {
 	}
 
 	protected function parseOption(Branch $option): TrackerOnlineOption {
+		$type = $option->getSubnode(0)?->getType();
+		if (!isset($type)) {
+			throw new Exception('Unknown parsed value encountered');
+		}
 		return new TrackerOnlineOption(
-			type: $option->getSubnode(0)->getType(),
+			type: $type,
 			value: $option->toString(),
 		);
 	}

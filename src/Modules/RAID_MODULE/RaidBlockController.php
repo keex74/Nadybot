@@ -70,7 +70,7 @@ class RaidBlockController extends ModuleInstance {
 			->whereNull('expiration')
 			->orWhere('expiration', '>', time())
 			->asObj(RaidBlock::class)
-			->each(function (RaidBlock $block) {
+			->each(function (RaidBlock $block): void {
 				$this->blocks[$block->player] ??= [];
 				$this->blocks[$block->player][$block->blocked_from] = $block;
 			});

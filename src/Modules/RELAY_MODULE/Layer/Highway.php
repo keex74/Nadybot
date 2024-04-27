@@ -169,7 +169,7 @@ class Highway implements RelayLayerInterface, StatusProvider {
 		return $encoded;
 	}
 
-	public function receive(RelayMessage $msg): ?RelayMessage {
+	public function receive(RelayMessage $msg): RelayMessage {
 		foreach ($msg->packages as &$data) {
 			try {
 				$this->logger->debug('Received highway message on relay {relay}', [
@@ -211,14 +211,14 @@ class Highway implements RelayLayerInterface, StatusProvider {
 			if (($package instanceof In\RoomInfo) && isset($this->initCallback)) {
 				$this->status = new RelayStatus(RelayStatus::READY, 'ready');
 				$callback = $this->initCallback;
-				unset($this->initCallback);
+				$this->initCallback = null;
 				$callback();
 				$data = null;
 				continue;
 			}
 			if (($package instanceof In\Success) && isset($this->deInitCallback)) {
 				$callback = $this->deInitCallback;
-				unset($this->deInitCallback);
+				$this->deInitCallback = null;
 				$callback();
 				$data = null;
 				continue;

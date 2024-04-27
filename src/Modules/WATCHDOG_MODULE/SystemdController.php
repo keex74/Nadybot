@@ -176,6 +176,8 @@ class SystemdController extends ModuleInstance {
 	/**
 	 * sd_watchdog_enabled PHP implementation
 	 *
+	 * @param-out int $usec
+	 *
 	 * @link https://github.com/systemd/systemd/blob/master/src/libsystemd/sd-daemon/sd-daemon.c
 	 */
 	public function isSystemdWatchdogEnabled(bool $unsetEnvironment, int &$usec): int {
@@ -190,6 +192,7 @@ class SystemdController extends ModuleInstance {
 		return $result;
 	}
 
+	/** @param-out int $usec */
 	public function systemdWatchdogEnabled(int &$usec): int {
 		$watchdogUsec = getenv('WATCHDOG_USEC');
 		if ($watchdogUsec === false) {

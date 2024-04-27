@@ -11,23 +11,44 @@ class Branch extends \ParserGenerator\SyntaxTreeNode\Base {
 	public function getType() {
 	}
 
-	/** @return $this */
+	/**
+	 * @param string $newValue
+	 *
+	 * @return $this
+	 */
 	public function setType($newValue) {
 	}
 
-	/** @return string */
-	public function toString($mode = \ParserGenerator\SyntaxTreeNode\Base::TO_STRING_NO_WHITESPACES) {
+	/**
+	 * @param int $mode
+	 *
+	 * @psalm-param int-mask-of<\ParserGenerator\SyntaxTreeNode\Base::TO_STRING_*> $mode
+	 *
+	 * @return string
+	 */
+	public function toString($mode=\ParserGenerator\SyntaxTreeNode\Base::TO_STRING_NO_WHITESPACES) {
 	}
 
 	/** @return list<Leaf> */
 	public function getLeafs() {
 	}
 
-	/** @return list<Branch> */
+	/**
+	 * @param string $type
+	 * @param bool   $nest
+	 * @param bool   $childrenFirst
+	 *
+	 * @return list<Branch>
+	 */
 	public function findAll($type, $nest = false, $childrenFirst = false) {
 	}
 
-	/** @return ?Branch */
+	/**
+	 * @param string $type
+	 * @param bool   $startingOnly
+	 *
+	 * @return ?Branch
+	 */
 	public function findFirst($type, $startingOnly = false) {
 	}
 
@@ -47,7 +68,19 @@ class Branch extends \ParserGenerator\SyntaxTreeNode\Base {
 	public function isBranch() {
 	}
 
-	/** @return bool */
+	/**
+	 * @param int $index
+	 *
+	 * @return ?self
+	 */
+	public function getSubnode($index) {
+	}
+
+	/**
+	 * @param string $type
+	 *
+	 * @return bool
+	 */
 	protected function is($type) {
 	}
 }

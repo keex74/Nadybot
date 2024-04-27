@@ -35,8 +35,8 @@ class JsonImporter {
 		}
 		try {
 			$types = Safe::pregMatchOffsetAll("/\??(array<(?R),(?:(?R)(?:\|(?R))*)>|array<(?:(?R)(?:\|(?R))*)>|[a-zA-Z_]+)/", $type);
-		} catch (PcreException) {
-			throw new Exception("Illegal type definition: {$type}");
+		} catch (PcreException $e) {
+			throw new Exception("Illegal type definition: {$type}", 0, $e);
 		}
 
 		foreach ($types[1] as $typeMatch) {

@@ -111,7 +111,11 @@ class NotumWarsController extends ModuleInstance {
 	public const ATTACKS_API = 'https://towers.aobots.org/api/attacks/';
 	public const OUTCOMES_API = 'https://towers.aobots.org/api/outcomes/';
 
-	/** Breakpoints of QLs that start a new tower type */
+	/**
+	 * Breakpoints of QLs that start a new tower type
+	 *
+	 * @var array<int,int>
+	 */
 	public const TOWER_TYPE_QLS = [
 		34 => 2,
 		82 => 3,
@@ -462,6 +466,7 @@ class NotumWarsController extends ModuleInstance {
 
 	#[NCA\Event('connect', 'Load all attacks from the API')]
 	public function initAttacksFromApi(): void {
+		/** @var ?int */
 		$maxTS = $this->db->table(DBTowerAttack::getTable())->max('timestamp');
 		$client = $this->http->build();
 		$uri = self::ATTACKS_API;
@@ -524,6 +529,7 @@ class NotumWarsController extends ModuleInstance {
 
 	#[NCA\Event('connect', 'Load all tower outcomes from the API')]
 	public function initOutcomesFromApi(): void {
+		/** @var ?int */
 		$maxTS = $this->db->table(DBOutcome::getTable())->max('timestamp');
 		$client = $this->http->build();
 		$uri = self::OUTCOMES_API;
@@ -725,7 +731,7 @@ class NotumWarsController extends ModuleInstance {
 	}
 
 	/** Get the current gas for a site and information */
-	public function getSiteGasInfo(FeedMessage\SiteUpdate $site, ?int $time=null): ?GasInfo {
+	public function getSiteGasInfo(FeedMessage\SiteUpdate $site, ?int $time=null): GasInfo {
 		$lastAttack = $this->getLastAttackFrom($site);
 		return new GasInfo($site, $lastAttack, $time);
 	}
@@ -783,21 +789,19 @@ class NotumWarsController extends ModuleInstance {
 			}
 			$blob .= "\n";
 			$gasInfo = $this->getSiteGasInfo($site);
-			if (isset($gasInfo)) {
-				$gas = $gasInfo->currentGas();
-				if (isset($gas) && $gas->gas === 75) {
-					$secsToHot = ($gasInfo->goesHot()??time()) - time();
-					$blob .= '<tab>Gas: ' . $gas->colored() . ', opens in '.
-						Util::unixtimeToReadable($secsToHot) . "\n";
-				} elseif (isset($gas)) {
-					$secsToCold = ($gasInfo->goesCold()??time()) - time();
-					$coldIn = ($secsToCold > 0)
-						? 'in ' . Util::unixtimeToReadable($secsToCold)
-						: 'any time now';
-					$blob .= '<tab>Gas: ' . $gas->colored() . ", closes {$coldIn}\n";
-				} else {
-					$blob .= "<tab>Gas: N/A\n";
-				}
+			$gas = $gasInfo->currentGas();
+			if (isset($gas) && $gas->gas === 75) {
+				$secsToHot = ($gasInfo->goesHot()??time()) - time();
+				$blob .= '<tab>Gas: ' . $gas->colored() . ', opens in '.
+					Util::unixtimeToReadable($secsToHot) . "\n";
+			} elseif (isset($gas)) {
+				$secsToCold = ($gasInfo->goesCold()??time()) - time();
+				$coldIn = ($secsToCold > 0)
+					? 'in ' . Util::unixtimeToReadable($secsToCold)
+					: 'any time now';
+				$blob .= '<tab>Gas: ' . $gas->colored() . ", closes {$coldIn}\n";
+			} else {
+				$blob .= "<tab>Gas: N/A\n";
 			}
 			$blob .= '<tab>Towers: 1 CT'.
 				", {$site->num_turrets} ".
@@ -1011,7 +1015,7 @@ class NotumWarsController extends ModuleInstance {
 					if ($site->gas !== 75) {
 						return false;
 					}
-					return $this->getSiteGasInfo($site)?->gasAt(time() + 3_600)?->gas === 25;
+					return $this->getSiteGasInfo($site)->gasAt(time() + 3_600)?->gas === 25;
 				}
 			);
 		} else {
@@ -1026,7 +1030,7 @@ class NotumWarsController extends ModuleInstance {
 				$time = time() + (new PDuration($future[0]))->toSecs();
 				$hotSites = $hotSites->filter(
 					function (FeedMessage\SiteUpdate $site) use ($time): bool {
-						$gas = $this->getSiteGasInfo($site)?->gasAt($time)?->gas;
+						$gas = $this->getSiteGasInfo($site)->gasAt($time)?->gas;
 						return isset($gas) && $gas < 75;
 					}
 				);
@@ -1042,9 +1046,6 @@ class NotumWarsController extends ModuleInstance {
 			$this->logger->info('Found <penalty> keyword');
 			$hotSites = $hotSites->filter(function (FeedMessage\SiteUpdate $site): bool {
 				$gas = $this->getSiteGasInfo($site);
-				if (!isset($gas)) {
-					return false;
-				}
 				return $gas->inPenalty();
 			});
 		}
@@ -1736,7 +1737,10 @@ class NotumWarsController extends ModuleInstance {
 		/** @param Collection<int,FeedMessage\SiteUpdate> $sites */
 		$blob = $matches->map(function (Collection $sites, string $orgName): string {
 			$faction = strtolower($sites->first()->org_faction?->value ?? 'unknown');
-			$ctPts = $sites->pluck('ql')->sum() * 2;
+
+			/** @var int */
+			$ctPts = $sites->pluck('ql')->sum();
+			$ctPts *= 2;
 			return "<{$faction}>{$orgName}<end> (QL {$ctPts} contracts)\n\n".
 				$sites->map(function (FeedMessage\SiteUpdate $site): string {
 					return $this->renderSite($site, false);
@@ -1762,7 +1766,6 @@ class NotumWarsController extends ModuleInstance {
 			$line .= ' &lt;Free or unknown planter&gt;';
 		}
 		$gas = $this->getSiteGasInfo($site, $time);
-		assert(isset($gas));
 		if (isset($time)) {
 			$currentGas = $gas->gasAt($time);
 		} else {

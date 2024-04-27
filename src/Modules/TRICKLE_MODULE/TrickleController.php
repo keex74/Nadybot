@@ -148,13 +148,14 @@ class TrickleController extends ModuleInstance {
 	}
 
 	public function getTrickleAmounts(Trickle $row): string {
-		$arr = ['agi', 'int', 'psy', 'sta', 'str', 'sen'];
+		$arr = ['amountAgi', 'amountInt', 'amountPsy', 'amountSta', 'amountStr', 'amountSen'];
 		$reqs = [];
 		foreach ($arr as $ability) {
-			$fieldName = 'amount' . ucfirst($ability);
-			if ($row->{$fieldName} > 0) {
-				$abilityName = Util::getAbility($ability, true);
-				$value = round(4 / ($row->{$fieldName}), 2);
+			if ($row->{$ability} > 0) {
+				/** @var float */
+				$amount = $row->{$ability};
+				$abilityName = Util::getAbility(substr($ability, 6), true);
+				$value = round(4 / $amount, 2);
 				$reqs []= "{$value} {$abilityName}";
 			}
 		}

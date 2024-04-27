@@ -5,7 +5,7 @@ namespace Nadybot\Modules\PVP_MODULE;
 use function Safe\json_decode;
 use ParserGenerator\Parser;
 
-use ParserGenerator\SyntaxTreeNode\Branch;
+use ParserGenerator\SyntaxTreeNode\{Branch, Root};
 
 class TrackerArgumentParser {
 	protected Parser $parser;
@@ -42,9 +42,13 @@ class TrackerArgumentParser {
 	/** @throws TrackerArgumentParserException */
 	public function parse(string $input): TrackerConfig {
 		$parser = $this->getParser();
+
+		/** @var Root|false */
 		$expr = $parser->parse($input);
 		if ($expr === false) {
 			$error = $parser->getError();
+
+			/** @var array{"char":int} */
 			$posData = $this->parser::getLineAndCharacterFromOffset($input, $error['index']);
 
 			$expected = implode('<end> or <highlight>', $this->parser->generalizeErrors($error['expected']));

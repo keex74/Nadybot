@@ -72,7 +72,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 	/** @var ?callable */
 	protected $initCallback;
 
-	protected WebsocketConnection $client;
+	protected ?WebsocketConnection $client = null;
 
 	#[NCA\Logger]
 	private LoggerInterface $logger;
@@ -128,7 +128,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 		}
 		async(function () use ($data): void {
 			foreach ($data as $chunk) {
-				$this->client->sendText($chunk);
+				$this->client?->sendText($chunk);
 			}
 		})->catch(Nadybot::asyncErrorHandler(...));
 		return [];
@@ -172,14 +172,14 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 							delay(10);
 							$reconnect = true;
 						} else {
-							unset($this->client);
+							$this->client = null;
 							$this->retryHandler = EventLoop::delay(10, function (string $token): void {
 								$this->relay->init();
 							});
 							return;
 						}
 					} else {
-						unset($this->client);
+						$this->client = null;
 						$this->retryHandler = EventLoop::delay(10, function (string $token): void {
 							$this->relay->init();
 						});
@@ -196,7 +196,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 				return;
 			}
 			$callback = $this->initCallback;
-			unset($this->initCallback);
+			$this->initCallback = null;
 			$this->status = new RelayStatus(RelayStatus::READY, 'ready');
 			$callback();
 			async($this->mainLoop(...))->catch(Nadybot::asyncErrorHandler(...));
@@ -216,7 +216,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 		}
 		async(function () use ($callback): void {
 			try {
-				$this->client->close();
+				$this->client?->close();
 			} catch (Throwable) {
 			}
 			$callback();
@@ -226,7 +226,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 
 	private function mainLoop(): void {
 		try {
-			while (null !== ($message = $this->client->receive())) {
+			while (null !== ($message = $this->client?->receive())) {
 				$data = $message->buffer();
 
 				$msg = new RelayMessage(packages: [$data]);
@@ -242,17 +242,17 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 				'exception' => $e,
 			]);
 			$this->status = new RelayStatus(RelayStatus::INIT, $e->getMessage());
-			unset($this->client);
+			$this->client = null;
 			$this->retryHandler = EventLoop::delay(10, function (string $token): void {
 				$this->relay->init();
 			});
 			return;
 		}
 		try {
-			$this->client->close();
+			$this->client?->close();
 		} catch (Throwable) {
 		}
-		unset($this->client);
+		$this->client = null;
 		$this->logger->notice('Reconnecting.');
 		$this->retryHandler = EventLoop::defer(function (string $token): void {
 			$this->relay->init();

@@ -62,7 +62,7 @@ class RecipeController extends ModuleInstance {
 		try {
 			$fileNames = $this->fs->listFiles($this->path);
 		} catch (FilesystemException $e) {
-			throw new Exception("Could not open '{$this->path}' for loading recipes: " . $e->getMessage());
+			throw new Exception("Could not open '{$this->path}' for loading recipes: " . $e->getMessage(), 0, $e);
 		}
 
 		/** @var array<string,Recipe> */
@@ -189,7 +189,7 @@ class RecipeController extends ModuleInstance {
 		try {
 			$data = json_decode($this->fs->read($this->path . $fileName), false);
 		} catch (JsonException $e) {
-			throw new UserException("Could not read '{$fileName}': invalid JSON");
+			throw new UserException("Could not read '{$fileName}': invalid JSON", 0, $e);
 		}
 
 		/** @var array<string,AODBItem> */

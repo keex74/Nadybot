@@ -6,6 +6,7 @@ use function Amp\async;
 use function Amp\Future\await;
 
 use AO\Package;
+use Nadybot\Core\DBSchema\Player;
 use Nadybot\Core\Events\LeaveMyPrivEvent;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -477,6 +478,8 @@ class RaidMemberController extends ModuleInstance {
 				$activeNames[$raider->player] = async($this->playerManager->byName(...), $raider->player);
 			}
 		}
+
+		/** @var array<string,?Player> */
 		$activePlayers = await($activeNames);
 		ksort($activePlayers);
 		$lines = [];

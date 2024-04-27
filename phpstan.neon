@@ -18,6 +18,7 @@ parameters:
     - Stubs/CanBeEscapedWhenCastToString.stub
     - Stubs/ParserGenerator.SyntaxTreeNode.Branch.php
     - Stubs/ParserGenerator.SyntaxTreeNode.Base.php
+    - Stubs/ParserGenerator.Parser.php
   sfpPsrLog:
     enableMessageStaticStringRule: true
     enableContextRequireExceptionKeyRule: true

@@ -542,8 +542,10 @@ class ItemsController extends ModuleInstance {
 	 * @param T $ql
 	 *
 	 * @psalm-return (T is null ? null|AODBEntry : null|AODBItem)
+	 *
+	 * @phpstan-ignore-next-line
 	 */
-	public function findByName(string $name, ?int $ql=null): ?AODBEntry {
+	public function findByName(string $name, ?int $ql=null): null|AODBEntry|AODBItem {
 		$query = $this->db->table(AODBEntry::getTable())
 			->where('name', $name)
 			->orderByDesc('highql')

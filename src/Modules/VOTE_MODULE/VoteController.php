@@ -134,7 +134,6 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 					->where('id', $poll->id)
 					->update(['status' => self::STATUS_ENDED]);
 				$ePoll = clone $poll;
-				unset($ePoll->possible_answers);
 				$event = new PollEndEvent(
 					poll: $ePoll,
 					votes: $this->db->table(Vote::getTable())
@@ -244,7 +243,6 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		$this->db->table(Vote::getTable())->where('poll_id', $topic->id)->delete();
 		$this->db->table(Poll::getTable())->delete($topic->id);
 		$ePoll = clone $topic;
-		unset($ePoll->possible_answers);
 		unset($this->polls[$topic->id]);
 		$msg = "The poll <highlight>{$topic->question}<end> has been removed.";
 		$context->reply($msg);
@@ -269,7 +267,6 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 		if ($deleted > 0) {
 			$msg = "Your vote for <highlight>{$topic->question}<end> has been removed.";
 			$ePoll = clone $topic;
-			unset($ePoll->possible_answers);
 			$event = new VoteDelEvent(
 				poll: $ePoll,
 				player: $context->char->name,
@@ -375,7 +372,6 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 			->asObj(Vote::class)
 			->first();
 		$ePoll = clone $topic;
-		unset($ePoll->possible_answers);
 		if (isset($oldVote)) {
 			$this->db->table(Vote::getTable())
 				->where('author', $context->char->name)
@@ -460,7 +456,6 @@ class VoteController extends ModuleInstance implements MessageEmitter {
 
 		$context->reply($msg);
 		$ePoll = clone $topic;
-		unset($ePoll->possible_answers);
 		$event = new PollStartEvent(poll: $ePoll);
 		$this->eventManager->fireEvent($event);
 	}

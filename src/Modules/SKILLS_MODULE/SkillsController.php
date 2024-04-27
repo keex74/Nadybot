@@ -469,7 +469,7 @@ class SkillsController extends ModuleInstance {
 			$i = 5;
 		}
 
-		$aoidQL = ((ceil($maSkill / 2) - 1) % 500 + 1);
+		$aoidQL = (((int)ceil($maSkill / 2) - 1) % 500 + 1);
 
 		$fistQL = min(1_500, (int)round($maSkill / 2, 0));
 		if ($fistQL <= 200) {

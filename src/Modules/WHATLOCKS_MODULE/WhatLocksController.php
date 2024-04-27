@@ -64,7 +64,7 @@ class WhatLocksController extends ModuleInstance {
 			);
 		})->sort(static function (SkillIdCount $s1, SkillIdCount $s2): int {
 			return strnatcmp($s1->skill->name, $s2->skill->name);
-		})->map(static function (SkillIdCount $row) {
+		})->map(static function (SkillIdCount $row): string {
 			return Text::alignNumber($row->amount, 4).
 				' - '.
 				Text::makeChatcmd($row->skill->name, "/tell <myname> whatlocks {$row->skill->name}");
@@ -76,11 +76,9 @@ class WhatLocksController extends ModuleInstance {
 			$blob
 		);
 		if (is_array($pages)) {
-			$msg = array_map(static function ($page) {
-				return $page . ' found.';
-			}, $pages);
+			$msg = array_map(static fn (string $page): string => "{$page} found.", $pages);
 		} else {
-			$msg =  $pages . ' found.';
+			$msg = "{$pages} found.";
 		}
 		$context->reply($msg);
 	}
@@ -96,7 +94,7 @@ class WhatLocksController extends ModuleInstance {
 		usort($skills, static function (Skill $a, Skill $b): int {
 			return strnatcmp($a->name, $b->name);
 		});
-		$lines = array_map(static function (Skill $skill) {
+		$lines = array_map(static function (Skill $skill): string {
 			return Text::makeChatcmd(
 				$skill->name,
 				"/tell <myname> whatlocks {$skill->name}"
@@ -155,7 +153,7 @@ class WhatLocksController extends ModuleInstance {
 			'The following ' . count($lines) . ' items lock '. $skills[0]->name
 		);
 		if (is_array($pages)) {
-			$msg = array_map(static function ($page) use ($skills) {
+			$msg = array_map(static function (string $page) use ($skills): string {
 				return "{$page} found that lock <highlight>{$skills[0]->name}<end>.";
 			}, $pages);
 		} else {

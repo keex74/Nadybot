@@ -421,8 +421,8 @@ class SiteTrackerController extends ModuleInstance {
 					$handlers []= new $className($argument->value);
 				} catch (UserException $e) {
 					throw $e;
-				} catch (Throwable) {
-					throw new UserException("'<highlight>{$argument->value}<end>' is not a valid value for {$argument->name}.");
+				} catch (Throwable $e) {
+					throw new UserException("'<highlight>{$argument->value}<end>' is not a valid value for {$argument->name}.", 0, $e);
 				}
 			}
 		}

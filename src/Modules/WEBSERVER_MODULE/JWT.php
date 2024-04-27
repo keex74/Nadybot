@@ -59,6 +59,8 @@ class JWT {
 	 * @throws BeforeValidException      Provided JWT is trying to be used before it's eligible as defined by 'nbf'
 	 * @throws BeforeValidException      Provided JWT is trying to be used before it's been created as defined by 'iat'
 	 * @throws ExpiredException          Provided JWT has since expired, as defined by the 'exp' claim
+	 *
+	 * @phpstan-ignore-next-line
 	 */
 	public static function decode(string $jwt, string $key, array $allowed_algs=[]): stdClass {
 		$timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
@@ -129,7 +131,7 @@ class JWT {
 	/**
 	 * Decode a JSON string into a PHP object.
 	 *
-	 * @param string $input JSON string
+	 * @param ?string $input JSON string
 	 *
 	 * @return stdClass Object representation of JSON string
 	 *
@@ -160,9 +162,9 @@ class JWT {
 	 *
 	 * @param string $input A Base64 encoded string
 	 *
-	 * @return string A decoded string
+	 * @return ?string A decoded string
 	 */
-	public static function urlsafeB64Decode($input): ?string {
+	public static function urlsafeB64Decode(string $input): ?string {
 		$remainder = strlen($input) % 4;
 		if ($remainder) {
 			$padlen = 4 - $remainder;

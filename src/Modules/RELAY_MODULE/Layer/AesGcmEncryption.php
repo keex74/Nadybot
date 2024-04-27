@@ -68,7 +68,7 @@ class AesGcmEncryption implements RelayLayerInterface {
 		return array_map($this->encode(...), $data);
 	}
 
-	public function receive(RelayMessage $msg): ?RelayMessage {
+	public function receive(RelayMessage $msg): RelayMessage {
 		$result = [];
 		foreach ($msg->packages as $text) {
 			$text = $this->decode($text);

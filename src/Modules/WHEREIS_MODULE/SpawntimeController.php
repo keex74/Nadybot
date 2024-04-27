@@ -157,7 +157,7 @@ class SpawntimeController extends ModuleInstance {
 	 */
 	protected function spawntimesToLines(Collection $spawnTimes): Collection {
 		$mobs = $this->whereisController->getAll();
-		$spawnTimes->each(static function (Spawntime $spawn) use ($mobs) {
+		$spawnTimes->each(static function (Spawntime $spawn) use ($mobs): void {
 			$spawn->coordinates = $mobs->filter(
 				static function (Whereis $row) use ($spawn): bool {
 					return strncasecmp($row->name, $spawn->mob, strlen($spawn->mob)) === 0;

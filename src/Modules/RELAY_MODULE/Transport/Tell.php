@@ -93,7 +93,7 @@ class Tell implements TransportInterface {
 			return;
 		}
 		$callback = $this->initCallback;
-		unset($this->initCallback);
+		$this->initCallback = null;
 		$callback();
 	}
 

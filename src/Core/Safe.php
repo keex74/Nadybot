@@ -81,6 +81,7 @@ class Safe {
 	 *
 	 * @psalm-suppress InvalidReturnStatement
 	 * @psalm-suppress InvalidReturnType
+	 * @psalm-suppress ReferenceConstraintViolation
 	 */
 	public static function pregReplace(string $pattern, string $replacement, string $subject, int $limit=-1, ?int &$count=null): string {
 		return preg_replace($pattern, $replacement, $subject, $limit, $count);

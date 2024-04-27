@@ -122,7 +122,7 @@ class PrivateChannel implements TransportInterface, StatusProvider {
 		$this->status = new RelayStatus(RelayStatus::READY, 'ready');
 		if (isset($this->initCallback)) {
 			$callback = $this->initCallback;
-			unset($this->initCallback);
+			$this->initCallback = null;
 			$callback();
 		}
 	}

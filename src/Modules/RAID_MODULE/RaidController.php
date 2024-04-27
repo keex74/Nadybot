@@ -841,7 +841,7 @@ class RaidController extends ModuleInstance {
 
 		/** @var Collection<int,RaidStatus|RaidPointsLog> */
 		$allLogs = $logs->concat($events)
-			->sort(static function (RaidStatus|RaidPointsLog $a, RaidStatus|RaidPointsLog $b) {
+			->sort(static function (RaidStatus|RaidPointsLog $a, RaidStatus|RaidPointsLog $b): int {
 				return $a->time <=> $b->time;
 			});
 		if ($allLogs->isEmpty()) {

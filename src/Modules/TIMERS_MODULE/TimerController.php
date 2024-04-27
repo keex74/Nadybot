@@ -28,6 +28,7 @@ use Nadybot\Core\{
 };
 
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 /**
  * @author Tyrence (RK2)
@@ -168,7 +169,9 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 					continue;
 				}
 				try {
-					$instance->{$method}($timer, $alert);
+					$refClass = new ReflectionClass($instance);
+					$refMethod = $refClass->getMethod($method);
+					$refMethod->invoke($instance, $timer, $alert);
 				} catch (Exception $e) {
 					$this->logger->error("Error calling callback method '{callback}' for timer '{timer}': {error}.", [
 						'callback' => $timer->callback,
@@ -403,7 +406,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 		}
 		$blob = '';
 		// Sort timers by time until going off
-		usort($timers, static function (Timer $a, Timer $b) {
+		usort($timers, static function (Timer $a, Timer $b): int {
 			return $a->endtime <=> $b->endtime;
 		});
 		foreach ($timers as $timer) {
@@ -472,7 +475,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 	 * @param string       $sender  Name of the creator
 	 * @param string       $name    Name of the timer
 	 * @param int          $runTime When to trigger
-	 * @param string       $channel Where to show (comma-separated)
+	 * @param ?string      $channel Where to show (comma-separated)
 	 * @param ?list<Alert> $alerts  List of alerts when to display things
 	 *
 	 * @return string Message to display
@@ -510,7 +513,7 @@ class TimerController extends ModuleInstance implements MessageEmitter {
 
 	/** @param list<Alert> $alerts */
 	public function add(string $name, string $owner, ?string $mode, array $alerts, string $callback, ?string $data=null, ?string $origin=null, ?int $id=null): int {
-		usort($alerts, static function (Alert $a, Alert $b) {
+		usort($alerts, static function (Alert $a, Alert $b): int {
 			return $a->time <=> $b->time;
 		});
 

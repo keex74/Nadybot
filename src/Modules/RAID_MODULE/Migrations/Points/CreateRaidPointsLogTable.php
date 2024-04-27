@@ -20,7 +20,7 @@ class CreateRaidPointsLogTable implements SchemaMigration {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->boolean('individual')->default(true)->index()->change();
 			});
-			$db->table($table)->get()->each(static function (stdClass $log) use ($db, $table) {
+			$db->table($table)->get()->each(static function (stdClass $log) use ($db, $table): void {
 				$db->table($table)
 					->where('time', (int)$log->time)
 					->where('username', (string)$log->username)

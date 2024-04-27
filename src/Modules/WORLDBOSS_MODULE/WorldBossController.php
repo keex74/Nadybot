@@ -943,6 +943,7 @@ class WorldBossController extends ModuleInstance {
 	protected function apiTimerToWorldbossTimer(ApiSpawnData $timer, string $mobName): WorldBossTimer {
 		/** @var ?int */
 		$interval = static::BOSS_DATA[$mobName][static::INTERVAL] ?? null;
+		// @phpstan-ignore-next-line
 		$killable = $timer->last_spawn + static::BOSS_DATA[$mobName][static::IMMORTAL];
 		$newTimer = new WorldBossTimer(
 			spawn: $timer->last_spawn,
@@ -987,7 +988,7 @@ class WorldBossController extends ModuleInstance {
 			}
 			$newTimers []= $timer;
 		}
-		usort($newTimers, static function (WorldBossTimer $a, WorldBossTimer $b) {
+		usort($newTimers, static function (WorldBossTimer $a, WorldBossTimer $b): int {
 			return $a->next_spawn <=> $b->next_spawn;
 		});
 		return $newTimers;

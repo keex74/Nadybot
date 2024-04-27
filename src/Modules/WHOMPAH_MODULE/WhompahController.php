@@ -173,7 +173,7 @@ class WhompahController extends ModuleInstance {
 
 		$this->db->table(WhompahCityRel::getTable())->orderBy('city1_id')
 			->asObj(WhompahCityRel::class)
-			->each(static function (WhompahCityRel $city) use ($network) {
+			->each(static function (WhompahCityRel $city) use ($network): void {
 				$network[$city->city1_id]->connections []= $city->city2_id;
 			});
 

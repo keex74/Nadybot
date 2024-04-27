@@ -19,7 +19,7 @@ class Timer extends DBTable {
 	 * @param ?string $data     For repeating timers, this is the repeat interval in seconds
 	 * @param ?int    $id       ID of the timer
 	 * @param Alert[] $alerts   A list of alerts, each calling $callback
-	 * @param int     $settime  Timestamp when this timer was set
+	 * @param ?int    $settime  Timestamp when this timer was set
 	 *
 	 * @psalm-param list<Alert> $alerts
 	 */

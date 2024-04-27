@@ -120,7 +120,7 @@ class ArulSabaController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	public function readIngredientByAoid(int $aoid, int $amount=1, ?int $ql=null, bool $qlCanBeHigher=false): ?Ingredient {
+	public function readIngredientByAoid(int $aoid, int $amount=1, ?int $ql=null, bool $qlCanBeHigher=false): Ingredient {
 		/** @var Ingredient|null */
 		$ing = $this->db->table(Ingredient::getTable())
 			->where('aoid', $aoid)
@@ -273,7 +273,7 @@ class ArulSabaController extends ModuleInstance {
 		$bpQL = $blueprints[$numGems][2];
 		$balId = $side === 'left' ? 3 : 5;
 		$ingredient = $this->readIngredientByAoid($blueprints[$numGems][0], 1, $bpQL);
-		if (!isset($ingredient) || !isset($ingredient->item)) {
+		if (!isset($ingredient->item)) {
 			$context->reply("Item #{$blueprints[$numGems][0]} not found in bot's item database.");
 			return;
 		}

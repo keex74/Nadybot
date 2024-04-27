@@ -215,7 +215,7 @@ class TrackerController extends ModuleInstance implements MessageEmitter {
 			});
 		$this->db->table(TrackingOrgMember::getTable())
 			->asObj(TrackingOrgMember::class)
-			->each(function (TrackingOrgMember $row) {
+			->each(function (TrackingOrgMember $row): void {
 				$this->buddylistManager->addId($row->uid, static::REASON_ORG_TRACKER);
 			});
 	}

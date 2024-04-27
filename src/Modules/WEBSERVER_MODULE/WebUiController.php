@@ -334,7 +334,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 			try {
 				$file = $this->fs->tmpfile();
 			} catch (FilesystemException $e) {
-				throw new Exception('Unable to create temp file for extraction: ' . $e->getMessage());
+				throw new Exception('Unable to create temp file for extraction: ' . $e->getMessage(), 0, $e);
 			}
 			$handle = new WritableResourceStream($file);
 			$archiveName = stream_get_meta_data($file)['uri'];
@@ -358,7 +358,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 			}
 		} catch (Throwable $e) {
 			$msg = 'An unexpected error occurred extracting the release: ' . $e->getMessage();
-			throw new Exception($msg);
+			throw new Exception($msg, 0, $e);
 		} finally {
 			if (isset($oldMask)) {
 				umask($oldMask);
