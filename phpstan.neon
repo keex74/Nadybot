@@ -9,6 +9,7 @@ parameters:
   ignoreErrors:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
     - '#Static property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'
+    - '#Parameter \#1 \$closure of function Amp\\async expects Closure#'
   stubFiles:
     - Stubs/EventSauce.ObjectHydrator.IterableList.php
     - Stubs/Illuminate.Contracts.Support.Arrayable.stub

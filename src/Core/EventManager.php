@@ -531,6 +531,8 @@ class EventManager {
 					if (!is_object($callback) || !($callback instanceof Closure)) {
 						$callback = Closure::fromCallable($callback);
 					}
+
+					/** @var Closure(Event,mixed...):void $callback */
 					$futures []= async($callback, $eventObj, ...$args);
 				}
 			}
