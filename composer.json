@@ -48,9 +48,9 @@
 		"amphp/websocket-client": "^2.0.0",
 		"eventsauce/object-hydrator": "^1.1.0",
 		"amphp/http-tunnel": "^2.0.0-beta.2",
-		"nadylib/imex": "dev-main",
-		"nadybot/aolib": "dev-main",
-		"nadylib/leaky-bucket": "dev-main",
+		"nadylib/imex": "^1.0.0",
+		"nadybot/aolib": "^0.1.0",
+		"nadylib/leaky-bucket": "^0.1.0",
 		"amphp/pipeline": "^1.2",
 		"amphp/process": "^2.0",
 		"amphp/byte-stream": "^2.1",
@@ -59,28 +59,6 @@
 		"amphp/websocket-server": "^4.0.0",
 		"doctrine/dbal": "^3"
 	},
-	"repositories": [
-		{
-			"type": "git",
-			"url": "https://github.com/Nadyita/phpstan-amp-file-rule.git"
-		},
-		{
-			"type": "git",
-			"url": "https://github.com/Nadybot/Nadystyle.git"
-		},
-		{
-			"type": "git",
-			"url": "https://github.com/Nadybot/IMEX.git"
-		},
-		{
-			"type": "git",
-			"url": "https://github.com/Nadybot/aolib.git"
-		},
-		{
-			"type": "git",
-			"url": "https://github.com/Nadybot/leaky-bucket.git"
-		}
-	],
 	"autoload": {
 		"psr-4": {
 			"Nadybot\\phpstan\\": "phpstan/src/",
@@ -95,8 +73,8 @@
 		}
 	},
 	"require-dev": {
-		"nadybot/nadystyle": "dev-main",
-		"nadyita/phpstan-amp-file-rule": "dev-main",
+		"nadybot/nadystyle": "^1.0.0",
+		"nadyita/phpstan-amp-file-rule": "^1.0.1",
 		"squizlabs/php_codesniffer": "^3.9.0",
 		"composer/composer": "^2.0.0",
 		"composer-phar/phpstan": "^1.10.59",

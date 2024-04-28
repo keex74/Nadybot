@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79a1c4d20394e9bd1f9e40ac83737267",
+    "content-hash": "4ad2e2a5cc647b3ceba20acfa4cd647c",
     "packages": [
         {
             "name": "amphp/amp",
@@ -3226,17 +3226,23 @@
         },
         {
             "name": "nadybot/aolib",
-            "version": "dev-main",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nadybot/aolib.git",
-                "reference": "b129d62ba9625daeccdc83ed6b16ee7ff34ea685"
+                "reference": "03b5965ddbba245d9f6c8beb25126fec6dc0eb74"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nadybot/aolib/zipball/03b5965ddbba245d9f6c8beb25126fec6dc0eb74",
+                "reference": "03b5965ddbba245d9f6c8beb25126fec6dc0eb74",
+                "shasum": ""
             },
             "require": {
                 "amphp/byte-stream": "^2.1.0",
                 "amphp/file": "^3.0",
                 "amphp/pipeline": "^1.1",
-                "nadylib/leaky-bucket": "dev-main",
+                "nadylib/leaky-bucket": "^0.1.0",
                 "php": ">=8.1.17",
                 "psr/log": "^1|^2|^3",
                 "thecodingmachine/safe": "^2.0"
@@ -3245,12 +3251,11 @@
                 "beste/psr-testlogger": "^1.0",
                 "composer-phar/php-cs-fixer": "^3.51.0",
                 "composer-phar/phpstan": "^1.10",
-                "nadybot/nadystyle": "dev-main",
+                "nadybot/nadystyle": "^1.0.0",
                 "phpunit/phpunit": "^10.0",
                 "squizlabs/php_codesniffer": "^3.8",
                 "thecodingmachine/phpstan-safe-rule": "^1.2"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -3258,13 +3263,7 @@
                     "AO\\Tests\\": "tests"
                 }
             },
-            "scripts": {
-                "tests": [
-                    "phpunit -c phpunit.xml",
-                    "phpstan analyse --memory-limit 512M --no-progress --no-ansi -c phpstan.neon",
-                    "phpcs --no-colors --report=checkstyle --standard=style/Nadybot/ruleset.xml -q src tests"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "AGPL-3.0-or-later"
             ],
@@ -3277,15 +3276,25 @@
                 }
             ],
             "description": "An amphp3-based client library for the Anarchy Online chat server",
-            "time": "2024-04-13T07:36:57+00:00"
+            "support": {
+                "issues": "https://github.com/Nadybot/aolib/issues",
+                "source": "https://github.com/Nadybot/aolib/tree/0.1.0"
+            },
+            "time": "2024-04-28T14:48:39+00:00"
         },
         {
             "name": "nadylib/imex",
-            "version": "dev-main",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nadybot/IMEX.git",
-                "reference": "da9a58cf57d035cf1b47beca992bd3d16c322bbe"
+                "reference": "587851686dc83068c8e71aeedcc7460d843a895d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nadybot/IMEX/zipball/587851686dc83068c8e71aeedcc7460d843a895d",
+                "reference": "587851686dc83068c8e71aeedcc7460d843a895d",
+                "shasum": ""
             },
             "require": {
                 "brick/varexporter": "^0.4.0",
@@ -3295,26 +3304,19 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.49",
+                "nadybot/nadystyle": "^1.0",
                 "phpstan/phpstan": "^1.10",
                 "phpunit/phpunit": "^9.6",
                 "squizlabs/php_codesniffer": "^3.8"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Nadylib\\IMEX\\": "src",
-                    "Nadylib\\IMEX\\Tests\\": "tests",
-                    "PHP_CodeSniffer\\Standards\\Nadybot\\": "style/Nadybot"
+                    "Nadylib\\IMEX\\Tests\\": "tests"
                 }
             },
-            "scripts": {
-                "tests": [
-                    "phpunit -c phpunit.xml --testdox --no-interaction --colors=never",
-                    "phpstan analyse --memory-limit 512M --no-ansi -cphpstan.neon --error-format=github --no-progress",
-                    "phpcs --no-colors --standard=style/Nadybot/ruleset.xml src"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "AGPL-3.0-or-later"
             ],
@@ -3327,15 +3329,25 @@
                 }
             ],
             "description": "A library that abstracts away common file formats for easier importing and exporting",
-            "time": "2024-03-01T14:36:11+00:00"
+            "support": {
+                "issues": "https://github.com/Nadybot/IMEX/issues",
+                "source": "https://github.com/Nadybot/IMEX/tree/1.0.0"
+            },
+            "time": "2024-04-28T15:00:02+00:00"
         },
         {
             "name": "nadylib/leaky-bucket",
-            "version": "dev-main",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nadybot/leaky-bucket.git",
-                "reference": "58e41c63ea473414ea7a5b25cbef9b6c49c791c0"
+                "reference": "1a7c9e129a7a6c1371ca74a44b8d6c860951c8c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nadybot/leaky-bucket/zipball/1a7c9e129a7a6c1371ca74a44b8d6c860951c8c3",
+                "reference": "1a7c9e129a7a6c1371ca74a44b8d6c860951c8c3",
+                "shasum": ""
             },
             "require": {
                 "php": ">=8.1.17",
@@ -3345,11 +3357,11 @@
             "require-dev": {
                 "composer-phar/php-cs-fixer": "^3.51.0",
                 "composer-phar/phpstan": "^1.10",
+                "nadybot/nadystyle": "^1.0",
                 "phpunit/phpunit": "^10.0",
                 "squizlabs/php_codesniffer": "^3.8",
                 "thecodingmachine/phpstan-safe-rule": "^1.2"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -3357,13 +3369,7 @@
                     "Nadylib\\LeakyBucket\\Tests\\": "tests"
                 }
             },
-            "scripts": {
-                "tests": [
-                    "phpunit -c phpunit.xml --testdox --no-progress --colors=never",
-                    "phpstan analyse --memory-limit 512M --no-ansi -cphpstan.neon --error-format=github --no-progress",
-                    "phpcs --no-colors --standard=style/Nadybot/ruleset.xml src"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "AGPL-3.0-or-later"
             ],
@@ -3376,7 +3382,11 @@
                 }
             ],
             "description": "An fiber-based implementation of the LeakyBucket algorithm",
-            "time": "2024-03-02T19:09:35+00:00"
+            "support": {
+                "issues": "https://github.com/Nadybot/leaky-bucket/issues",
+                "source": "https://github.com/Nadybot/leaky-bucket/tree/0.1.0"
+            },
+            "time": "2024-04-28T12:54:29+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -5457,18 +5467,24 @@
         },
         {
             "name": "nadybot/nadystyle",
-            "version": "dev-main",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nadybot/Nadystyle.git",
-                "reference": "8a492174cfe1f8c045218015faf0ab275f557955"
+                "reference": "89c4c23ca6405ece7c6a3bddbc2cc5fbf644077f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nadybot/Nadystyle/zipball/89c4c23ca6405ece7c6a3bddbc2cc5fbf644077f",
+                "reference": "89c4c23ca6405ece7c6a3bddbc2cc5fbf644077f",
+                "shasum": ""
             },
             "require": {
                 "composer-phar/php-cs-fixer": "^3.51.0",
                 "php": ">=8.1.17",
-                "squizlabs/php_codesniffer": "^3.8"
+                "squizlabs/php_codesniffer": "^3.8",
+                "thecodingmachine/safe": "^1.0 || ^2.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5476,6 +5492,7 @@
                     "PHP_CodeSniffer\\Standards\\": "style"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "AGPL-3.0-or-later"
             ],
@@ -5488,15 +5505,25 @@
                 }
             ],
             "description": "Code style configuration for all Nadybot PHP projects",
-            "time": "2024-04-28T07:24:15+00:00"
+            "support": {
+                "issues": "https://github.com/Nadybot/Nadystyle/issues",
+                "source": "https://github.com/Nadybot/Nadystyle/tree/1.0.1"
+            },
+            "time": "2024-04-28T14:54:49+00:00"
         },
         {
             "name": "nadyita/phpstan-amp-file-rule",
-            "version": "dev-main",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nadyita/phpstan-amp-file-rule.git",
-                "reference": "7cc2f1cf25180b071064c07a80505e2a69e8cf28"
+                "reference": "a2a0900199c589b31b1441e87e06362743e4bccd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nadyita/phpstan-amp-file-rule/zipball/a2a0900199c589b31b1441e87e06362743e4bccd",
+                "reference": "a2a0900199c589b31b1441e87e06362743e4bccd",
+                "shasum": ""
             },
             "require": {
                 "php": "^8.1.17",
@@ -5504,11 +5531,10 @@
             },
             "require-dev": {
                 "composer-phar/php-cs-fixer": "^3.51.0",
-                "nadybot/nadystyle": "dev-main",
+                "nadybot/nadystyle": "^1.0.0",
                 "nikic/php-parser": "^4.13.0",
                 "thecodingmachine/safe": "^1.0 || ^2.0"
             },
-            "default-branch": true,
             "type": "phpstan-extension",
             "extra": {
                 "phpstan": {
@@ -5522,6 +5548,7 @@
                     "Nadyita\\PHPStan\\Rules\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -5532,7 +5559,11 @@
                 }
             ],
             "description": "A PHPStan rule to detect the use of sync filesystem calls for which there are async counterparts. Must be used in conjunction with amphp/file",
-            "time": "2024-04-17T08:33:18+00:00"
+            "support": {
+                "issues": "https://github.com/Nadyita/phpstan-amp-file-rule/issues",
+                "source": "https://github.com/Nadyita/phpstan-amp-file-rule/tree/1.0.1"
+            },
+            "time": "2024-04-28T11:19:17+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -7125,12 +7156,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "amphp/http-tunnel": 10,
-        "nadylib/imex": 20,
-        "nadybot/aolib": 20,
-        "nadylib/leaky-bucket": 20,
-        "nadybot/nadystyle": 20,
-        "nadyita/phpstan-amp-file-rule": 20
+        "amphp/http-tunnel": 10
     },
     "prefer-stable": false,
     "prefer-lowest": false,
