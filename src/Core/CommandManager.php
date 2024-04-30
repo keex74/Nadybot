@@ -979,7 +979,7 @@ class CommandManager implements MessageEmitter {
 			$header = "<header2>'{$cmdName}' command".
 				((count($refGroups) > 1 || count($refGroups[0]) > 1) ? 's' : '');
 			if ($showRights) {
-				$cmdCfg = $this->get($cmdName);
+				$cmdCfg = $this->get((string)$cmdName); // @phpstan-ignore-line
 				if (isset($cmdCfg, $cmdCfg->permissions[$context->permissionSet])) {
 					$al = $cmdCfg->permissions[$context->permissionSet]->access_level;
 					$al = $this->accessManager->getDisplayName($al);

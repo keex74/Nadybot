@@ -5,6 +5,7 @@ namespace Nadybot\Modules\DEV_MODULE;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
+	BotRunner,
 	CmdContext,
 	CommandAlias,
 	CommandHandler,
@@ -18,6 +19,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use ReflectionException;
 
 use ReflectionMethod;
@@ -260,15 +262,41 @@ class DevController extends ModuleInstance {
 		// command
 		foreach ($this->commandManager->commands as $channelName => $channel) {
 			if (isset($channel[$cmd])) {
-				$blob .= "<header2>{$channelName} ({$cmd})<end>\n";
-				$blob .= implode(', ', $channel[$cmd]->files) . "\n\n";
+				$handlers = array_map(
+					static function (string $handler): string {
+						$parts = explode(':', $handler);
+						$subParts = explode('.', $parts[0]);
+						$instance = Registry::tryGetInstance($subParts[0]);
+						if (!is_object($instance)) {
+							return $handler;
+						}
+						$refClass = new ReflectionClass($instance);
+						try {
+							$refMethod = $refClass->getMethod($subParts[1]);
+						} catch (\Throwable) {
+							return $handler;
+						}
+						$handler = $refClass->getShortName() . '::' . $refMethod->getName() . '()';
+						$refFile = $refMethod->getFileName();
+						$refLine = $refMethod->getStartLine();
+						if (is_string($refFile) && is_int($refLine)) {
+							$refFile = substr($refFile, strlen(BotRunner::getBasedir()) + 1);
+							$handler .= " @ {$refFile}#{$refLine}";
+						}
+						return $handler;
+					},
+					$channel[$cmd]->files
+				);
+
+				$blob .= "<header2>{$channelName} ({$cmd})<end>\n<tab>";
+				$blob .= implode("\n<tab>", $handlers) . "\n\n";
 			}
 		}
 
 		// subcommand
 		foreach ($this->subcommandManager->subcommands[$cmd] as $row) {
 			foreach ($row->permissions as $permission) {
-				$blob .= "<header2>{$permission->permission_set} ({$row->cmd})<end>\n";
+				$blob .= "<header2>{$permission->permission_set} ({$row->cmd})<end>\n<tab>";
 				$blob .= $row->file . "\n\n";
 			}
 		}

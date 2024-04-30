@@ -239,13 +239,13 @@ class EventsController extends ModuleInstance {
 			$alt = '';
 			if (count($altInfo->getAllValidatedAlts()) > 0) {
 				if ($altInfo->main === $name) {
-					$alt = ' <highlight>::<end> [' . Text::makeChatcmd('alts', "/tell <myname> alts {$name}") . ']';
+					$alt = Text::makeChatcmd('alts', "/tell <myname> alts {$name}");
 				} else {
-					$alt = ' <highlight>::<end> ' . Text::makeChatcmd("Alts of {$altInfo->main}", "/tell <myname> alts {$name}");
+					$alt = Text::makeChatcmd("Alts of {$altInfo->main}", "/tell <myname> alts {$name}");
 				}
 			}
 
-			$link .= "<tab>- {$name}{$info} {$alt}\n";
+			$link .= "<tab>- {$name}{$info} :: [{$alt}]\n";
 		}
 		$msg = $this->text->makeBlob("Players Attending Event {$id} ({$numAttendees})", $link);
 

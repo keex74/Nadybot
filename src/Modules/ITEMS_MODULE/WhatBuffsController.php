@@ -7,6 +7,7 @@ use Closure;
 use Generator;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
+use Nadybot\Core\Types\{CarrySlot, ItemFlag, WearSlot};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -21,7 +22,6 @@ use Nadybot\Core\{
 	Types\Profession,
 	Util,
 };
-
 use Nadybot\Modules\SKILLS_MODULE\{
 	BuffPerksController,
 	Perk,
@@ -655,10 +655,10 @@ class WhatBuffsController extends ModuleInstance {
 					);
 				}
 			}
-			if ($item->flags & Flag::UNIQUE && $showUniques) {
+			if (ItemFlag::UNIQUE->in($item->flags) && $showUniques) {
 				$blob .= $showUniques === 1 ? ' U' : ' Unique';
 			}
-			if ($item->flags & Flag::NODROP && $showNodrops) {
+			if (ItemFlag::NO_DROP->in($item->flags) && $showNodrops) {
 				$blob .= $showNodrops === 1 ? ' ND' : ' Nodrop';
 			}
 			$blob .= "\n";
@@ -866,36 +866,40 @@ class WhatBuffsController extends ModuleInstance {
 		$markSetting = $this->whatbuffsDisplay;
 		$result = '';
 		if ($item->multi_m !== null || $item->multi_r !== null) {
-			$handsMask = Slot::LHAND|Slot::RHAND;
+			$handsMask = CarrySlot::LeftHand->value|CarrySlot::RightHand->value;
 			if (($item->slot & $handsMask) === $handsMask) {
 				return '2x ';
-			} elseif (($item->slot & $handsMask) === Slot::LHAND) {
+			} elseif (CarrySlot::LeftHand->in($item->slot)) {
 				$result = 'L-Hand ';
 			} else {
 				$result = 'R-Hand ';
 			}
 		} elseif ($category === 'Arms') {
-			if (($item->slot & (Slot::LARM|Slot::RARM)) === Slot::LARM) {
+			$armMask = WearSlot::byName('arms')->toInt();
+			if (($item->slot & $armMask) === WearSlot::LeftArm->value) {
 				$result = 'L-Arm ';
-			} elseif (($item->slot & (Slot::LARM|Slot::RARM)) === Slot::RARM) {
+			} elseif (($item->slot & $armMask) === WearSlot::RightArm->value) {
 				$result = 'R-Arm ';
 			}
 		} elseif ($category === 'Wrists') {
-			if (($item->slot & (Slot::LWRIST|Slot::RWRIST)) === Slot::LWRIST) {
+			$wristMask = WearSlot::byName('wrists')->toInt();
+			if (($item->slot & $wristMask) === WearSlot::LeftWrist->value) {
 				$result = 'L-Wrist ';
-			} elseif (($item->slot & (Slot::LWRIST|Slot::RWRIST)) === Slot::RWRIST) {
+			} elseif (($item->slot & $wristMask) === WearSlot::RightWrist->value) {
 				$result = 'R-Wrist ';
 			}
 		} elseif ($category === 'Fingers') {
-			if (($item->slot & (Slot::LFINGER|Slot::RFINGER)) === Slot::LFINGER) {
+			$fingerMask = WearSlot::byName('fingers')->toInt();
+			if (($item->slot & $fingerMask) === WearSlot::LeftFinger->value) {
 				$result = 'L-Finger ';
-			} elseif (($item->slot & (Slot::LFINGER|Slot::RFINGER)) === Slot::RFINGER) {
+			} elseif (($item->slot & $fingerMask) === WearSlot::RightFinger->value) {
 				$result = 'R-Finger ';
 			}
 		} elseif ($category === 'Shoulders') {
-			if (($item->slot & (Slot::LSHOULDER|Slot::RSHOULDER)) === Slot::LSHOULDER) {
+			$shoulderMask = WearSlot::byName('shoulders')->toInt();
+			if (($item->slot & $shoulderMask) === WearSlot::LeftShoulder->value) {
 				$result = 'L-Shoulder ';
-			} elseif (($item->slot & (Slot::LSHOULDER|Slot::RSHOULDER)) === Slot::RSHOULDER) {
+			} elseif (($item->slot & $shoulderMask) === WearSlot::RightShoulder->value) {
 				$result = 'R-Shoulder ';
 			}
 		}

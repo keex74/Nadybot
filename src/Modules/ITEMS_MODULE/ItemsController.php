@@ -5,6 +5,7 @@ namespace Nadybot\Modules\ITEMS_MODULE;
 use function Safe\preg_split;
 use Illuminate\Support\Collection;
 
+use Nadybot\Core\Types\{Bitfield, CarrySlot, ItemFlag, WearSlot};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -109,27 +110,19 @@ class ItemsController extends ModuleInstance {
 			}
 			$key = str_replace('_', ' ', $key);
 			if ($key === 'flags') {
-				$blob .= "{$key}: <highlight>" . implode(', ', $this->flagsToText((int)$value)) . "<end>\n";
+				$blob .= "{$key}: <highlight>" . $this->flagsToText((int)$value) . "<end>\n";
 			} elseif ($key === 'slot') {
-				$slots = $this->slotToText((int)$value);
-				if (count(array_diff($types, ['Util', 'Hud', 'Deck', 'Weapon']))) {
-					$slots = array_diff($slots, [
-						'UTILS1', 'UTILS2', 'UTILS3',
-						'HUD1', 'HUD2', 'HUD3', 'DECK', 'LHAND', 'RHAND',
-					]);
-				}
-				if (count(array_diff($types, [
+				$slots = '';
+				if (count(array_diff($types, ['Util', 'Hud', 'Deck', 'Weapon'])) > 0) {
+					$slots = $this->wearSlotToText((int)$value);
+				} elseif (count(array_diff($types, [
 					'Arms', 'Back', 'Chest', 'Feet', 'Fingers', 'Head', 'Legs',
 					'Neck', 'Shoulders', 'Hands', 'Wrists',
-				]))) {
-					$slots = array_diff($slots, [
-						'NECK', 'HEAD', 'BACK', 'RSHOULDER', 'BODY', 'LSHOULDER',
-						'RARM', 'HANDS', 'LARM', 'RWRIST', 'LEGS', 'LWRIST',
-						'RFINGER', 'FEET', 'LFINGER',
-					]);
+				])) > 0) {
+					$slots = $this->carrySlotToText((int)$value);
 				}
-				if (count($slots)) {
-					$blob .= "{$key}: <highlight>" . implode(', ', $slots) . "<end>\n";
+				if (strlen($slots) > 0) {
+					$blob .= "{$key}: <highlight>{$slots}<end>\n";
 				} else {
 					$blob .= "{$key}: <highlight>&lt;none&gt;<end>\n";
 				}
@@ -733,29 +726,15 @@ class ItemsController extends ModuleInstance {
 			->exists();
 	}
 
-	/** @return list<string> */
-	protected function flagsToText(int $flags): array {
-		$result = [];
-		$refClass = new \ReflectionClass(Flag::class);
-		$constants = $refClass->getConstants();
-		foreach ($constants as $name => $value) {
-			if ($flags & $value) {
-				$result []= $name;
-			}
-		}
-		return $result;
+	protected function flagsToText(int $flags): string {
+		return (string)ItemFlag::fromInt($flags);
 	}
 
-	/** @return list<string> */
-	protected function slotToText(int $flags): array {
-		$result = [];
-		$refClass = new \ReflectionClass(Slot::class);
-		$constants = $refClass->getConstants();
-		foreach ($constants as $name => $value) {
-			if ($flags & $value) {
-				$result []= $name;
-			}
-		}
-		return $result;
+	private function carrySlotToText(int $slots): string {
+		return (string)(new Bitfield(CarrySlot::class))->setInt($slots);
+	}
+
+	private function wearSlotToText(int $slots): string {
+		return (string)(new Bitfield(WearSlot::class))->setInt($slots);
 	}
 }

@@ -5,6 +5,7 @@ namespace Nadybot\Modules\ITEMS_MODULE;
 use function Safe\json_decode;
 use Amp\Http\Client\{HttpClientBuilder, Request};
 use EventSauce\ObjectHydrator\{ObjectMapperUsingReflection, UnableToHydrateObject};
+use Nadybot\Core\Types\ItemFlag;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -115,7 +116,7 @@ class GmiController extends ModuleInstance {
 				array_filter(
 					$matches,
 					static function (ItemSearchResult $item) use (&$usedIds): bool {
-						if ($item->flags & ItemFlag::NO_DROP) {
+						if (ItemFlag::NO_DROP->in($item->flags)) {
 							return false;
 						}
 						if (isset($usedIds[$item->lowid])) {
@@ -157,7 +158,7 @@ class GmiController extends ModuleInstance {
 			$context->reply('This item does not exist.');
 			return;
 		}
-		if ($item->flags & ItemFlag::NO_DROP) {
+		if (ItemFlag::NO_DROP->in($item->flags)) {
 			$context->reply('NODROP items cannot be traded via GMI.');
 			return;
 		}

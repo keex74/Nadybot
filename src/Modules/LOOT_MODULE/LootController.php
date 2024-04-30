@@ -836,7 +836,7 @@ class LootController extends ModuleInstance {
 			$tellMsg = "You added to <highlight>\"{$this->loot[$slot]->name}\"<end>.";
 		} else {
 			$privMsg = "{$context->char->name} changed to <highlight>\"{$this->loot[$slot]->name}\"<end>.";
-			$tellMsg = "You changedto <highlight>\"{$this->loot[$slot]->name}\"<end>.";
+			$tellMsg = "You changed to <highlight>\"{$this->loot[$slot]->name}\"<end>.";
 		}
 
 		if ($this->addOnLoot & 1) {

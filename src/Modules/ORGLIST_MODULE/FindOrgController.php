@@ -197,7 +197,7 @@ class FindOrgController extends ModuleInstance {
 			$this->db->table(Organization::getTable())
 				->chunkUpsert($inserts, ['id']);
 			$this->db->commit();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$this->logger->error('Error downloading orgs: {error}', [
 				'error' => $e->getMessage(),
 				'exception' => $e,

@@ -64,7 +64,7 @@ class DingController extends ModuleInstance {
 			];
 		} elseif ($level === 100) {
 			$dingText = [
-				"Congratz! <red>Level 100<end> - {$context->char->name} you rock!\n",
+				"Congratz! <red>Level 100<end> - {$context->char->name} you rock!",
 				'Congratulations! Time to twink up for T.I.M!',
 				"Gratz, you're half way to 200. More missions, MORE!",
 				"Woot! Congrats, don't forget to put on your 1k token board.",
@@ -86,7 +86,7 @@ class DingController extends ModuleInstance {
 			$dingText = [
 				"Wow holy shiznits! You're TL 6 already? Congrats!",
 				"Just a few more steps and you're there buddy, keep it up!",
-				"Almost party time! just a bit more to go {$context->char->name}. We'll be sure to bring you a cookie!", ];
+				"Almost party time! Just a bit more to go {$context->char->name}. We'll be sure to bring you a cookie!", ];
 		} elseif ($level === 200) {
 			$dingText = [
 				"Congratz! The big Two Zero Zero!!! Party at {$context->char->name}'s place",

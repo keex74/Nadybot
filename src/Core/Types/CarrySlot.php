@@ -5,6 +5,14 @@ namespace Nadybot\Core\Types;
 use ValueError;
 
 enum CarrySlot: int {
+	public function in(int $value): bool {
+		return ($value & $this->value) !== 0;
+	}
+
+	public function notIn(int $value): bool {
+		return ($value & $this->value) === 0;
+	}
+
 	/** @return Bitfield<CarrySlot> */
 	public static function byName(string $name): Bitfield {
 		$result = new Bitfield(self::class);
@@ -27,23 +35,24 @@ enum CarrySlot: int {
 			'deck 5','deck5' => $result->set(self::Deck5),
 			'deck 6','deck6' => $result->set(self::Deck6),
 			'deck','decks' => $result->set(self::Deck1, self::Deck2, self::Deck3, self::Deck4, self::Deck5, self::Deck6),
+			'belt' => $result->set(self::Belt),
 			default => throw new ValueError("Unknown carry slot name '{$name}'"),
 		};
 	}
 
 	case HUD1 = 2;
 	case HUD2 = 4;
+	case HUD3 = 32_768;
 	case Utils1 = 8;
 	case Utils2 = 16;
 	case Utils3 = 32;
 	case RightHand = 64;
-	case Deck = 128;
 	case LeftHand = 256;
+	case Belt = 128;
 	case Deck1 = 512;
 	case Deck2 = 1_024;
 	case Deck3 = 2_048;
 	case Deck4 = 4_096;
 	case Deck5 = 8_192;
 	case Deck6 = 16_484;
-	case HUD3 = 32_768;
 }

@@ -3,6 +3,7 @@
 namespace Nadybot\Modules\RECIPE_MODULE;
 
 use Exception;
+use Nadybot\Core\Types\ItemFlag;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -12,10 +13,8 @@ use Nadybot\Core\{
 	Safe,
 	Text,
 };
-
 use Nadybot\Modules\ITEMS_MODULE\{
 	AODBItem,
-	ItemFlag,
 	ItemWithBuffs,
 	ItemsController,
 	Skill,
@@ -510,7 +509,10 @@ class ArulSabaController extends ModuleInstance {
 				$rIconLink . "\n";
 		}
 		$line .= "<tab>{$sLink} + {$dLink} = {$rLink}";
-		if (((($dest->flags??0) & ItemFlag::NO_DROP) === 0) && (($result->flags??0) & ItemFlag::NO_DROP)) {
+		if (
+			(ItemFlag::NO_DROP->notIn($dest->flags??0))
+			&& (ItemFlag::NO_DROP->in($result->flags??0))
+		) {
 			$line .= ' (becomes <highlight>NODROP<end>)';
 		}
 		$line .= "\n";

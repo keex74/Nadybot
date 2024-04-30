@@ -43,7 +43,7 @@ final class StrLength implements PropertyCaster, PropertySerializer {
 			throw new InvalidArgumentException("The minimum length is {$this->min}");
 		}
 		if (strlen($value) > $this->max) {
-			throw new InvalidArgumentException("The minimum length is {$this->max}");
+			throw new InvalidArgumentException("The maximum length is {$this->max}");
 		}
 		return $value;
 	}

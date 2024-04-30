@@ -20,11 +20,15 @@ class Bitfield implements Stringable {
 		return implode('|', array_map(static fn (BackedEnum $e): string => $e->name, $this->flags));
 	}
 
+	public function has(BackedEnum $e): bool {
+		return ($this->value & (int)$e->value) !== 0;
+	}
+
 	/** @return self<T> */
 	public function setInt(int $value): self {
 		$class = $this->class;
 		foreach ($class::cases() as $case) {
-			if ((int)$case->value & $value) {
+			if (((int)$case->value & $value) !== 0) {
 				$this->set($case);
 			}
 		}
@@ -45,7 +49,7 @@ class Bitfield implements Stringable {
 				);
 			}
 			$value = (int)$enums[$i]->value;
-			if (($this->value & $value) !== 0) {
+			if (($this->value & $value) !== $value) {
 				$this->value |= $value;
 				$this->flags []= $enums[$i];
 			}

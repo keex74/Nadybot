@@ -133,10 +133,9 @@ class ExportController extends ModuleInstance {
 			),
 		);
 		try {
-			$output = json_encode(
-				self::stripNull($mapper->serializeObject($exports)),
-				\JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES
-			);
+				$serialized = $mapper->serializeObject($exports);
+				$cleaned = self::stripNull($serialized);
+				$output = json_encode($cleaned, \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES);
 		} catch (JsonException | UnableToSerializeObject $e) {
 			$context->reply('There was an error exporting the data: ' . $e->getMessage());
 			return;

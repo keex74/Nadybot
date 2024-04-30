@@ -36,6 +36,7 @@ class AuditController extends ModuleInstance {
 	/** Log all security-relevant data */
 	#[NCA\Setting\Boolean(accessLevel: 'superadmin')]
 	public bool $auditEnabled = false;
+
 	#[NCA\Inject]
 	private DB $db;
 
@@ -59,6 +60,13 @@ class AuditController extends ModuleInstance {
 	#[NCA\Help\Example('<symbol>audit actor=Nady action=set-rank after=last week')]
 	#[NCA\Help\Example('<symbol>audit action=action=invite,join,leave after=2021-08-01 20:17:55 CEST')]
 	public function auditListCommand(CmdContext $context, ?string $filter): void {
+		if (!$this->auditEnabled) {
+			$context->reply(
+				'Security auditing is currently disabled. In order to enable it, use '.
+				"'<highlight><symbol>setting save audit_enabled 1<end>'."
+			);
+			return;
+		}
 		$query = $this->db->table(Audit::getTable())
 			->orderByDesc('time')
 			->orderByDesc('id');

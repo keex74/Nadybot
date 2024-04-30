@@ -8,6 +8,18 @@ enum ItemFlag: int {
 		return (new Bitfield(self::class))->setInt($flags);
 	}
 
+	public static function has(self $flag, int $value): bool {
+		return ($value & $flag->value) !== 0;
+	}
+
+	public function in(int $value): bool {
+		return ($value & $this->value) !== 0;
+	}
+
+	public function notIn(int $value): bool {
+		return ($value & $this->value) === 0;
+	}
+
 	case VISIBLE                  = 1 << 0;
 	case MODIFIED_DESCRIPTION     = 1 << 1;
 	case CAN_BE_TEMPLATE_ITEM     = 1 << 3;

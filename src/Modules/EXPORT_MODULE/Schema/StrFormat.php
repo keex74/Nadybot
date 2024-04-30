@@ -7,7 +7,7 @@ namespace Nadybot\Modules\EXPORT_MODULE\Schema;
 use Attribute;
 use EventSauce\ObjectHydrator\{ObjectMapper, PropertyCaster, PropertySerializer};
 use InvalidArgumentException;
-use Nadybot\Core\Safe;
+use Nadybot\Core\{Safe};
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
 final class StrFormat implements PropertyCaster, PropertySerializer {
@@ -31,7 +31,7 @@ final class StrFormat implements PropertyCaster, PropertySerializer {
 		if (!is_string($value)) {
 			throw new InvalidArgumentException('Must be a string');
 		}
-		if (!Safe::pregMatch($this->regexp, $value)) {
+		if (!Safe::pregMatch(chr(1) . $this->regexp . chr(1), $value)) {
 			throw new InvalidArgumentException('Wrong format');
 		}
 		return $value;
