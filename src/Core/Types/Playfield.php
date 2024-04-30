@@ -400,7 +400,7 @@ enum Playfield: int {
 			self::Sector28 => 'Sector 28',
 			self::Sector35 => 'Sector 35',
 			self::ShereGarden => 'The Garden of Shere',
-			self::SheresSanctuary => ' Sheres Sanctuary',
+			self::SheresSanctuary => 'Sheres Sanctuary',
 			self::SmugglersDen => 'Smuggler\'s Den',
 			self::SouthernArteryValley => 'Southern Artery Valley',
 			self::SouthernFoulsHills => 'Southern Fouls Hills',
