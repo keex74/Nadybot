@@ -655,10 +655,10 @@ class WhatBuffsController extends ModuleInstance {
 					);
 				}
 			}
-			if (ItemFlag::UNIQUE->in($item->flags) && $showUniques) {
+			if ($item->flags->has(ItemFlag::UNIQUE) && $showUniques) {
 				$blob .= $showUniques === 1 ? ' U' : ' Unique';
 			}
-			if (ItemFlag::NO_DROP->in($item->flags) && $showNodrops) {
+			if ($item->flags->has(ItemFlag::NO_DROP) && $showNodrops) {
 				$blob .= $showNodrops === 1 ? ' ND' : ' Nodrop';
 			}
 			$blob .= "\n";

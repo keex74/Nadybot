@@ -510,8 +510,8 @@ class ArulSabaController extends ModuleInstance {
 		}
 		$line .= "<tab>{$sLink} + {$dLink} = {$rLink}";
 		if (
-			(ItemFlag::NO_DROP->notIn($dest->flags??0))
-			&& (ItemFlag::NO_DROP->in($result->flags??0))
+			!$dest->flags->has(ItemFlag::NO_DROP)
+			&& $result->flags->has(ItemFlag::NO_DROP)
 		) {
 			$line .= ' (becomes <highlight>NODROP<end>)';
 		}

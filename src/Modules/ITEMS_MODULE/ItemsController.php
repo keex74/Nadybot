@@ -110,16 +110,16 @@ class ItemsController extends ModuleInstance {
 			}
 			$key = str_replace('_', ' ', $key);
 			if ($key === 'flags') {
-				$blob .= "{$key}: <highlight>" . $this->flagsToText((int)$value) . "<end>\n";
-			} elseif ($key === 'slot') {
+				$blob .= "{$key}: <highlight>{$value}<end>\n";
+			} elseif ($key === 'slot' && is_int($value)) {
 				$slots = '';
 				if (count(array_diff($types, ['Util', 'Hud', 'Deck', 'Weapon'])) > 0) {
-					$slots = $this->wearSlotToText((int)$value);
+					$slots = $this->wearSlotToText($value);
 				} elseif (count(array_diff($types, [
 					'Arms', 'Back', 'Chest', 'Feet', 'Fingers', 'Head', 'Legs',
 					'Neck', 'Shoulders', 'Hands', 'Wrists',
 				])) > 0) {
-					$slots = $this->carrySlotToText((int)$value);
+					$slots = $this->carrySlotToText($value);
 				}
 				if (strlen($slots) > 0) {
 					$blob .= "{$key}: <highlight>{$slots}<end>\n";

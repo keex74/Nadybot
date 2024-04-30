@@ -116,7 +116,7 @@ class GmiController extends ModuleInstance {
 				array_filter(
 					$matches,
 					static function (ItemSearchResult $item) use (&$usedIds): bool {
-						if (ItemFlag::NO_DROP->in($item->flags)) {
+						if ($item->flags->has(ItemFlag::NO_DROP)) {
 							return false;
 						}
 						if (isset($usedIds[$item->lowid])) {
@@ -158,7 +158,7 @@ class GmiController extends ModuleInstance {
 			$context->reply('This item does not exist.');
 			return;
 		}
-		if (ItemFlag::NO_DROP->in($item->flags)) {
+		if ($item->flags->has(ItemFlag::NO_DROP)) {
 			$context->reply('NODROP items cannot be traded via GMI.');
 			return;
 		}

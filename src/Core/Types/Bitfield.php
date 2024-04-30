@@ -20,8 +20,29 @@ class Bitfield implements Stringable {
 		return implode('|', array_map(static fn (BackedEnum $e): string => $e->name, $this->flags));
 	}
 
-	public function has(BackedEnum $e): bool {
-		return ($this->value & (int)$e->value) !== 0;
+	public function has(int|BackedEnum $e): bool {
+		$flag = is_int($e) ? $e : (int)$e->value;
+		return ($this->value & $flag) !== 0;
+	}
+
+	public function hasAll(int|BackedEnum ...$flags): bool {
+		foreach ($flags as $flag) {
+			$flag = is_int($flag) ? $flag : (int)$flag->value;
+			if (($this->value & $flag) !== $flag) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public function hasAny(int|BackedEnum ...$flags): bool {
+		foreach ($flags as $flag) {
+			$flag = is_int($flag) ? $flag : (int)$flag->value;
+			if (($this->value & $flag) !== 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** @return self<T> */

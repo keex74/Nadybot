@@ -4,10 +4,13 @@ namespace Nadybot\Modules\ITEMS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBTable;
-use Nadybot\Core\Types\{AOIcon, AOItemSpec};
+use Nadybot\Core\Types\{AOIcon, AOItemSpec, Bitfield, ItemFlag};
 
 #[Table(name: 'aodb', shared: Shared::Yes)]
 class AODBEntry extends DBTable implements AOItemSpec, AOIcon {
+	/** @var Bitfield<ItemFlag> */
+	public Bitfield $flags;
+
 	public function __construct(
 		public int $lowid,
 		public int $highid,
@@ -16,10 +19,11 @@ class AODBEntry extends DBTable implements AOItemSpec, AOIcon {
 		public string $name,
 		public int $icon,
 		public int $slot,
-		public int $flags,
+		int $flags,
 		public bool $in_game,
 		public bool $froob_friendly=false,
 	) {
+		$this->flags = (new Bitfield(ItemFlag::class))->setInt($flags);
 	}
 
 	public function getLink(?int $ql=null, ?string $text=null): string {
@@ -66,7 +70,7 @@ class AODBEntry extends DBTable implements AOItemSpec, AOIcon {
 			name: $this->name,
 			icon: $this->icon,
 			slot: $this->slot,
-			flags: $this->flags,
+			flags: $this->flags->toInt(),
 			in_game: $this->in_game,
 			froob_friendly: $this->froob_friendly,
 		);
