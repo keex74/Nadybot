@@ -193,7 +193,6 @@ class FindOrgController extends ModuleInstance {
 		}
 		$this->db->awaitBeginTransaction();
 		try {
-			$this->db->awaitBeginTransaction();
 			$this->db->table(Organization::getTable())
 				->chunkUpsert($inserts, ['id']);
 			$this->db->commit();

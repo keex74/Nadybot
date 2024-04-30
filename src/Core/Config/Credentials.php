@@ -2,14 +2,16 @@
 
 namespace Nadybot\Core\Config;
 
+use Nadybot\Core\Attributes\Confidential;
+
 class Credentials {
 	public function __construct(
 		public string $login,
-		public string $password,
+		#[Confidential] public string $password,
 		public string $character,
 		public int $dimension,
-		public ?string $webLogin=null,
-		public ?string $webPassword=null,
+		#[Confidential] public ?string $webLogin=null,
+		#[Confidential] public ?string $webPassword=null,
 	) {
 		$this->character = ucfirst(strtolower($this->character));
 		if ($this->webLogin === '') {

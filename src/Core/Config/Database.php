@@ -2,6 +2,7 @@
 
 namespace Nadybot\Core\Config;
 
+use Nadybot\Core\Attributes\Confidential;
 use Nadybot\Core\DB;
 
 class Database {
@@ -16,8 +17,8 @@ class Database {
 		public DB\Type $type=DB\Type::SQLite,
 		public string $name='nadybot.db',
 		public string $host='./data/',
-		public ?string $username=null,
-		public ?string $password=null,
+		#[Confidential] public ?string $username=null,
+		#[Confidential] public ?string $password=null,
 	) {
 	}
 }

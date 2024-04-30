@@ -7,6 +7,7 @@ use function Safe\{ini_get, json_encode};
 use Amp\Http\Server\{Request, Response};
 use EventSauce\ObjectHydrator\ObjectMapperUsingReflection;
 use Exception;
+use Nadybot\Core\Attributes\Confidential;
 use Nadybot\Core\DBSchema\Player;
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Filesystem;
@@ -619,10 +620,9 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 	#[NCA\HandlesCommand('showconfig')]
 	public function showConfigCommand(CmdContext $context): void {
 		$mapper = new ObjectMapperUsingReflection();
-		$config = array_diff_key(
-			$mapper->serializeObject($this->config),
-			['password' => null, 'DB username' => null, 'DB password' => null]
-		);
+		Confidential::$active = true;
+		$config = $mapper->serializeObject($this->config);
+		Confidential::$active = false;
 
 		$json = json_encode(
 			$config,

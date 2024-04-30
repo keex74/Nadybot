@@ -2,6 +2,7 @@
 
 namespace Nadybot\Modules\BASIC_CHAT_MODULE;
 
+use Nadybot\Core\Modules\SYSTEM\SystemController;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -9,6 +10,7 @@ use Nadybot\Core\{
 	ModuleInstance,
 	Nadybot,
 };
+use Nadybot\Modules\GUILD_MODULE\GuildController;
 
 /**
  * @author Legendadv (RK2)
@@ -55,9 +57,23 @@ class ChatSayController extends ModuleInstance {
 	#[NCA\Inject]
 	private EventManager $eventManager;
 
+	#[NCA\Inject]
+	private GuildController $guildController;
+
+	#[NCA\Inject]
+	private SystemController $systemController;
+
 	/** Have the bot say something in the org channel */
 	#[NCA\HandlesCommand('say')]
 	public function sayOrgCommand(CmdContext $context, #[NCA\Str('org')] string $channel, string $message): void {
+		if (!$this->guildController->isGuildBot()) {
+			$context->reply('You can only use this command on a bot in a guild.');
+			return;
+		}
+		if ($this->systemController->guildChannelStatus === false) {
+			$context->reply('The bot is currently muted on the org channel.');
+			return;
+		}
 		if (!$this->chatLeaderController->checkLeaderAccess($context->char->name)) {
 			$context->reply('You must be Raid Leader to use this command.');
 			return;

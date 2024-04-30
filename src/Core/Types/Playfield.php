@@ -360,6 +360,10 @@ enum Playfield: int {
 			self::MinesLvl200 => 'SBC-Xpm Site Alpha-Romeo 25',
 			self::MinesLvl214 => 'SBC-Xpm Site Alpha-Romeo 26',
 			self::MinesLvl220 => 'SBC-Xpm Site Alpha-Romeo 27',
+			self::FixerGrid => 'Fixer Grid',
+			self::RochGarden => 'The Garden of Roch',
+			self::AbanGarden => 'The Garden of Aban',
+			self::SmugglersDen => 'Smuggler\'s Den',
 		};
 	}
 
@@ -453,6 +457,10 @@ enum Playfield: int {
 			self::ScheolLower => 'SCHEOLLOWER',
 			self::UnicornDefenceHub => 'UNICORNHUB',
 			self::LoxHub => 'LOXHUB',
+			self::RochGarden => 'ROCH',
+			self::AbanGarden => 'ABAN',
+			self::FixerGrid => 'FGRID',
+			self::SmugglersDen => 'SMUGDEN',
 			self::MinesLvl30 => 'MINES-LVL30',
 			self::MinesLvl60 => 'MINES-LVL60',
 			self::MinesLvl100 => 'MINES-LVL100',
@@ -464,6 +472,7 @@ enum Playfield: int {
 	}
 
 	case Unknown = 0;
+	case SmugglersDen = 123;
 	case FourHoles = 760;
 	case Andromeda = 655;
 	case Aegean = 585;
@@ -537,6 +546,7 @@ enum Playfield: int {
 	case JobePlatform = 4_530;
 	case JobePlaza = 4_533;
 	case JobeResearch = 4_001;
+	case FixerGrid = 4_107;
 	case NascenseFrontier = 4_310;
 	case NascenseSwamp = 4_312;
 	case NascenseWilds = 4_311;
@@ -547,6 +557,8 @@ enum Playfield: int {
 	case PandemoniumCaina = 4_328;
 	case PandemoniumJudecca = 4_331;
 	case PandemoniumPtolemea = 4_330;
+	case AbanGarden = 4_676;
+	case RochGarden = 4_683;
 	case ScheolUpper = 4_880;
 	case ScheolLower = 4_881;
 	case UnicornDefenceHub = 6_007;

@@ -59,7 +59,7 @@ class OrgMembersController extends ModuleInstance {
 			/** @var Player $player */
 			if ($currentLetter !== $player->name[0]) {
 				$currentLetter = $player->name[0];
-				$blob .= "\n\n<pagebreak><header2>{$currentLetter}<end>\n";
+				$blob .= "\n<pagebreak><header2>{$currentLetter}<end>\n";
 			}
 
 			$blob .= "<tab><highlight>{$player->name}<end> ({$player->level}";

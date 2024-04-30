@@ -770,8 +770,8 @@ class GuildController extends ModuleInstance {
 	}
 
 	public function isGuildBot(): bool {
-		return !strlen($this->config->general->orgName)
-			&& !isset($this->config->orgId);
+		return strlen($this->config->general->orgName) > 0
+			&& isset($this->config->orgId);
 	}
 
 	#[NCA\Event(
