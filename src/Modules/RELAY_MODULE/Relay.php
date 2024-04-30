@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\RELAY_MODULE;
 
-use function Amp\async;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
@@ -10,7 +9,6 @@ use Nadybot\Core\{
 	Events\SyncEvent,
 	MessageHub,
 	Modules\PLAYER_LOOKUP\PlayerManager,
-	Nadybot,
 	Registry,
 	Routing\RoutableEvent,
 	Routing\Source,
@@ -127,7 +125,7 @@ class Relay implements MessageReceiver {
 		$player->online = true;
 		$player->afk = '';
 		$this->onlineChars[$where][$character] = $player;
-		async(function () use ($character, $dimension, $where, $clientId): void {
+		EventLoop::queue(function () use ($character, $dimension, $where, $clientId): void {
 			$player = $this->playerManager->byName($character, $dimension);
 			if (!isset($player) || !isset($this->onlineChars[$where][$character])) {
 				return;
@@ -136,7 +134,7 @@ class Relay implements MessageReceiver {
 			foreach (get_object_vars($player) as $key => $value) {
 				$this->onlineChars[$where][$character]->{$key} = $value;
 			}
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 	}
 
 	public function setOffline(string $sender, string $where, string $character, ?int $uid=null, ?int $dimension=null, ?string $main=null): void {

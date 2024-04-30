@@ -88,8 +88,7 @@ class BuffPerksController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		async($this->initPerksDatabase(...))
-			->catch(Nadybot::asyncErrorHandler(...));
+		async($this->initPerksDatabase(...))->catch(Nadybot::asyncErrorHandler(...));
 	}
 
 	/** See which perks are available for your level and profession */

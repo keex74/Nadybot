@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use function Amp\{async, delay};
+use function Amp\{delay};
 use function Safe\preg_match;
 use Amp\Http\Client\Connection\{DefaultConnectionFactory, UnlimitedConnectionPool};
 use Amp\Http\Client\Interceptor\RemoveRequestHeader;
@@ -20,11 +20,11 @@ use Nadybot\Core\{
 	Exceptions\StopExecutionException,
 	Exceptions\UserException,
 	ModuleInstance,
-	Nadybot,
 	Registry,
 	Safe,
 };
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 use Throwable;
 
 #[NCA\ProvidesEvent(DrillPacketEvent::class)]
@@ -65,7 +65,7 @@ class DrillController extends ModuleInstance {
 		if ($this->drillServer === self::OFF) {
 			return;
 		}
-		async($this->connect(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->connect(...));
 	}
 
 	#[NCA\SettingChangeHandler('drill_server')]
@@ -79,7 +79,7 @@ class DrillController extends ModuleInstance {
 		if ($new === self::OFF) {
 			return;
 		}
-		async($this->connect(...), $new)->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->connect(...), $new);
 	}
 
 	public function connect(?string $url=null): void {

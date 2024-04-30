@@ -2,8 +2,6 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use function Amp\async;
-
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
 use Nadybot\Core\{
@@ -23,6 +21,7 @@ use Nadybot\Core\{
 use Nadybot\Modules\{
 	WEBSOCKET_MODULE\WebsocketCommandReply,
 };
+use Revolt\EventLoop;
 
 #[NCA\Instance]
 class WebchatApiController extends ModuleInstance {
@@ -107,11 +106,11 @@ class WebchatApiController extends ModuleInstance {
 			sendto: $sendto,
 			message: $message,
 		);
-		async(function () use ($context): void {
+		EventLoop::queue(function () use ($context): void {
 			$uid = $this->chatBot->getUid($context->char->name);
 			$context->char->id = $uid;
 			$this->commandManager->checkAndHandleCmd($context);
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 		return new Response(status: HttpStatus::NO_CONTENT);
 	}
 }

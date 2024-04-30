@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Amp\{async, delay};
+use function Amp\delay;
 use function Safe\{preg_match, sapi_windows_set_ctrl_handler, unpack};
 
 use Amp\ByteStream\StreamException;
@@ -500,7 +500,7 @@ class Nadybot {
 			EventLoop::onSignal(\SIGTERM, $this->signalHandler(...));
 			EventLoop::onSignal(\SIGINT, $this->signalHandler(...));
 		}
-		async($this->aoPackageLoop(...))->catch($this->errorHandler(...));
+		EventLoop::queue($this->aoPackageLoop(...));
 		EventLoop::repeat(1, $this->sendPings(...));
 		EventLoop::run();
 		$this->logger->notice('Graceful shutdown.');

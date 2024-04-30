@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
-use function Amp\async;
 use Nadybot\Core\Modules\DISCORD\DiscordMessageReference;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -20,6 +19,7 @@ use Nadybot\Core\{
 	Types\CommandReply,
 	Types\MessageEmitter,
 };
+use Revolt\EventLoop;
 
 class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 	#[NCA\Inject]
@@ -88,11 +88,11 @@ class DiscordMessageCommandReply implements CommandReply, MessageEmitter {
 				);
 			}
 			foreach ($messageObj->split() as $msgPart) {
-				async(
+				EventLoop::queue(
 					$this->discordAPIClient->queueToChannel(...),
 					$this->channelId,
 					$msgPart->toJSON()
-				)->catch(Nadybot::asyncErrorHandler(...));
+				);
 			}
 		}
 	}

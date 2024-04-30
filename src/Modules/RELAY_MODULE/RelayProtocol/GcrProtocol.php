@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\RELAY_MODULE\RelayProtocol;
 
-use function Amp\async;
 use function Safe\preg_match;
 use Closure;
 use Nadybot\Core\Config\BotConfig;
@@ -10,7 +9,6 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	DBSchema\Player,
 	Modules\PLAYER_LOOKUP\PlayerManager,
-	Nadybot,
 	Routing\Character,
 	Routing\Events\Online,
 	Routing\RoutableEvent,
@@ -26,6 +24,7 @@ use Nadybot\Modules\{
 	RELAY_MODULE\Relay,
 	RELAY_MODULE\RelayMessage,
 };
+use Revolt\EventLoop;
 
 #[
 	NCA\RelayProtocol(
@@ -135,7 +134,7 @@ class GcrProtocol implements RelayProtocolInterface {
 		if (!isset($character) || !Util::isValidSender($character->name??-1)) {
 			return [];
 		}
-		async(function () use ($character, $event): void {
+		EventLoop::queue(function () use ($character, $event): void {
 			$player = $this->playerManager->byName($character->name);
 			if (!isset($player)) {
 				return;
@@ -150,7 +149,7 @@ class GcrProtocol implements RelayProtocolInterface {
 			if (count($send)) {
 				$this->relay->receiveFromMember($this, $send);
 			}
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 		return [];
 	}
 
@@ -254,7 +253,7 @@ class GcrProtocol implements RelayProtocolInterface {
 			$callback = ($matches['status'] === '1')
 				? Closure::fromCallable([$this->relay, 'setOnline'])
 				: Closure::fromCallable([$this->relay, 'setOffline']);
-			async(function () use ($matches, $callback, $sender): void {
+			EventLoop::queue(function () use ($matches, $callback, $sender): void {
 				$player = $this->playerManager->byName($sender);
 				if (!isset($player)) {
 					return;
@@ -265,9 +264,9 @@ class GcrProtocol implements RelayProtocolInterface {
 							: "{$player->guild}")
 						: "{$player->name}";
 				$callback($player->name, $channel, $matches['char']);
-			})->catch(Nadybot::asyncErrorHandler(...));
+			});
 		} elseif (count($matches = Safe::pregMatch('/^online (.+)$/', $text))) {
-			async(function () use ($matches, $sender): void {
+			EventLoop::queue(function () use ($matches, $sender): void {
 				$player = $this->playerManager->byName($sender);
 				if (!isset($player)) {
 					return;
@@ -290,7 +289,7 @@ class GcrProtocol implements RelayProtocolInterface {
 						$name
 					);
 				}
-			})->catch(Nadybot::asyncErrorHandler(...));
+			});
 		} elseif (count($matches = Safe::pregMatch('/^onlinereq$/', $text))) {
 			$onlineList = $this->getOnlineList();
 			if (isset($onlineList)) {

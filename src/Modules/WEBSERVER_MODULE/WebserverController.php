@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use function Amp\async;
 use function Safe\{base64_decode, json_decode, mime_content_type, openssl_verify, preg_split};
 
 use Amp\File\{FilesystemException};
@@ -21,7 +20,6 @@ use Nadybot\Core\{
 	DB,
 	Filesystem,
 	ModuleInstance,
-	Nadybot,
 	Registry,
 	Safe,
 };
@@ -29,6 +27,7 @@ use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionFunction;
+use Revolt\EventLoop;
 use Safe\Exceptions\{OpensslException, PcreException, UrlException};
 use Safe\{DateTimeImmutable};
 use Throwable;
@@ -206,7 +205,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 			return;
 		}
 		$this->shutdown();
-		async($this->listen(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->listen(...));
 	}
 
 	public function getServer(): ?HttpServer {

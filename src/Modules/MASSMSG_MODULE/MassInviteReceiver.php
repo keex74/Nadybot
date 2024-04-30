@@ -2,8 +2,6 @@
 
 namespace Nadybot\Modules\MASSMSG_MODULE;
 
-use function Amp\async;
-
 use AO\Package;
 use Nadybot\Core\{
 	Attributes as NCA,
@@ -13,6 +11,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Types\MessageReceiver,
 };
+use Revolt\EventLoop;
 
 /**
  * This class accepts incoming messages and sends them out as mass invites
@@ -47,7 +46,7 @@ class MassInviteReceiver implements MessageReceiver {
 		$message = "{$ctrl->massmsgColor}{$msg}<end>".
 			' :: ' . $ctrl->getMassMsgOptInOutBlob();
 
-		async(
+		EventLoop::queue(
 			$ctrl->massCallback(...),
 			[
 				MassMsgController::PREF_MSGS => function (string $name) use ($message): void {
@@ -62,7 +61,7 @@ class MassInviteReceiver implements MessageReceiver {
 					);
 				},
 			]
-		)->catch(Nadybot::asyncErrorHandler(...));
+		);
 		return true;
 	}
 }

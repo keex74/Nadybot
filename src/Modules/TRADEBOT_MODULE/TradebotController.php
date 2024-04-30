@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\TRADEBOT_MODULE;
 
-use function Amp\async;
 use function Safe\preg_match;
 use AO\Package;
 use Nadybot\Core\Events\{ConnectEvent, ExtJoinPrivRequest, PrivateChannelMsgEvent, RecvMsgEvent};
@@ -28,6 +27,7 @@ use Nadybot\Core\{
 };
 use Nadybot\Modules\COMMENT_MODULE\CommentController;
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 
 /**
  * @author Nadyita (RK5) <nadyita@hodorraid.org>
@@ -181,8 +181,7 @@ class TradebotController extends ModuleInstance {
 				if ($this->buddylistManager->isOnline($botName)) {
 					$this->joinPrivateChannel($botName);
 				}
-				async($this->buddylistManager->addName(...), $botName, 'tradebot')
-					->catch(Nadybot::asyncErrorHandler(...));
+				EventLoop::queue($this->buddylistManager->addName(...), $botName, 'tradebot');
 			}
 		}
 		if ($this->messageHub->hasRouteFor(Source::TRADEBOT)) {

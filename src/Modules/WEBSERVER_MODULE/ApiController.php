@@ -2,8 +2,6 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use function Amp\async;
-
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
 use Closure;
@@ -31,6 +29,7 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
+use Revolt\EventLoop;
 use Throwable;
 
 #[
@@ -478,11 +477,11 @@ class ApiController extends ModuleInstance {
 				sendto: $handler,
 				message: $msg,
 			);
-			async(function () use ($context): void {
+			EventLoop::queue(function () use ($context): void {
 				$uid = $this->chatBot->getUid($context->char->name);
 				$context->char->id = $uid;
 				$this->commandManager->checkAndHandleCmd($context);
-			})->catch(Nadybot::asyncErrorHandler(...));
+			});
 		}
 		return new Response(status: HttpStatus::NO_CONTENT);
 	}

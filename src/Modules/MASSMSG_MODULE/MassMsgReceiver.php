@@ -2,8 +2,6 @@
 
 namespace Nadybot\Modules\MASSMSG_MODULE;
 
-use function Amp\async;
-
 use Nadybot\Core\{
 	Attributes as NCA,
 	Nadybot,
@@ -12,6 +10,7 @@ use Nadybot\Core\{
 	Routing\Source,
 	Types\MessageReceiver,
 };
+use Revolt\EventLoop;
 
 /**
  * This class accepts incoming messages and sends them out as mass messages
@@ -46,14 +45,14 @@ class MassMsgReceiver implements MessageReceiver {
 		$message = "{$ctrl->massmsgColor}{$msg}<end>".
 			' :: ' . $ctrl->getMassMsgOptInOutBlob();
 
-		async(
+		EventLoop::queue(
 			$ctrl->massCallback(...),
 			[
 				MassMsgController::PREF_MSGS => function (string $name) use ($message): void {
 					$this->chatBot->sendMassTell($message, $name);
 				},
 			]
-		)->catch(Nadybot::asyncErrorHandler(...));
+		);
 		return true;
 	}
 }

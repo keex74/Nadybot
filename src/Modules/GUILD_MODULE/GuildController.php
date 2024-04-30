@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\GUILD_MODULE;
 
-use function Amp\async;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Modules\ALTS\AltInfo;
 use Nadybot\Core\{
@@ -42,6 +41,7 @@ use Nadybot\Core\{
 };
 use Nadybot\Modules\ONLINE_MODULE\{Online as DBOnline, OnlineController};
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 use Throwable;
 
 /**
@@ -1022,8 +1022,7 @@ class GuildController extends ModuleInstance {
 					unset($this->chatBot->guildmembers[$member->name]);
 				} else {
 					// add org members who are on notify to buddy list
-					async($this->buddylistManager->addName(...), $member->name, 'org')
-						->catch(Nadybot::asyncErrorHandler(...));
+					EventLoop::queue($this->buddylistManager->addName(...), $member->name, 'org');
 					$this->chatBot->guildmembers[$member->name] = $member->guild_rank_id ?? 0;
 
 					// if member was added to notify list manually, switch mode to org and let guild roster update from now on
@@ -1036,8 +1035,7 @@ class GuildController extends ModuleInstance {
 				// else insert his/her data
 			} else {
 				// add new org members to buddy list
-				async($this->buddylistManager->addName(...), $member->name, 'org')
-					->catch(Nadybot::asyncErrorHandler(...));
+				EventLoop::queue($this->buddylistManager->addName(...), $member->name, 'org');
 				$this->chatBot->guildmembers[$member->name] = $member->guild_rank_id ?? 0;
 
 				$this->db->insert(new OrgMember(

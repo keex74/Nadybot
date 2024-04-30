@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\RELAY_MODULE\Transport;
 
-use function Amp\async;
 use AO\Package;
 use AO\Package\PackageType;
 use Nadybot\Core\{
@@ -20,6 +19,7 @@ use Nadybot\Modules\RELAY_MODULE\{
 	Relay,
 	RelayMessage,
 };
+use Revolt\EventLoop;
 
 #[
 	NCA\RelayTransport(
@@ -117,11 +117,11 @@ class Tell implements TransportInterface {
 			$callback();
 		} else {
 			$this->initCallback = $callback;
-			async(
+			EventLoop::queue(
 				$this->buddylistManager->addName(...),
 				$this->bot,
 				$this->relay->getName() . '_relay'
-			)->catch(Nadybot::asyncErrorHandler(...));
+			);
 		}
 		return [];
 	}

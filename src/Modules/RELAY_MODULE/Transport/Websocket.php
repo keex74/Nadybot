@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\RELAY_MODULE\Transport;
 
-use function Amp\{async, delay};
+use function Amp\{delay};
 
 use Amp\Http\Client\{
 	Connection\DefaultConnectionFactory,
@@ -126,11 +126,11 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 		if (!isset($this->client)) {
 			return [];
 		}
-		async(function () use ($data): void {
+		EventLoop::queue(function () use ($data): void {
 			foreach ($data as $chunk) {
 				$this->client?->sendText($chunk);
 			}
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 		return [];
 	}
 
@@ -146,7 +146,7 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 		}
 		$httpClient = $httpClientBuilder->build();
 		$client = new Rfc6455Connector(httpClient: $httpClient);
-		async(function () use ($callback, $client, $handshake): void {
+		EventLoop::queue(function () use ($callback, $client, $handshake): void {
 			$reconnect = false;
 			do {
 				if ($this->deinitializing) {
@@ -199,8 +199,8 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 			$this->initCallback = null;
 			$this->status = new RelayStatus(RelayStatus::READY, 'ready');
 			$callback();
-			async($this->mainLoop(...))->catch(Nadybot::asyncErrorHandler(...));
-		})->catch(Nadybot::asyncErrorHandler(...));
+			EventLoop::queue($this->mainLoop(...));
+		});
 		return [];
 	}
 
@@ -214,13 +214,13 @@ class Websocket implements TransportInterface, StatusProvider, LogWrapInterface 
 			$callback();
 			return [];
 		}
-		async(function () use ($callback): void {
+		EventLoop::queue(function () use ($callback): void {
 			try {
 				$this->client?->close();
 			} catch (Throwable) {
 			}
 			$callback();
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 		return [];
 	}
 

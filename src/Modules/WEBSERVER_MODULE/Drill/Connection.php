@@ -3,13 +3,14 @@
 namespace Nadybot\Modules\WEBSERVER_MODULE\Drill;
 
 use function Amp\Socket\connect;
-use function Amp\{async, delay};
+use function Amp\{delay};
 
 use Amp\Socket\{ConnectContext, ConnectException, Socket};
 use Amp\Websocket\Client\WebsocketConnection;
-use Nadybot\Core\{Attributes as NCA, Nadybot, Registry};
+use Nadybot\Core\{Attributes as NCA, Registry};
 use Nadybot\Modules\WEBSERVER_MODULE\WebserverController;
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 
 class Connection {
 	#[NCA\Logger]
@@ -43,7 +44,7 @@ class Connection {
 			return false;
 		}
 		$this->logger->info('Connected Drill to local webserver');
-		async($this->mainLoop(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->mainLoop(...));
 		return true;
 	}
 

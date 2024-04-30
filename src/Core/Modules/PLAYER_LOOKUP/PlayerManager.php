@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\PLAYER_LOOKUP;
 
-use function Amp\{async, delay};
+use function Amp\{delay};
 use function Safe\{json_decode, parse_url, preg_match};
 
 use Amp\File\{FileCache};
@@ -30,6 +30,7 @@ use Nadybot\Core\{
 	Types\Profession,
 };
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 use Safe\Exceptions\JsonException;
 use Safe\{DateTimeImmutable};
 
@@ -98,15 +99,13 @@ class PlayerManager extends ModuleInstance {
 		}
 		$this->playerLookupJob = new PlayerLookupJob();
 		Registry::injectDependencies($this->playerLookupJob);
-		async($this->playerLookupJob->run(...))
-			->catch(Nadybot::asyncErrorHandler(...))
-			->finally(function (): void {
-				$this->playerLookupJob?->run();
-				$this->playerLookupJob = null;
-				$this->db->table(Player::getTable())
-					->where('last_update', '<', time() - 5*static::CACHE_GRACE_TIME)
-					->delete();
-			});
+		EventLoop::queue(function (): void {
+			$this->playerLookupJob?->run();
+			$this->playerLookupJob = null;
+			$this->db->table(Player::getTable())
+				->where('last_update', '<', time() - 5*static::CACHE_GRACE_TIME)
+				->delete();
+		});
 	}
 
 	public function byName(string $name, ?int $dimension=null, bool $forceUpdate=false): ?Player {

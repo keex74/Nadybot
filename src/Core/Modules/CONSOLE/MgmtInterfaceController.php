@@ -4,7 +4,6 @@ namespace Nadybot\Core\Modules\CONSOLE;
 
 use function Amp\{
 	ByteStream\splitLines,
-	async,
 	delay,
 };
 use function Safe\preg_match;
@@ -96,11 +95,11 @@ class MgmtInterfaceController extends ModuleInstance {
 			);
 		}
 		$this->stop();
-		async($this->start(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->start(...));
 	}
 
 	public function start(): void {
-		async($this->internalStart(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->internalStart(...));
 	}
 
 	public function stop(): void {
@@ -135,7 +134,7 @@ class MgmtInterfaceController extends ModuleInstance {
 		]);
 		register_shutdown_function($this->onShutdown(...));
 		while ($socket = $server->accept()) {
-			async($this->handleConnection(...), $socket)->catch(Nadybot::asyncErrorHandler(...));
+			EventLoop::queue($this->handleConnection(...), $socket);
 		}
 		if ($scheme === 'unix') {
 			try {

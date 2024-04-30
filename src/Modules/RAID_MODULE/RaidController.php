@@ -40,6 +40,7 @@ use Nadybot\Modules\{
 	WEBSERVER_MODULE\StatsController,
 };
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 use Safe\DateTimeImmutable;
 
 /**
@@ -187,7 +188,7 @@ class RaidController extends ModuleInstance {
 
 	#[NCA\Setup]
 	public function setup(): void {
-		async($this->resumeRaid(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->resumeRaid(...));
 		$stateStats = new RaidStateStats();
 		Registry::injectDependencies($stateStats);
 		$this->statsController->registerProvider($stateStats, 'states');

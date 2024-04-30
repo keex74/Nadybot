@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\DISCORD_GATEWAY_MODULE;
 
-use function Amp\async;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Config\BotConfig,
@@ -21,6 +20,7 @@ use Nadybot\Modules\DISCORD_GATEWAY_MODULE\Model\{
 	InteractionCallbackData,
 	InteractionResponse,
 };
+use Revolt\EventLoop;
 
 class DiscordSlashCommandReply implements CommandReply {
 	#[NCA\Inject]
@@ -69,12 +69,12 @@ class DiscordSlashCommandReply implements CommandReply {
 					: null
 			)
 		);
-		async(
+		EventLoop::queue(
 			$this->discordAPIClient->sendInteractionResponse(...),
 			$this->interactionId,
 			$this->interactionToken,
 			$this->discordAPIClient::encode($response),
-		)->catch(Nadybot::asyncErrorHandler(...));
+		);
 	}
 
 	public function reply($msg): void {

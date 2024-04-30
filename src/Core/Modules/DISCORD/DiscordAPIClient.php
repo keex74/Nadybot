@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core\Modules\DISCORD;
 
-use function Amp\{async, delay};
+use function Amp\{delay};
 use function Safe\{json_decode, json_encode};
 use Amp\Http\Client\Interceptor\SetRequestHeaderIfUnset;
 use Amp\Http\Client\{BufferedContent, HttpClient, HttpClientBuilder, Request};
@@ -12,7 +12,6 @@ use Nadybot\Core\{
 	Attributes as NCA,
 	HttpRetryRateLimits,
 	ModuleInstance,
-	Nadybot,
 	Safe,
 };
 use Psr\Log\LoggerInterface;
@@ -347,7 +346,7 @@ class DiscordAPIClient extends ModuleInstance {
 		}
 		$this->queueProcessing = true;
 		$item = array_shift($this->outQueue);
-		async($this->immediatelySendToChannel(...), $item)->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->immediatelySendToChannel(...), $item);
 	}
 
 	private function immediatelySendToChannel(ChannelQueueItem $item): void {
@@ -382,7 +381,7 @@ class DiscordAPIClient extends ModuleInstance {
 		}
 		$this->webhookQueueProcessing = true;
 		$item = array_shift($this->webhookQueue);
-		async($this->immediatelySendToWebhook(...), $item)->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->immediatelySendToWebhook(...), $item);
 	}
 
 	private function immediatelySendToWebhook(WebhookQueueItem $item): void {

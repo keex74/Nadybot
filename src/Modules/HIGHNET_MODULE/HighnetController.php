@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nadybot\Modules\HIGHNET_MODULE;
 
-use function Amp\async;
 use function Safe\json_decode;
 
 use Closure;
@@ -36,6 +35,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 
 /**
  * @author Nadyita (RK5)
@@ -820,8 +820,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			]);
 			return false;
 		}
-		async($this->continueHandleIncoming(...), $event, $channel, $message)
-			->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->continueHandleIncoming(...), $event, $channel, $message);
 		return true;
 	}
 

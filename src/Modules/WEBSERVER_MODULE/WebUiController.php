@@ -2,7 +2,6 @@
 
 namespace Nadybot\Modules\WEBSERVER_MODULE;
 
-use function Amp\async;
 use Amp\ByteStream\WritableResourceStream;
 use Amp\File\{FilesystemException};
 use Amp\Http\Client\{HttpClientBuilder, Request, Response};
@@ -26,6 +25,7 @@ use Nadybot\Core\{
 	Types\SettingMode,
 };
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 use Safe\DateTimeImmutable;
 use Throwable;
 
@@ -101,7 +101,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 		if ($new === '' || $new === 'off') {
 			return;
 		}
-		async($this->updateWebUI(...))->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->updateWebUI(...));
 	}
 
 	#[NCA\Event(

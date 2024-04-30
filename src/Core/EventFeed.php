@@ -2,7 +2,7 @@
 
 namespace Nadybot\Core;
 
-use function Amp\{async, delay};
+use function Amp\{delay};
 use function Safe\json_decode;
 use Amp\Http\Client\Connection\{DefaultConnectionFactory, UnlimitedConnectionPool};
 use Amp\Http\Client\HttpClientBuilder;
@@ -17,6 +17,7 @@ use Nadybot\Core\Events\{EventFeedConnect, EventFeedReconnect, LowLevelEventFeed
 use Nadybot\Core\Types\EventFeedHandler;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
+use Revolt\EventLoop;
 use Safe\Exceptions\JsonException;
 use Throwable;
 
@@ -103,7 +104,7 @@ class EventFeed {
 			]);
 			return;
 		}
-		async(function () use ($room): void {
+		EventLoop::queue(function () use ($room): void {
 			$joinPackage = new Highway\Out\Join(room: $room);
 			$announcer = function (LowLevelEventFeedEvent $event) use ($room, &$announcer): void {
 				assert($event->highwayPackage instanceof Highway\In\RoomInfo);
@@ -118,7 +119,7 @@ class EventFeed {
 			if (isset($this->connection)) {
 				$this->connection->send($joinPackage);
 			}
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 	}
 
 	public function unregisterEventFeedHandler(string $room, EventFeedHandler $handler): void {
@@ -150,7 +151,7 @@ class EventFeed {
 			]);
 			return;
 		}
-		async(function () use ($room): void {
+		EventLoop::queue(function () use ($room): void {
 			$leavePackage = new Highway\Out\Leave(room: $room);
 			$announcer = function (LowLevelEventFeedEvent $event) use ($room, &$announcer): void {
 				assert($event->highwayPackage instanceof Highway\In\Success);
@@ -164,15 +165,15 @@ class EventFeed {
 			if (isset($this->connection)) {
 				$this->connection->send($leavePackage);
 			}
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 	}
 
 	public function mainLoop(): void {
-		async(function (): void {
+		EventLoop::queue(function (): void {
 			while ($this->singleLoop()) {
 				delay(self::RECONNECT_DELAY);
 			}
-		})->catch(Nadybot::asyncErrorHandler(...));
+		});
 	}
 
 	protected function connect(): ?Highway\Connection {

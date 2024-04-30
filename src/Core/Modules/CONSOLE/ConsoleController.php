@@ -2,7 +2,6 @@
 
 namespace Nadybot\Core\Modules\CONSOLE;
 
-use function Amp\async;
 use function Safe\{readline_add_history, readline_callback_handler_install, readline_read_history, readline_write_history, stream_isatty};
 
 use Exception;
@@ -25,7 +24,7 @@ use Nadybot\Core\{
 };
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop;
-use Safe\Exceptions\StreamException;
+use Safe\Exceptions\{ReadlineException, StreamException};
 
 #[NCA\Instance]
 class ConsoleController extends ModuleInstance {
@@ -113,7 +112,7 @@ class ConsoleController extends ModuleInstance {
 		}
 		try {
 			readline_write_history($file);
-		} catch (Exception $e) {
+		} catch (ReadlineException $e) {
 			$this->logger->warning(
 				'Unable to write the readline history file {file}: {error}',
 				[
@@ -205,7 +204,7 @@ class ConsoleController extends ModuleInstance {
 		}
 		if ($this->useReadline) {
 			readline_add_history($line);
-			async($this->saveHistory(...))->catch(Nadybot::asyncErrorHandler(...));
+			EventLoop::queue($this->saveHistory(...));
 			readline_callback_handler_install('> ', fn (?string $line) => $this->processLine($line));
 		}
 
@@ -217,7 +216,7 @@ class ConsoleController extends ModuleInstance {
 			source: Source::CONSOLE,
 			sendto: $sendto,
 		);
-		async($this->processContext(...), $context)->catch(Nadybot::asyncErrorHandler(...));
+		EventLoop::queue($this->processContext(...), $context);
 	}
 
 	private function processContext(CmdContext $context): void {
