@@ -3,9 +3,9 @@
 namespace Nadybot\Core\Types;
 
 enum ItemFlag: int {
-	/** @return Bitfield<self> */
-	public static function fromInt(int $flags): Bitfield {
-		return (new Bitfield(self::class))->setInt($flags);
+	/** @return EnumBitfield<self> */
+	public static function fromInt(int $flags): EnumBitfield {
+		return (new EnumBitfield(self::class))->setInt($flags);
 	}
 
 	public static function has(self $flag, int $value): bool {

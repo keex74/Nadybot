@@ -8,7 +8,7 @@ use Nadybot\Core\{DB, SchemaMigration};
 use Nadybot\Modules\ITEMS_MODULE\AODBEntry;
 use Psr\Log\LoggerInterface;
 
-#[NCA\Migration(order: 2023_01_08_11_27_14, shared: true)]
+#[NCA\Migration(order: 2024_04_30_09_45_00, shared: true)]
 class AddTypeToItem implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$db->table(AODBEntry::getTable())->truncate();

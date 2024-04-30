@@ -5,9 +5,9 @@ namespace Nadybot\Core\Types;
 use ValueError;
 
 enum WearSlot: int {
-	/** @return Bitfield<WearSlot> */
-	public static function byName(string $name): Bitfield {
-		$result = new Bitfield(self::class);
+	/** @return EnumBitfield<WearSlot> */
+	public static function byName(string $name): EnumBitfield {
+		$result = new EnumBitfield(self::class);
 		return match (strtolower($name)) {
 			'neck' => $result->set(self::Neck),
 			'head','helm','helmet','specialhelmet' => $result->set(self::Head),

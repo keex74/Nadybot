@@ -13,9 +13,9 @@ enum CarrySlot: int {
 		return ($value & $this->value) === 0;
 	}
 
-	/** @return Bitfield<CarrySlot> */
-	public static function byName(string $name): Bitfield {
-		$result = new Bitfield(self::class);
+	/** @return EnumBitfield<CarrySlot> */
+	public static function byName(string $name): EnumBitfield {
+		$result = new EnumBitfield(self::class);
 		return match (strtolower($name)) {
 			'hud1' => $result->set(self::HUD1),
 			'hud2' => $result->set(self::HUD2),
@@ -54,5 +54,5 @@ enum CarrySlot: int {
 	case Deck3 = 2_048;
 	case Deck4 = 4_096;
 	case Deck5 = 8_192;
-	case Deck6 = 16_484;
+	case Deck6 = 16_384;
 }

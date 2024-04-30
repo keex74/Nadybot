@@ -9,6 +9,6 @@ enum AodbType: string {
 	case Crystal = 'Crystal';
 	case Weapon = 'Weapon';
 	case Disc = 'Disc';
-	case Spirir = 'Spirit';
+	case Spirit = 'Spirit';
 	case Tainted = 'Tainted';
 }

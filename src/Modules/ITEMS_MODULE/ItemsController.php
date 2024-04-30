@@ -101,11 +101,6 @@ class ItemsController extends ModuleInstance {
 			return;
 		}
 		$blob = '';
-		$types = $this->db->table(ItemType::getTable())
-			->where('item_id', $id)
-			->select('item_type')
-			->pluckStrings('item_type')
-			->toArray();
 		foreach (get_object_vars($row) as $key => $value) {
 			if ($key === 'numExactMatches') {
 				continue;
@@ -113,15 +108,15 @@ class ItemsController extends ModuleInstance {
 			$key = str_replace('_', ' ', $key);
 			if ($value instanceof BackedEnum) {
 				$blob .= "{$key}: <highlight>{$value->name}<end>\n";
-			} elseif ($key === 'flags') {
-				$blob .= "{$key}: <highlight>{$value}<end>\n";
-			} elseif ($key === 'slot') {
-				if (isset($value) && ($value instanceof Bitfield)) {
-					$slots = (string)$value;
-					$blob .= "{$key}: <highlight>{$slots}<end>\n";
-				} else {
+			} elseif ($value instanceof Bitfield) {
+				$intValue = $value->toInt();
+				if ($intValue === 0) {
 					$blob .= "{$key}: <highlight>&lt;none&gt;<end>\n";
+				} else {
+					$blob .= "{$key}: <highlight>{$value}<end>\n";
 				}
+			} elseif ($key === 'icon' && is_int($value) && $value > 0) {
+				$blob .= "{$key}: <highlight>{$value}<end> ({$row->getIcon()})\n";
 			} else {
 				$blob .= "{$key}: <highlight>" . (is_bool($value) ? ($value ? 'yes' : 'no') : ($value??'<empty>')) . "<end>\n";
 			}

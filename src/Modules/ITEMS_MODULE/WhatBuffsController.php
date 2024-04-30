@@ -7,7 +7,7 @@ use Closure;
 use Generator;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
-use Nadybot\Core\Types\{CarrySlot, ItemFlag, WearSlot};
+use Nadybot\Core\Types\{CarrySlot, EnumBitfield, ItemFlag, WearSlot};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -863,6 +863,9 @@ class WhatBuffsController extends ModuleInstance {
 	}
 
 	private function getSlotPrefix(ItemBuffSearchResult $item, string $category): string {
+		if (!($item->slot instanceof EnumBitfield)) {
+			return '';
+		}
 		$markSetting = $this->whatbuffsDisplay;
 		$result = '';
 		if ($item->multi_m !== null || $item->multi_r !== null) {

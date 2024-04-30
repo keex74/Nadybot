@@ -4,14 +4,13 @@ namespace Nadybot\Modules\ITEMS_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\DBTable;
-use Nadybot\Core\Types\{AOIcon, AOItemSpec, Bitfield, CarrySlot, ItemFlag, WearSlot};
+use Nadybot\Core\Types\{AOIcon, AOItemSpec, Bitfield, CarrySlot, EnumBitfield, ImplantSlot, ItemFlag, WearSlot};
 
 #[Table(name: 'aodb', shared: Shared::Yes)]
 class AODBEntry extends DBTable implements AOItemSpec, AOIcon {
-	/** @var Bitfield<ItemFlag> */
-	public Bitfield $flags;
+	/** @var EnumBitfield<ItemFlag> */
+	public EnumBitfield $flags;
 
-	/** @var Bitfield<WearSlot>|Bitfield<CarrySlot> */
 	public Bitfield $slot;
 
 	public function __construct(
@@ -27,11 +26,17 @@ class AODBEntry extends DBTable implements AOItemSpec, AOIcon {
 		public AodbType $type,
 		public bool $froob_friendly=false,
 	) {
-		$this->flags = (new Bitfield(ItemFlag::class))->setInt($flags);
+		$this->flags = (new EnumBitfield(ItemFlag::class))->setInt($flags);
 		if ($this->type === AodbType::Armor) {
-			$this->slot = (new Bitfield(WearSlot::class))->setInt($slot);
+			$this->slot = (new EnumBitfield(WearSlot::class))->setInt($slot);
 		} elseif ($this->type === AodbType::Weapon) {
-			$this->slot = (new Bitfield(CarrySlot::class))->setInt($slot);
+			$this->slot = (new EnumBitfield(CarrySlot::class))->setInt($slot);
+		} elseif ($this->type === AodbType::Implant) {
+			$this->slot = (new EnumBitfield(ImplantSlot::class))->setInt($slot);
+		} elseif ($this->type === AodbType::Spirit) {
+			$this->slot = (new EnumBitfield(ImplantSlot::class))->setInt($slot);
+		} else {
+			$this->slot = (new Bitfield())->setInt($slot);
 		}
 	}
 
