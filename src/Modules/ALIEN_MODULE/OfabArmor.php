@@ -4,7 +4,7 @@ namespace Nadybot\Modules\ALIEN_MODULE;
 
 use Nadybot\Core\Attributes\DB\{Shared, Table};
 use Nadybot\Core\{DBTable, Types\AOItemSpec, Types\Profession, Types\WearSlot};
-use Nadybot\Modules\ITEMS_MODULE\AODBItem;
+use Nadybot\Modules\ITEMS_MODULE\{AODBItem, AodbType};
 
 #[Table(name: 'ofabarmor', shared: Shared::Yes)]
 class OfabArmor extends DBTable implements AOItemSpec {
@@ -56,6 +56,7 @@ class OfabArmor extends DBTable implements AOItemSpec {
 			slot: WearSlot::byName($this->slot)->toInt(),
 			flags: 0,
 			in_game: true,
+			type: AodbType::Armor,
 			froob_friendly: false,
 		);
 	}

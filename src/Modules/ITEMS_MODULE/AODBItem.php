@@ -16,6 +16,7 @@ class AODBItem extends AODBEntry implements AOItem {
 		int $slot,
 		int $flags,
 		bool $in_game,
+		AodbType $type,
 		bool $froob_friendly=false,
 	) {
 		parent::__construct(
@@ -28,6 +29,7 @@ class AODBItem extends AODBEntry implements AOItem {
 			slot: $slot,
 			flags: $flags,
 			in_game: $in_game,
+			type: $type,
 			froob_friendly: $froob_friendly,
 		);
 	}

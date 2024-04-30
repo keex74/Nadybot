@@ -14,8 +14,9 @@ class ItemWithBuffs extends AODBEntry {
 			highql: $item->highql,
 			name: $item->name,
 			icon: $item->icon,
-			slot: $item->slot,
+			slot: $item->slot->toInt(),
 			flags: $item->flags->toInt(),
+			type: $item->type,
 			in_game: $item->in_game,
 			froob_friendly: $item->froob_friendly,
 		);

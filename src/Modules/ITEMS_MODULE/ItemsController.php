@@ -3,9 +3,11 @@
 namespace Nadybot\Modules\ITEMS_MODULE;
 
 use function Safe\preg_split;
+
+use BackedEnum;
 use Illuminate\Support\Collection;
 
-use Nadybot\Core\Types\{Bitfield, CarrySlot, ItemFlag, WearSlot};
+use Nadybot\Core\Types\{Bitfield};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -109,19 +111,13 @@ class ItemsController extends ModuleInstance {
 				continue;
 			}
 			$key = str_replace('_', ' ', $key);
-			if ($key === 'flags') {
+			if ($value instanceof BackedEnum) {
+				$blob .= "{$key}: <highlight>{$value->name}<end>\n";
+			} elseif ($key === 'flags') {
 				$blob .= "{$key}: <highlight>{$value}<end>\n";
-			} elseif ($key === 'slot' && is_int($value)) {
-				$slots = '';
-				if (count(array_diff($types, ['Util', 'Hud', 'Deck', 'Weapon'])) > 0) {
-					$slots = $this->wearSlotToText($value);
-				} elseif (count(array_diff($types, [
-					'Arms', 'Back', 'Chest', 'Feet', 'Fingers', 'Head', 'Legs',
-					'Neck', 'Shoulders', 'Hands', 'Wrists',
-				])) > 0) {
-					$slots = $this->carrySlotToText($value);
-				}
-				if (strlen($slots) > 0) {
+			} elseif ($key === 'slot') {
+				if (isset($value) && ($value instanceof Bitfield)) {
+					$slots = (string)$value;
 					$blob .= "{$key}: <highlight>{$slots}<end>\n";
 				} else {
 					$blob .= "{$key}: <highlight>&lt;none&gt;<end>\n";
@@ -303,6 +299,7 @@ class ItemsController extends ModuleInstance {
 			->addSelect('foo.icon')
 			->addSelect('foo.in_game')
 			->addSelect('foo.slot')
+			->addSelect('foo.type')
 			->addSelect('g.group_id')
 			->addSelect('foo.flags')
 			->selectRaw($query->colFunc('COALESCE', ['a1.lowid', 'a2.lowid', 'foo.lowid'], 'lowid'))
@@ -724,17 +721,5 @@ class ItemsController extends ModuleInstance {
 		return $this->db->table(ItemGroup::getTable())
 			->where('item_id', $aoid)
 			->exists();
-	}
-
-	protected function flagsToText(int $flags): string {
-		return (string)ItemFlag::fromInt($flags);
-	}
-
-	private function carrySlotToText(int $slots): string {
-		return (string)(new Bitfield(CarrySlot::class))->setInt($slots);
-	}
-
-	private function wearSlotToText(int $slots): string {
-		return (string)(new Bitfield(WearSlot::class))->setInt($slots);
 	}
 }

@@ -866,40 +866,39 @@ class WhatBuffsController extends ModuleInstance {
 		$markSetting = $this->whatbuffsDisplay;
 		$result = '';
 		if ($item->multi_m !== null || $item->multi_r !== null) {
-			$handsMask = CarrySlot::LeftHand->value|CarrySlot::RightHand->value;
-			if (($item->slot & $handsMask) === $handsMask) {
+			if ($item->slot->hasAll(CarrySlot::LeftHand, CarrySlot::RightHand)) {
 				return '2x ';
-			} elseif (CarrySlot::LeftHand->in($item->slot)) {
+			} elseif ($item->slot->has(CarrySlot::LeftHand)) {
 				$result = 'L-Hand ';
 			} else {
 				$result = 'R-Hand ';
 			}
 		} elseif ($category === 'Arms') {
-			$armMask = WearSlot::byName('arms')->toInt();
-			if (($item->slot & $armMask) === WearSlot::LeftArm->value) {
+			if ($item->slot->hasAll(WearSlot::LeftArm, WearSlot::RightArm)) {
+			} elseif ($item->slot->has(WearSlot::LeftArm)) {
 				$result = 'L-Arm ';
-			} elseif (($item->slot & $armMask) === WearSlot::RightArm->value) {
+			} elseif ($item->slot->has(WearSlot::RightArm)) {
 				$result = 'R-Arm ';
 			}
 		} elseif ($category === 'Wrists') {
-			$wristMask = WearSlot::byName('wrists')->toInt();
-			if (($item->slot & $wristMask) === WearSlot::LeftWrist->value) {
+			if ($item->slot->hasAll(WearSlot::LeftWrist, WearSlot::RightWrist)) {
+			} elseif ($item->slot->has(WearSlot::LeftWrist)) {
 				$result = 'L-Wrist ';
-			} elseif (($item->slot & $wristMask) === WearSlot::RightWrist->value) {
+			} elseif ($item->slot->has(WearSlot::RightWrist)) {
 				$result = 'R-Wrist ';
 			}
 		} elseif ($category === 'Fingers') {
-			$fingerMask = WearSlot::byName('fingers')->toInt();
-			if (($item->slot & $fingerMask) === WearSlot::LeftFinger->value) {
+			if ($item->slot->hasAll(WearSlot::LeftFinger, WearSlot::RightFinger)) {
+			} elseif ($item->slot->has(WearSlot::LeftFinger)) {
 				$result = 'L-Finger ';
-			} elseif (($item->slot & $fingerMask) === WearSlot::RightFinger->value) {
+			} elseif ($item->slot->has(WearSlot::RightFinger)) {
 				$result = 'R-Finger ';
 			}
 		} elseif ($category === 'Shoulders') {
-			$shoulderMask = WearSlot::byName('shoulders')->toInt();
-			if (($item->slot & $shoulderMask) === WearSlot::LeftShoulder->value) {
+			if ($item->slot->hasAll(WearSlot::LeftShoulder, WearSlot::RightShoulder)) {
+			} elseif ($item->slot->has(WearSlot::LeftShoulder)) {
 				$result = 'L-Shoulder ';
-			} elseif (($item->slot & $shoulderMask) === WearSlot::RightShoulder->value) {
+			} elseif ($item->slot->has(WearSlot::RightShoulder)) {
 				$result = 'R-Shoulder ';
 			}
 		}
