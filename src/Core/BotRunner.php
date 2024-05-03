@@ -58,6 +58,8 @@ class BotRunner {
 
 	private static Filesystem $fs;
 
+	private static string $fsDriver = 'Unknown';
+
 	/**
 	 * Create a new instance
 	 *
@@ -65,7 +67,6 @@ class BotRunner {
 	 */
 	public function __construct(array $argv) {
 		$this->argv = $argv;
-		self::$fs = new Filesystem(filesystem());
 	}
 
 	/**
@@ -85,7 +86,7 @@ class BotRunner {
 
 	/** Get the base directory of the bot */
 	public static function getBasedir(): string {
-		return self::$fs->realPath(dirname(__DIR__, 2));
+		return self::getFS()->realPath(dirname(__DIR__, 2));
 	}
 
 	/**
@@ -95,14 +96,14 @@ class BotRunner {
 	 */
 	public static function calculateVersion(): string {
 		$baseDir = self::getBasedir();
-		if (!self::$fs->exists("{$baseDir}/.git")) {
+		if (!self::getFS()->exists("{$baseDir}/.git")) {
 			return self::VERSION;
 		}
 		set_error_handler(static function (int $num, string $str, string $file, int $line): void {
 			throw new ErrorException($str, 0, $num, $file, $line);
 		});
 		try {
-			$refs = explode(': ', trim(self::$fs->read("{$baseDir}/.git/HEAD")), 2);
+			$refs = explode(': ', trim(self::getFS()->read("{$baseDir}/.git/HEAD")), 2);
 			if (count($refs) !== 2) {
 				throw new Exception('Unknown Git format detected');
 			}
@@ -180,22 +181,8 @@ class BotRunner {
 
 	/** Run the bot in an endless loop */
 	public function run(): void {
-		if (!self::isLinux()) {
-			putenv('AMP_FS_DRIVER=' . BlockingFilesystemDriver::class);
-		}
-		$fsDriverClass = getenv('AMP_FS_DRIVER');
-		if ($fsDriverClass !== false && class_exists($fsDriverClass) && is_subclass_of($fsDriverClass, FilesystemDriver::class)) {
-			$fsDriver = new $fsDriverClass();
-		} else {
-			$fsDriver = createDefaultDriver();
-		}
-		if ($fsDriver instanceof EioFilesystemDriver) {
-			$fsDriver = new ParallelFilesystemDriver();
-		}
-
-		self::$fs = new Filesystem(filesystem($fsDriver));
-		LegacyLogger::$fs = self::$fs;
-		LoggerWrapper::$fs = self::$fs;
+		LegacyLogger::$fs = self::getFS();
+		LoggerWrapper::$fs = self::getFS();
 		$this->parseOptions();
 		// set default timezone
 		date_default_timezone_set('UTC');
@@ -242,7 +229,7 @@ class BotRunner {
 
 		$this->setErrorHandling($logFolderName);
 		$this->logger = new LoggerWrapper('Core/BotRunner');
-		self::$fs->setLogger(new LoggerWrapper('Core/Filesystem'));
+		self::getFS()->setLogger(new LoggerWrapper('Core/Filesystem'));
 		Registry::injectDependencies($this->logger);
 
 		$this->sendBotBanner();
@@ -265,7 +252,7 @@ class BotRunner {
 				'dimension' => $config->main->dimension,
 				'phpVersion' => \PHP_VERSION,
 				'loopType' => class_basename(EventLoop::getDriver()),
-				'fsType' => class_basename($fsDriver),
+				'fsType' => class_basename(self::$fsDriver),
 				'dbType' => $config->database->type->name,
 			]
 		);
@@ -335,24 +322,46 @@ class BotRunner {
 		return \PHP_OS_FAMILY === 'Linux';
 	}
 
+	private static function getFS(): Filesystem {
+		if (isset(self::$fs)) {
+			return self::$fs;
+		}
+		if (!self::isLinux()) {
+			putenv('AMP_FS_DRIVER=' . BlockingFilesystemDriver::class);
+		}
+		$fsDriverClass = getenv('AMP_FS_DRIVER');
+		if ($fsDriverClass !== false && class_exists($fsDriverClass) && is_subclass_of($fsDriverClass, FilesystemDriver::class)) {
+			$fsDriver = new $fsDriverClass();
+		} else {
+			$fsDriver = createDefaultDriver();
+		}
+		if ($fsDriver instanceof EioFilesystemDriver) {
+			$fsDriver = new ParallelFilesystemDriver();
+		}
+		self::$fsDriver = class_basename($fsDriver);
+
+		self::$fs = new Filesystem(filesystem($fsDriver));
+		return self::$fs;
+	}
+
 	private function getConfigFile(): BotConfig {
 		if (isset($this->configFile)) {
 			return $this->configFile;
 		}
 		$configFilePath = self::$arguments['c'] ?? 'conf/config.php';
-		return $this->configFile = BotConfig::loadFromFile($configFilePath, self::$fs);
+		return $this->configFile = BotConfig::loadFromFile($configFilePath, self::getFS());
 	}
 
 	private function createMissingDirs(): void {
 		$path = $this->getConfigFile()->paths;
 		foreach (get_object_vars($path) as $name => $dir) {
-			if (is_string($dir) && !self::$fs->exists($dir)) {
-				self::$fs->createDirectory($dir, 0700);
+			if (is_string($dir) && !self::getFS()->exists($dir)) {
+				self::getFS()->createDirectory($dir, 0700);
 			}
 		}
 		foreach ($path->modules as $dir) {
-			if (!self::$fs->exists($dir)) {
-				self::$fs->createDirectory($dir, 0700);
+			if (!self::getFS()->exists($dir)) {
+				self::getFS()->createDirectory($dir, 0700);
 			}
 		}
 	}
@@ -547,7 +556,7 @@ class BotRunner {
 		if (!$this->shouldShowSetup($config)) {
 			return false;
 		}
-		$setup = new Setup($this->getConfigFile(), self::$fs);
+		$setup = new Setup($this->getConfigFile(), self::getFS());
 		$setup->showIntro();
 		$this->logger->notice('Reloading configuration and testing your settings.');
 		return true;

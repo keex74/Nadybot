@@ -191,7 +191,8 @@ class ApiSpecGenerator {
 					}
 				}
 				if (!count($matches = Safe::pregMatch("/@json-var\s+(.+?)\[\]/", $docBlock))
-					&& !count($matches = Safe::pregMatch("/@var\s+(.+?)\[\]/", $docBlock))) {
+					&& !count($matches = Safe::pregMatch("/@var\s+(.+?)\[\]/", $docBlock))
+					&& !count($matches = Safe::pregMatch("/@var\s+list<(.+?)>/", $docBlock))) {
 					throw new Exception("Untyped array found at {$class}::\$" . $refProp->name);
 				}
 				$parts = explode('\\', $matches[1]??'');

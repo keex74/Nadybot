@@ -356,7 +356,6 @@ class WeatherController extends ModuleInstance {
 			)
 		);
 		$weather = $mapper->hydrateObject(Weather::class, $data);
-		echo((string)$weather . "\n");
 		return $weather;
 	}
 }

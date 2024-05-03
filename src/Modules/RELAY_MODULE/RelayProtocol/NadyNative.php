@@ -95,7 +95,6 @@ class NadyNative implements RelayProtocolInterface {
 			$serialized = $mapper->serializeObject($event);
 			$data = json_encode($serialized, \JSON_UNESCAPED_SLASHES|\JSON_INVALID_UTF8_SUBSTITUTE);
 		} catch (JsonException | UnableToSerializeObject $e) {
-			echo($e->getTraceAsString());
 			$this->logger->error('Cannot send event via Nadynative protocol: {error}', [
 				'error' => $e->getMessage(),
 				'exception' => $e,

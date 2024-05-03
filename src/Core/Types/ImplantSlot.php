@@ -24,6 +24,25 @@ enum ImplantSlot: int {
 		};
 	}
 
+	public static function byDesignSlotName(string $name): self {
+		return match (strtolower($name)) {
+			'eye' => self::Eye,
+			'head' => self::Head,
+			'ear' => self::Ear,
+			'rarm' => self::RightArm,
+			'chest' => self::Chest,
+			'larm' => self::LeftArm,
+			'rwrist' => self::RightWrist,
+			'waist' => self::Waist,
+			'lwrist' => self::LeftWrist,
+			'rhand' => self::RightHand,
+			'legs' => self::Leg,
+			'lhand' => self::LeftHand,
+			'feet' => self::Feet,
+			default => throw new ValueError("Unknown implant slot name '{$name}'"),
+		};
+	}
+
 	public function designSlotName(): string {
 		return match ($this) {
 			self::Eye => 'eye',

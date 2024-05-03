@@ -2,6 +2,8 @@
 
 use function Safe\json_encode;
 
+use Nadybot\Core\Safe;
+
 require 'vendor/autoload.php';
 
 $runner = new Nadybot\Api\ApiSpecGenerator();

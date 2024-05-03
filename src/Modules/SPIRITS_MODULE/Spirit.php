@@ -2,8 +2,9 @@
 
 namespace Nadybot\Modules\SPIRITS_MODULE;
 
-use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
+use Nadybot\Core\Attributes\DB\{MapRead, PK, Shared, Table};
 use Nadybot\Core\DBTable;
+use Nadybot\Core\Types\ImplantSlot;
 
 #[Table(name: 'spiritsdb', shared: Shared::Yes)]
 class Spirit extends DBTable {
@@ -11,7 +12,9 @@ class Spirit extends DBTable {
 		#[PK] public int $id,
 		public string $name,
 		public int $ql,
-		public string $spot,
+		#[
+			MapRead([ImplantSlot::class, 'byDesignSlotName'])
+		] public ImplantSlot $spot,
 		public int $level,
 		public int $agility,
 		public int $sense,

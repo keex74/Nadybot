@@ -64,7 +64,7 @@ class SpiritsController extends ModuleInstance {
 		}
 
 		$data = $this->db->table(Spirit::getTable())
-			->where('spot', $slot->designSlotName())
+			->where('spot', ucfirst($slot->designSlotName()))
 			->where('ql', '>=', $lowQL)
 			->where('ql', '<=', $highQL)
 			->orderBy('ql')
@@ -95,7 +95,7 @@ class SpiritsController extends ModuleInstance {
 
 		$data = $this->db->table(Spirit::getTable())
 			->whereIlike('name', "%{$name}%")
-			->where('spot', $slot->designSlotName())
+			->where('spot', ucfirst($slot->designSlotName()))
 			->orderBy('level')
 			->asObj(Spirit::class);
 		if ($data->isEmpty()) {
@@ -178,7 +178,7 @@ class SpiritsController extends ModuleInstance {
 		}
 
 		$data = $this->db->table(Spirit::getTable())
-			->where('spot', $slot->designSlotName())
+			->where('spot', ucfirst($slot->designSlotName()))
 			->where('ql', $ql)
 			->asObj(Spirit::class);
 		if ($data->isEmpty()) {
@@ -233,7 +233,7 @@ class SpiritsController extends ModuleInstance {
 			if ($dbSpirit) {
 				$msg .= Text::makeImage($dbSpirit->icon) . ' ';
 				$msg .= $dbSpirit->getLink(ql: $dbSpirit->highql) . "\n";
-				$msg .= "Minimum Level={$spirit->level}   Slot={$spirit->spot}   Agility/Sense Needed={$spirit->agility}\n\n";
+				$msg .= "Minimum Level={$spirit->level}   Slot={$spirit->spot->longName()}   Agility/Sense Needed={$spirit->agility}\n\n";
 			}
 		}
 		if ($msg === '') {

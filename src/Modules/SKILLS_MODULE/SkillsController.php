@@ -579,7 +579,7 @@ class SkillsController extends ModuleInstance {
 	 * and attack speed at different aggdef positions
 	 */
 	#[NCA\HandlesCommand('weapon')]
-	#[NCA\Help\Example('<symbol>weapon 30190 300')]
+	#[NCA\Help\Example('<symbol>weapon 245605 140')]
 	public function weaponCommand(CmdContext $context, int $highid, int $ql): void {
 		// this is a hack since Worn Soft Pepper Pistol has its high and low ids reversed in-game
 		// there may be others
