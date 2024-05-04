@@ -2,7 +2,7 @@
 
 namespace Nadybot\Modules\RELAY_MODULE;
 
-use function Safe\{json_encode, preg_match, preg_split};
+use function Safe\{json_decode, json_encode, preg_match, preg_split};
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\{Request, Response};
@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\Routing\{Character, RoutableMessage, Source};
+use Nadybot\Core\Types\AccessLevelProvider;
 use Nadybot\Core\{
 	Attributes as NCA,
 	ClassSpec,
@@ -65,7 +66,7 @@ use Throwable;
 		description: 'Force syncing of next command if relay sync exists',
 	),
 ]
-class RelayController extends ModuleInstance {
+class RelayController extends ModuleInstance implements AccessLevelProvider {
 	/** @var array<string,Relay> */
 	public array $relays = [];
 
@@ -107,9 +108,6 @@ class RelayController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
-
-	#[NCA\Inject]
-	private Util $util;
 
 	#[NCA\Inject]
 	private StatsController $statsController;
@@ -169,6 +167,26 @@ class RelayController extends ModuleInstance {
 		foreach ($this->relays as $relay) {
 			$relay->setMessageQueueSize((int)$new);
 		}
+	}
+
+	public function getSingleAccessLevel(string $sender): ?string {
+		foreach ($this->relays as $relayName => $relay) {
+			if ($relay->treatOnlineAsGuest === false) {
+				continue;
+			}
+			foreach ($relay->getOnlineList() as $where => $onlineStats) {
+				foreach ($onlineStats as $charName => $player) {
+					if (
+						$sender === $charName
+						|| $player->dimension === $this->config->main->dimension
+						|| $player->online === true
+					) {
+						return 'guest';
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public function loadStackComponents(): void {
@@ -660,6 +678,25 @@ class RelayController extends ModuleInstance {
 	public function relayRemAllCommand(CmdContext $context, #[NCA\Str('remall', 'delall')] string $action): void {
 		$numDeleted = $this->deleteAllRelays();
 		$context->reply("<highlight>{$numDeleted}<end> relays deleted.");
+	}
+
+	/** Set if players from other relay-bots are treated as guests by this bot */
+	#[NCA\HandlesCommand('relay')]
+	public function relayGuestmodeCommand(CmdContext $context, #[NCA\Str('guestmode')] string $action, int $id, bool $on): void {
+		$relay = $this->getRelay($id);
+		if (!isset($relay)) {
+			$context->reply("Relay <highlight>#{$id}<end> not found.");
+			return;
+		}
+		$oRelay = $this->relays[$relay->name]??null;
+		if (!isset($oRelay) || !$oRelay->protocolSupportsFeature(RelayProtocolInterface::F_ONLINE_SYNC)) {
+			$context->reply('This relay does not support sharing online lists.');
+			return;
+		}
+		$oRelay->treatOnlineAsGuest = $on;
+		$this->saveRelayProperties($relay);
+		$status = $on ? '<green>on<end>' : '<red>off<end>';
+		$context->reply("Treating online players from relay <highlight>{$oRelay->getName()}<end> as guests is now {$status}.");
 	}
 
 	/** Configure a relay. Only supported for nadynative */
@@ -1316,6 +1353,29 @@ class RelayController extends ModuleInstance {
 		);
 	}
 
+	protected function saveRelayProperties(RelayConfig $relay): bool {
+		if (!isset($relay->id)) {
+			return false;
+		}
+		$oRelay = $this->relays[$relay->name] ?? null;
+		if (!isset($oRelay)) {
+			return false;
+		}
+		$refClass = new ReflectionClass($oRelay);
+		foreach ($refClass->getProperties() as $refProp) {
+			foreach ($refProp->getAttributes(RelayProp::class) as $refAttr) {
+				$attr = $refAttr->newInstance();
+				try {
+					$value = json_encode($refProp->getValue($oRelay));
+				} catch (JsonException $e) {
+					return false;
+				}
+				$this->changeRelayProperty($relay, $attr->name, $value);
+			}
+		}
+		return true;
+	}
+
 	protected function changeRelayEventStatus(RelayConfig $relay, string $eventName, string $direction, bool $enable): bool {
 		if (!isset($relay->id)) {
 			return false;
@@ -1448,16 +1508,66 @@ class RelayController extends ModuleInstance {
 			$spec
 		);
 
-		return new Relay(
+		$relayObj = new Relay(
 			name: $conf->name,
 			transport: $transportLayer,
 			relayProtocol: $protocolLayer,
 			stack: $stack,
 			events: $conf->events,
 		);
+		return $this->loadRelayProperties($conf, $relayObj);
 	}
 
-	/** Return the textualrepresentation with status for a single relay */
+	protected function loadRelayProperties(RelayConfig $config, Relay $relay): Relay {
+		/** @var Collection<string,RelayProperty> */
+		$relayProps = $this->db->table(RelayProperty::getTable())
+			->where('relay_id', $config->id)
+			->asObj(RelayProperty::class)
+			->keyBy('property');
+		$refClass = new ReflectionClass($relay);
+		foreach ($refClass->getProperties() as $refProp) {
+			foreach ($refProp->getAttributes(RelayProp::class) as $refAttr) {
+				$attr = $refAttr->newInstance();
+
+				/** @var ?RelayProperty */
+				$dbProp = $relayProps->get($attr->name, null);
+				if (isset($dbProp)) {
+					$this->logger->info('Setting {relay}.{property} to {value}', [
+						'relay' => $relay->getName(),
+						'property' => $refProp->getName(),
+						'value' => $dbProp->value,
+					]);
+					try {
+						if (isset($dbProp->value)) {
+							$value = json_decode($dbProp->value);
+							$refProp->setValue($relay, $value);
+						}
+					} catch (JsonException $e) {
+						$this->logger->error('Error setting {relay}.{property}: {error}', [
+							'relay' => $relay->getName(),
+							'property' => $refProp->getName(),
+							'error' => $e->getMessage(),
+							'exception' => $e,
+						]);
+					}
+				}
+			}
+		}
+		return $relay;
+	}
+
+	private function changeRelayProperty(RelayConfig $relay, string $property, string $value): void {
+		if (!isset($relay->id)) {
+			return;
+		}
+		$this->db->upsert(new RelayProperty(
+			relay_id: $relay->id,
+			property: $property,
+			value: $value,
+		));
+	}
+
+	/** Return the textual representation with status for a single relay */
 	private function renderRelay(RelayConfig $relay): string {
 		$blob = "<header2>{$relay->name}<end>\n";
 		if (count($relay->layers) === 0) {
@@ -1499,6 +1609,16 @@ class RelayController extends ModuleInstance {
 			"/tell <myname> relay describe {$relay->id}"
 		);
 		$blob .= " [{$delLink}] [{$descrLink}]\n";
+
+		if (isset($live) && $live->protocolSupportsFeature(RelayProtocolInterface::F_ONLINE_SYNC) === true) {
+			$link = Text::makeChatcmd(
+				$live->treatOnlineAsGuest ? 'disable' : 'enable',
+				"/tell <myname> relay guestmode {$relay->id} ".
+					($live->treatOnlineAsGuest ? 'off' : 'on')
+			);
+			$blob .= '<tab>Treat online players as guests: <highlight>'.
+				($live->treatOnlineAsGuest ? 'yes' : 'no') . "<end> [{$link}]\n";
+		}
 
 		$blob .= "<tab>Colors:\n";
 		$blob .= '<tab><tab>' . $this->getExampleMessage(
