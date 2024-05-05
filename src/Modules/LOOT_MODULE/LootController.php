@@ -89,6 +89,14 @@ class LootController extends ModuleInstance {
 	])]
 	public int $addOnLoot = 2;
 
+	/** Text to show on items where no one added*/
+	#[NCA\Setting\Text(options: [
+		'-',
+		'None',
+		'No one added',
+	])]
+	public string $noOneAddedName = '-';
+
 	/** Show pictures in loot-command */
 	#[NCA\Setting\Boolean]
 	public bool $showLootPics = true;
@@ -735,7 +743,7 @@ class LootController extends ModuleInstance {
 				rolled_by: $context->char->name,
 			);
 			if ($numUsers === 0) {
-				$list .= "<highlight>No one added.<end>\n\n";
+				$list .= "<grey>{$this->noOneAddedName}<end>\n\n";
 				$this->residual[$resnum] = $item;
 				$resnum++;
 				$lootHistory->winner = null;
@@ -755,7 +763,7 @@ class LootController extends ModuleInstance {
 					$list .= implode(
 						', ',
 						array_map(
-							static fn (string $name): string => "<green>{$name}<end>",
+							static fn (string $name): string => "<highlight>{$name}<end>",
 							$winners
 						)
 					);
