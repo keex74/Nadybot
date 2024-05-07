@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- The AOChatProxy is obsolete, because Nadybot finally supports multiple connections all by itself. The connection now consists of a main character and 0 or more workers.
+- The playfields supported by the bot for the `!waypoint`- and `!whereis`-command has increased drastically.
+- Use our own server (with the old one being a fallback) for the `!history`-command, making it a lot faster.
+
+### Changed
+
+- Results of `!flatroll` are now using standard color theme and the text to show on items where no one added is configurable, defaulting to `-` in order to easier spot actual winners.
+- The default file format of the configuration file has changed from php to toml.
+- Don't show links to `!config` if you cannot run it anyway.
+
+### Coding
+
+- The whole Amphp2-subsystem was updated to Amphp3.
+- The webserver now uses the Amphp webserver.
+- The websocket server now uses the Amphp webserver.
+- All filesystem-calls are now async.
+- Don't block on orglist updates anymore
+- Apply stricter checks and rules for everything
+- All exceptions will now be logged including the previous exceptions leading to them.
+- Importer and exporter don't use a schema-checker anymore, but rather import into proper classes.
+- Remove all redundant libraries and only keep a single one for each type
+- Profession, Faction, and Playfield are now Enums
+- No uninitialized properties anymore. All non-injected properties without default are now part of the constructor
+
+### Fixed
+
+- Don't cache chars from other dimensions, overwriting our own id
+
 ## [6.2.8] - 2024-02-21
 
 ### Added
