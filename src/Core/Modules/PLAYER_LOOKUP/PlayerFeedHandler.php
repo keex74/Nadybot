@@ -62,8 +62,10 @@ class PlayerFeedHandler extends ModuleInstance implements EventFeedHandler {
 			$playerInfo = $mapper->hydrateObject(PlayerInfo::class, $data);
 			$player = $playerInfo->toPlayer();
 			$this->playerManager->update($player);
-			$this->chatBot->id[$playerInfo->name] = $playerInfo->uid;
-			$this->chatBot->id[$playerInfo->uid] = $playerInfo->name;
+			if ($player->dimension === $this->config->dimension) {
+				$this->chatBot->id[$playerInfo->name] = $playerInfo->uid;
+				$this->chatBot->id[$playerInfo->uid] = $playerInfo->name;
+			}
 		} catch (UnableToHydrateObject $e) {
 			$this->logger->error("Format of Char-Info-API has changed: {error}", [
 				"error" => $e->getMessage(),
