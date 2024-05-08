@@ -1,3 +1,8 @@
+nadybot (6.2.9-1+ubuntu1) bionic; urgency=medium
+  Fixed
+  - Don't cache UIDs of players from other dimensions.
+ -- Nadyita <nadyita@hodorraid.org>  Wed, 08 May 2024 07:30:00 +0200
+
 nadybot (6.2.8-1+ubuntu1) bionic; urgency=medium
   Added
   - Added 2 http-endpoints at "/livez" and "/readyz" for Kubernetes probes.

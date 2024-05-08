@@ -206,6 +206,9 @@ exit 0
 %endif
 
 %changelog
+* Wed May 08 2024 Nadyita <nadyita@hodorraid.org> 6.2.9-1
+- Don't cache UIDs of players from other dimensions.
+
 * Wed Feb 21 2024 Nadyita <nadyita@hodorraid.org> 6.2.8-1
 - Added 2 http-endpoints at "/livez" and "/readyz" for Kubernetes probes.
 - Replace "leaderecho_color" with new setting "leader_echo_format", which
