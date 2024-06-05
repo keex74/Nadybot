@@ -72,7 +72,7 @@ class DingController extends ModuleInstance {
 		} elseif ($level === 150) {
 			$dingText = [
 				'S10 time!!!',
-				'Time to ungimp yourself! Horray! Congrats =)',
+				'Time to ungimp yourself! Hooray! Congrats =)',
 				'What starts with A, and ends with Z? <green>ALIUMZ!<end>',
 				'Wow, is it that time already? TL 5 really? You sure are moving along! Gratz',
 			];

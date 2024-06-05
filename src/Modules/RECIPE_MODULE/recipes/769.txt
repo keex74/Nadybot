@@ -4,7 +4,7 @@ Author:
 </font><font color=#FF0000>Ingredients </font><font color=#009B00>
 </font><font color=#FFFF00>------------------------------</font><font color=#009B00>
 
-</font><font color=#FFFF00> All parts can be foundin the tradeskill section of any general store</font><font color=#009B00>
+</font><font color=#FFFF00> All parts can be found in the tradeskill section of any general store</font><font color=#009B00>
 
 #L "Pseudo-Nano Multibenzonoxydant Sulphosalycilic Liquid" "165120"
 <img src=rdb://156495>
