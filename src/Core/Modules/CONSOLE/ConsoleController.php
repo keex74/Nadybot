@@ -28,11 +28,27 @@ use Safe\Exceptions\{ReadlineException, StreamException};
 
 #[NCA\Instance]
 class ConsoleController extends ModuleInstance {
+	public const PLACEHOLDERS = 'placeholders';
+
 	/** Use ANSI colors */
 	#[NCA\Setting\Boolean] public bool $consoleColor = false;
 
 	/** Set background color */
 	#[NCA\Setting\Boolean] public bool $consoleBGColor = false;
+
+	/** How to display items and nanos */
+	#[NCA\Setting\Template(
+		exampleValues: [
+			'id' => 12_345,
+			'ql' => 200,
+		],
+		options: [
+			'placeholders' => self::PLACEHOLDERS,
+			'aoitems' => 'https://aoitems.com/item/{id}{?ql:/{ql}}',
+			'auno' => 'https://auno.org/ao/db.php?id={id}{?ql:&ql={ql}}',
+		]
+	)]
+	public string $consoleItemDisplay = 'https://auno.org/ao/db.php?id={id}{?ql:&ql={ql}}';
 
 	/**
 	 * @var resource

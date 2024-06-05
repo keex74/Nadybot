@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The AOChatProxy is obsolete, because Nadybot finally supports multiple connections all by itself. The connection now consists of a main character and 0 or more workers.
 - The playfields supported by the bot for the `!waypoint`- and `!whereis`-command has increased drastically.
 - Use our own server (with the old one being a fallback) for the `!history`-command, making it a lot faster.
+- Support hyperlinks in the console on terminals supporting this feature.
 
 ### Changed
 
