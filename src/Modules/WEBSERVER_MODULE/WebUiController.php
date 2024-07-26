@@ -136,21 +136,29 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 			$this->settingManager->save('nadyui_version', '0');
 		}
 		$path = $this->config->paths->html;
-		return (strlen($this->fs->realPath("{$path}/css"))
-				? $this->recursiveRemoveDirectory($this->fs->realPath("{$path}/css"))
-				: true)
-			&& (strlen($this->fs->realPath("{$path}/img"))
-				? $this->recursiveRemoveDirectory($this->fs->realPath("{$path}/img"))
-				: true)
-			&& (strlen($this->fs->realPath("{$path}/js"))
-				? $this->recursiveRemoveDirectory($this->fs->realPath("{$path}/js"))
-				: true)
-			&& (strlen($this->fs->realPath("{$path}/index.html"))
-				? $this->unlink($this->fs->realPath("{$path}/index.html"))
-				: true)
-			&& (strlen($this->fs->realPath("{$path}/favicon.ico"))
-				? $this->unlink($this->fs->realPath("{$path}/favicon.ico"))
-				: true);
+
+		$success = true;
+		foreach (['css', 'img', 'js'] as $subPath) {
+			try {
+				$fullPath = $this->fs->realPath("{$path}/{$subPath}");
+			} catch (FilesystemException) {
+				continue;
+			}
+			if (strlen($fullPath)) {
+				$success = $success && $this->recursiveRemoveDirectory($fullPath);
+			}
+		}
+		foreach (['index.html', 'favicon.ico'] as $subPath) {
+			try {
+				$fullPath = $this->fs->realPath("{$path}/{$subPath}");
+			} catch (FilesystemException) {
+				continue;
+			}
+			if (strlen($fullPath)) {
+				$success = $success && $this->unlink($fullPath);
+			}
+		}
+		return $success;
 	}
 
 	/** Delete a directory and all its subdirectories */
