@@ -337,7 +337,7 @@ class WebUiController extends ModuleInstance implements MessageEmitter {
 				throw new Exception('Unable to create temp file for extraction: ' . $e->getMessage(), 0, $e);
 			}
 			$handle = new WritableResourceStream($file);
-			$archiveName = stream_get_meta_data($file)['uri'];
+			$archiveName = stream_get_meta_data($file)['uri']; // @phpstan-ignore-line
 			if ($body === '') {
 				throw new Exception("Cannot write to temp file {$archiveName}.");
 			}

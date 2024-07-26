@@ -54,9 +54,6 @@ class SyncEventFactory {
 			if (!is_a($class, SyncEvent::class, true)) {
 				continue;
 			}
-			if (!is_string($class::EVENT_MASK)) {
-				continue;
-			}
 			self::$classMapping[$class::EVENT_MASK] = $class;
 		}
 		return self::$classMapping;
