@@ -12,7 +12,7 @@ class Migration implements Stringable {
 		public string $filePath,
 		public string $baseName,
 		public string $className,
-		public int $order,
+		public float $order,
 		public string $module,
 		public bool $shared,
 	) {
