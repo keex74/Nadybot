@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ad2e2a5cc647b3ceba20acfa4cd647c",
+    "content-hash": "31409bf206e198b552886b785d9fe820",
     "packages": [
         {
             "name": "amphp/amp",
@@ -6142,22 +6142,25 @@
         },
         {
             "name": "struggle-for-php/sfp-phpstan-psr-log",
-            "version": "0.20.0",
+            "version": "0.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/struggle-for-php/sfp-phpstan-psr-log.git",
-                "reference": "ab70ce538b72abb559b5ec1ac5feaebba4ab82a4"
+                "reference": "5581dd1926d462d7372ac85359b45d74c0c2c565"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/struggle-for-php/sfp-phpstan-psr-log/zipball/ab70ce538b72abb559b5ec1ac5feaebba4ab82a4",
-                "reference": "ab70ce538b72abb559b5ec1ac5feaebba4ab82a4",
+                "url": "https://api.github.com/repos/struggle-for-php/sfp-phpstan-psr-log/zipball/5581dd1926d462d7372ac85359b45d74c0c2c565",
+                "reference": "5581dd1926d462d7372ac85359b45d74c0c2c565",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0",
-                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan": "^1.11",
                 "struggle-for-php/sfp-stubs-psr-log": "^1.0.1 || ^2 || ^3.0.1"
+            },
+            "conflict": {
+                "nikic/php-parser": "<4.13.0"
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "^2.0.0",
@@ -6197,9 +6200,9 @@
             ],
             "support": {
                 "issues": "https://github.com/struggle-for-php/sfp-phpstan-psr-log/issues",
-                "source": "https://github.com/struggle-for-php/sfp-phpstan-psr-log/tree/0.20.0"
+                "source": "https://github.com/struggle-for-php/sfp-phpstan-psr-log/tree/0.21.0"
             },
-            "time": "2024-02-10T03:19:12+00:00"
+            "time": "2024-05-13T23:28:36+00:00"
         },
         {
             "name": "struggle-for-php/sfp-stubs-psr-log",

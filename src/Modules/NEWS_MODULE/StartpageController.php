@@ -10,7 +10,6 @@ use Amp\Http\Server\{Request, Response};
 use Closure;
 use DateInterval;
 use DateTimeZone;
-use InvalidArgumentException;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -457,12 +456,6 @@ class StartpageController extends ModuleInstance {
 		$name = $attrObj->name;
 		$closure = $method->getClosure($instance);
 
-		/** @psalm-suppress TypeDoesNotContainNull */
-		if (!isset($closure)) {
-			throw new InvalidArgumentException(
-				"{$funcName} cannot be made into a closure."
-			);
-		}
 		$tile = new NewsTile(
 			name: $name,
 			callback: $closure,

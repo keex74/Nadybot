@@ -276,9 +276,7 @@ class ApiController extends ModuleInstance {
 					$methods []= strtolower(class_basename($verbAttr->getName()));
 				}
 				$closure = $method->getClosure($instance);
-				if (isset($closure)) {
-					$this->addApiRoute($routes, $methods, $closure, $accessLevelFrom, $accessLevel, $method);
-				}
+				$this->addApiRoute($routes, $methods, $closure, $accessLevelFrom, $accessLevel, $method);
 			}
 		}
 	}

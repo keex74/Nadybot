@@ -1540,10 +1540,6 @@ class Nadybot {
 				$change = $changeAnnotation->newInstance();
 				$closure = $method->getClosure($obj);
 
-				/** @psalm-suppress TypeDoesNotContainNull */
-				if (!isset($closure)) {
-					continue;
-				}
 				$this->settingManager->registerChangeListener($change->setting, $closure);
 			}
 		}

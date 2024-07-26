@@ -395,9 +395,7 @@ class WebserverController extends ModuleInstance implements RequestHandler {
 				foreach ($attrs as $attribute) {
 					$attrObj = $attribute->newInstance();
 					$closure = $method->getClosure($instance);
-					if (isset($closure)) {
-						$this->addRoute($attrObj->type, $attrObj->path, $closure);
-					}
+					$this->addRoute($attrObj->type, $attrObj->path, $closure);
 				}
 			}
 		}

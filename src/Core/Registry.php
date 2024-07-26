@@ -144,9 +144,7 @@ class Registry {
 				$logger = new LoggerWrapper($tag);
 				if ($instance instanceof LogWrapInterface) {
 					$closure = $reflection->getMethod('wrapLogs')->getClosure($instance);
-					if (isset($closure)) {
-						$logger->wrap($closure);
-					}
+					$logger->wrap($closure);
 				}
 				if ($property->isStatic()) {
 					$property->setValue(null, $logger);
