@@ -275,7 +275,7 @@ class ItemsController extends ModuleInstance {
 		}
 		$innerQuery->groupByRaw($innerQuery->colFunc('COALESCE', ['g.group_id', 'a.lowid']))
 			->groupBy('a.lowid', 'a.highid', 'a.lowql', 'a.highql', 'a.name')
-			->groupBy('a.icon', 'a.froob_friendly', 'a.slot', 'a.flags', 'g.group_id')
+			->groupBy('a.icon', 'a.froob_friendly', 'a.slot', 'a.flags', 'g.group_id', 'a.in_game')
 			->orderBy('a.name')
 			->orderByDesc('a.highql')
 			->limit($this->maxitems)
