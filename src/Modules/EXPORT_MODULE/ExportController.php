@@ -16,10 +16,12 @@ use Nadybot\Core\{
 	DBSchema\Alt,
 	DBSchema\BanEntry,
 	DBSchema\Member,
+	ExporterInterface,
 	Filesystem,
 	ModuleInstance,
 	Modules\PREFERENCES\Preferences,
 	Nadybot,
+	Registry,
 };
 use Nadybot\Modules\EVENTS_MODULE\EventModel;
 use Nadybot\Modules\NOTES_MODULE\{OrgNote};
@@ -48,6 +50,8 @@ use Nadybot\Modules\{
 	VOTE_MODULE\Poll,
 	VOTE_MODULE\Vote,
 };
+use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use Safe\Exceptions\JsonException;
 
 /**
@@ -83,6 +87,37 @@ class ExportController extends ModuleInstance {
 	#[NCA\Inject]
 	private BotConfig $config;
 
+	#[NCA\Logger]
+	private LoggerInterface $logger;
+
+	/** @var array<string,ExporterInterface> */
+	private array $exporters = [];
+
+	#[NCA\Setup]
+	public function setup(): void {
+		$instances = Registry::getAllInstances();
+		foreach ($instances as $instance) {
+			if (!($instance instanceof ExporterInterface)) {
+				continue;
+			}
+			$reflection = new ReflectionClass($instance);
+			$instanceAttrs = $reflection->getAttributes(NCA\Exporter::class);
+			if (!count($instanceAttrs)) {
+				$this->logger->warning('{class} has ExporterInterface without Export attribute found', [
+					'class' => $reflection->getName(),
+				]);
+				continue;
+			}
+			$instanceObj = $instanceAttrs[0]->newInstance();
+			$this->logger->debug('{class} handles exports for {key}', [
+				'class' => $reflection->getName(),
+				'key' => $instanceObj->key,
+			]);
+
+			$this->exporters[$instanceObj->key] = $instance;
+		}
+	}
+
 	/** Export all of this bot's data into a portable JSON-file */
 	#[NCA\HandlesCommand('export')]
 	#[NCA\Help\Example(
@@ -104,17 +139,12 @@ class ExportController extends ModuleInstance {
 			$this->fs->createDirectory("{$dataPath}/export", 0700);
 		}
 		$context->reply('Starting export...');
+		$exports = [];
+		foreach ($this->exporters as $key => $exporter) {
+			$exports[$key] = $exporter->export($this->db, $this->logger);
+		}
+		/*
 		$exports = new Schema\Export(
-			alts: $this->exportAlts(),
-			auctions: $this->exportAuctions(),
-			banlist: $this->exportBanlist(),
-			cityCloak: $this->exportCloak(),
-			commentCategories: $this->exportCommentCategories(),
-			comments: $this->exportComments(),
-			events: $this->exportEvents(),
-			links: $this->exportLinks(),
-			members: $this->exportMembers(),
-			news: $this->exportNews(),
 			notes: $this->exportNotes(),
 			orgNotes: $this->exportOrgNotes(),
 			polls: $this->exportPolls(),
@@ -127,15 +157,19 @@ class ExportController extends ModuleInstance {
 			timers: $this->exportTimers(),
 			trackedCharacters: $this->exportTrackedCharacters(),
 		);
+		*/
 		$mapper = new ObjectMapperUsingReflection(
 			new DefinitionProvider(
 				keyFormatter: new KeyFormatterWithoutConversion(),
 			),
 		);
 		try {
-				$serialized = $mapper->serializeObject($exports);
-				$cleaned = self::stripNull($serialized);
-				$output = json_encode($cleaned, \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES);
+			$serialized = [];
+			foreach ($exports as $key => $data) {
+				$serialized[$key] = $mapper->serializeObjects($data)->toArray();
+			}
+			$cleaned = self::stripNull($serialized);
+			$output = json_encode($cleaned, \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES);
 		} catch (JsonException | UnableToSerializeObject $e) {
 			$context->reply('There was an error exporting the data: ' . $e->getMessage());
 			return;

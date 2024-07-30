@@ -6,6 +6,8 @@ use function Amp\async;
 
 use AO\Package\Out\PrivateChannelKick;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
+use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\Events\ConnectEvent;
 use Nadybot\Core\{
 	AccessManager,
@@ -18,6 +20,7 @@ use Nadybot\Core\{
 	EventManager,
 	Events\Event,
 	Exceptions\SQLException,
+	ImporterInterface,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\PLAYER_LOOKUP\GuildManager,
@@ -36,6 +39,7 @@ use Throwable;
 
 #[
 	NCA\Instance,
+	NCA\Importer(key: 'banlist', class: ExportedBan::class),
 	NCA\HasMigrations,
 	NCA\DefineCommand(
 		command: 'ban',
@@ -71,7 +75,7 @@ use Throwable;
 		desc: "Triggered when someone's ban is lifted"
 	)
 ]
-class BanController extends ModuleInstance {
+class BanController extends ModuleInstance implements ImporterInterface {
 	/** Always ban all alts, not just 1 char */
 	#[NCA\Setting\Boolean]
 	public bool $banAllAlts = false;
@@ -100,6 +104,9 @@ class BanController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Nadybot $chatBot;
+
+	#[NCA\Inject]
+	private BotConfig $config;
 
 	#[NCA\Inject]
 	private Text $text;
@@ -707,6 +714,50 @@ class BanController extends ModuleInstance {
 			return;
 		}
 		$this->remove($event->uid);
+	}
+
+	/** @param list<object> $data A list of all mains and their alts */
+	public function import(DB $db, LoggerInterface $logger, array $data, array $rankMap): void {
+		$numImported = 0;
+		$logger->notice('Importing {num_bans} ban(s)', [
+			'num_bans' => count($data),
+		]);
+		$db->awaitBeginTransaction();
+		try {
+			$logger->notice('Deleting all bans');
+			$db->table(BanEntry::getTable())->truncate();
+			foreach ($data as $ban) {
+				if (!($ban instanceof ExportedBan)) {
+					throw new InvalidArgumentException('BanController::import() was called with wrong banlist format');
+				}
+
+				/** @psalm-suppress PossiblyNullArgument */
+				$id = $ban->character->id ?? $this->chatBot->getUid($ban->character->name);
+				if (!isset($id)) {
+					continue;
+				}
+				$db->insert(new BanEntry(
+					charid: $id,
+					admin: $ban->bannedBy?->tryGetName() ?? $this->config->main->character,
+					time: $ban->banStart ?? time(),
+					reason: $ban->banReason ?? 'None given',
+					banend: $ban->banEnd ?? 0,
+				));
+				$numImported++;
+			}
+		} catch (Throwable $e) {
+			$logger->error('{error}. Rolling back changes.', [
+				'error' => rtrim($e->getMessage(), '.'),
+				'exception' => $e,
+			]);
+			$db->rollback();
+			return;
+		}
+		$db->commit();
+		$this->uploadBanlist();
+		$this->logger->notice('{num_imported} bans successfully imported', [
+			'num_imported' => $numImported,
+		]);
 	}
 
 	protected function addOrgToBanlist(BannedOrg $ban): ?string {

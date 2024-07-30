@@ -17,11 +17,13 @@ use Nadybot\Core\{
 	Config\BotConfig,
 	DB,
 	Filesystem,
+	ImporterInterface,
 	ModuleInstance,
 	Modules\BAN\BanController,
 	Modules\PREFERENCES\Preferences,
 	Nadybot,
 	ParamClass\PFilename,
+	Registry,
 	Safe,
 	SettingManager,
 	Util,
@@ -53,6 +55,7 @@ use Nadybot\Modules\{
 	VOTE_MODULE\VoteController,
 };
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use Throwable;
 
 /**
@@ -102,6 +105,42 @@ class ImportController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private BotConfig $config;
+
+	/**
+	 * @var array<string,string>
+	 *
+	 * @psalm-var array<string,class-string>
+	 */
+	private array $keyToClass = [];
+
+	/** @var array<string,ImporterInterface> */
+	private array $importers = [];
+
+	#[NCA\Setup]
+	public function setup(): void {
+		$instances = Registry::getAllInstances();
+		foreach ($instances as $instance) {
+			if (!($instance instanceof ImporterInterface)) {
+				continue;
+			}
+			$reflection = new ReflectionClass($instance);
+			$instanceAttrs = $reflection->getAttributes(NCA\Importer::class);
+			if (!count($instanceAttrs)) {
+				$this->logger->warning('{class} has ImporterInterface without Import attribute found', [
+					'class' => $reflection->getName(),
+				]);
+				continue;
+			}
+			$instanceObj = $instanceAttrs[0]->newInstance();
+			$this->logger->debug('{class} handles imports for {key}', [
+				'class' => $reflection->getName(),
+				'key' => $instanceObj->key,
+			]);
+
+			$this->importers[$instanceObj->key] = $instance;
+			$this->keyToClass[$instanceObj->key] = $instanceObj->class;
+		}
+	}
 
 	/** Import data from a file, mapping the exported access levels to your own ones */
 	#[NCA\HandlesCommand('import')]
@@ -160,12 +199,8 @@ class ImportController extends ModuleInstance {
 		}
 		$this->logger->notice('Starting import');
 		$context->reply('Starting import...');
-		$importMap = $this->getImportMapping();
-		foreach ($importMap as $key => $func) {
-			if (!isset($import->{$key})) {
-				continue;
-			}
-			$func($import->{$key}, $rankMapping);
+		foreach ($this->importers as $key => $importer) {
+			$importer->import($this->db, $this->logger, $import[$key], $rankMapping);
 		}
 		$this->logger->notice('Import done');
 		$context->reply('The import finished successfully.');
@@ -988,13 +1023,19 @@ class ImportController extends ModuleInstance {
 		return $mapping;
 	}
 
-	/** @return list<string> */
-	protected function getRanks(object $import): array {
+	/**
+	 * @param array<string,list<object>> $import
+	 *
+	 * @return list<string>
+	 */
+	protected function getRanks(array $import): array {
 		$ranks = [];
-		foreach ($import->members??[] as $member) {
-			$ranks[$member->rank] = true;
+		foreach ($import['members']??[] as $member) {
+			if (isset($member->rank)) {
+				$ranks[$member->rank] = true;
+			}
 		}
-		foreach ($import->commentCategories??[] as $category) {
+		foreach ($import['commentCategories']??[] as $category) {
 			if (isset($category->minRankToRead)) {
 				$ranks[$category->minRankToRead] = true;
 			}
@@ -1002,7 +1043,7 @@ class ImportController extends ModuleInstance {
 				$ranks[$category->minRankToWrite] = true;
 			}
 		}
-		foreach ($import->polls??[] as $poll) {
+		foreach ($import['polls']??[] as $poll) {
 			if (isset($poll->minRankToVote)) {
 				$ranks[$poll->minRankToVote] = true;
 			}
@@ -1088,7 +1129,8 @@ class ImportController extends ModuleInstance {
 		$this->db->rollback();
 	}
 
-	private function loadAndParseExportFile(string $fileName, CmdContext $sendto): ?Schema\Export {
+	/** @return ?array<string,list<object>> */
+	private function loadAndParseExportFile(string $fileName, CmdContext $sendto): ?array {
 		if (!$this->fs->exists($fileName)) {
 			$sendto->reply("No export file <highlight>{$fileName}<end> found.");
 			return null;
@@ -1115,12 +1157,15 @@ class ImportController extends ModuleInstance {
 				keyFormatter: new KeyFormatterWithoutConversion(),
 			),
 		);
+		$result = [];
 		try {
-			$data = $mapper->hydrateObject(Schema\Export::class, $import);
+			foreach ($import as $key => $importData) {
+				$result[$key] = $mapper->hydrateObjects($this->keyToClass[$key], $importData)->toArray();
+			}
 		} catch (UnableToHydrateObject $e) {
 			$sendto->reply('The import data is not valid: <highlight>' . $e->getMessage() . '<end>.');
 			return null;
 		}
-		return $data;
+		return $result;
 	}
 }

@@ -3,12 +3,18 @@
 namespace Nadybot\Modules\EVENTS_MODULE;
 
 use function Safe\strtotime;
+
+use InvalidArgumentException;
+use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
 	DB,
 	Events\JoinMyPrivEvent,
 	Events\LogonEvent,
+	ExportCharacter,
+	ExporterInterface,
+	ImporterInterface,
 	ModuleInstance,
 	Modules\ALTS\AltsController,
 	Modules\PLAYER_LOOKUP\PlayerManager,
@@ -17,7 +23,9 @@ use Nadybot\Core\{
 	Text,
 	Util,
 };
+use Psr\Log\LoggerInterface;
 use Safe\Exceptions\DatetimeException;
+use Throwable;
 
 /**
  * @author Legendadv (RK2)
@@ -26,6 +34,8 @@ use Safe\Exceptions\DatetimeException;
 #[
 	NCA\Instance,
 	NCA\HasMigrations,
+	NCA\Exporter('events'),
+	NCA\Importer('events', ExportEvent::class),
 	NCA\DefineCommand(
 		command: 'events',
 		accessLevel: 'guest',
@@ -38,7 +48,7 @@ use Safe\Exceptions\DatetimeException;
 		description: 'Add/change or delete an event',
 	),
 ]
-class EventsController extends ModuleInstance {
+class EventsController extends ModuleInstance implements ImporterInterface, ExporterInterface {
 	public const CMD_EVENT_MANAGE = 'events add/change/delete';
 
 	/** Maximum number of events shown */
@@ -50,6 +60,9 @@ class EventsController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Nadybot $chatBot;
+
+	#[NCA\Inject]
+	private BotConfig $config;
 
 	#[NCA\Inject]
 	private PlayerManager $playerManager;
@@ -384,5 +397,67 @@ class EventsController extends ModuleInstance {
 				": <highlight>{$event->event_name}<end>";
 		})->join("\n");
 		return $blob;
+	}
+
+	/** @return list<ExportEvent> */
+	public function export(DB $db, LoggerInterface $logger): array {
+		return $db->table(EventModel::getTable())
+			->asObj(EventModel::class)
+			->map(static function (EventModel $event): ExportEvent {
+				$attendees = array_values(array_diff(explode(',', $event->event_attendees ?? ''), ['']));
+
+				$data = new ExportEvent(
+					createdBy: new ExportCharacter(name: $event->submitter_name),
+					creationTime: $event->time_submitted,
+					name: $event->event_name,
+					startTime: $event->event_date,
+					description: $event->event_desc,
+					attendees: array_map(
+						static fn (string $name): ExportCharacter => new ExportCharacter(name: $name),
+						$attendees
+					),
+				);
+
+				return $data;
+			})->toList();
+	}
+
+	public function import(DB $db, LoggerInterface $logger, array $data, array $rankMap): void {
+		$logger->notice('Importing {num_events} events', [
+			'num_events' => count($data),
+		]);
+		$db->awaitBeginTransaction();
+		try {
+			$logger->notice('Deleting all events');
+			$db->table(EventModel::getTable())->truncate();
+			foreach ($data as $event) {
+				if (!($event instanceof ExportEvent)) {
+					throw new InvalidArgumentException('EventsController::import() was called with wrong data format');
+				}
+				$attendees = [];
+				foreach ($event->attendees??[] as $attendee) {
+					$name = $attendee->tryGetName();
+					if (isset($name)) {
+						$attendees []= $name;
+					}
+				}
+				$db->insert(new EventModel(
+					time_submitted: $event->creationTime ?? time(),
+					submitter_name: $event->createdBy?->tryGetName() ?? $this->config->main->character,
+					event_name: $event->name,
+					event_date: $event->startTime ?? null,
+					event_desc: $event->description ?? null,
+					event_attendees: implode(',', $attendees),
+				));
+			}
+		} catch (Throwable $e) {
+			$logger->error('{error}. Rolling back changes.', [
+				'error' => rtrim($e->getMessage(), '.'),
+				'exception' => $e,
+			]);
+			return;
+		}
+		$db->commit();
+		$logger->notice('All events imported');
 	}
 }

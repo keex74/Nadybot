@@ -2,16 +2,23 @@
 
 namespace Nadybot\Modules\NOTES_MODULE;
 
+use InvalidArgumentException;
+use Nadybot\Core\Config\BotConfig;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
 	CmdContext,
 	DB,
+	ExportCharacter,
+	ExporterInterface,
+	ImporterInterface,
 	ModuleInstance,
 	ParamClass\PRemove,
 	ParamClass\PWord,
 	Text,
 };
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * @author Tyrence (RK2)
@@ -19,13 +26,15 @@ use Nadybot\Core\{
 #[
 	NCA\Instance,
 	NCA\HasMigrations('Migrations/Links'),
+	NCA\Exporter('links'),
+	NCA\Importer('links', ExportLink::class),
 	NCA\DefineCommand(
 		command: 'links',
 		accessLevel: 'guild',
 		description: 'Displays, adds, or removes links from the org link list',
 	),
 ]
-class LinksController extends ModuleInstance {
+class LinksController extends ModuleInstance implements ImporterInterface, ExporterInterface {
 	/** Enable full urls in the link list output */
 	#[NCA\Setting\Boolean]
 	public bool $showfullurls = false;
@@ -35,6 +44,9 @@ class LinksController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private Text $text;
+
+	#[NCA\Inject]
+	private BotConfig $config;
 
 	#[NCA\Inject]
 	private AccessManager $accessManager;
@@ -104,5 +116,50 @@ class LinksController extends ModuleInstance {
 			$msg = "You do not have permission to delete links added by <highlight>{$obj->name}<end>";
 		}
 		$context->reply($msg);
+	}
+
+	/** @return list<ExportLink> */
+	public function export(DB $db, LoggerInterface $logger): array {
+		return $db->table(Link::getTable())
+			->asObj(Link::class)
+			->map(static function (Link $link): ExportLink {
+				return new ExportLink(
+					createdBy: new ExportCharacter(name: $link->name),
+					creationTime: $link->dt,
+					url: $link->website,
+					description: $link->comments,
+				);
+			})->toList();
+	}
+
+	public function import(DB $db, LoggerInterface $logger, array $data, array $rankMap): void {
+		$logger->notice('Importing {num_links} links', [
+			'num_links' => count($data),
+		]);
+		$db->awaitBeginTransaction();
+		try {
+			$logger->notice('Deleting all links');
+			$db->table(Link::getTable())->truncate();
+			foreach ($data as $link) {
+				if (!($link instanceof ExportLink)) {
+					throw new InvalidArgumentException(__CLASS__ . ':' . __METHOD__ . '() called with wrong data');
+				}
+				$this->db->insert(new Link(
+					name: $link->createdBy?->tryGetName() ?? $this->config->main->character,
+					website: $link->url,
+					comments: $link->description ?? '',
+					dt: $link->creationTime ?? null,
+				));
+			}
+		} catch (Throwable $e) {
+			$logger->error('{error}. Rolling back changes.', [
+				'error' => rtrim($e->getMessage(), '.'),
+				'exception' => $e,
+			]);
+			$db->rollback();
+			return;
+		}
+		$db->commit();
+		$logger->notice('All links imported');
 	}
 }
