@@ -8,13 +8,13 @@ use Nadybot\Core\ExportCharacter;
 
 class ExportNews {
 	/**
-	 * @param string                   $news        The news text itself
-	 * @param ?ExportCharacter         $author      The character who posted the news
-	 * @param ?string                  $uuid        The unique identifier of this news entry
-	 * @param ?int                     $addedTime   Timestamp of when the news were posted
-	 * @param ?bool                    $pinned      Whether the news are sticky, i.e. pinned to be on top
-	 * @param ?bool                    $deleted     Whether the news were deleted
-	 * @param ?ExprtNewsConfirmation[] $confirmedBy
+	 * @param string                    $news        The news text itself
+	 * @param ?ExportCharacter          $author      The character who posted the news
+	 * @param ?string                   $uuid        The unique identifier of this news entry
+	 * @param ?int                      $addedTime   Timestamp of when the news were posted
+	 * @param ?bool                     $pinned      Whether the news are sticky, i.e. pinned to be on top
+	 * @param ?bool                     $deleted     Whether the news were deleted
+	 * @param ?ExportNewsConfirmation[] $confirmedBy
 	 *
 	 * @psalm-param ?list<ExportNewsConfirmation> $confirmedBy
 	 */
