@@ -34,4 +34,16 @@ class ExportCharacter {
 		$chatBot = Registry::getInstance(Nadybot::class);
 		return $chatBot->getName($this->id);
 	}
+
+	#[DoNotSerialize]
+	public function tryGetID(): ?int {
+		if (isset($this->id)) {
+			return $this->id;
+		}
+		if (!isset($this->name)) {
+			return null;
+		}
+		$chatBot = Registry::getInstance(Nadybot::class);
+		return $chatBot->getUid($this->name);
+	}
 }
