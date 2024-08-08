@@ -312,7 +312,7 @@ class SymbiantController extends ModuleInstance {
 	/** @return list<string> */
 	private function getAndRenderBestSymbiants(Profession $prof, int $level): array {
 		$query = $this->db->table(Symbiant::getTable(), 's')
-			->join('SymbiantProfessionMatrix AS spm', 'spm.SymbiantID', 's.ID')
+			->join(SymbiantProfessionMatrix::getTable('spm'), 'spm.SymbiantID', 's.ID')
 			->join('Profession AS p', 'p.ID', 'spm.ProfessionID')
 			->join('ImplantType AS it', 'it.ImplantTypeID', 's.SlotID')
 			->where('p.Name', $prof->value)

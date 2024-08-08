@@ -5,12 +5,13 @@ namespace Nadybot\Modules\WHEREIS_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\WHEREIS_MODULE\Whereis;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_12_07_10_50_15, shared: true)]
 class CreateWhereisTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'whereis';
+		$table = Whereis::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->integer('id')->primary();

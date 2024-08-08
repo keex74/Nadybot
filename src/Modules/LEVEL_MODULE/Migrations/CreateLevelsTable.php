@@ -5,12 +5,13 @@ namespace Nadybot\Modules\LEVEL_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\LEVEL_MODULE\Level;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_16_50_32, shared: true)]
 class CreateLevelsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'levels';
+		$table = Level::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->smallInteger('level')->primary();

@@ -5,12 +5,13 @@ namespace Nadybot\Modules\BANK_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\BANK_MODULE\Bank;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_13_34_26, shared: true)]
 class CreateBankTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'bank';
+		$table = Bank::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

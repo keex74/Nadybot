@@ -5,12 +5,13 @@ namespace Nadybot\Modules\TRICKLE_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\TRICKLE_MODULE\Trickle;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_28_08_24_41, shared: true)]
 class CreateTrickleTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'trickle';
+		$table = Trickle::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->integer('id')->primary();

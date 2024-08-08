@@ -5,12 +5,13 @@ namespace Nadybot\Modules\IMPLANT_MODULE\Migrations\Designer;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\IMPLANT_MODULE\ImplantDesign;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_08_41_24, shared: true)]
 class CreateImplantDesignTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'implant_design';
+		$table = ImplantDesign::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

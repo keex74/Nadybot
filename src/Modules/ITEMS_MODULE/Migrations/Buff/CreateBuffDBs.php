@@ -5,33 +5,34 @@ namespace Nadybot\Modules\ITEMS_MODULE\Migrations\Buff;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\ITEMS_MODULE\{Buff, ItemBuff, Skill, SkillAlias};
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_16_47_51, shared: true)]
 class CreateBuffDBs implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$db->schema()->dropIfExists('item_buffs');
-		$db->schema()->create('item_buffs', static function (Blueprint $table): void {
+		$db->schema()->dropIfExists(ItemBuff::getTable());
+		$db->schema()->create(ItemBuff::getTable(), static function (Blueprint $table): void {
 			$table->integer('item_id')->index();
 			$table->integer('attribute_id')->index();
 			$table->integer('amount');
 		});
 
-		$db->schema()->dropIfExists('skills');
-		$db->schema()->create('skills', static function (Blueprint $table): void {
+		$db->schema()->dropIfExists(Skill::getTable());
+		$db->schema()->create(Skill::getTable(), static function (Blueprint $table): void {
 			$table->integer('id')->primary();
 			$table->string('name', 50);
 			$table->string('unit', 10);
 		});
 
-		$db->schema()->dropIfExists('skill_alias');
-		$db->schema()->create('skill_alias', static function (Blueprint $table): void {
+		$db->schema()->dropIfExists(SkillAlias::getTable());
+		$db->schema()->create(SkillAlias::getTable(), static function (Blueprint $table): void {
 			$table->integer('id');
 			$table->string('name', 50);
 		});
 
-		$db->schema()->dropIfExists('buffs');
-		$db->schema()->create('buffs', static function (Blueprint $table): void {
+		$db->schema()->dropIfExists(Buff::getTable());
+		$db->schema()->create(Buff::getTable(), static function (Blueprint $table): void {
 			$table->integer('id')->primary();
 			$table->integer('nano_id')->nullable()->index();
 			$table->integer('disc_id')->nullable();

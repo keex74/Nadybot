@@ -5,12 +5,13 @@ namespace Nadybot\Modules\ALIEN_MODULE\Migrations\Misc;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\ALIEN_MODULE\LEProc;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_05_31_10_04_19, shared: true)]
 class SimplifyLEProcsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'leprocs';
+		$table = LEProc::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->id();

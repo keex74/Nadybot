@@ -4,6 +4,7 @@ namespace Nadybot\Core\Modules\PLAYER_LOOKUP\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
+use Nadybot\Core\DBSchema\Player;
 use Nadybot\Core\{DB, SchemaMigration};
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -11,7 +12,7 @@ use Throwable;
 #[NCA\Migration(order: 2021_04_25_07_52_43, shared: true)]
 class CreatePlayersTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'players';
+		$table = Player::getTable();
 		if ($db->schema()->hasTable($table)) {
 			// Delete entries with duplicate entries
 			$db->table($table)

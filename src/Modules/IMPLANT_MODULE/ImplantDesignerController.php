@@ -682,7 +682,7 @@ class ImplantDesignerController extends ModuleInstance {
 	}
 
 	public function getDesign(string $sender, string $name): stdClass {
-		$design = $this->db->table('implant_design')
+		$design = $this->db->table(ImplantDesign::getTable())
 			->where('owner', $sender)
 			->where('name', $name)
 			->pluckStrings('design')
@@ -695,7 +695,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 	public function saveDesign(string $sender, string $name, object $design): void {
 		$json = json_encode($design);
-		$this->db->table('implant_design')
+		$this->db->table(ImplantDesign::getTable())
 			->updateOrInsert(
 				[
 					'owner' => $sender,

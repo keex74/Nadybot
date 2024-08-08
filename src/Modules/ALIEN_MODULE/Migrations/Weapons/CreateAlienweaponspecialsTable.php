@@ -5,12 +5,13 @@ namespace Nadybot\Modules\ALIEN_MODULE\Migrations\Weapons;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\ALIEN_MODULE\AlienWeaponSpecials;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_13_03_45, shared: true)]
 class CreateAlienweaponspecialsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'alienweaponspecials';
+		$table = AlienWeaponSpecials::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

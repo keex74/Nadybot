@@ -5,12 +5,13 @@ namespace Nadybot\Modules\ONLINE_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\ONLINE_MODULE\Online;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_27_05_51_46, shared: true)]
 class CreateOnlineTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'online';
+		$table = Online::getTable();
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->string('name', 15)->change();

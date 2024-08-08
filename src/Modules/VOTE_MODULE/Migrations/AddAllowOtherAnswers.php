@@ -11,7 +11,6 @@ use Psr\Log\LoggerInterface;
 #[NCA\Migration(order: 2023_05_03_20_37_10)]
 class AddAllowOtherAnswers implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = '';
 		$table = Poll::getTable();
 		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->boolean('allow_other_answers')->nullable(false)->default(true);

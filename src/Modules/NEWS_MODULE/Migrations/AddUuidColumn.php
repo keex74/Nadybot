@@ -9,13 +9,14 @@ use Nadybot\Core\{
 	SchemaMigration,
 	Util,
 };
+use Nadybot\Modules\NEWS_MODULE\News;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
 #[NCA\Migration(order: 2022_01_26_10_34_56, shared: true)]
 class AddUuidColumn implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'news';
+		$table = News::getTable();
 		$db->schema()->table($table, static function (Blueprint $table): void {
 			$table->string('uuid', 36)->nullable(true);
 		});

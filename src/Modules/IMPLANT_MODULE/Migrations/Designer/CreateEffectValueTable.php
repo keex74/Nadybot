@@ -5,12 +5,13 @@ namespace Nadybot\Modules\IMPLANT_MODULE\Migrations\Designer;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\IMPLANT_MODULE\EffectValue;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_15_45_46, shared: true)]
 class CreateEffectValueTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'EffectValue';
+		$table = EffectValue::getTable();
 		$db->schema()->dropIfExists($table);
 		$db->schema()->create($table, static function (Blueprint $table): void {
 			$table->integer('EffectID')->primary();

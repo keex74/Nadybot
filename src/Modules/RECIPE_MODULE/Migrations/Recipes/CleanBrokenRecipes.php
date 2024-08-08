@@ -4,12 +4,13 @@ namespace Nadybot\Modules\RECIPE_MODULE\Migrations\Recipes;
 
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\RECIPE_MODULE\Recipe;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2022_07_09_06_05_48)]
 class CleanBrokenRecipes implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'recipes';
+		$table = Recipe::getTable();
 		$db->table($table)
 			->where('recipe', 'NOT LIKE', "%\n%")
 			->delete();

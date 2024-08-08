@@ -5,12 +5,13 @@ namespace Nadybot\Modules\NEWS_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\NEWS_MODULE\News;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_18_49_40, shared: true)]
 class CreateNewsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'news';
+		$table = News::getTable();
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->id('id')->change();

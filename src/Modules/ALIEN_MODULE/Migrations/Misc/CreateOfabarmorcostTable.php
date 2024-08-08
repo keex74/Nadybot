@@ -5,12 +5,13 @@ namespace Nadybot\Modules\ALIEN_MODULE\Migrations\Misc;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\ALIEN_MODULE\OfabArmorCost;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_25_13_28_56, shared: true)]
 class CreateOfabarmorcostTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'ofabarmorcost';
+		$table = OfabArmorCost::getTable();
 		if ($db->schema()->hasTable($table)) {
 			return;
 		}

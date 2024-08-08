@@ -5,12 +5,13 @@ namespace Nadybot\Modules\EVENTS_MODULE\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 use Nadybot\Core\Attributes as NCA;
 use Nadybot\Core\{DB, SchemaMigration};
+use Nadybot\Modules\EVENTS_MODULE\EventModel;
 use Psr\Log\LoggerInterface;
 
 #[NCA\Migration(order: 2021_04_26_04_21_50, shared: true)]
 class CreateEventsTable implements SchemaMigration {
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'events';
+		$table = EventModel::getTable();
 		if ($db->schema()->hasTable($table)) {
 			$db->schema()->table($table, static function (Blueprint $table): void {
 				$table->id('id')->change();

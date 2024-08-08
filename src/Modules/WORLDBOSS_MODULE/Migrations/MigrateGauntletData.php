@@ -9,6 +9,7 @@ use Nadybot\Core\{
 	Routing\Character,
 	SchemaMigration,
 };
+use Nadybot\Modules\TIMERS_MODULE\Timer;
 use Nadybot\Modules\{
 	TIMERS_MODULE\TimerController,
 	WORLDBOSS_MODULE\GauntletInventoryController,
@@ -19,6 +20,9 @@ use stdClass;
 
 #[NCA\Migration(order: 2021_10_23_19_20_50)]
 class MigrateGauntletData implements SchemaMigration {
+	private const GAUNTLET_TABLE = 'gauntlet';
+	private const BIGBOSS_TABLE = 'bigboss_timers';
+
 	#[NCA\Inject]
 	private WorldBossController $worldBossController;
 
@@ -29,7 +33,7 @@ class MigrateGauntletData implements SchemaMigration {
 	private TimerController $timerController;
 
 	public function migrate(LoggerInterface $logger, DB $db): void {
-		$table = 'timers_<myname>';
+		$table = Timer::getTable();
 		if (!$db->schema()->hasTable($table)) {
 			return;
 		}
@@ -58,10 +62,9 @@ class MigrateGauntletData implements SchemaMigration {
 			->where('callback', 'GauntletController.gaubuffcallback')
 			->update(['callback' => 'GauntletBuffController.gaubuffcallback']);
 
-		$table = 'gauntlet';
-		if (!$db->schema()->hasTable($table)) {
+		if (!$db->schema()->hasTable(self::GAUNTLET_TABLE)) {
 			$channels = ['aoorg', 'aopriv(' . $db->getMyname() . ')'];
-			if (!$db->schema()->hasTable('bigboss_timers')) {
+			if (!$db->schema()->hasTable(self::BIGBOSS_TABLE)) {
 				foreach ($channels as $channel) {
 					$route = [
 						'source' => 'spawn(*)',
@@ -81,7 +84,7 @@ class MigrateGauntletData implements SchemaMigration {
 			}
 			return;
 		}
-		$db->table($table)
+		$db->table(self::GAUNTLET_TABLE)
 			->get()
 			->each(function (stdClass $inv): void {
 				$items = @unserialize((string)$inv->items);
@@ -89,7 +92,7 @@ class MigrateGauntletData implements SchemaMigration {
 					$this->gauntletInventoryController->saveData((string)$inv->player, $items);
 				}
 			});
-		$db->schema()->dropIfExists($table);
-		$db->schema()->dropIfExists('bigboss_timers');
+		$db->schema()->dropIfExists(self::GAUNTLET_TABLE);
+		$db->schema()->dropIfExists(self::BIGBOSS_TABLE);
 	}
 }
