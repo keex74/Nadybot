@@ -8,7 +8,7 @@ use Nadybot\Core\Modules\ALTS\{AltNewMainEvent, AltsController};
 
 use Nadybot\Core\Modules\PLAYER_LOOKUP\PlayerManager;
 use Nadybot\Core\Modules\PREFERENCES\Preferences;
-use Nadybot\Core\ParamClass\PRemove;
+use Nadybot\Core\ParamClass\{PRemove, PUuid};
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -197,7 +197,6 @@ class GreetController extends ModuleInstance {
 			->where('type', self::TYPE_CUSTOM)
 			->asObj(Fun::class)
 			->map(static function (Fun $entry) use ($context): string {
-				assert(isset($entry->id));
 				$delLink = Text::makeChatcmd(
 					'remove',
 					'/tell <myname> ' . $context->getCommand() . ' rem ' . $entry->id
@@ -237,8 +236,8 @@ class GreetController extends ModuleInstance {
 			type: self::TYPE_CUSTOM,
 			content: $greeting,
 		);
-		$id = $this->db->insert($fun);
-		$context->reply("New greeting added as <highlight>#{$id}<end>.");
+		$this->db->insert($fun);
+		$context->reply("New greeting added as <highlight>{$fun->id}<end>.");
 	}
 
 	#[NCA\HandlesCommand('greeting')]
@@ -246,17 +245,18 @@ class GreetController extends ModuleInstance {
 	public function delGreeting(
 		CmdContext $context,
 		PRemove $action,
-		int $id,
+		PUuid $id,
 	): void {
+		$id = $id();
 		$deleted = $this->db->table(Fun::getTable())
 			->where('type', self::TYPE_CUSTOM)
 			->where('id', $id)
 			->delete();
 		if (!$deleted) {
-			$context->reply("The greeting <highlight>#{$id}<end> doesn't exist.");
+			$context->reply("The greeting <highlight>{$id}<end> doesn't exist.");
 			return;
 		}
-		$context->reply("Greeting <highlight>#{$id}<end> deleted successfully.");
+		$context->reply("Greeting <highlight>{$id}<end> deleted successfully.");
 	}
 
 	#[NCA\HandlesCommand('greeting on/off')]

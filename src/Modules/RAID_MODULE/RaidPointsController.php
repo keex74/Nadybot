@@ -4,6 +4,7 @@ namespace Nadybot\Modules\RAID_MODULE;
 
 use Exception;
 use Nadybot\Core\Modules\ALTS\AltNewMainEvent;
+use Nadybot\Core\ParamClass\PUuid;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -23,6 +24,7 @@ use Nadybot\Core\{
 	Text,
 };
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Safe\DateTimeImmutable;
 use Throwable;
 
@@ -742,22 +744,28 @@ class RaidPointsController extends ModuleInstance {
 		PRemove $action,
 		PNonNumberWord $name
 	): void {
-		$reward = $this->getRaidReward($name());
+		$name = $name();
+		if (Uuid::isValid($name) || ctype_digit($name)) {
+			$this->rewardRemIdCommand($context, $action, new PUuid($name));
+			return;
+		}
+		$reward = $this->getRaidReward($name);
 		if (!isset($reward) || !isset($reward->id)) {
 			$context->reply("The raid reward <highlight>{$name}<end> does not exist.");
 			return;
 		}
-		$this->rewardRemIdCommand($context, $action, $reward->id);
+		$this->rewardRemIdCommand($context, $action, new PUuid($reward->id->toString()));
 	}
 
 	/** Remove a pre-defined raid reward */
 	#[NCA\HandlesCommand(self::CMD_REWARD_EDIT)]
-	public function rewardRemIdCommand(CmdContext $context, PRemove $action, int $id): void {
+	public function rewardRemIdCommand(CmdContext $context, PRemove $action, PUuid $id): void {
+		$id = $id();
 		$deleted = $this->db->table(RaidReward::getTable())->delete($id);
 		if ($deleted) {
-			$context->reply("Raid reward <highlight>#{$id}<end> successfully deleted.");
+			$context->reply("Raid reward <highlight>{$id}<end> successfully deleted.");
 		} else {
-			$context->reply("Raid reward <highlight>#{$id}<end> was not found.");
+			$context->reply("Raid reward <highlight>{$id}<end> was not found.");
 		}
 	}
 

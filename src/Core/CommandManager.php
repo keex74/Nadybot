@@ -37,6 +37,7 @@ use Nadybot\Core\{
 	Types\MessageEmitter,
 };
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
@@ -238,6 +239,7 @@ class CommandManager implements MessageEmitter {
 						'access_level' => $accessLevel,
 						'cmd' => $command,
 						'enabled' => (bool)$status,
+						'id' => Uuid::uuid7(),
 					]
 				);
 		}
@@ -1704,7 +1706,7 @@ class CommandManager implements MessageEmitter {
 		}
 		$inserts = [];
 		foreach ($perms as $perm) {
-			$perm->id = null;
+			$perm->id = Uuid::uuid7();
 			$perm->permission_set = $name;
 			$inserts []= (array)$perm;
 		}

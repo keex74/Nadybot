@@ -9,6 +9,7 @@ use Amp\Pipeline\Pipeline;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nadybot\Core\Events\{MyPrivateChannelMsgEvent, SendPrivEvent};
+use Nadybot\Core\ParamClass\PUuid;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -753,8 +754,10 @@ class RaidController extends ModuleInstance {
 	public function raidHistoryDetailCommand(
 		CmdContext $context,
 		#[NCA\Str('history')] string $action,
-		int $raidId
+		PUuid $raidId,
 	): void {
+		${$raidId} = $raidId();
+
 		/** @var ?Raid */
 		$raid = $this->db->table(Raid::getTable())
 			->where('raid_id', $raidId)
@@ -809,9 +812,11 @@ class RaidController extends ModuleInstance {
 	public function raidHistoryDetailRaiderCommand(
 		CmdContext $context,
 		#[NCA\Str('history')] string $action,
-		int $raidId,
+		PUuid $raidId,
 		PCharacter $char
 	): void {
+		$raidId = $raidId();
+
 		/** @var ?Raid */
 		$raid = $this->db->table(Raid::getTable())
 			->where('raid_id', $raidId)
@@ -1055,20 +1060,14 @@ class RaidController extends ModuleInstance {
 
 	/** Start a new raid and also register it in the database */
 	public function startRaid(Raid $raid): void {
-		if (isset($raid->raid_id)) {
+		$oldRaid = $this->db->table(Raid::getTable())
+			->where('raid_id', $raid->raid_id)
+			->first();
+		if (isset($oldRaid)) {
 			$this->raid = $raid;
 			return;
 		}
-		$raid->raid_id = $this->db->table(Raid::getTable())
-			->insertGetId([
-				'description' => $raid->description,
-				'seconds_per_point' => $raid->seconds_per_point,
-				'started' => $raid->started,
-				'started_by' => $raid->started_by,
-				'announce_interval' => $raid->announce_interval,
-				'max_members' => $raid->max_members,
-				'ticker_paused' => $raid->ticker_paused,
-			], 'raid_id');
+		$this->db->insert($raid);
 		$this->raid = $raid;
 		$event = new RaidStartEvent(
 			raid: $raid,

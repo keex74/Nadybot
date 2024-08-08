@@ -5,6 +5,7 @@ namespace Nadybot\Modules\COMMENT_MODULE;
 use Exception;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
+use Nadybot\Core\ParamClass\PUuid;
 use Nadybot\Core\{
 	AccessManager,
 	Attributes as NCA,
@@ -114,7 +115,7 @@ class CommentController extends ModuleInstance {
 				if (!$this->db->schema()->hasTable('comments')) {
 					$this->logger->notice('Creating table comments');
 					$this->db->schema()->create('comments', static function (Blueprint $table): void {
-						$table->id();
+						$table->uuid('id')->primary();
 						$table->string('character', 15)->index();
 						$table->string('created_by', 15);
 						$table->integer('created_at');
@@ -165,7 +166,6 @@ class CommentController extends ModuleInstance {
 					->where('comment', $comment->comment)
 					->exists();
 				if (!$exists) {
-					$comment->id = null;
 					$this->db->insert($comment);
 				}
 			}
@@ -590,8 +590,10 @@ class CommentController extends ModuleInstance {
 	public function deleteCommentCommand(
 		CmdContext $context,
 		PRemove $action,
-		int $id
+		PUuid $id
 	): void {
+		$id = $id();
+
 		/** @var ?Comment */
 		$comment = $this->db->table(Comment::getTable())
 			->where('id', $id)

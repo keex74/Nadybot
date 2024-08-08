@@ -5,6 +5,7 @@ namespace Nadybot\Modules\PVP_MODULE;
 // pf, site
 
 use Nadybot\Core\Modules\MESSAGES\MessageHubController;
+use Nadybot\Core\ParamClass\PUuid;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -68,7 +69,7 @@ class SiteTrackerController extends ModuleInstance {
 	#[NCA\Inject]
 	private MessageHubController $msgHubCtrl;
 
-	/** @var array<int,TrackerEntry> */
+	/** @var array<string,TrackerEntry> */
 	private array $trackers = [];
 
 	/**
@@ -139,7 +140,7 @@ class SiteTrackerController extends ModuleInstance {
 						return $result;
 					}
 					$entry->handlers = $parsed->handlers;
-					$result[$entry->id] = $entry;
+					$result[$entry->id->toString()] = $entry;
 					$this->msgHub->registerMessageEmitter($entry);
 					return $result;
 				},
@@ -173,9 +174,9 @@ class SiteTrackerController extends ModuleInstance {
 	): void {
 		$entry = $this->parseExpression($expression);
 		$entry->created_by = $context->char->name;
-		$entry->id = $this->db->insert($entry);
+		$this->db->insert($entry);
 		$this->msgHub->registerMessageEmitter($entry);
-		$this->trackers[$entry->id] = $entry;
+		$this->trackers[$entry->id->toString()] = $entry;
 		$numMatches = $this->countMatches($entry);
 		$channel = $entry->getChannelName();
 		$details = '';
@@ -214,11 +215,12 @@ class SiteTrackerController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('track', 'tracker')] string $action,
 		PRemove $subAction,
-		int $id,
+		PUuid $id,
 	): void {
+		$id = $id();
 		$tracker = $this->trackers[$id] ?? null;
 		if (!isset($tracker)) {
-			$context->reply("No tracker <highlight>#{$id}<end> found.");
+			$context->reply("No tracker <highlight>{$id}<end> found.");
 			return;
 		}
 		$this->db->table(TrackerEntry::getTable())->delete($id);
@@ -226,11 +228,11 @@ class SiteTrackerController extends ModuleInstance {
 		$routes = $this->msgHub->getRoutes();
 		foreach ($routes as $route) {
 			if ($route->getSource() === $tracker->getChannelName()) {
-				$this->msgHubCtrl->routeDel($context, $subAction, $route->getID());
+				$this->msgHubCtrl->routeDel($context, $subAction, new PUuid($route->getID()->toString()));
 			}
 		}
 		unset($this->trackers[$id]);
-		$context->reply("Tracker <highlight>#{$id}<end> successfully removed.");
+		$context->reply("Tracker <highlight>{$id}<end> successfully removed.");
 	}
 
 	/** Show all currently setup site trackers */
@@ -261,11 +263,12 @@ class SiteTrackerController extends ModuleInstance {
 		CmdContext $context,
 		#[NCA\Str('track', 'tracker')] string $action,
 		#[NCA\Str('show', 'view')] string $subAction,
-		int $id,
+		PUuid $id,
 	): void {
+		$id = $id();
 		$tracker = $this->trackers[$id] ?? null;
 		if (!isset($tracker)) {
-			$context->reply("No tracker <highlight>#{$id}<end> found.");
+			$context->reply("No tracker <highlight>{$id}<end> found.");
 			return;
 		}
 
@@ -431,7 +434,6 @@ class SiteTrackerController extends ModuleInstance {
 			events: $config->events,
 			handlers: $handlers,
 			created_by: $this->config->main->character,
-			id: 0,
 		);
 		return $entry;
 	}

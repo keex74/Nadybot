@@ -39,9 +39,8 @@ class MigrateToRelayTable implements SchemaMigration {
 
 	public function migrate(LoggerInterface $logger, DB $db): void {
 		$relay = $this->migrateRelay($db);
-		if (isset($relay)) {
+		if ($relay) {
 			$this->configController->toggleEvent('connect', 'relaycontroller.loadRelays', true);
-			$this->addRouting($db, $relay);
 		}
 	}
 
@@ -68,29 +67,29 @@ class MigrateToRelayTable implements SchemaMigration {
 	}
 
 	protected function addMod(DB $db, int $routeId, string $modifier): int {
-		return $db->insert(new RouteModifier(
-			route_id: $routeId,
-			modifier: $modifier,
-		));
+		return $db->table(RouteModifier::getTable())->insertGetId([
+			'route_id' => $routeId,
+			'modifier' => $modifier,
+		]);
 	}
 
 	/** @param array<string,mixed> $kv */
 	protected function addArgs(DB $db, int $modId, array $kv): void {
 		foreach ($kv as $name => $value) {
-			$db->insert(new RouteModifierArgument(
-				route_modifier_id: $modId,
-				name: $name,
-				value: (string)$value,
-			));
+			$db->table(RouteModifierArgument::getTable())->insert([
+				'route_modifier_id' => $modId,
+				'name' => $name,
+				'value' => (string)$value,
+			]);
 		}
 	}
 
-	protected function migrateRelay(DB $db): ?RelayConfig {
+	protected function migrateRelay(DB $db): bool {
 		$relayType = $this->getSetting($db, 'relaytype');
 		$relayBot = $this->getSetting($db, 'relaybot');
 		if (!isset($relayType) || !isset($relayBot) || $relayBot->value === 'Off') {
 			if ($this->prefix !== '') {
-				return null;
+				return false;
 			}
 			$this->prefix = 'a';
 			return $this->migrateRelay($db);
@@ -101,10 +100,9 @@ class MigrateToRelayTable implements SchemaMigration {
 				$this->settingManager->save('relay_guild_abbreviation', $abbr->value);
 			}
 		}
-		$relay = new RelayConfig(
-			name: $relayBot->value ?? 'Relay',
-		);
-		$relay->id = $db->insert($relay);
+		$relayId = $db->table(RelayConfig::getTable())->insertGetId([
+			'name' => $relayBot->value ?? 'Relay',
+		]);
 		$transportArgs = [];
 		switch ((int)$relayType->value) {
 			case 1:
@@ -116,53 +114,50 @@ class MigrateToRelayTable implements SchemaMigration {
 				$transportArgs['channel'] = $relayBot->value;
 				break;
 			default:
-				$db->table(RelayConfig::getTable())->delete($relay->id);
-				return null;
+				$db->table(RelayConfig::getTable())->delete($relayId);
+				return false;
 		}
-		$transport = new RelayLayer(
-			layer: $transportLayer,
-			relay_id: $relay->id,
-		);
-		$transport->id = $db->insert($transport);
+		$transportId = $db->table(RelayLayer::getTable())->insertGetId([
+			'layer' => $transportLayer,
+			'relay_id' => $relayId,
+		]);
 		foreach ($transportArgs as $key => $value) {
-			$db->insert(new RelayLayerArgument(
-				name: $key,
-				value: (string)$value,
-				layer_id: $transport->id,
-			));
+			$db->table(RelayLayerArgument::getTable())->insert([
+				'name' => $key,
+				'value' => (string)$value,
+				'layer_id' => $transportId,
+			]);
 		}
-		$db->insert(new RelayLayer(
-			relay_id: $relay->id,
-			layer: ($this->prefix === 'a') ? 'agcr' : 'grcv2',
-		));
-		return $relay;
+		$db->table(RelayLayer::getTable())->insert([
+			'relay_id' => $relayId,
+			'layer' => ($this->prefix === 'a') ? 'agcr' : 'grcv2',
+		]);
+		return true;
 	}
 
 	protected function addRouting(DB $db, RelayConfig $relay): void {
 		$guestRelay = $this->getSetting($db, 'guest_relay');
+
 		$routesOut = [];
-		$route = new Route(
-			source: Source::RELAY . "({$relay->name})",
-			destination: Source::ORG,
-		);
-		$routeInOrg = $db->insert($route);
-		$route = new Route(
-			source: Source::ORG,
-			destination: Source::RELAY . "({$relay->name})",
-		);
-		$routesOut []= $db->insert($route);
+
+		$routeInOrg = $db->table(Route::getTable())->insertGetId([
+			'source' => Source::RELAY . "({$relay->name})",
+			'destination' => Source::ORG,
+		]);
+		$routesOut []= $db->table(Route::getTable())->insertGetId([
+			'source' => Source::ORG,
+			'destination' => Source::RELAY . "({$relay->name})",
+		]);
 
 		if (isset($guestRelay) && (int)$guestRelay->value) {
-			$route = new Route(
-				source: Source::RELAY . "({$relay->name})",
-				destination: Source::PRIV . "({$this->config->main->character})",
-			);
-			$routeInPriv = $db->insert($route);
-			$route = new Route(
-				source: Source::PRIV . "({$this->config->main->character})",
-				destination: Source::RELAY . "({$relay->name})",
-			);
-			$routesOut []= $db->insert($route);
+			$routeInPriv = $db->table(Route::getTable())->insertGetId([
+				'source' => Source::RELAY . "({$relay->name})",
+				'destination' => Source::PRIV . "({$this->config->main->character})",
+			]);
+			$routesOut[] = $db->table(Route::getTable())->insertGetId([
+				'source' => Source::PRIV . "({$this->config->main->character})",
+				'destonation' => Source::RELAY . "({$relay->name})",
+			]);
 		}
 		$relayWhen = $this->getSetting($db, 'relay_symbol_method');
 		$relaySymbol = $this->getSetting($db, 'relaysymbol');

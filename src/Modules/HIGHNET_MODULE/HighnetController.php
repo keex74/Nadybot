@@ -13,7 +13,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Nadybot\Core\DBSchema\{Route, RouteHopColor, RouteHopFormat};
 use Nadybot\Core\Modules\ALTS\{AltsController, NickController};
-use Nadybot\Core\ParamClass\{PCharacter, PDuration, PRemove, PWord};
+use Nadybot\Core\ParamClass\{PCharacter, PDuration, PRemove, PUuid, PWord};
 use Nadybot\Core\Routing\{Character, RoutableEvent, RoutableMessage, Source};
 
 use Nadybot\Core\{
@@ -500,7 +500,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			$this->db->insert($rhc);
 			$this->db->insert($rhf);
 			foreach ($routes as $route) {
-				$route->id = $this->db->insert($route);
+				$this->db->insert($route);
 				$msgRoutes []= $this->msgHub->createMessageRoute($route);
 			}
 		} catch (Exception $e) {
@@ -645,8 +645,10 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 		CmdContext $context,
 		#[NCA\Str('filter')] string $filter,
 		PRemove $action,
-		int $id
+		PUuid $id
 	): void {
+		$id = $id();
+
 		/** @var ?FilterEntry */
 		$filter = $this->db
 			->table(FilterEntry::getTable())
@@ -654,7 +656,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			->asObj(FilterEntry::class)
 			->first();
 		if (!isset($filter)) {
-			$context->reply("Highnet filter <highlight>#{$id}<end> does not exist.");
+			$context->reply("Highnet filter <highlight>{$id}<end> does not exist.");
 			return;
 		}
 		if (!isset($filter->expires)) {
@@ -1017,7 +1019,7 @@ class HighnetController extends ModuleInstance implements EventFeedHandler {
 			}
 			$entry->expires = time() + $secDuration;
 		}
-		$entry->id = $this->db->insert($entry);
+		$this->db->insert($entry);
 		$this->reloadFilters();
 		$context->reply('Filter ' . $this->getFilterDescr($entry) . ' added.');
 	}

@@ -15,7 +15,7 @@ use Illuminate\Database\{
 	Connection,
 	Schema\Blueprint,
 };
-use Illuminate\Support\Collection;
+use Illuminate\Support\{Collection, Fluent};
 use InvalidArgumentException;
 use Nadybot\Core\Attributes\Migration as AttributesMigration;
 use Nadybot\Core\{
@@ -30,10 +30,11 @@ use Nadybot\Core\{
 use PDO;
 use PDOException;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\{Uuid, UuidInterface};
 use ReflectionClass;
 use ReflectionProperty;
 use Revolt\EventLoop;
-
+use Safe\DateTimeImmutable;
 use Throwable;
 
 #[NCA\Instance]
@@ -295,6 +296,8 @@ class DB {
 				$data[$colName] = $data[$colName]->getTimestamp();
 			} elseif ($data[$colName] instanceof BackedEnum) {
 				$data[$colName] = $data[$colName]->value;
+			} elseif ($data[$colName] instanceof UuidInterface) {
+				$data[$colName] = $data[$colName]->toString();
 			}
 		}
 		$table = $this->formatSql($table);
@@ -343,6 +346,8 @@ class DB {
 				$data[$colName] = $data[$colName]->getTimestamp();
 			} elseif ($data[$colName] instanceof BackedEnum) {
 				$data[$colName] = $data[$colName]->value;
+			} elseif ($data[$colName] instanceof UuidInterface) {
+				$data[$colName] = $data[$colName]->toString();
 			}
 		}
 		$table = $this->formatSql($table);
@@ -393,6 +398,8 @@ class DB {
 				$updates[$colName] = $updates[$colName]->getTimestamp();
 			} elseif ($updates[$colName] instanceof BackedEnum) {
 				$updates[$colName] = $updates[$colName]->value;
+			} elseif ($updates[$colName] instanceof UuidInterface) {
+				$updates[$colName] = $updates[$colName]->toString();
 			}
 		}
 		$query = $this->table($table);
@@ -415,6 +422,32 @@ class DB {
 		Registry::injectDependencies($logger);
 		$builder = new SchemaBuilder($schema, $this);
 		return $builder;
+	}
+
+	/** @return array<int,UuidInterface> */
+	public function migrateIdToUuid(string $table, \Closure $callback, string $column='id', ?string $timeColumn=null): array {
+		$entries = $this->table($table)->orderBy($column)->get();
+		$this->schema()->drop($table);
+		$this->schema()->create($table, $callback);
+
+		$result = [];
+
+		/** @return array<string,mixed> */
+		$entries = $entries->map(static function (\stdClass $entry) use ($column, $timeColumn, &$result): array {
+			$time = null;
+			if (isset($timeColumn)) {
+				$time = $entry->{$timeColumn} ?? null;
+			}
+			if (isset($time)) {
+				$time = (new DateTimeImmutable())->setTimestamp($time);
+			}
+			$uuid = Uuid::uuid7($time);
+			$result[(int)$entry->{$column}] = $uuid;
+			$entry->{$column} = $uuid->toString();
+			return (array)$entry;
+		})->toList();
+		$this->table($table)->chunkInsert($entries);
+		return $result;
 	}
 
 	/**
@@ -463,15 +496,23 @@ class DB {
 
 	public function createMigrationTables(): void {
 		foreach (['migrations', 'migrations_<myname>'] as $table) {
-			if ($this->schema()->hasTable($table)) {
-				continue;
-			}
-			$this->schema()->create($table, static function (Blueprint $table): void {
-				$table->id();
+			$newSchema = static function (Blueprint $table): void {
+				$table->uuid('id')->primary();
 				$table->string('module');
 				$table->string('migration');
 				$table->integer('applied_at');
-			});
+			};
+			if ($this->schema()->hasTable($table)) {
+				$colType = strtolower($this->schema()->getColumnType($table, 'id'));
+				if (str_starts_with($colType, 'int')
+					|| str_ends_with($colType, 'int')
+					|| str_ends_with($colType, 'integer')
+				) {
+					$this->migrateIdToUuid($table, $newSchema, 'id', 'applied_at');
+				}
+				continue;
+			}
+			$this->schema()->create($table, $newSchema);
 		}
 	}
 
@@ -553,6 +594,7 @@ class DB {
 		}
 		$version = $this->fs->getModificationTime($file);
 		$handle = $this->fs->openFile($file, 'r');
+		$uuidCol = null;
 		foreach (splitLines($handle) as $line) {
 			if (substr($line, 0, 1) !== '#') {
 				break;
@@ -568,6 +610,9 @@ class DB {
 					break;
 				case 'version':
 					$version = $value;
+					break;
+				case 'uuid':
+					$uuidCol = $value;
 					break;
 				case 'table':
 					$table = $value;
@@ -616,6 +661,9 @@ class DB {
 				$this->table($table)->delete();
 			}
 			foreach ($csv->items() as $item) {
+				if (isset($uuidCol)) {
+					$item[$uuidCol] ??= Uuid::uuid7();
+				}
 				$itemCount++;
 				$items []= $item;
 				if ((count($items)+1) * count($item) > $this->maxPlaceholders) {
@@ -792,6 +840,11 @@ class DB {
 			// @phpstan-ignore-next-line
 			protected function typeFloat(\Illuminate\Support\Fluent $column) {
 				return 'real';
+			}
+
+			// @phpstan-ignore-next-line
+			protected function typeUuid(\Illuminate\Support\Fluent $column) {
+				return 'text';
 			}
 
 			// @phpstan-ignore-next-line
@@ -1014,6 +1067,7 @@ class DB {
 			'module' => $mig->module,
 			'migration' => $mig->baseName,
 			'applied_at' => time(),
+			'id' => Uuid::uuid7(),
 		]);
 	}
 }

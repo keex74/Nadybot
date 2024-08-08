@@ -14,6 +14,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\{Uuid, UuidInterface};
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
@@ -35,8 +36,20 @@ class QueryBuilder extends Builder {
 	 * @return Collection<int,T>
 	 */
 	public function asObj(string $class): Collection {
-		/** @var list<T> */
-		$result = $this->fetchAll($class, $this->toSql(), ...$this->getBindings());
+		try {
+			/** @var list<T> */
+			$result = $this->fetchAll($class, $this->toSql(), ...$this->getBindings());
+		} catch (SQLException $e) {
+			$errorInfo = $e->getPrevious()?->errorInfo ?? [''];
+			if ($errorInfo[0] === '22003') { // Numeric value out of range
+				$this->logger->notice('{message}', [
+					'message' => str_replace('ERROR:  ', '', $e->getMessage()),
+					'exception' => $e,
+				]);
+				return Collection::make([]);
+			}
+			throw $e;
+		}
 
 		/** @var Collection<int,T> $x */
 		$x = collect($result);
@@ -289,6 +302,8 @@ class QueryBuilder extends Builder {
 						$row[$colName] = (new DateTimeImmutable())->setTimestamp((int)$values[$col]);
 					} elseif ($type === \DateTimeInterface::class) {
 						$row[$colName] = (new DateTimeImmutable())->setTimestamp((int)$values[$col]);
+					} elseif ($type === UuidInterface::class) {
+						$row[$colName] = Uuid::fromString($values[$col]);
 					} elseif (is_a($type, \BackedEnum::class, true)) {
 						$row[$colName] = $type::from($values[$col]);
 					} else {
@@ -392,7 +407,7 @@ class QueryBuilder extends Builder {
 				$conn->reconnect();
 				return $this->executeQuery(...func_get_args());
 			}
-			throw new SQLException("Error: {$e->errorInfo[2]}\nQuery: {$sql}\nParams: " . json_encode($params, \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES), 0, $e);
+			throw new SQLException("{$e->errorInfo[2]}\nQuery: {$sql}\nParams: " . json_encode($params, \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES), 0, $e);
 		}
 	}
 

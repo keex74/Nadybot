@@ -9,6 +9,7 @@ use Amp\Http\Server\{Request, Response};
 use EventSauce\ObjectHydrator\{DefinitionProvider, KeyFormatterWithoutConversion, ObjectMapperUsingReflection};
 use Exception;
 use Illuminate\Support\Collection;
+use Nadybot\Core\ParamClass\PUuid;
 use Nadybot\Core\{
 	Attributes as NCA,
 	CmdContext,
@@ -236,8 +237,9 @@ class NewsController extends ModuleInstance {
 	public function newsconfirmCommand(
 		CmdContext $context,
 		#[NCA\Str('confirm')] string $action,
-		int $id
+		PUuid $id
 	): void {
+		$id = $id();
 		$row = $this->getNewsItem($id);
 		if ($row === null) {
 			$msg = "No news entry found with the ID <highlight>{$id}<end>.";
@@ -259,7 +261,7 @@ class NewsController extends ModuleInstance {
 			return;
 		}
 		$this->db->insert(new NewsConfirmed(
-			id: $id,
+			id: $row->id,
 			player: $sender,
 			time: time(),
 		));
@@ -280,7 +282,6 @@ class NewsController extends ModuleInstance {
 			news: $news,
 			sticky: false,
 			deleted: false,
-			uuid: Util::createUUID(),
 		);
 		$this->db->insert($entry);
 		$msg = 'News has been added successfully.';
@@ -288,7 +289,7 @@ class NewsController extends ModuleInstance {
 			time: $entry->time,
 			name: $entry->name,
 			news: $entry->news,
-			uuid: $entry->uuid,
+			uuid: $entry->id->toString(),
 			sticky: $entry->sticky,
 			forceSync: $context->forceSync,
 		);
@@ -302,8 +303,9 @@ class NewsController extends ModuleInstance {
 	public function newsRemCommand(
 		CmdContext $context,
 		PRemove $action,
-		int $id
+		PUuid $id
 	): void {
+		$id = $id();
 		$row = $this->getNewsItem($id);
 		if ($row === null) {
 			$msg = "No news entry found with the ID <highlight>{$id}<end>.";
@@ -313,7 +315,7 @@ class NewsController extends ModuleInstance {
 				->update(['deleted' => 1]);
 			$msg = "News entry <highlight>{$id}<end> was deleted successfully.";
 			$event = new SyncNewsDeleteEvent(
-				uuid: $row->uuid,
+				uuid: $row->id->toString(),
 				forceSync: $context->forceSync,
 			);
 			$this->eventManager->fireEvent($event);
@@ -327,8 +329,9 @@ class NewsController extends ModuleInstance {
 	public function newsPinCommand(
 		CmdContext $context,
 		#[NCA\Str('pin')] string $action,
-		int $id
+		PUuid $id
 	): void {
+		$id = $id();
 		$row = $this->getNewsItem($id);
 
 		if (!isset($row)) {
@@ -344,7 +347,7 @@ class NewsController extends ModuleInstance {
 				time: $row->time,
 				name: $row->name,
 				news: $row->news,
-				uuid: $row->uuid,
+				uuid: $row->id->toString(),
 				sticky: true,
 				forceSync: $context->forceSync,
 			);
@@ -358,8 +361,9 @@ class NewsController extends ModuleInstance {
 	public function newsUnpinCommand(
 		CmdContext $context,
 		#[NCA\Str('unpin')] string $action,
-		int $id
+		PUuid $id
 	): void {
+		$id = $id();
 		$row = $this->getNewsItem($id);
 
 		if (!isset($row)) {
@@ -375,7 +379,7 @@ class NewsController extends ModuleInstance {
 				time: $row->time,
 				name: $row->name,
 				news: $row->news,
-				uuid: $row->uuid,
+				uuid: $row->id->toString(),
 				sticky: false,
 				forceSync: $context->forceSync,
 			);
@@ -384,10 +388,10 @@ class NewsController extends ModuleInstance {
 		$context->reply($msg);
 	}
 
-	public function getNewsItem(int $id): ?News {
+	public function getNewsItem(\Stringable|string $id): ?News {
 		return $this->db->table(News::getTable())
 			->where('deleted', 0)
-			->where('id', $id)
+			->where('id', (string)$id)
 			->asObj(News::class)
 			->first();
 	}
@@ -414,7 +418,7 @@ class NewsController extends ModuleInstance {
 		NCA\ApiResult(code: 200, class: 'News', desc: 'The requested news item'),
 		NCA\ApiResult(code: 404, desc: 'Given news id not found')
 	]
-	public function apiNewsIdEndpoint(Request $request, int $id): Response {
+	public function apiNewsIdEndpoint(Request $request, string $id): Response {
 		$result = $this->getNewsItem($id);
 		if (!isset($result)) {
 			return new Response(status: HttpStatus::NOT_FOUND);
@@ -472,7 +476,7 @@ class NewsController extends ModuleInstance {
 		NCA\RequestBody(class: 'NewNews', desc: 'The new data for the item', required: true),
 		NCA\ApiResult(code: 200, class: 'News', desc: 'The news item it is now')
 	]
-	public function apiNewsModifyEndpoint(Request $request, int $id): Response {
+	public function apiNewsModifyEndpoint(Request $request, string $id): Response {
 		$oldItem = $this->getNewsItem($id);
 		if (!isset($oldItem)) {
 			return new Response(status: HttpStatus::NOT_FOUND);

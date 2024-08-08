@@ -8,6 +8,7 @@ use function Safe\{json_encode, preg_match};
 use Exception;
 use Illuminate\Support\Collection;
 use Monolog\Logger;
+use Nadybot\Core\ParamClass\PUuid;
 use Nadybot\Core\{
 	Attributes as NCA,
 	Channels\DiscordChannel,
@@ -32,6 +33,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 use ReflectionException;
 use Safe\Exceptions\JsonException;
@@ -95,10 +97,8 @@ class MessageHubController extends ModuleInstance {
 			->orderBy('id')
 			->asObj(RouteModifier::class)
 			->each(static function (RouteModifier $mod) use ($arguments): void {
-				assert(isset($mod->id));
-
 				/** @var list<RouteModifierArgument> */
-				$modArguments = $arguments->get($mod->id, new Collection())->toList();
+				$modArguments = $arguments->get($mod->id->toString(), new Collection())->toList();
 				$mod->arguments = $modArguments;
 			})
 			->groupBy('route_id');
@@ -106,10 +106,8 @@ class MessageHubController extends ModuleInstance {
 			->orderBy('id')
 			->asObj(Route::class)
 			->each(function (Route $route) use ($modifiers): void {
-				assert(isset($route->id));
-
 				/** @var list<RouteModifier> */
-				$routeModifiers = $modifiers->get($route->id, new Collection())->toList();
+				$routeModifiers = $modifiers->get($route->id->toString(), new Collection())->toList();
 				$route->modifiers = $routeModifiers;
 				try {
 					$msgRoute = $this->messageHub->createMessageRoute($route);
@@ -133,12 +131,13 @@ class MessageHubController extends ModuleInstance {
 	public function routeMuteIdCommand(
 		CmdContext $context,
 		#[NCA\Str('mute', 'disable')] string $action,
-		int $id,
+		PUuid $id,
 		#[NCA\PDuration] #[NCA\Str('off')] string $duration
 	): void {
+		$id = $id();
 		$route = $this->getMsgRoute($id);
 		if (!isset($route)) {
-			$context->reply("No route <highlight>#{$id}<end> found.");
+			$context->reply("No route <highlight>{$id}<end> found.");
 			return;
 		}
 		$from = $route->getSource();
@@ -174,11 +173,12 @@ class MessageHubController extends ModuleInstance {
 	public function routeMuteCommand(
 		CmdContext $context,
 		#[NCA\Str('mute', 'disable')] string $action,
-		int $id,
+		PUuid $id,
 	): void {
+		$id = $id();
 		$route = $this->getMsgRoute($id);
 		if (!isset($route)) {
-			$context->reply("No route <highlight>#{$id}<end> found.");
+			$context->reply("No route <highlight>{$id}<end> found.");
 			return;
 		}
 		$durations = [60, 300, 600, 1_800, 3_600, 6*3_600, 24*3_600];
@@ -273,27 +273,32 @@ class MessageHubController extends ModuleInstance {
 		if (isset($modifiers)) {
 			$parser = new ModifierExpressionParser();
 			try {
-				$modifiers = $parser->parse($modifiers);
+				$modifiers = $parser->parse($route, $modifiers);
 			} catch (ModifierParserException $e) {
 				$context->reply($e->getMessage());
 				return;
 			}
 		}
 
+		$inTransaction = $this->db->inTransaction();
+
 		/** @var ?list<RouteModifier> $modifiers */
+		if (!$inTransaction) {
+			$this->db->awaitBeginTransaction();
+		}
 		try {
-			$route->id = $this->db->insert($route);
+			$this->db->insert($route);
 			foreach ($modifiers??[] as $modifier) {
-				$modifier->route_id = $route->id;
-				$modifier->id = $this->db->insert($modifier);
+				$this->db->insert($modifier);
 				foreach ($modifier->arguments as $argument) {
-					$argument->route_modifier_id = $modifier->id;
-					$argument->id = $this->db->insert($argument);
+					$this->db->insert($argument);
 				}
 				$route->modifiers []= $modifier;
 			}
 		} catch (Throwable $e) {
-			$this->db->rollback();
+			if (!$inTransaction) {
+				$this->db->rollback();
+			}
 			$context->reply('Error saving the route: ' . $e->getMessage());
 			return;
 		}
@@ -304,11 +309,15 @@ class MessageHubController extends ModuleInstance {
 		try {
 			$msgRoute = $this->messageHub->createMessageRoute($route);
 		} catch (Exception $e) {
-			$this->db->rollback();
+			if (!$inTransaction) {
+				$this->db->rollback();
+			}
 			$context->reply($e->getMessage());
 			return;
 		}
-		$this->db->commit();
+		if (!$inTransaction) {
+			$this->db->commit();
+		}
 		$this->messageHub->addRoute($msgRoute);
 		$context->reply(
 			"Route added from <highlight>{$from}<end> ".
@@ -439,10 +448,11 @@ class MessageHubController extends ModuleInstance {
 
 	/** Delete a route by its ID */
 	#[NCA\HandlesCommand('route')]
-	public function routeDel(CmdContext $context, PRemove $action, int $id): void {
+	public function routeDel(CmdContext $context, PRemove $action, PUuid $id): void {
+		$id = $id();
 		$route = $this->getRoute($id);
 		if (!isset($route)) {
-			$context->reply("No route <highlight>#{$id}<end> found.");
+			$context->reply("No route <highlight>{$id}<end> found.");
 			return;
 		}
 
@@ -472,7 +482,7 @@ class MessageHubController extends ModuleInstance {
 				"Route #{$id} (" . trim($this->renderRoute($deleted)) . ') deleted.'
 			);
 		} else {
-			$context->reply("Route <highlight>#{$id}<end> deleted.");
+			$context->reply("Route <highlight>{$id}<end> deleted.");
 		}
 	}
 
@@ -788,7 +798,7 @@ class MessageHubController extends ModuleInstance {
 		if (isset($colorDef->id)) {
 			$this->db->update($colorDef);
 		} else {
-			$colorDef->id = $this->db->insert($colorDef);
+			$this->db->insert($colorDef);
 			$this->messageHub->loadTagColor();
 		}
 		$context->reply(
@@ -998,12 +1008,8 @@ class MessageHubController extends ModuleInstance {
 			);
 		}
 		$format->render = $state;
-		if (isset($format->id)) {
-			$this->db->update($format);
-		} else {
-			$format->id = $this->db->insert($format);
-			$this->messageHub->loadTagFormat();
-		}
+		$this->db->upsert($format);
+		$this->messageHub->loadTagFormat();
 	}
 
 	/** Define how to render a specific hop */
@@ -1017,12 +1023,8 @@ class MessageHubController extends ModuleInstance {
 			$spec = new RouteHopFormat(hop: $hop);
 		}
 		$spec->format = $format;
-		if (isset($spec->id)) {
-			$this->db->update($spec);
-		} else {
-			$spec->id = $this->db->insert($spec);
-			$this->messageHub->loadTagFormat();
-		}
+		$this->db->upsert($spec);
+		$this->messageHub->loadTagFormat();
 	}
 
 	public function clearHopFormat(string $hop): bool {
@@ -1057,10 +1059,10 @@ class MessageHubController extends ModuleInstance {
 			});
 	}
 
-	public function getRoute(int $id): ?Route {
+	public function getRoute(\Stringable|string $id): ?Route {
 		/** @var Route|null */
 		$route = $this->db->table(Route::getTable())
-			->where('id', $id)
+			->where('id', (string)$id)
 			->limit(1)
 			->asObj(Route::class)
 			->first();
@@ -1068,7 +1070,7 @@ class MessageHubController extends ModuleInstance {
 			return null;
 		}
 		$route->modifiers = $this->db->table(RouteModifier::getTable())
-		->where('route_id', $id)
+		->where('route_id', (string)$id)
 		->orderBy('id')
 		->asObjArr(RouteModifier::class);
 		foreach ($route->modifiers as $modifier) {
@@ -1080,10 +1082,10 @@ class MessageHubController extends ModuleInstance {
 		return $route;
 	}
 
-	public function getMsgRoute(int $id): ?MessageRoute {
+	public function getMsgRoute(UuidInterface|string $id): ?MessageRoute {
 		$routes = $this->messageHub->getRoutes();
 		foreach ($routes as $route) {
-			if ($route->getID() === $id) {
+			if ((string)$route->getID() === (string)$id) {
 				return $route;
 			}
 		}
