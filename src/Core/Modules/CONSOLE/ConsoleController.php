@@ -177,7 +177,7 @@ class ConsoleController extends ModuleInstance {
 		$this->loadHistory();
 		$this->socket = \STDIN;
 		EventLoop::delay(1, function (string $token) use ($callback): void {
-			if (!is_resource($this->socket)) { // @phpstan-ignore-line
+			if (!is_resource($this->socket)) {
 				return;
 			}
 			$this->logger->notice('StdIn console activated, accepting commands');
@@ -192,7 +192,7 @@ class ConsoleController extends ModuleInstance {
 
 	/** Handle data arriving on stdin */
 	public function processStdin(): void {
-		if (!is_resource($this->socket)) { // @phpstan-ignore-line
+		if (!is_resource($this->socket)) {
 			return;
 		}
 		// @phpstan-ignore-next-line

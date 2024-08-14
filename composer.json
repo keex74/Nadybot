@@ -76,7 +76,7 @@
 		"nadybot/nadystyle": "^1.0.0",
 		"nadyita/phpstan-amp-file-rule": "^1.0.1",
 		"squizlabs/php_codesniffer": "^3.9.0",
-		"composer/composer": "^2.0.0",
+		"composer/composer": "^2.7.0",
 		"composer-phar/phpstan": "^1.10.59",
 		"phpstan/phpstan-deprecation-rules": "^1.0",
 		"composer-phar/php-cs-fixer": "^3.51.0",
