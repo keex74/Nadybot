@@ -2,12 +2,11 @@
 
 namespace Nadybot\Modules\IMPLANT_MODULE;
 
-use Nadybot\Core\DBRow;
-
-class SlotClusterType extends DBRow {
+class ShoppingImplant {
+	/** psalm-param int<1,300> $ql */
 	public function __construct(
+		public int $ql,
 		public string $slot,
-		public string $cluster_type,
 	) {
 	}
 }

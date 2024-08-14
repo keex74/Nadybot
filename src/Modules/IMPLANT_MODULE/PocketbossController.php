@@ -14,6 +14,7 @@ use Nadybot\Core\{
 	Text,
 	Types\ImplantSlot,
 };
+use Nadybot\Modules\ITEMS_MODULE\ItemsController;
 
 /**
  * @author Tyrence (RK2)
@@ -40,6 +41,9 @@ class PocketbossController extends ModuleInstance {
 
 	#[NCA\Inject]
 	private DB $db;
+
+	#[NCA\Inject]
+	private ItemsController $itemsController;
 
 	#[NCA\Setup]
 	public function setup(): void {
@@ -79,18 +83,29 @@ class PocketbossController extends ModuleInstance {
 		}
 		$symbs = '';
 		foreach ($data as $symb) {
-			if (in_array($symb->line, ['Alpha', 'Beta'], true)) {
+			if ($symb->type === 'Special') {
+				$name = $this->itemsController->findById($symb->itemid)?->getName() ?? 'Unknown';
+			} elseif (in_array($symb->line, ['Alpha', 'Beta'], true)) {
 				$name = "Xan {$symb->slot} Symbiant, {$symb->type} Unit {$symb->line}";
 			} else {
 				$name = "{$symb->line} {$symb->slot} Symbiant, {$symb->type} Unit Aban";
 			}
-			$symbs .= Text::makeItem($symb->itemid, $symb->itemid, $symb->ql, $name) . " ({$symb->ql})\n";
+			$symbs .= '<tab>* ' . Text::makeItem($symb->itemid, $symb->itemid, $symb->ql, $name);
+			if ($symb->ql !== 1) {
+				$symbs .= " ({$symb->ql})";
+			}
+			$symbs .= "\n";
 		}
 		assert(isset($symb));
 
-		$blob = "Location: <highlight>{$symb->pb_location}, {$symb->bp_location}<end>\n";
-		$blob .= "Found on: <highlight>{$symb->bp_mob}, Level {$symb->bp_lvl}<end>\n\n";
-		$blob .= $symbs;
+		$blob = "<header2>Basic info<end>\n";
+		$blob .= "<tab>Location: <highlight>{$symb->pb_location}<end>";
+		if ($symb->bp_location !== $symb->pb_location) {
+			$blob .= ", <highlight>{$symb->bp_location}<end>";
+		}
+		$blob .= "\n<tab>Found on: <highlight>{$symb->bp_mob}<end>, Level <highlight>{$symb->bp_lvl}<end>\n\n";
+		$blob .= "<header2>Symbiants<end>\n".
+			$symbs;
 
 		return $blob;
 	}
@@ -203,6 +218,7 @@ class PocketbossController extends ModuleInstance {
 		$lines = $this->db->table(Pocketboss::getTable())->select('line')->distinct()
 			->pluckStrings('line');
 
+		$impDesignSlot = null;
 		for ($i = 0; $i < $paramCount; $i++) {
 			try {
 				$impSlot = ImplantSlot::byName($args[$i]);
@@ -261,21 +277,33 @@ class PocketbossController extends ModuleInstance {
 		}
 		$implantDesignerLink = Text::makeChatcmd('implant designer', '/tell <myname> implantdesigner');
 		$blob = "Click '[add]' to add symbiant to {$implantDesignerLink}.\n\n";
-		foreach ($data as $row) {
-			if (in_array($row->line, ['Alpha', 'Beta'], true)) {
-				$name = "Xan {$row->slot} Symbiant, {$row->type} Unit {$row->line}";
-			} else {
-				$name = "{$row->line} {$row->slot} Symbiant, {$row->type} Unit Aban";
-			}
-			$blob .= '<pagebreak>' . Text::makeItem($row->itemid, $row->itemid, $row->ql, $name)." ({$row->ql})";
-			if (isset($impDesignSlot)) {
-				$impDesignerAddLink = Text::makeChatcmd('add', "/tell <myname> implantdesigner {$impDesignSlot} symb {$name}");
-				$blob .= " [{$impDesignerAddLink}]";
-			}
-			$blob .= "\n";
-			$blob .= 'Found on ' . Text::makeChatcmd($row->pb, "/tell <myname> pb {$row->pb}");
-			$blob .= "\n\n";
-		}
+
+		/** @param Collection<int,Pocketboss> $rows */
+		$blob = $data->groupBy('itemid')
+			->map(function (Collection $rows, int $itemid) use (&$impDesignSlot): string {
+				$symbiant = $rows->firstOrFail();
+				if ($symbiant->type === 'Special') {
+					$name = $this->itemsController->findById($symbiant->itemid)?->getName() ?? 'Unknown';
+				} elseif (in_array($symbiant->line, ['Alpha', 'Beta'], true)) {
+					$name = "Xan {$symbiant->slot} Symbiant, {$symbiant->type} Unit {$symbiant->line}";
+				} else {
+					$name = "{$symbiant->line} {$symbiant->slot} Symbiant, {$symbiant->type} Unit Aban";
+				}
+				$blob = '<pagebreak>' . Text::makeItem($symbiant->itemid, $symbiant->itemid, $symbiant->ql, $name);
+				if ($symbiant->ql !== 1) {
+					$blob .= " ({$symbiant->ql})";
+				}
+				if (isset($impDesignSlot)) {
+					$impDesignerAddLink = Text::makeChatcmd('add', "/tell <myname> implantdesigner {$impDesignSlot} symb {$name}");
+					$blob .= " [{$impDesignerAddLink}]";
+				}
+				$blob .= "\n";
+				$blob .= 'Found on '.
+					$rows->map(static function (Pocketboss $boss): string {
+						return Text::makeChatcmd($boss->pb, "/tell <myname> pb {$boss->pb}");
+					})->join(', ', ', and ');
+				return $blob;
+			})->join("\n\n");
 		$msg = $this->text->makeBlob("Symbiant Search Results ({$numrows})", $blob);
 		$context->reply($msg);
 	}
