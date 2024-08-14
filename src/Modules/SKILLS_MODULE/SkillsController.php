@@ -271,6 +271,9 @@ class SkillsController extends ModuleInstance {
 		"<a href='chatcmd:///start http://www.auno.org'>auno.org</a> as Burst Cycle.</i>"
 	)]
 	public function burstCommand(CmdContext $context, float $attackTime, float $rechargeTime, int $burstDelay, int $burstSkill): void {
+		if ($burstDelay === 0) {
+			$burstDelay = 1_000;
+		}
 		[$burstWeaponCap, $burstSkillCap] = $this->capBurst($attackTime, $rechargeTime, $burstDelay);
 
 		$burstRecharge = (int)floor(($rechargeTime * 20) + ($burstDelay / 100) - ($burstSkill / 25) + $attackTime);
@@ -415,6 +418,9 @@ class SkillsController extends ModuleInstance {
 	public function fullAutoCommand(CmdContext $context, float $attackTime, float $rechargeTime, int $faRecharge, int $faSkill): void {
 		[$faWeaponCap, $faSkillCap] = $this->capFullAuto($attackTime, $rechargeTime, $faRecharge);
 
+		if ($faRecharge === 0) {
+			$faRecharge = 1_000;
+		}
 		$myFullAutoRecharge = (int)round(($rechargeTime * 40) + ($faRecharge / 100) - ($faSkill / 25) + round($attackTime - 1));
 		$myFullAutoRecharge = max($myFullAutoRecharge, $faWeaponCap);
 
@@ -441,12 +447,12 @@ class SkillsController extends ModuleInstance {
 	#[NCA\HandlesCommand('mafist')]
 	public function maFistCommand(CmdContext $context, int $maSkill): void {
 		// MA templates
-		$skillList =     [1,    200,   1_000,   1_001,   2_000,   2_001,   3_000];
+		$skillList =     [1,    200,   1_000,   1_001,   2_000,   2_001,          3_000];
 
-		$maMinList =     [4,     45,    125,    130,    220,    225,    450];
-		$maMaxList =     [8,     75,    400,    405,    830,    831,   1_300];
-		$maCritList =    [3,     50,    500,    501,    560,    561,    800];
-		$maFistSpeed =   [1.15,    1.2,   1.25,   1.30,   1.35,   1.45,   1.50];
+		$maMinList =     [4,     45,    125,    130,    220,    225,                450];
+		$maMaxList =     [8,     75,    400,    405,    830,    831,              1_300];
+		$maCritList =    [3,     50,    500,    501,    560,    561,                800];
+		$maFistSpeed =   [1.15,    1.2,   1.25,   1.30,   1.35,           1.45,    1.50];
 		$maAOID =        [211_352, 211_353, 211_354, 211_357, 211_358, 211_363, 211_364];
 
 		$shadeMinList =  [3,     25,     55,     56,    130, 131,    280];
@@ -636,15 +642,15 @@ class SkillsController extends ModuleInstance {
 
 		$found = false;
 		if ($highAttributes->full_auto !== null && $lowAttributes->full_auto !== null) {
-			$full_auto_recharge = Util::interpolate($row->lowql, $row->highql, $lowAttributes->full_auto, $highAttributes->full_auto, $ql);
-			[$weaponCap, $skillCap] = $this->capFullAuto($attackTime, $rechargeTime, $full_auto_recharge);
+			$fullAutoRecharge = Util::interpolate($row->lowql, $row->highql, $lowAttributes->full_auto, $highAttributes->full_auto, $ql);
+			[$weaponCap, $skillCap] = $this->capFullAuto($attackTime, $rechargeTime, $fullAutoRecharge);
 			$blob .= "<header2>Full Auto<end>\n";
 			$blob .= '<tab>You need <highlight>'.$skillCap.'<end> Full Auto skill to cap your recharge at <highlight>'.$weaponCap."<end>s.\n\n";
 			$found = true;
 		}
 		if ($highAttributes->burst !== null && $lowAttributes->burst !== null) {
-			$burst_recharge = Util::interpolate($row->lowql, $row->highql, $lowAttributes->burst, $highAttributes->burst, $ql);
-			[$weaponCap, $skillCap] = $this->capBurst($attackTime, $rechargeTime, $burst_recharge);
+			$burstRecharge = Util::interpolate($row->lowql, $row->highql, $lowAttributes->burst, $highAttributes->burst, $ql);
+			[$weaponCap, $skillCap] = $this->capBurst($attackTime, $rechargeTime, $burstRecharge);
 			$blob .= "<header2>Burst<end>\n";
 			$blob .= '<tab>You need <highlight>'.$skillCap.'<end> Burst skill to cap your recharge at <highlight>'.$weaponCap."<end>s.\n\n";
 			$found = true;
@@ -780,11 +786,14 @@ class SkillsController extends ModuleInstance {
 	/**
 	 * @return list<float>
 	 *
-	 * @psalm-return list{float,float}
+	 * @psalm-return list{int,int}
 	 */
 	public function capFullAuto(float $attackTime, float $rechargeTime, int $fullAutoRecharge): array {
-		$weaponCap = floor(10 + $attackTime);
-		$skillCap = ((40 * $rechargeTime) + ($fullAutoRecharge / 100) - 11) * 25;
+		if ($fullAutoRecharge === 0) {
+			$fullAutoRecharge = 1_000;
+		}
+		$weaponCap = (int)floor($attackTime + 10);
+		$skillCap = (int)floor((($rechargeTime * 40) + ($fullAutoRecharge / 100) - 12 + $attackTime) * 25 + 1);
 
 		return [$weaponCap, $skillCap];
 	}
@@ -795,10 +804,13 @@ class SkillsController extends ModuleInstance {
 	 * @psalm-return list{int,int}
 	 */
 	public function capBurst(float $attackTime, float $rechargeTime, int $burstRecharge): array {
-		$hard_cap = (int)round($attackTime + 8, 0);
-		$skill_cap = (int)floor((($rechargeTime * 20) + ($burstRecharge / 100) - 8) * 25);
+		if ($burstRecharge === 0) {
+			$burstRecharge = 1_000;
+		}
+		$hardCap = (int)floor($attackTime + 8);
+		$skillCap = (int)floor((($rechargeTime * 20) + ($burstRecharge / 100) - 10 + $attackTime) * 25 + 1);
 
-		return [$hard_cap, $skill_cap];
+		return [$hardCap, $skillCap];
 	}
 
 	/**
