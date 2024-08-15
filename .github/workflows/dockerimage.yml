@@ -4,7 +4,7 @@ on:
     branches:
       - unstable
       - stable
-      - logging-config
+      - nadybot7
     tags:
       - '*'
 jobs:
@@ -45,7 +45,7 @@ jobs:
             echo ::set-output name=tag::$(echo ${TAG})
             echo ::set-output name=version::$(echo ${VERSION})
             echo ::set-output name=branch::$(echo ${BRANCH})
-        - name: Build and push the tagged Docker PHP 8.0 image
+        - name: Build and push the tagged Docker PHP 8.2 image
           shell: bash
           run: |
             docker buildx build --push --platform linux/amd64,linux/arm64 --file Dockerfile --build-arg VERSION="${{steps.vars.outputs.version}}" \
@@ -54,25 +54,5 @@ jobs:
               --tag "ghcr.io/nadybot/nadybot:${{steps.vars.outputs.tag}}" \
               --tag "ghcr.io/nadybot/nadybot:${{steps.vars.outputs.branch}}" \
               --tag "ghcr.io/nadybot/nadybot:${{steps.vars.outputs.branch}}-$(date +'%Y%m%d-%H%M%S')" \
-              .
-        - name: Build and push the tagged Docker-big PHP 8.0 image
-          shell: bash
-          run: |
-            docker buildx build --push --platform linux/amd64,linux/arm64 --file Dockerfile-big --build-arg VERSION="${{steps.vars.outputs.version}}" \
-              --tag "quay.io/nadyita/nadybot-big:${{steps.vars.outputs.tag}}" \
-              --tag "quay.io/nadyita/nadybot-big:${{steps.vars.outputs.branch}}" \
-              --tag "ghcr.io/nadybot/nadybot-big:${{steps.vars.outputs.tag}}" \
-              --tag "ghcr.io/nadybot/nadybot-big:${{steps.vars.outputs.branch}}" \
-              --tag "ghcr.io/nadybot/nadybot-big:${{steps.vars.outputs.branch}}-$(date +'%Y%m%d-%H%M%S')" \
-              .
-        - name: Build and push the tagged Docker-big-debug PHP 8.0 image
-          shell: bash
-          run: |
-            docker buildx build --push --platform linux/amd64,linux/arm64 --file Dockerfile-big --build-arg PROXY_IMAGE=debug --build-arg VERSION="${{steps.vars.outputs.version}}" \
-              --tag "quay.io/nadyita/nadybot-big-debug:${{steps.vars.outputs.tag}}" \
-              --tag "quay.io/nadyita/nadybot-big-debug:${{steps.vars.outputs.branch}}" \
-              --tag "ghcr.io/nadybot/nadybot-big-debug:${{steps.vars.outputs.tag}}" \
-              --tag "ghcr.io/nadybot/nadybot-big-debug:${{steps.vars.outputs.branch}}" \
-              --tag "ghcr.io/nadybot/nadybot-big-debug:${{steps.vars.outputs.branch}}--$(date +'%Y%m%d-%H%M%S')" \
               .
 

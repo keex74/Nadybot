@@ -78,6 +78,23 @@ use_nadyproxy = true
 [settings]
 ${EXTRA_SETTINGS}
 DONE
+SUFFIX=1
+while [ -n "$(eval echo "\${PROXY_CHARNAME_$SUFFIX:-}")" ]; do
+	if [ -n "$(eval echo "\${PROXY_USERNAME_$SUFFIX:-}")" ]; then
+		LASTUSER=$(eval echo "\${PROXY_USERNAME_$SUFFIX:-}")
+	fi
+	if [ -n "$(eval echo "\${PROXY_PASSWORD_$SUFFIX:-}")" ]; then
+		LASTPASS=$(eval echo "\${PROXY_PASSWORD_$SUFFIX:-}")
+	fi
+	cat >> /tmp/config.toml <<-END
+
+		[[worker]]
+		login = "${LASTUSER}"
+		password = "${LASTPASS}"
+		character = "$(eval echo "\${PROXY_CHARNAME_$SUFFIX:-}")"
+	END
+	SUFFIX=$((SUFFIX+1))
+done
 
 LOG_CONFIG=$(cat conf/logging.json | sed -e "s/\"\*\": \"notice\"/\"*\": \"${CONFIG_LOG_LEVEL:-notice}\"/")
 echo $LOG_CONFIG > /tmp/logging.json
@@ -94,65 +111,6 @@ done)
 if [ $? = 1 ]; then
   echo "${ERROR_MSG}"
   exit 1
-fi
-if [ -e /proxy/aochatproxy ] \
-	&& [ "$(checkBool "${CONFIG_USE_PROXY:-0}" 1 0)" = "1" ] \
-	&& [ -n "${PROXY_CHARNAME_1:-}" ] \
-	&& [ -n "${PROXY_USERNAME_1:-}" ] \
-	&& [ -n "${PROXY_PASSWORD_1:-}" ]; then
-	FC_PORT=7105
-	if [ "${CONFIG_DIMENSION:-5}" = "4" ]; then
-		FC_PORT=7109
-	elif [ "${CONFIG_DIMENSION:-5}" = "6" ]; then
-		FC_PORT=7106
-	fi
-	cat > /tmp/config.json <<-DONE
-		{
-		    "rust_log": "${PROXY_LOGLEVEL:-info}",
-		    "port_number": ${CONFIG_PROXY_PORT:-9993},
-		    "server_address": "chat.d1.funcom.com:${FC_PORT}",
-		    "spam_bot_support": $(checkBool "${PROXY_SPAM_BOT_SUPPORT:-0}" true false),
-		    "send_tells_over_main": $(checkBool "${PROXY_SEND_TELLS_OVER_MAIN:-1}" true false),
-		    "relay_worker_tells": $(checkBool "${PROXY_RELAY_WORKER_TELLS:-1}" true false),
-		    "auto_unfreeze_accounts": $(checkBool "${CONFIG_AUTO_UNFREEZE:-false}" true false),
-		    "accounts": [
-	DONE
-	SUFFIX=1
-	while [ -n "$(eval echo "\${PROXY_CHARNAME_$SUFFIX:-}")" ]; do
-		if [ -n "$(eval echo "\${PROXY_USERNAME_$SUFFIX:-}")" ]; then
-			LASTUSER=$(eval echo "\${PROXY_USERNAME_$SUFFIX:-}")
-		fi
-		if [ -n "$(eval echo "\${PROXY_PASSWORD_$SUFFIX:-}")" ]; then
-			LASTPASS=$(eval echo "\${PROXY_PASSWORD_$SUFFIX:-}")
-		fi
-		if [ -n "$(eval echo "\${PROXY_UNFREEZE_USERNAME_$SUFFIX:-}")" ]; then
-			LASTUNFREEZEUSER=$(eval echo "\${PROXY_UNFREEZE_USERNAME_$SUFFIX:-}")
-		fi
-		if [ -n "$(eval echo "\${PROXY_UNFREEZE_PASSWORD_$SUFFIX:-}")" ]; then
-			LASTUNFREEZEPASS=$(eval echo "\${PROXY_UNFREEZE_PASSWORD_$SUFFIX:-}")
-		fi
-		if [ "$SUFFIX" -gt 1 ]; then
-			echo "        ," >> /tmp/config.json
-		fi
-		cat >> /tmp/config.json <<-END
-			        {
-			            "username": "${LASTUSER}",
-			            "password": "${LASTPASS}",
-			            "unfreeze_username": "${LASTUNFREEZEUSER:-$LASTUSER}",
-			            "unfreeze_password": "${LASTUNFREEZEPASS:-$LASTPASS}",
-			            "character": "$(eval echo "\${PROXY_CHARNAME_$SUFFIX:-}")"
-			        }
-		END
-		SUFFIX=$((SUFFIX+1))
-	done
-	cat >> /tmp/config.json <<-DONE
-		    ]
-		}
-	DONE
-
-	cd /proxy || exit
-	(/usr/bin/env RUST_BACKTRACE=full /proxy/aochatproxy /tmp/config.json 2>&1| stdbuf -i0 -o0 -e0 sed -e 's/^[^ ]* \([A-Z]*\) .*\]/[PROXY:\1]/') &
-	cd /nadybot || exit
 fi
 
 PHP=$(which php82 php81 php8 php | head -n 1)
