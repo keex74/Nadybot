@@ -4,11 +4,12 @@ namespace Nadybot\Modules\ALIEN_MODULE;
 
 use Nadybot\Core\Attributes\DB\{PK, Shared, Table};
 use Nadybot\Core\{DBTable, Types\Profession};
+use Ramsey\Uuid\UuidInterface;
 
 #[Table(name: 'leprocs', shared: Shared::Yes)]
 class LEProc extends DBTable {
 	public function __construct(
-		#[PK] public int $id,
+		#[PK] public UuidInterface $id,
 		public Profession $profession,
 		public string $name,
 		public string $research_name,
