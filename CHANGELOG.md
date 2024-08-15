@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Results of `!flatroll` are now using standard color theme and the text to show on items where no one added is configurable, defaulting to `-` in order to easier spot actual winners.
 - The default file format of the configuration file has changed from php to toml.
 - Don't show links to `!config` if you cannot run it anyway.
-- The `!verify`-command will now show the results of the last 3 rolls, because it would be impossible to guess the previous UUID
+- The `!verify`-command will now show the results of the last 3 rolls, because it would be impossible to guess the previous UUID.
+- Multipage-output in the console is now automatically grouped into a single page.
 
 ### Coding
 
@@ -35,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profession, Faction, and Playfield are now Enums
 - No uninitialized properties anymore. All non-injected properties without default are now part of the constructor
 - Switched from auto incrementing columns to UUID7 IDs
+- Get all table names from the models, don't hardcode them.
 
 ### Fixed
 

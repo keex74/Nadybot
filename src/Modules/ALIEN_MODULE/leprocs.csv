@@ -1,3 +1,4 @@
+# uuid: id
 profession,name,research_name,research_lvl,proc_type,chance,modifiers,duration,proc_trigger,description
 Adventurer,"Charring Blow",Exploration,6,2,5,"Fight Target Hit Health Fire -633 .. -1220","",Offensive,"633 .. 1220 fire AC damage"
 Adventurer,"Aesir Absorption",Exploration,8,1,10,"Self Modify Add All Def. 50",30s,Defensive,"+50 AAD, 30 second duration"
