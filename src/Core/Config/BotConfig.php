@@ -63,6 +63,11 @@ class BotConfig {
 		$vars = self::convertOldSettings($vars);
 		$vars['file_path'] = $filePath;
 		$mapper = new ObjectMapperUsingReflection();
+		for ($i = 0; $i < count($vars['worker']??[]); $i++) {
+			$vars['worker'][$i]['dimension'] ??= $vars['main']['dimension'] ?? null;
+			$vars['worker'][$i]['login']     ??= $vars['main']['login'] ?? null;
+			$vars['worker'][$i]['password']  ??= $vars['main']['password'] ?? null;
+		}
 
 		$config = $mapper->hydrateObject(self::class, $vars);
 		return $config;
