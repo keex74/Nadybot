@@ -3,8 +3,6 @@ parameters:
   level: 7
   paths:
     - src
-  parallel:
-    maximumNumberOfProcesses: 6
   phpVersion: 80200
   ignoreErrors:
     - '#Property [a-zA-Z0-9\\_]+::\$.* is never written, only read.#'

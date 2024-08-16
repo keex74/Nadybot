@@ -6,6 +6,7 @@
 !/conf/config.template.php
 !/conf/config.template.toml
 /data/*
+/phpstan.neon
 *.log
 *.DS_Store
 *.xcuserdata
