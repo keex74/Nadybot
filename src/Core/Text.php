@@ -439,7 +439,7 @@ class Text {
 				$msgs[$i]
 			))) {
 				$expand = Safe::pregReplace("/^<header>[^\n]*<end>\n{0,2}/", '', $matches2[2]);
-				$block = trim($expand);
+				$block = static::removeCommonLines($matches[3], trim($expand));
 				if (str_starts_with($block, '<header2>')) {
 					$block = "\n{$block}";
 				}
@@ -546,5 +546,18 @@ class Text {
 		} while (str_contains($text, '{') && $lastText !== $text);
 
 		return $text;
+	}
+
+	protected static function removeCommonLines(string $firstBlock, string $nextBlock): string {
+		$firstPageLines = explode("\n", $firstBlock);
+		$nextPageLines = explode("\n", $nextBlock);
+		$i = 0;
+		while ($i < count($firstPageLines) && $i < count($nextPageLines)) {
+			if ($nextPageLines[$i] !== $firstPageLines[$i]) {
+				break;
+			}
+			$i++;
+		}
+		return implode("\n", array_slice($nextPageLines, $i));
 	}
 }
