@@ -92,6 +92,7 @@ while [ -n "$(eval echo "\${PROXY_CHARNAME_$SUFFIX:-}")" ]; do
 		login = "${LASTUSER}"
 		password = "${LASTPASS}"
 		character = "$(eval echo "\${PROXY_CHARNAME_$SUFFIX:-}")"
+		dimension = ${CONFIG_DIMENSION:-5}
 	END
 	SUFFIX=$((SUFFIX+1))
 done

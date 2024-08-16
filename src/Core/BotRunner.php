@@ -181,56 +181,63 @@ class BotRunner {
 
 	/** Run the bot in an endless loop */
 	public function run(): void {
-		LegacyLogger::$fs = self::getFS();
-		LoggerWrapper::$fs = self::getFS();
-		$this->parseOptions();
-		// set default timezone
-		date_default_timezone_set('UTC');
+		try {
+			LegacyLogger::$fs = self::getFS();
+			LoggerWrapper::$fs = self::getFS();
+			$this->parseOptions();
+			// set default timezone
+			date_default_timezone_set('UTC');
 
-		$config = $this->getConfigFile();
-		Registry::setInstance(Registry::formatName(BotConfig::class), $config);
-		$retryHandler = new HttpRetry(8);
-		Registry::injectDependencies($retryHandler);
-		$rateLimitRetryHandler = new HttpRetryRateLimits();
-		Registry::injectDependencies($rateLimitRetryHandler);
-		$httpClientBuilder = (new HttpClientBuilder())
-			->retry(0)
-			->intercept(new SetRequestHeaderIfUnset('User-Agent', 'Nadybot '.self::getVersion()))
-			->intercept($retryHandler)
-			->intercept($rateLimitRetryHandler);
-		$httpProxy = getenv('http_proxy');
-		if ($httpProxy !== false) {
-			$proxyHost = parse_url($httpProxy, \PHP_URL_HOST);
-			$proxyScheme = parse_url($httpProxy, \PHP_URL_SCHEME);
-			$proxyPort = parse_url($httpProxy, \PHP_URL_PORT) ?? ($proxyScheme === 'https' ? 443 : 80);
-			if (is_string($proxyScheme) && is_string($proxyHost) && is_int($proxyPort)) {
-				$connector = new Http1TunnelConnector("{$proxyHost}:{$proxyPort}");
-				$httpClientBuilder = $httpClientBuilder->usingPool(
-					new UnlimitedConnectionPool(
-						new DefaultConnectionFactory($connector)
-					)
-				);
+			$config = $this->getConfigFile();
+			Registry::setInstance(Registry::formatName(BotConfig::class), $config);
+			$retryHandler = new HttpRetry(8);
+			Registry::injectDependencies($retryHandler);
+			$rateLimitRetryHandler = new HttpRetryRateLimits();
+			Registry::injectDependencies($rateLimitRetryHandler);
+			$httpClientBuilder = (new HttpClientBuilder())
+				->retry(0)
+				->intercept(new SetRequestHeaderIfUnset('User-Agent', 'Nadybot '.self::getVersion()))
+				->intercept($retryHandler)
+				->intercept($rateLimitRetryHandler);
+			$httpProxy = getenv('http_proxy');
+			if ($httpProxy !== false) {
+				$proxyHost = parse_url($httpProxy, \PHP_URL_HOST);
+				$proxyScheme = parse_url($httpProxy, \PHP_URL_SCHEME);
+				$proxyPort = parse_url($httpProxy, \PHP_URL_PORT) ?? ($proxyScheme === 'https' ? 443 : 80);
+				if (is_string($proxyScheme) && is_string($proxyHost) && is_int($proxyPort)) {
+					$connector = new Http1TunnelConnector("{$proxyHost}:{$proxyPort}");
+					$httpClientBuilder = $httpClientBuilder->usingPool(
+						new UnlimitedConnectionPool(
+							new DefaultConnectionFactory($connector)
+						)
+					);
+				}
 			}
-		}
-		Registry::setInstance('HttpClientBuilder', $httpClientBuilder);
-		$this->checkRequiredModules();
-		$this->checkRequiredPackages();
-		$this->createMissingDirs();
+			Registry::setInstance('HttpClientBuilder', $httpClientBuilder);
+			$this->checkRequiredModules();
+			$this->checkRequiredPackages();
+			$this->createMissingDirs();
 
-		// these must happen first since the classes that are loaded may be used by processes below
-		$timezone = $config->general->timezone;
-		if (isset($timezone) && strlen($timezone) > 1) {
-			/** @psalm-suppress ArgumentTypeCoercion */
-			if (@date_default_timezone_set($timezone) === false) {
-				exit("Invalid timezone: \"{$timezone}\"\n");
+			// these must happen first since the classes that are loaded may be used by processes below
+			$timezone = $config->general->timezone;
+			if (isset($timezone) && strlen($timezone) > 1) {
+				/** @psalm-suppress ArgumentTypeCoercion */
+				if (@date_default_timezone_set($timezone) === false) {
+					exit("Invalid timezone: \"{$timezone}\"\n");
+				}
 			}
-		}
-		$logFolderName = "{$config->paths->logs}/{$config->main->character}.{$config->main->dimension}";
+			$logFolderName = "{$config->paths->logs}/{$config->main->character}.{$config->main->dimension}";
 
-		$this->setErrorHandling($logFolderName);
-		$this->logger = new LoggerWrapper('Core/BotRunner');
-		self::getFS()->setLogger(new LoggerWrapper('Core/Filesystem'));
-		Registry::injectDependencies($this->logger);
+			$this->setErrorHandling($logFolderName);
+			$this->logger = new LoggerWrapper('Core/BotRunner');
+			self::getFS()->setLogger(new LoggerWrapper('Core/Filesystem'));
+			Registry::injectDependencies($this->logger);
+		} catch (\Throwable $e) {
+			register_shutdown_function(static function (): void {
+				exit(1);
+			});
+			throw $e;
+		}
 
 		$this->sendBotBanner();
 
