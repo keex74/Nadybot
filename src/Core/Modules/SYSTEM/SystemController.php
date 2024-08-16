@@ -334,6 +334,7 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 
 		$basicInfo = new BasicSystemInformation(
 			bot_name: $this->config->main->character,
+			workers: array_column($this->config->worker, 'character'),
 			bot_version: $this->chatBot->runner::getVersion(),
 			db_type: $this->db->getType()->value,
 			org: strlen($this->config->general->orgName) ? $this->config->general->orgName : null,
@@ -419,6 +420,11 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 
 		$blob = "<header2>Basic Info<end>\n";
 		$blob .= "<tab>Name: <highlight>{$info->basic->bot_name}<end>\n";
+		if (count($info->basic->workers)) {
+			$blob .= '<tab>Workers: <highlight>'.
+				collect($info->basic->workers)->join('<end>, <highlight>', '<end> and <highlight>').
+				"<end>\n";
+		}
 		if (!count($info->basic->superadmins)) {
 			$blob .= "<tab>SuperAdmin: - <highlight>none<end> -\n";
 		} else {

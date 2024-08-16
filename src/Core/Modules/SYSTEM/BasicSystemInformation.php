@@ -5,6 +5,7 @@ namespace Nadybot\Core\Modules\SYSTEM;
 class BasicSystemInformation {
 	/**
 	 * @param string   $bot_name    Name of the bot character in AO
+	 * @param string[] $workers     Name(s) of the worker characters in AO
 	 * @param string[] $superadmins Name(s) of the character(s) running the bot, empty if not set
 	 * @param ?string  $org         Name of the org this bot is in or null if not in an org
 	 * @param ?int     $org_id      ID of the org this bot is in or null if not in an org
@@ -16,9 +17,11 @@ class BasicSystemInformation {
 	 * @param string   $db_type     Which database type (mysql/sqlite) are we using?
 	 *
 	 * @psalm-param list<string> $superadmins
+	 * @psalm-param list<string> $workers
 	 */
 	public function __construct(
 		public string $bot_name,
+		public array $workers,
 		public array $superadmins,
 		public ?string $org,
 		public ?int $org_id,
