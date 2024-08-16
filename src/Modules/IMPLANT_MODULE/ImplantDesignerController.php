@@ -847,11 +847,12 @@ class ImplantDesignerController extends ModuleInstance {
 			$effectTypeIdName = "{$grade}_effect_type_id";
 			$effectId = $implant->{$effectTypeIdName};
 			$bonus = $this->getClusterModAmount($ql, $grade, $effectId);
-			$prefix = '+';
-			if (in_array($displaySkill, ['SkillLockModifier', '% Add. Nano Cost'], true)) {
-				$prefix = '-';
-			}
-			$msg .= "<tab><highlight>{$displaySkill}<end> ({$prefix}{$bonus}{$unit})\n";
+			$msg .= sprintf(
+				"<tab><highlight>%s<end> (%+d%s)\n",
+				$displaySkill,
+				$bonus,
+				$unit
+			);
 		}
 		return $msg;
 	}
@@ -899,11 +900,7 @@ class ImplantDesignerController extends ModuleInstance {
 
 	private function showClusterChoices(ImplantConfig $design, string $slot, string $grade, int $ql): string {
 		$oldCluster = $design->{$slot}->{$grade};
-		$msg = '';
-		if (isset($oldCluster)) {
-			$msg .= ' [' . Text::makeChatcmd('clear', "/tell <myname> implantdesigner {$slot} {$grade} clear") . ']';
-		}
-		$msg .= "\n";
+		$msg = ' [' . Text::makeChatcmd('clear', "/tell <myname> implantdesigner {$slot} {$grade} clear") . "]\n";
 		$skills = $this->getClustersForSlot($slot, $grade);
 		foreach ($skills as $skill) {
 			$effect = $this->db->table(Cluster::getTable(), 'c')
@@ -919,13 +916,11 @@ class ImplantDesignerController extends ModuleInstance {
 				$msg .= "<tab>{$displaySkill}";
 			}
 			if (isset($effect)) {
-				$prefix = '+';
-				if (in_array($skill, ['SkillLockModifier', '% Add. Nano Cost'], true)) {
-					$prefix = '-';
-				}
-				$msg .= " {$prefix}".
-					$this->getClusterModAmount($ql, $grade, $effect->effect_type_id).
-					$effect->unit;
+				$msg .= sprintf(
+					' %+d%s',
+					$this->getClusterModAmount($ql, $grade, $effect->effect_type_id),
+					$effect->unit
+				);
 			}
 			$msg .= ' [' . Text::makeChatcmd('set', "/tell <myname> implantdesigner {$slot} {$grade} {$skill}");
 			$msg .= "]\n";
