@@ -70,6 +70,7 @@ class BotConfig {
 		}
 
 		$config = $mapper->hydrateObject(self::class, $vars);
+		$config->autoUnfreeze ??= new AutoUnfreeze();
 		return $config;
 	}
 

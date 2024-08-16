@@ -42,6 +42,7 @@ use Nadybot\Core\{
 	Util,
 };
 use Nadybot\Modules\WEBSERVER_MODULE\ApiResponse;
+use Nadylib\IMEX\TOML;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
 use ReflectionObject;
@@ -94,6 +95,12 @@ use Revolt\EventLoop;
 		command: 'showconfig',
 		accessLevel: 'admin',
 		description: 'Show a cleaned up version of your current config file',
+		defaultStatus: 1
+	),
+	NCA\DefineCommand(
+		command: 'upgradeconfig',
+		accessLevel: 'superadmin',
+		description: 'Show a version of your current config file upgraded to latest standards',
 		defaultStatus: 1
 	),
 ]
@@ -636,6 +643,39 @@ class SystemController extends ModuleInstance implements MessageEmitter {
 		);
 		$context->reply(
 			$this->text->makeBlob('Your config', $json)
+		);
+	}
+
+	/** Show your current configuration in the latest format */
+	#[NCA\HandlesCommand('upgradeconfig')]
+	public function upgradeConfigCommand(CmdContext $context): void {
+		if (!$context->isDM()) {
+			$context->reply('For security reasons, this command only works in tells');
+			return;
+		}
+		$mapper = new ObjectMapperUsingReflection();
+		Confidential::$active = false;
+		$vars = $mapper->serializeObject($this->config);
+		if (!isset($vars['org_id'])) {
+			unset($vars['org_id']);
+		}
+		if (!isset($vars['proxy'])) {
+			unset($vars['proxy']);
+		}
+		$toml = TOML::export($vars);
+		$oldFilePath = $this->config->getFilePath();
+		$newFilePath = Safe::pregReplace('/\.[^.]+$/', '', $oldFilePath) . '.toml';
+		$context->reply(
+			Text::blobWrap(
+				'Your upgraded config for ',
+				$this->text->makeBlob(
+					$newFilePath,
+					"Copy the following and save it as <highlight>{$newFilePath}<end>.\n".
+					"Make sure to use <highlight>{$newFilePath}<end> as your new config ".
+					"file from then on:\n\n<highlight>" . trim($toml) . '<end>',
+					'Your new configuration'
+				)
+			)
 		);
 	}
 
