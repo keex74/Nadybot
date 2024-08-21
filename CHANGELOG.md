@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New command `!death` to track death-counters and get some (hopefully) funny replies
 
+### Fixed
+
+- Fix several PostgreSQL issues related to grouping
+
 ## [6.2.9] - 2024-05-08
 
 ### Fixed
