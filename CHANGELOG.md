@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use our own server (with the old one being a fallback) for the `!history`-command, making it a lot faster.
 - Support hyperlinks in the console on terminals supporting this feature.
 - Add `!upgradeconfig` to upgrade any config (format) to new TOML.
+- Add the `!death`- and `!deathmsg`-commands
 
 ### Changed
 
