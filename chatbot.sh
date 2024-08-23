@@ -7,7 +7,7 @@ case $# in
 0)
 	set +e
 	while : ; do
-		php -f main.php ./conf/config.php
+		php -f main.php
 		[ $? -eq 10 ] && break
 	done
 	set -e

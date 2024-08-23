@@ -355,7 +355,13 @@ class BotRunner {
 		if (isset($this->configFile)) {
 			return $this->configFile;
 		}
-		$configFilePath = self::$arguments['c'] ?? 'conf/config.php';
+		$configFilePath = self::$arguments['c'] ?? null;
+		if (!isset($configFilePath) && self::getFS()->exists('conf/config.toml')) {
+			$configFilePath = 'conf/config.toml';
+		} elseif (!isset($configFilePath) && self::getFS()->exists('conf/config.php')) {
+			$configFilePath = 'conf/config.php';
+		}
+		$configFilePath ??= 'conf/config.toml';
 		return $this->configFile = BotConfig::loadFromFile($configFilePath, self::getFS());
 	}
 
@@ -482,7 +488,7 @@ class BotRunner {
 			'Usage: ' . \PHP_BINARY . ' ' . ($_SERVER['argv'][0] ?? 'main.php').
 			" [options] [-c] <config file>\n\n".
 			"positional arguments:\n".
-			"  <config file>         A Nadybot configuration file, usually conf/config.php\n".
+			"  <config file>         A Nadybot configuration file, usually conf/config.toml\n".
 			"\n".
 			"options:\n".
 			"  --help                Show this help message and exit\n".
