@@ -374,7 +374,10 @@ class BotRunner {
 	}
 
 	private function checkRequiredPackages(): void {
-		if (!class_exists('Revolt\\EventLoop')) {
+		if (
+			!class_exists('Revolt\\EventLoop')
+			|| !class_exists('Amp\\Future')
+		) {
 			// @phpstan-ignore-next-line
 			fwrite(
 				\STDERR,
@@ -424,10 +427,16 @@ class BotRunner {
 				}
 			}
 		}
+		if (extension_loaded('uv')) {
+			$uvVersion = phpversion('uv');
+			if (is_string($uvVersion) && version_compare($uvVersion, '0.3.0', '<') === true) {
+				$missing []= 'uv>=0.3.0';
+			}
+		}
 		if (!count($missing)) {
 			return;
 		}
-			// @phpstan-ignore-next-line
+		// @phpstan-ignore-next-line
 		fwrite(\STDERR, 'Nadybot needs the following missing PHP-extensions: ' . implode(', ', $missing) . ".\n");
 		sleep(5);
 		exit(1);
