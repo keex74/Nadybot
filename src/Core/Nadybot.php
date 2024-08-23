@@ -276,15 +276,17 @@ class Nadybot {
 			]);
 		});
 		$this->db->beginTransaction();
-		// $jobs = [];
 		$start = \Amp\now();
 		foreach (Registry::getAllInstances() as $name => $instance) {
 			if ($instance instanceof ModuleInstanceInterface && $instance->getModuleName() !== '') {
 				$this->registerInstance($name, $instance);
-				// $jobs []= async($this->registerInstance(...), $name, $instance);
 			} else {
+				$refClass = new ReflectionClass($instance);
+				$fileName = $refClass->getFileName();
+				if (is_string($fileName) && str_starts_with($fileName, __DIR__ . \DIRECTORY_SEPARATOR)) {
+					$this->parseInstanceSettings('SYSTEM', $instance);
+				}
 				$this->callSetupMethod($name, $instance);
-				// $jobs []= async($this->callSetupMethod(...), $name, $instance);
 			}
 			if (!$this->db->inTransaction()) {
 				$this->db->beginTransaction();
@@ -293,10 +295,6 @@ class Nadybot {
 		if ($this->db->inTransaction()) {
 			$this->db->commit();
 		}
-		// $this->logger->notice("Running {num_setups} setups in parallel", [
-		// 	"num_setups" => count($jobs),
-		// ]);
-		// await($jobs);
 		$duration = \Amp\now() - $start;
 		$this->logger->notice('Setups done in {duration}s', [
 			'duration' => number_format($duration, 3),
@@ -1781,7 +1779,7 @@ class Nadybot {
 		return [$commands, $subcommands];
 	}
 
-	private function parseInstanceSettings(string $moduleName, ModuleInstanceInterface $obj): void {
+	private function parseInstanceSettings(string $moduleName, object $obj): void {
 		$reflection = new ReflectionClass($obj);
 		foreach ($reflection->getProperties() as $property) {
 			$attrs = $property->getAttributes(NCA\DefineSetting::class, ReflectionAttribute::IS_INSTANCEOF);
@@ -1848,7 +1846,7 @@ class Nadybot {
 	}
 
 	/** Update the property bound to a setting to $value */
-	private function updateTypedProperty(ModuleInstanceInterface $obj, ReflectionProperty $property, ?string $value): void {
+	private function updateTypedProperty(object $obj, ReflectionProperty $property, ?string $value): void {
 		$type = $property->getType();
 		if ($type === null || !($type instanceof ReflectionNamedType)) {
 			return;
