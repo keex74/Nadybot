@@ -125,6 +125,9 @@ class SettingManager {
 				return;
 			}
 		}
+		if ($type === 'bool' && $value === false) {
+			$value = '0';
+		}
 
 		$kv = [];
 		$needIntOptions = array_keys($options) !== range(0, count($options) - 1);
